@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "UnitedSets (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "UnitedSets (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

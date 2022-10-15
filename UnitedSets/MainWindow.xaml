@@ -11,14 +11,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TabView x:Name="TabView" TabItemsSource="{x:Bind Tabs, Mode=OneWay}" VerticalAlignment="Stretch">
+        <TabView x:Name="TabView" x:FieldModifier="Public" TabItemsSource="{x:Bind Tabs, Mode=OneWay}" VerticalAlignment="Stretch" AddTabButtonClick="AddTab">
             <TabView.TabItemTemplate>
                 <DataTemplate x:DataType="local:HwndHostTab">
                     <TabViewItem
                         Margin="2"
                         Background="{ThemeResource 12Brush}"
                         Style="{ThemeResource UndockedTabViewItemStyle}"
-                        IsSelected="{x:Bind Selected, Mode=TwoWay}">
+                        IsSelected="{x:Bind Selected, Mode=TwoWay}" CloseRequested="{x:Bind TabCloseRequested}">
                         <TabViewItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{x:Bind Tempicon, Mode=OneWay}" RenderTransformOrigin="0.5, 0.5">

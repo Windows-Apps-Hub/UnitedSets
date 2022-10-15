@@ -13,6 +13,9 @@
 	  <Nullable>Enable</Nullable>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="AddTabFlyout.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -46,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="AddTabFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!-- 

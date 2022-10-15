@@ -16,7 +16,7 @@ interface ITab
     HwndHost HwndHost { get; }
     bool Selected { get; set; }
 }
-class HwndHostTab : ITab, INotifyPropertyChanged
+public class HwndHostTab : ITab, INotifyPropertyChanged
 {
     public bool Selected {
         get => HwndHost.IsWindowVisible;
@@ -26,15 +26,28 @@ class HwndHostTab : ITab, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
         }
     }
-    readonly WindowEx Window;
+    public readonly WindowEx Window;
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    public event Action? Closed;
-    public HwndHostTab(Window Window, WindowEx WindowEx)
+    public event Action Closed;
+    MainWindow MainWindow;
+    public HwndHostTab(MainWindow Window, WindowEx WindowEx)
     {
+        MainWindow = Window;
         this.Window = WindowEx;
         HwndHost = new(Window, WindowEx) { IsWindowVisible = false };
+        Closed = delegate
+        {
+            if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
+        };
         HwndHost.Closed += Closed;
+        HwndHost.Updating += delegate
+        {
+            if (_Title != Title)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
+            }
+        };
         UpdateAppIcon();
     }
     public HwndHost HwndHost { get; }
@@ -47,7 +60,7 @@ class HwndHostTab : ITab, INotifyPropertyChanged
     public IconSource? Icon { get; set; }
 
     public BitmapImage? Tempicon { get; set; }
-
+    string _Title;
     public string Title => Window.Text;
 
     async static ValueTask<ImageIconSource> ImageFromIcon(Icon Icon)
@@ -72,5 +85,10 @@ class HwndHostTab : ITab, INotifyPropertyChanged
         }
 
         return new ImageIconSource { ImageSource = image };
+    }
+    public void TabCloseRequested(TabViewItem sender, TabViewTabCloseRequestedEventArgs args)
+    {
+        MainWindow.TabView.SelectedItem = sender;
+        Window.TryClose();
     }
 }

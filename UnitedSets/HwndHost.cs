@@ -11,24 +11,29 @@ using Microsoft.UI.Xaml.Controls;
 using WindowStyles = PInvoke.User32.WindowStyles;
 using WindowStylesEx = PInvoke.User32.WindowStylesEx;
 using System.Reflection.Metadata;
-
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
 namespace UnitedSets;
 
-public class HwndHost : FrameworkElement
+public class HwndHost : FrameworkElement, IDisposable
 {
     readonly Window Window;
     readonly AppWindow WinUI;
-    readonly WindowEx IntermedieteWindow;
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
     bool _IsWindowVisible;
-    public bool IsWindowVisible {
+    public bool IsWindowVisible
+    {
         get => _IsWindowVisible;
-        set {
+        set
+        {
             _IsWindowVisible = value;
             ForceUpdateWindow();
         }
     }
+    long VisiblePropertyChangedToken;
+    DispatcherQueueTimer timer;
     public HwndHost(Window Window, WindowEx WindowToHost)
     {
         this.Window = Window;
@@ -41,29 +46,20 @@ public class HwndHost : FrameworkElement
         this.WindowToHost = WindowToHost;
         WinUIWindow = WindowEx.FromWindowHandle(WinUIHandle);
         var bound = WindowToHost.Bounds;
-        IntermedieteWindow = WindowEx.CreateNewWindow("", new Rectangle
-        {
-            X = 0,
-            Y = 0,
-            Width = bound.Width,
-            Height = bound.Height
-        });
-        //IntermedieteWindow.Owner = WinUIWindow;
-        //IntermedieteWindow.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
-        //IntermedieteWindow.ExStyle =
-        //    WindowStylesEx.WS_EX_TOOLWINDOW |
-        //    WindowStylesEx.WS_EX_TRANSPARENT;
         WindowToHost.Owner = WinUIWindow;
-        WindowToHost.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
+        //WindowToHost.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
-        RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => ForceUpdateWindow());
+        timer = DispatcherQueue.CreateTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(500);
+        timer.Tick += delegate
+        {
+            ForceUpdateWindow();
+        };
+        timer.Start();
+        VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, propchanged);
     }
-    protected override void OnDisconnectVisualChildren()
-    {
-        //var WindowToHost = this.WindowToHost;
-        //WindowToHost.IsVisible = false;
-    }
+    void propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
 
     void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs)
     {
@@ -73,18 +69,22 @@ public class HwndHost : FrameworkElement
     {
         ForceUpdateWindow();
     }
-    public void FocusWindow()
-    {
-        WindowToHost.Focus();
-    }
+
+    public void FocusWindow() => WindowToHost.Focus();
+
     public event Action? Closed;
+    public event Action? Updating;
     public void ForceUpdateWindow()
     {
         if (XamlRoot is null) return;
         var windowpos = WinUI.Position;
         var Pt = TransformToVisual(Window.Content).TransformPoint(
-            new Windows.Foundation.Point(windowpos.X, windowpos.Y)
+            new Windows.Foundation.Point(0, 0)
         );
+
+        var scale = GetScale();
+        Pt.X = windowpos.X + Pt.X * scale;
+        Pt.Y = windowpos.Y + Pt.Y * scale;
         var Size = ActualSize;
         var WindowToHost = this.WindowToHost;
         try
@@ -97,55 +97,56 @@ public class HwndHost : FrameworkElement
         }
         if (!WindowToHost.IsValid)
         {
-            WinUI.Changed -= WinUIAppWindowChanged;
-            Closed?.Invoke();
+            Dispose();
             return;
         }
-        var IntermedieteWindow = this.IntermedieteWindow;
-        WindowToHost.IsMinimized = IsWindowVisible; // IntermedieteWindow.IsVisible = Visibility == Visibility.Visible
-        WindowToHost.IsTtileBarVisible = false;
-        //IntermedieteWindow.Bounds = new Rectangle(
-        //    (int)Pt._x + 5,
-        //    (int)Pt._y + 2,
-        //    (int)Size.X + 5,
-        //    (int)Size.Y
-        //);
-        var YShift = WinUIWindow.IsMaximized ? 8 : 0;
-         int TabMargin = 54;
-        WindowToHost.Bounds = new Rectangle(
-            (int)Pt._x + 8,
-            (int)Pt._y + YShift + TabMargin,
-            (int)(Size.X * GetScale()),
-            (int)(Size.Y * GetScale())
-        ); ;
-    }
-    public double GetScale()
-    {
-        var progmanWindow = NativeMethods.FindWindow("Shell_TrayWnd", null);
-        var monitor = NativeMethods.MonitorFromWindow(progmanWindow, NativeMethods.MONITOR_DEFAULTTOPRIMARY);
-
-        NativeMethods.DeviceScaleFactor scale;
-        NativeMethods.GetScaleFactorForMonitor(monitor, out scale);
-
-        if (scale == NativeMethods.DeviceScaleFactor.DEVICE_SCALE_FACTOR_INVALID)
+        Updating?.Invoke();
+        if (IsWindowVisible)
         {
-            scale = NativeMethods.DeviceScaleFactor.SCALE_100_PERCENT;
+            var YShift = WinUIWindow.IsMaximized ? 8 : 0;
+            WindowToHost.Bounds = new Rectangle(
+                (int)Pt._x + 8,
+                (int)Pt._y + YShift,
+                (int)(Size.X * scale),
+                (int)(Size.Y * scale)
+            );
         }
+        WindowToHost.IsVisible = IsWindowVisible;
+    }
+    static double GetScale()
+    {
+        var progmanWindow = User32.FindWindow("Shell_TrayWnd", null);
+        var monitor = User32.MonitorFromWindow(progmanWindow, User32.MonitorOptions.MONITOR_DEFAULTTOPRIMARY);
 
-        return Convert.ToDouble(scale) / 100;
+        NativeMethods.GetScaleFactorForMonitor(monitor, out var scale);
+
+        if (scale is NativeMethods.DeviceScaleFactor.DEVICE_SCALE_FACTOR_INVALID)
+            scale = NativeMethods.DeviceScaleFactor.SCALE_100_PERCENT;
+
+        return (double)scale / 100;
+    }
+
+    public void Dispose()
+    {
+
+        SizeChanged -= WinUIAppWindowChanged;
+        WinUI.Changed -= WinUIAppWindowChanged;
+        UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);
+        Closed?.Invoke();
+        return;
     }
 }
 
 public static class NativeMethods
 {
-    public const int MONITOR_DEFAULTTOPRIMARY = 1;
-    public const int MONITOR_DEFAULTTONEAREST = 2;
+    //public const int MONITOR_DEFAULTTOPRIMARY = 1;
+    //public const int MONITOR_DEFAULTTONEAREST = 2;
 
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+    //[DllImport("user32.dll", SetLastError = true)]
+    //public static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
 
-    [DllImport("user32.dll")]
-    public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+    //[DllImport("user32.dll")]
+    //public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
     [DllImport("shcore.dll")]
     public static extern IntPtr GetScaleFactorForMonitor(IntPtr hwnd, out DeviceScaleFactor dwFlags);
@@ -176,21 +177,6 @@ public struct WindowEx
     private WindowEx(IntPtr Handle)
     {
         this.Handle = Handle;
-    }
-    bool HookInitialized = false;
-    Action? _Changed = null;
-    public event Action? Changed
-    {
-        add
-        {
-            _Changed += value;
-            if (HookInitialized) return;
-            //InitializeHook();
-        }
-        remove
-        {
-            _Changed -= value;
-        }
     }
     public IntPtr Handle { get; }
     public override string ToString()
@@ -245,7 +231,7 @@ public struct WindowEx
                 Style &= ~User32.WindowStyles.WS_SIZEFRAME;
         }
     }
-    public bool IsVisible
+    public bool IsVisibleStyle
     {
         get => (Style & User32.WindowStyles.WS_VISIBLE) != 0;
         set
@@ -334,17 +320,20 @@ public struct WindowEx
             return placement.showCmd is User32.WindowShowStyle.SW_MAXIMIZE;
         }
     }
-    public bool IsMinimized
+    public bool IsVisible
     {
         get
         {
             var placement = User32.GetWindowPlacement(Handle);
-            return placement.showCmd is User32.WindowShowStyle.SW_SHOWMINIMIZED;
+            return placement.showCmd is User32.WindowShowStyle.SW_SHOWNORMAL;
         }
         set
         {
-            if (IsMinimized == value) return;
-            User32.ShowWindow(Handle, User32.WindowShowStyle.SW_RESTORE);
+            //if (IsVisible == value) return;
+            if (value)
+                User32.ShowWindow(Handle, User32.WindowShowStyle.SW_SHOW);
+            else
+                User32.ShowWindow(Handle, User32.WindowShowStyle.SW_HIDE);
         }
     }
     public string Text
@@ -378,6 +367,10 @@ public struct WindowEx
             else
                 yield break;
         }
+    }
+    public async void TryClose()
+    {
+        User32.SendMessage(Handle, User32.WindowMessage.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
     }
     public IEnumerable<WindowEx> GetAboves() => GetAboves(this);
     public static WindowEx FromLocation(int X, int Y) => FromLocation(new Point(X, Y));

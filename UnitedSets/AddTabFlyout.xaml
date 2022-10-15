@@ -1,0 +1,20 @@
+﻿<local:MicaWindow
+    x:Class="UnitedSets.AddTabFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Width="600" Height="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border x:Name="TitleBar" Grid.Row="0"/>
+        <StackPanel Margin="16" Grid.Row="1">
+            <TextBlock Margin="0,0,0,24" Text="Place the cursor above the window you want to add, then press Shift"/>
+            <Button x:Name="btn" Content="Cancel" Click="CancelClick" KeyDown="KeyDown"/>
+        </StackPanel>
+    </Grid>
+</local:MicaWindow>

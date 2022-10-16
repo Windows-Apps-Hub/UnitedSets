@@ -23,6 +23,7 @@ public class HwndHost : FrameworkElement, IDisposable
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
     bool _IsWindowVisible;
+    bool _DefaultIsResizable;
     public bool IsWindowVisible
     {
         get => _IsWindowVisible;
@@ -44,6 +45,7 @@ public class HwndHost : FrameworkElement, IDisposable
             )
         );
         this.WindowToHost = WindowToHost;
+        _DefaultIsResizable = WindowToHost.IsResizable;
         WinUIWindow = WindowEx.FromWindowHandle(WinUIHandle);
         var bound = WindowToHost.Bounds;
         WindowToHost.Owner = WinUIWindow;
@@ -57,9 +59,9 @@ public class HwndHost : FrameworkElement, IDisposable
             ForceUpdateWindow();
         };
         timer.Start();
-        VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, propchanged);
+        VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, Propchanged);
     }
-    void propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
+    void Propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
 
     void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs)
     {
@@ -68,6 +70,14 @@ public class HwndHost : FrameworkElement, IDisposable
     void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e)
     {
         ForceUpdateWindow();
+    }
+    public void DetachAndDispose()
+    {
+        Dispose();
+        var WindowToHost = this.WindowToHost;
+        WindowToHost.Owner = default;
+        WindowToHost.IsResizable = _DefaultIsResizable;
+        WindowToHost.IsVisible = true;
     }
 
     public void FocusWindow() => WindowToHost.Focus();
@@ -113,7 +123,7 @@ public class HwndHost : FrameworkElement, IDisposable
         }
         WindowToHost.IsVisible = IsWindowVisible;
     }
-    static double GetScale()
+    public static double GetScale()
     {
         var progmanWindow = User32.FindWindow("Shell_TrayWnd", null);
         var monitor = User32.MonitorFromWindow(progmanWindow, User32.MonitorOptions.MONITOR_DEFAULTTOPRIMARY);
@@ -128,7 +138,7 @@ public class HwndHost : FrameworkElement, IDisposable
 
     public void Dispose()
     {
-
+        timer.Stop();
         SizeChanged -= WinUIAppWindowChanged;
         WinUI.Changed -= WinUIAppWindowChanged;
         UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);
@@ -368,7 +378,7 @@ public struct WindowEx
                 yield break;
         }
     }
-    public async void TryClose()
+    public void TryClose()
     {
         User32.SendMessage(Handle, User32.WindowMessage.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
     }

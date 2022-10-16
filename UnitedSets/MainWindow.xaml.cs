@@ -1,13 +1,17 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Windowing;
+﻿using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WinRT.Interop;
 using WinUIEx;
+using Microsoft.UI.Xaml;
+using Windows.UI.ViewManagement;
+using Windows.UI;
+using Microsoft.UI;
+using Windows.ApplicationModel.DataTransfer;
+using System.Numerics;
+using Microsoft.UI.Xaml.Media;
+using System;
 
 namespace UnitedSets;
 
@@ -34,6 +38,8 @@ public sealed partial class MainWindow
         {
 
         };
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(CustomDragRegion);
     }
     readonly AddTabFlyout AddTabFlyout = new();
     private async void AddTab(TabView sender, object args)
@@ -42,12 +48,27 @@ public sealed partial class MainWindow
         var result = AddTabFlyout.Result;
         if (!result.IsValid) return;
         result = result.Root;
+        if (result.Handle == IntPtr.Zero) return;
         if (result.Handle == AddTabFlyout.GetWindowHandle()) return;
         if (result.Handle == WindowEx.Handle) return;
         if (Tabs.FirstOrDefault(x => x.Window.Handle == result.Handle) is not null) return;
         var newTab = new HwndHostTab(this, result);
         Tabs.Add(newTab);
+        TabView.SelectedIndex = Tabs.Count - 1;
     }
 
-    
+    private void TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
+    {
+        if (args.Tab.Tag is HwndHostTab Tab)
+        {
+            Tab.DetachAndDispose();
+        }
+    }
+
+    private void TabDragStarting(TabView sender, TabViewTabDragStartingEventArgs args)
+    {
+        var firstItem = args.Tab;
+        args.Data.Properties.Add("UnitedSetsTab", firstItem);
+        args.Data.RequestedOperation = DataPackageOperation.Move;
+    }
 }

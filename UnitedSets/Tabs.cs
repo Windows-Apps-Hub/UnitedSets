@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using PInvoke;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -90,5 +91,16 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     {
         MainWindow.TabView.SelectedItem = sender;
         Window.TryClose();
+    }
+    public void DetachAndDispose()
+    {
+        var Window = this.Window;
+        HwndHost.DetachAndDispose();
+        var bounds = Window.Bounds;
+        var CursorPos = User32.GetCursorPos();
+        bounds.X = CursorPos.x - 100;
+        bounds.Y = CursorPos.y - 30;
+        Window.Bounds = bounds;
+        Window.Focus();
     }
 }

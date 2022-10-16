@@ -17,7 +17,6 @@ public class MicaWindow : WinUIEx.WindowEx
     public MicaWindow()
     {
         TrySetMicaBackdrop();
-        this.ExtendsContentIntoTitleBar = true;
     }
     bool TrySetMicaBackdrop()
     {

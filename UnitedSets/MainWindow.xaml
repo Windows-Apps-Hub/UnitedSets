@@ -11,28 +11,40 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TabView x:Name="TabView" x:FieldModifier="Public" TabItemsSource="{x:Bind Tabs, Mode=OneWay}" VerticalAlignment="Stretch" AddTabButtonClick="AddTab">
-            <TabView.TabItemTemplate>
-                <DataTemplate x:DataType="local:HwndHostTab">
-                    <TabViewItem
-                        Margin="2"
-                        Background="{ThemeResource 12Brush}"
-                        Style="{ThemeResource UndockedTabViewItemStyle}"
-                        IsSelected="{x:Bind Selected, Mode=TwoWay}" CloseRequested="{x:Bind TabCloseRequested}">
-                        <TabViewItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{x:Bind Tempicon, Mode=OneWay}" RenderTransformOrigin="0.5, 0.5">
-                                    <Image.RenderTransform>
-                                        <ScaleTransform ScaleX="2.0" ScaleY="2.0"/>
-                                    </Image.RenderTransform>
-                                </Image>
-                                <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
-                            </StackPanel>
-                        </TabViewItem.Header>
-                    </TabViewItem>
-                </DataTemplate>
-            </TabView.TabItemTemplate>
-        </TabView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition x:Name="TabViewRightMargin" Width="0"/>
+            </Grid.ColumnDefinitions>
+            <Border MinHeight="40">
+                <TabView x:Name="TabView" x:FieldModifier="Public" TabItemsSource="{x:Bind Tabs, Mode=OneWay}" VerticalAlignment="Center" AddTabButtonClick="AddTab" TabDragStarting="TabDragStarting" TabDroppedOutside="TabDroppedOutside" CanDragTabs="True" CanReorderTabs="True" Margin="0,0,120,0" MinHeight="40">
+                    <TabView.TabItemTemplate>
+                        <DataTemplate x:DataType="local:HwndHostTab">
+                            <TabViewItem
+                            Margin="2"
+                            Background="{ThemeResource 12Brush}"
+                            Style="{ThemeResource UndockedTabViewItemStyle}"
+                            IsSelected="{x:Bind Selected, Mode=TwoWay}" CloseRequested="{x:Bind TabCloseRequested}"
+                            Tag="{x:Bind}">
+                                <TabViewItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{x:Bind Tempicon, Mode=OneWay}" RenderTransformOrigin="0.5, 0.5">
+                                            <Image.RenderTransform>
+                                                <ScaleTransform ScaleX="2.0" ScaleY="2.0"/>
+                                            </Image.RenderTransform>
+                                        </Image>
+                                        <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
+                                    </StackPanel>
+                                </TabViewItem.Header>
+                            </TabViewItem>
+                        </DataTemplate>
+                    </TabView.TabItemTemplate>
+                    <TabView.TabStripFooter>
+                        <Grid x:Name="CustomDragRegion" Background="Transparent" />
+                    </TabView.TabStripFooter>
+                </TabView>
+            </Border>
+        </Grid>
         <Border Grid.Row="1">
             <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}">
                 <ItemsControl.ItemsPanel>

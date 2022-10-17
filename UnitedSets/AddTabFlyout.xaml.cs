@@ -18,7 +18,7 @@ public sealed partial class AddTabFlyout : MicaWindow
     {
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
-        SetTitleBar(TitleBar);
+        SetTitleBar(BorderTitleBar);
         AppWindow.Closing += AppWindow_Closing;
         Activated += delegate
         {

@@ -11,7 +11,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border x:Name="TitleBar" Grid.Row="0"/>
+        <Border x:Name="BorderTitleBar" Grid.Row="0"/>
         <StackPanel Margin="16" Grid.Row="1">
             <TextBlock Margin="0,0,0,24" Text="Place the cursor above the window you want to add, then press Shift"/>
             <Button x:Name="btn" Content="Cancel" Click="CancelClick" KeyDown="KeyDown"/>

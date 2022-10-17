@@ -24,6 +24,7 @@ public sealed partial class MainWindow
     readonly WindowEx WindowEx;
     public MainWindow()
     {
+        Title = "UnitedSets";
         InitializeComponent();
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
         //var paint = new HwndHostTab(this, WindowEx.GetAllWindows().First(x => x.Text.Contains("Paint")).Root);

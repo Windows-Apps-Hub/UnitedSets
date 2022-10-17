@@ -46,9 +46,11 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         {
             if (_Title != Title)
             {
+                _Title = Title;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
             }
         };
+        _Title = Title;
         UpdateAppIcon();
     }
     public HwndHost HwndHost { get; }

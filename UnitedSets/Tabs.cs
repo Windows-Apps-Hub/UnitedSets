@@ -1,12 +1,14 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
-using PInvoke;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Win32;
+using Window = Microsoft.UI.Xaml.Window;
+using WindowEx = WinWrapper.Window;
 namespace UnitedSets;
 
 interface ITab
@@ -64,7 +66,7 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
 
     public BitmapImage? Tempicon { get; set; }
     string _Title;
-    public string Title => Window.Text;
+    public string Title => Window.TitleText;
 
     async static ValueTask<ImageIconSource> ImageFromIcon(Icon Icon)
     {
@@ -98,11 +100,8 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     {
         var Window = this.Window;
         HwndHost.DetachAndDispose();
-        var bounds = Window.Bounds;
-        var CursorPos = User32.GetCursorPos();
-        bounds.X = CursorPos.x - 100;
-        bounds.Y = CursorPos.y - 30;
-        Window.Bounds = bounds;
+        PInvoke.GetCursorPos(out var CursorPos);
+        Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
         Window.Focus();
     }
 }

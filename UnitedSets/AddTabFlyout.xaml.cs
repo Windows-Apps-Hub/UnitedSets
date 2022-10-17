@@ -2,12 +2,12 @@
 using WinRT.Interop;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PInvoke;
 using Microsoft.UI.Xaml.Input;
-using WindowStyles = PInvoke.User32.WindowStyles;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using System.Threading.Tasks;
+using WindowEx = WinWrapper.Window;
+using Windows.Win32;
 
 namespace UnitedSets;
 
@@ -41,8 +41,8 @@ public sealed partial class AddTabFlyout : MicaWindow
     }
     public async ValueTask ShowAtCursorAsync()
     {
-        var pt = User32.GetCursorPos();
-        AppWindow.Move(new Windows.Graphics.PointInt32(pt.x, pt.y));
+        PInvoke.GetCursorPos(out var pt);
+        AppWindow.Move(new Windows.Graphics.PointInt32(pt.X, pt.Y));
         AppWindow.Show();
         btn.Focus(FocusState.Keyboard);
         while (AppWindow.IsVisible)
@@ -57,7 +57,8 @@ public sealed partial class AddTabFlyout : MicaWindow
     {
         if (e.Key.HasFlag(VirtualKey.Shift))
         {
-            Result = WindowEx.GetWindowFromPoint(User32.GetCursorPos());
+            PInvoke.GetCursorPos(out var pt);
+            Result = WindowEx.GetWindowFromPoint(pt);
             Hide();
         }
     }

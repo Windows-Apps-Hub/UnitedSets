@@ -35,6 +35,7 @@ public class HwndHost : FrameworkElement, IDisposable
     }
     long VisiblePropertyChangedToken;
     DispatcherQueueTimer timer;
+    WindowStyles InitialStyle;
     public HwndHost(Window Window, WindowEx WindowToHost)
     {
         this.Window = Window;
@@ -49,6 +50,7 @@ public class HwndHost : FrameworkElement, IDisposable
         WinUIWindow = WindowEx.FromWindowHandle(WinUIHandle);
         var bound = WindowToHost.Bounds;
         WindowToHost.Owner = WinUIWindow;
+        InitialStyle = WindowToHost.Style;
         //WindowToHost.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
@@ -75,6 +77,7 @@ public class HwndHost : FrameworkElement, IDisposable
     {
         Dispose();
         var WindowToHost = this.WindowToHost;
+        WindowToHost.Style = InitialStyle;
         WindowToHost.Owner = default;
         WindowToHost.IsResizable = _DefaultIsResizable;
         WindowToHost.IsVisible = true;
@@ -92,7 +95,7 @@ public class HwndHost : FrameworkElement, IDisposable
             new Windows.Foundation.Point(0, 0)
         );
 
-        var scale = GetScale();
+        var scale = GetScale(WinUIWindow);
         Pt.X = windowpos.X + Pt.X * scale;
         Pt.Y = windowpos.Y + Pt.Y * scale;
         var Size = ActualSize;
@@ -123,9 +126,9 @@ public class HwndHost : FrameworkElement, IDisposable
         }
         WindowToHost.IsVisible = IsWindowVisible;
     }
-    public static double GetScale()
+    public static double GetScale(WindowEx Window)
     {
-        var progmanWindow = User32.FindWindow("Shell_TrayWnd", null);
+        var progmanWindow = Window.Handle;
         var monitor = User32.MonitorFromWindow(progmanWindow, User32.MonitorOptions.MONITOR_DEFAULTTOPRIMARY);
 
         NativeMethods.GetScaleFactorForMonitor(monitor, out var scale);
@@ -149,15 +152,6 @@ public class HwndHost : FrameworkElement, IDisposable
 
 public static class NativeMethods
 {
-    //public const int MONITOR_DEFAULTTOPRIMARY = 1;
-    //public const int MONITOR_DEFAULTTONEAREST = 2;
-
-    //[DllImport("user32.dll", SetLastError = true)]
-    //public static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
-
-    //[DllImport("user32.dll")]
-    //public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
-
     [DllImport("shcore.dll")]
     public static extern IntPtr GetScaleFactorForMonitor(IntPtr hwnd, out DeviceScaleFactor dwFlags);
 

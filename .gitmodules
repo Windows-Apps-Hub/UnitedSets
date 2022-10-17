@@ -1,0 +1,3 @@
+[submodule "WinWrapper"]
+	path = WinWrapper
+	url = https://github.com/Get0457/WinWrapper

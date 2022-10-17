@@ -12,6 +12,7 @@ using Windows.ApplicationModel.DataTransfer;
 using System.Numerics;
 using Microsoft.UI.Xaml.Media;
 using System;
+using WindowEx = WinWrapper.Window;
 
 namespace UnitedSets;
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
@@ -23,7 +23,6 @@
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
@@ -44,16 +43,16 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Window\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-    <ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
+    <ProjectReference Include="..\WinWrapper\WinWrapper.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="AddTabFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <!-- 

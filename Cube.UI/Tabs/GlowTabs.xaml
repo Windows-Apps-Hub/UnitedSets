@@ -262,7 +262,6 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabViewItem">
-
                     <Grid
                                         x:Name="LayoutRoot"
                                         Height="32"
@@ -713,7 +712,7 @@
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,4,0,4" />
-        <Setter Property="Padding" Value="10,10,10,10" />
+        <Setter Property="Padding" Value="16" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

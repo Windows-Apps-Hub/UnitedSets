@@ -13,6 +13,7 @@ using System.Numerics;
 using Microsoft.UI.Xaml.Media;
 using System;
 using WindowEx = WinWrapper.Window;
+using UnitedSets.Classes;
 
 namespace UnitedSets;
 
@@ -46,17 +47,24 @@ public sealed partial class MainWindow
     readonly AddTabFlyout AddTabFlyout = new();
     private async void AddTab(TabView sender, object args)
     {
+        this.Hide();
         await AddTabFlyout.ShowAtCursorAsync();
+        this.Show();
         var result = AddTabFlyout.Result;
-        if (!result.IsValid) return;
+        if (!result.IsValid) 
+            return;
         result = result.Root;
-        if (result.Handle == IntPtr.Zero) return;
-        if (result.Handle == AddTabFlyout.GetWindowHandle()) return;
-        if (result.Handle == WindowEx.Handle) return;
-        if (Tabs.FirstOrDefault(x => x.Window.Handle == result.Handle) is not null) return;
+        if (result.Handle == IntPtr.Zero) 
+            return;
+        if (result.Handle == AddTabFlyout.GetWindowHandle()) 
+            return;
+        if (result.Handle == WindowEx.Handle) 
+            return;
+        if (Tabs.FirstOrDefault(x => x.Window.Handle == result.Handle) is not null) 
+            return;
         var newTab = new HwndHostTab(this, result);
         Tabs.Add(newTab);
-        TabView.SelectedIndex = Tabs.Count - 1;
+        TabView.SelectedItem = newTab;
     }
 
     private void TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)

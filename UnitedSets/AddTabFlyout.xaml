@@ -1,20 +1,28 @@
-﻿<local:MicaWindow
+﻿<WinUIEx:WindowEx
+    xmlns:WinUIEx="using:WinUIEx"
     x:Class="UnitedSets.AddTabFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="600" Height="200">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Border x:Name="BorderTitleBar" Grid.Row="0"/>
-        <StackPanel Margin="16" Grid.Row="1">
-            <TextBlock Margin="0,0,0,24" Text="Place the cursor above the window you want to add, then press Shift"/>
-            <Button x:Name="btn" Content="Cancel" Click="CancelClick" KeyDown="KeyDown"/>
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:icons="using:Cube.UI.Icons"
+    IsResizable="False"
+    IsMaximizable="False"
+    IsMinimizable="False"
+    IsTitleBarVisible="False"
+    IsAlwaysOnTop="True"
+    mc:Ignorable="d" Width="400" Height="70">
+    <Grid Padding="16" KeyDown="KeyDown">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+            <icons:FluentSymbolIcon Symbol="FullScreenMinimize24"/>
+            <StackPanel Margin="8, 0, 0, 0">
+                <TextBlock FontWeight="SemiBold">Capture Window</TextBlock>
+                <TextBlock Opacity="0.7">
+                Press Shift with cursor over a window to add
+                </TextBlock>
+            </StackPanel>
         </StackPanel>
+        <Button x:Name="btn" Style="{ThemeResource CloseButton}" Click="CancelClick" KeyDown="KeyDown" HorizontalAlignment="Right"/>
     </Grid>
-</local:MicaWindow>
+</WinUIEx:WindowEx>

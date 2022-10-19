@@ -8,50 +8,34 @@ using Microsoft.UI;
 using System.Threading.Tasks;
 using WindowEx = WinWrapper.Window;
 using Windows.Win32;
+using WinUIEx;
+using Windows.Graphics;
+using UnitedSets.Helpers;
 
 namespace UnitedSets;
 
-public sealed partial class AddTabFlyout : MicaWindow
+public sealed partial class AddTabFlyout : WinUIEx.WindowEx
 {
     public WindowEx Result;
     public AddTabFlyout()
     {
         InitializeComponent();
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(BorderTitleBar);
-        AppWindow.Closing += AppWindow_Closing;
-        Activated += delegate
-        {
-            btn.Focus(FocusState.Keyboard);
-        };
+        MicaHelper Mica = new();
+        Mica.TrySetMicaBackdrop(this);
+        this.SetForegroundWindow();
+        this.CenterOnScreen();
+        AppWindow.Move(new PointInt32(this.AppWindow.Position.X, 80));
+        this.Hide();
     }
 
-    private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
-    {
-        if (AppWindow.IsVisible)
-        {
-            args.Cancel = true;
-            Hide();
-        }
-    }
-
-    public void Hide()
-    {
-        AppWindow.Hide();
-    }
     public async ValueTask ShowAtCursorAsync()
     {
-        PInvoke.GetCursorPos(out var pt);
-        AppWindow.Move(new Windows.Graphics.PointInt32(pt.X, pt.Y));
-        AppWindow.Show();
         btn.Focus(FocusState.Keyboard);
-        while (AppWindow.IsVisible)
+        AppWindow.Show();
+        while (AppWindow.IsVisible) 
             await Task.Delay(1000);
     }
-    private void CancelClick(object sender, RoutedEventArgs e)
-    {
-        Hide();
-    }
+    private void CancelClick(object sender, RoutedEventArgs e) => this.Hide();
 
     private void KeyDown(object sender, KeyRoutedEventArgs e)
     {
@@ -59,7 +43,7 @@ public sealed partial class AddTabFlyout : MicaWindow
         {
             PInvoke.GetCursorPos(out var pt);
             Result = WindowEx.GetWindowFromPoint(pt);
-            Hide();
+            this.Hide();
         }
     }
 }

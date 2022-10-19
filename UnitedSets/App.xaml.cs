@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Xaml;
-
 namespace UnitedSets;
 
 /// <summary>

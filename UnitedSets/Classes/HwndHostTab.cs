@@ -9,31 +9,33 @@ using System.Threading.Tasks;
 using Windows.Win32;
 using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Window;
-namespace UnitedSets;
+using UnitedSets.Interfaces;
 
-interface ITab
-{
-    IconSource? Icon { get; }
-    BitmapImage? Tempicon { get; }
-    string Title { get; }
-    HwndHost HwndHost { get; }
-    bool Selected { get; set; }
-}
+namespace UnitedSets.Classes;
+
 public class HwndHostTab : ITab, INotifyPropertyChanged
 {
-    public bool Selected {
+    public readonly WindowEx Window;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    public event Action Closed;
+    MainWindow MainWindow;
+    public HwndHost HwndHost { get; }
+    public IconSource? Icon { get; set; }
+    public BitmapImage? Tempicon { get; set; }
+    string _Title;
+    public string Title => Window.TitleText;
+    public bool Selected
+    {
         get => HwndHost.IsWindowVisible;
-        set {
+        set
+        {
             HwndHost.IsWindowVisible = value;
             if (value) HwndHost.FocusWindow();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
         }
     }
-    public readonly WindowEx Window;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    public event Action Closed;
-    MainWindow MainWindow;
+
     public HwndHostTab(MainWindow Window, WindowEx WindowEx)
     {
         MainWindow = Window;
@@ -55,18 +57,13 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         _Title = Title;
         UpdateAppIcon();
     }
-    public HwndHost HwndHost { get; }
+
     async void UpdateAppIcon()
     {
         var icon = Window.LargeIcon;
         if (icon is not null)
             Icon = await ImageFromIcon(icon);
     }
-    public IconSource? Icon { get; set; }
-
-    public BitmapImage? Tempicon { get; set; }
-    string _Title;
-    public string Title => Window.TitleText;
 
     async static ValueTask<ImageIconSource> ImageFromIcon(Icon Icon)
     {

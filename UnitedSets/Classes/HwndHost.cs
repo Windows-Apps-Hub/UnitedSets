@@ -11,11 +11,12 @@ using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Window;
 using WinWrapper;
 using Windows.Win32.UI.WindowsAndMessaging;
-namespace UnitedSets;
+
+namespace UnitedSets.Classes;
 
 public class HwndHost : FrameworkElement, IDisposable
 {
-    readonly Window Window;
+    readonly MicaWindow Window;
     readonly AppWindow WinUI;
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
@@ -33,7 +34,7 @@ public class HwndHost : FrameworkElement, IDisposable
     long VisiblePropertyChangedToken;
     DispatcherQueueTimer timer;
     WINDOW_STYLE InitialStyle;
-    public HwndHost(Window Window, WindowEx WindowToHost)
+    public HwndHost(MicaWindow Window, WindowEx WindowToHost)
     {
         this.Window = Window;
         var WinUIHandle = WinRT.Interop.WindowNative.GetWindowHandle(Window);

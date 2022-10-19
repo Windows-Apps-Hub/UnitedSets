@@ -11,11 +11,14 @@ using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Window;
 using UnitedSets.Interfaces;
 using Microsoft.UI.Xaml.Media;
+using UnitedSets.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UnitedSets.Classes;
 
 public class HwndHostTab : ITab, INotifyPropertyChanged
 {
+    public SettingsService Settings = App.Current.Services.GetService<SettingsService>(); // cursed
     public readonly WindowEx Window;
     public event PropertyChangedEventHandler? PropertyChanged;
     public event Action Closed;
@@ -72,8 +75,6 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     {
         using var ms = new MemoryStream();
         Icon.Save(ms);
-        using var fs = new FileStream("D:/ez.ico", FileMode.OpenOrCreate);
-        Icon.Save(fs);
         return await ImageFromStream(ms);
     }
 
@@ -81,22 +82,20 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     async static ValueTask<BitmapImage> ImageFromStream(Stream Stream)
     {
         var image = new BitmapImage();
-        try
-        {
+
             Stream.Seek(0, SeekOrigin.Begin);
             await image.SetSourceAsync(Stream.AsRandomAccessStream());
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-        }
+      
 
         return image;
     }
     public async Task TryCloseAsync() => await Window.TryCloseAsync();
     public void TryClose()
     {
-        Window.TryClose();
+        if (Settings.ExitOnClose) // temporary
+            Window.TryClose();
+        else
+            DetachAndDispose();
     }
     public void TabCloseRequested(TabViewItem sender, TabViewTabCloseRequestedEventArgs args)
     {

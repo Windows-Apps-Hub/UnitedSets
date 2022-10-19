@@ -20,6 +20,8 @@ using Windows.ApplicationModel;
 using Windows.System;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
+using UnitedSets.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UnitedSets;
 
@@ -28,6 +30,7 @@ namespace UnitedSets;
 /// </summary>
 public sealed partial class MainWindow
 {
+    public SettingsService Settings = App.Current.Services.GetService<SettingsService>();
     public ObservableCollection<HwndHostTab> Tabs { get; } = new();
     readonly WindowEx WindowEx;
     public MainWindow()
@@ -138,13 +141,13 @@ public sealed partial class MainWindow
     ContentDialog Dialog = new()
     {
         Title = "Closing UnitedSets",
-        Content = "Do you want to close the app?",
-        PrimaryButtonText = "Release All Windows",
-        SecondaryButtonText = "Close All Windows",
+        Content = "How do you want to close the app?",
+        PrimaryButtonText = "Release all Windows",
+        SecondaryButtonText = "Close all Windows",
         CloseButtonText = "Cancel"
     };
     readonly AddTabFlyout AddTabFlyout = new();
-    private async void AddTab(TabView sender, object args)
+    private async void AddTab(object sender, RoutedEventArgs e)
     {
         this.Hide();
         await AddTabFlyout.ShowAtCursorAsync();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,7 @@ namespace UnitedSets.Interfaces
 {
     interface ITab
     {
-        IconSource? Icon { get; }
-        BitmapImage? Tempicon { get; }
+        BitmapImage? Icon { get; }
         string Title { get; }
         HwndHost HwndHost { get; }
         bool Selected { get; set; }

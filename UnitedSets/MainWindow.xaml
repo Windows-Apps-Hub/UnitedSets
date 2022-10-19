@@ -29,10 +29,7 @@
                             Tag="{x:Bind}">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Image Source="{x:Bind Tempicon, Mode=OneWay}" RenderTransformOrigin="0.5, 0.5">
-                                            <Image.RenderTransform>
-                                                <ScaleTransform ScaleX="2.0" ScaleY="2.0"/>
-                                            </Image.RenderTransform>
+                                        <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="20">
                                         </Image>
                                         <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
                                     </StackPanel>

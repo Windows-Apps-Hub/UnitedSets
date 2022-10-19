@@ -10,6 +10,7 @@ using Windows.Win32;
 using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Window;
 using UnitedSets.Interfaces;
+using Microsoft.UI.Xaml.Media;
 
 namespace UnitedSets.Classes;
 
@@ -20,8 +21,7 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     public event Action Closed;
     MainWindow MainWindow;
     public HwndHost HwndHost { get; }
-    public IconSource? Icon { get; set; }
-    public BitmapImage? Tempicon { get; set; }
+    public BitmapImage? Icon { get; set; }
     string _Title;
     public string Title => Window.TitleText;
     public bool Selected
@@ -60,20 +60,25 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
 
     async void UpdateAppIcon()
     {
-        var icon = Window.LargeIcon;
+        var icon = Window.LargeIcon ?? Window.SmallIcon;
         if (icon is not null)
+        {
             Icon = await ImageFromIcon(icon);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
+        }
     }
 
-    async static ValueTask<ImageIconSource> ImageFromIcon(Icon Icon)
+    async static ValueTask<BitmapImage> ImageFromIcon(Icon Icon)
     {
         using var ms = new MemoryStream();
         Icon.Save(ms);
+        using var fs = new FileStream("D:/ez.ico", FileMode.OpenOrCreate);
+        Icon.Save(fs);
         return await ImageFromStream(ms);
     }
 
 
-    async static ValueTask<ImageIconSource> ImageFromStream(Stream Stream)
+    async static ValueTask<BitmapImage> ImageFromStream(Stream Stream)
     {
         var image = new BitmapImage();
         try
@@ -86,7 +91,7 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
             System.Diagnostics.Debug.WriteLine(ex.Message);
         }
 
-        return new ImageIconSource { ImageSource = image };
+        return image;
     }
     public async Task TryCloseAsync() => await Window.TryCloseAsync();
     public void TryClose()

@@ -30,12 +30,6 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
 
     public async ValueTask ShowAtCursorAsync()
     {
-        /* PInvoke.GetCursorPos(out var pt);
-         AppWindow.Move(new Windows.Graphics.PointInt32(pt.X, pt.Y));
-         AppWindow.Show();
-         btn.Focus(FocusState.Keyboard);
-         while (AppWindow.IsVisible)
-             await Task.Delay(1000);*/ // bad UX
         btn.Focus(FocusState.Keyboard);
         AppWindow.Show();
         while (AppWindow.IsVisible) 

@@ -89,31 +89,10 @@
 									Grid.Column="2"
 									AutomationProperties.AutomationId="_CloseButton"
 									AutomationProperties.Name="Close"
-									Style="{StaticResource WindowCaptionButton}">
-                                    <Button.Resources>
-                                        <ResourceDictionary>
-                                            <ResourceDictionary.ThemeDictionaries>
-                                                <ResourceDictionary x:Key="Light">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                                <ResourceDictionary x:Key="Dark">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                                <ResourceDictionary x:Key="HighContrast">
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="CloseButtonBackgroundPointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="CloseButtonBackgroundPressed" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePointerOver" ResourceKey="CloseButtonStrokePointerOver" />
-                                                    <StaticResource x:Key="WindowCaptionButtonStrokePressed" ResourceKey="CloseButtonStrokePressed" />
-                                                </ResourceDictionary>
-                                            </ResourceDictionary.ThemeDictionaries>
-                                        </ResourceDictionary>
-                                    </Button.Resources>
+									Style="{StaticResource CloseWindowButton}">
+                                    <ToolTipService.ToolTip>
+                                        Close
+                                    </ToolTipService.ToolTip>
                                 </Button>
                             </Grid>
                         </Grid>
@@ -184,7 +163,7 @@
                                         <DoubleAnimation Storyboard.TargetName="Pipe" Storyboard.TargetProperty="Width" EnableDependentAnimation="True" Duration="0:0:0.12" To="0"/>
                                     </Storyboard>
                                 </VisualState>
-                                <VisualState x:Name="PointerOver">
+                                <VisualState x:Name="CloseButtonPointerOver">
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="CloseButtonIconBrush" 
         Storyboard.TargetProperty="Color"
@@ -195,7 +174,7 @@
                                         <DoubleAnimation Storyboard.TargetName="Pipe" Storyboard.TargetProperty="Width" EnableDependentAnimation="True" Duration="0:0:0.12" To="0"/>
                                     </Storyboard>
                                 </VisualState>
-                                <VisualState x:Name="Pressed">
+                                <VisualState x:Name="CloseButtonPressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPressed}" />
@@ -312,6 +291,19 @@
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="MinMaxStates">
+                                <VisualState x:Name="WindowStateNormal">
+                                    <VisualState.Setters>
+                                        <Setter Target="MaxButtonIcon.Symbol" Value="Maximize16" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="WindowStateMaximized">
+                                    <VisualState.Setters>
+                                        <Setter Target="MaxButtonIcon.Symbol" Value="Restore16" />
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
                         <ContentPresenter x:Name="ContentPresenter"
@@ -328,7 +320,7 @@
                                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                                     AutomationProperties.AccessibilityView="Raw"/>
                         <Grid RenderTransformOrigin="0.5, 0.5">
-                            <icons:FluentSymbolIcon Symbol="Maximize16" Margin="0, 0, 3, 2" VerticalAlignment="Center">
+                            <icons:FluentSymbolIcon x:Name="MaxButtonIcon" Symbol="Maximize16" Margin="0, 0, 3, 2" VerticalAlignment="Center">
                                 <icons:FluentSymbolIcon.Foreground>
                                     <SolidColorBrush x:Name="CloseButtonIconBrush" Color="{ThemeResource HvidSortColor}" />
                                 </icons:FluentSymbolIcon.Foreground>

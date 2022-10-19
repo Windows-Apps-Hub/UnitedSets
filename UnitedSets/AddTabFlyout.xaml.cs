@@ -46,4 +46,9 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
             this.Hide();
         }
     }
+
+    private void btn_LostFocus(object sender, RoutedEventArgs e)
+    {
+        btn.Focus(FocusState.Keyboard);
+    }
 }

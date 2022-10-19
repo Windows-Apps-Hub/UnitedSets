@@ -14,6 +14,12 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using WindowEx = WinWrapper.Window;
 using UnitedSets.Classes;
+using UnitedSets.Interfaces;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.System;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace UnitedSets;
 
@@ -37,13 +43,106 @@ public sealed partial class MainWindow
         //vscode.Tempicon = new BitmapImage(new Uri("https://media.discordapp.net/attachments/757560235144642577/1030621196972216421/unknown.png"));
         //Tabs.Add(vscode);
         //vscode.Closed += () => Tabs.Remove(vscode);
-        Closed += delegate
+        AppWindow.Closing += async (o, e) =>
         {
-
+            e.Cancel = true;
+            Dialog.XamlRoot = Content.XamlRoot;
+            var item = TabView.SelectedItem;
+            TabView.SelectedIndex = -1;
+            TabView.Visibility = Visibility.Collapsed;
+            WindowEx.Focus();
+            ContentDialogResult result;
+            try
+            {
+                result = await Dialog.ShowAsync();
+            } catch
+            {
+                result = ContentDialogResult.None;
+            }
+            switch (result)
+            {
+                case ContentDialogResult.Primary:
+                    // Release all windows
+                    while (Tabs.Count > 0)
+                    {
+                        var Tab = Tabs[0];
+                        Tabs.RemoveAt(0);
+                        Tab.DetachAndDispose();
+                    }
+                    Environment.Exit(0);
+                    return;
+                case ContentDialogResult.Secondary:
+                    // Close all windows
+                    TabView.Visibility = Visibility.Visible;
+                    await Task.Delay(100);
+                    foreach (var Tab in Tabs.ToArray()) // ToArray = Clone Collection
+                    {
+                        try
+                        {
+                            _ = Tab.TryCloseAsync();
+                            // Try closing tab in 3 second, otherwise give up
+                            for (int i = 0; i < 30; i++)
+                            {
+                                await Task.Delay(100);
+                                if (Tab.Window.IsValid) continue;
+                            }
+                            if (Tab.Window.IsValid) break;
+                        }
+                        catch
+                        {
+                            Tab.DetachAndDispose();
+                        }
+                    }
+                    if (Tabs.Count == 0)
+                    {
+                        Environment.Exit(0);
+                        return;
+                    }
+                    goto default;
+                default:
+                    // Do not close window
+                    try
+                    {
+                        TabView.SelectedItem = item;
+                    } catch
+                    {
+                        if (Tabs.Count > 0)
+                            TabView.SelectedIndex = 0;
+                    }
+                    TabView.Visibility = Visibility.Visible;
+                    break;
+            }
         };
+        Activated += FirstRun;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(CustomDragRegion);
     }
+
+    private void FirstRun(object sender, WindowActivatedEventArgs args)
+    {
+        Activated -= FirstRun;
+        var icon = PInvoke.LoadImage(
+            hInst: null,
+            name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
+            type: GDI_IMAGE_TYPE.IMAGE_ICON,
+        cx: 0,
+        cy: 0,
+            fuLoad: IMAGE_FLAGS.LR_LOADFROMFILE | IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_SHARED
+        );
+        bool success = false;
+        icon.DangerousAddRef(ref success);
+        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
+        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+    }
+
+    ContentDialog Dialog = new()
+    {
+        Title = "Closing UnitedSets",
+        Content = "Do you want to close the app?",
+        PrimaryButtonText = "Release All Windows",
+        SecondaryButtonText = "Close All Windows",
+        CloseButtonText = "Cancel"
+    };
     readonly AddTabFlyout AddTabFlyout = new();
     private async void AddTab(TabView sender, object args)
     {

@@ -20,6 +20,7 @@ public class HwndHost : FrameworkElement, IDisposable
     readonly AppWindow WinUI;
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
+    bool IsOwnerSetSuccessful;
     bool _IsWindowVisible;
     bool _DefaultIsResizable;
     public bool IsWindowVisible
@@ -48,6 +49,7 @@ public class HwndHost : FrameworkElement, IDisposable
         WinUIWindow = WindowEx.FromWindowHandle(WinUIHandle);
         var bound = WindowToHost.Bounds;
         WindowToHost.Owner = WinUIWindow;
+        IsOwnerSetSuccessful = WindowToHost.Owner == WinUIWindow;
         InitialStyle = WindowToHost.Style;
         //WindowToHost.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
         WinUI.Changed += WinUIAppWindowChanged;
@@ -121,6 +123,11 @@ public class HwndHost : FrameworkElement, IDisposable
                 (int)(Size.X * scale),
                 (int)(Size.Y * scale)
             );
+            if (!IsOwnerSetSuccessful)
+            {
+                if (WinUIWindow == WindowEx.InFocus)
+                    WindowToHost.Focus();
+            }
         }
         WindowToHost.IsVisible = IsWindowVisible;
     }

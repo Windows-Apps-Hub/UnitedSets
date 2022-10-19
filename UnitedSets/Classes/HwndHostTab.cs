@@ -88,10 +88,15 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
 
         return new ImageIconSource { ImageSource = image };
     }
+    public async Task TryCloseAsync() => await Window.TryCloseAsync();
+    public void TryClose()
+    {
+        Window.TryClose();
+    }
     public void TabCloseRequested(TabViewItem sender, TabViewTabCloseRequestedEventArgs args)
     {
         MainWindow.TabView.SelectedItem = sender;
-        Window.TryClose();
+        TryClose();
     }
     public void DetachAndDispose()
     {

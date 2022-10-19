@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-    <ProjectReference Include="..\WinWrapper\WinWrapper.csproj" />
+    <ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="AddTabFlyout.xaml">

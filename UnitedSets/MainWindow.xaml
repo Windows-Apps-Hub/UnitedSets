@@ -48,6 +48,7 @@
                     </TabView.TabStripFooter>
                 </TabView>
             </Border>
+            <!--
             <Button
                                             HorizontalAlignment="Center"
                                             Width="40"
@@ -87,7 +88,8 @@
 			x:Name="CloseButton"
             Foreground="{ThemeResource WindowCaptionForeground}"
 			Background="{ThemeResource WindowCaptionBackground}"
-			Style="{StaticResource CloseWindowButton}">
+			Style="{StaticResource CloseWindowButton}"
+                >
                 <ToolTipService.ToolTip>
                     Close
                 </ToolTipService.ToolTip>
@@ -116,6 +118,7 @@
                     </ResourceDictionary>
                 </Button.Resources>
             </Button>
+            -->
         </Grid>
         <Border Grid.Row="1">
             <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}">

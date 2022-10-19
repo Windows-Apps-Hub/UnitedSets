@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitedSets", "UnitedSets\Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cube.UI", "Cube.UI\Cube.UI.csproj", "{3A1CD6E2-BC2E-4BAD-80B9-1CBDEEF60F74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinWrapper", "WinWrapper\WinWrapper.csproj", "{26962566-1810-46EA-97D2-65AA75042123}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinWrapper", "WinWrapper\WinWrapper\WinWrapper.csproj", "{26962566-1810-46EA-97D2-65AA75042123}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

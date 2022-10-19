@@ -36,7 +36,7 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
          btn.Focus(FocusState.Keyboard);
          while (AppWindow.IsVisible)
              await Task.Delay(1000);*/ // bad UX
-        btn.Focus(FocusState.Keyboard);
+        //btn.Focus(FocusState.Keyboard);
         AppWindow.Show();
         while (AppWindow.IsVisible) 
             await Task.Delay(1000);

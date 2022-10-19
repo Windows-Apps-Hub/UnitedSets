@@ -13,16 +13,16 @@
     IsTitleBarVisible="False"
     IsAlwaysOnTop="True"
     mc:Ignorable="d" Width="400" Height="70">
-    <Grid Padding="16" KeyDown="KeyDown">
+    <Grid Padding="16">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
             <icons:FluentSymbolIcon Symbol="FullScreenMinimize24"/>
             <StackPanel Margin="8, 0, 0, 0">
                 <TextBlock FontWeight="SemiBold">Capture Window</TextBlock>
                 <TextBlock Opacity="0.7">
-                Press Shift with cursor over a window to add
+                Press Tab with cursor over a window to add
                 </TextBlock>
             </StackPanel>
         </StackPanel>
-        <Button x:Name="btn" Style="{ThemeResource CloseButton}" Click="CancelClick" KeyDown="KeyDown" HorizontalAlignment="Right" LostFocus="btn_LostFocus"/>
+        <Button x:Name="btn" Style="{ThemeResource CloseButton}" Click="CancelClick" HorizontalAlignment="Right"/>
     </Grid>
 </WinUIEx:WindowEx>

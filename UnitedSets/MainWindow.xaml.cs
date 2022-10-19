@@ -22,6 +22,7 @@ using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 using UnitedSets.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UnitedSets;
 
@@ -38,14 +39,14 @@ public sealed partial class MainWindow
         Title = "UnitedSets";
         InitializeComponent();
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
-        //var paint = new HwndHostTab(this, WindowEx.GetAllWindows().First(x => x.Text.Contains("Paint")).Root);
-        //paint.Tempicon = new BitmapImage(new Uri("https://media.discordapp.net/attachments/757560235144642577/1030621242975342612/unknown.png"));
-        //Tabs.Add(paint);
-        //paint.Closed += () => Tabs.Remove(paint);
-        //var vscode = new HwndHostTab(this, WindowEx.GetAllWindows().First(x => x.Text.Contains("Notepad")).Root);
-        //vscode.Tempicon = new BitmapImage(new Uri("https://media.discordapp.net/attachments/757560235144642577/1030621196972216421/unknown.png"));
-        //Tabs.Add(vscode);
-        //vscode.Closed += () => Tabs.Remove(vscode);
+      /*  var paint = new HwndHostTab(this, WindowEx.GetAllWindows().First(x => x.TitleText.Contains("Paint")).Root);
+        paint.Icon = new BitmapImage(new Uri("https://media.discordapp.net/attachments/757560235144642577/1030621242975342612/unknown.png"));
+        Tabs.Add(paint);
+        paint.Closed += () => Tabs.Remove(paint);
+        var vscode = new HwndHostTab(this, WindowEx.GetAllWindows().First(x => x.TitleText.Contains("Notepad")).Root);
+        vscode.Icon = new BitmapImage(new Uri("https://media.discordapp.net/attachments/757560235144642577/1030621196972216421/unknown.png"));
+        Tabs.Add(vscode);
+        vscode.Closed += () => Tabs.Remove(vscode);*/
         AppWindow.Closing += async (o, e) =>
         {
             e.Cancel = true;

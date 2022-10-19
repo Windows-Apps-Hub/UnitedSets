@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using System;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 using UnitedSets.Services;
 
 namespace UnitedSets;
@@ -27,6 +30,9 @@ public partial class App : Application
     {
         Services = ConfigureServices();
         this.InitializeComponent();
+        UnhandledException += OnUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedException;
+        AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
     }
 
     private static IServiceProvider ConfigureServices()
@@ -45,9 +51,33 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
+        if (SystemInformation.Instance.IsFirstRun)
+            LaunchNewOOBE();
+        else
+            LaunchNewMain();
+    }
+
+    private Window? m_window;
+    public Window? o_window;
+
+    // temporary
+    public void LaunchNewOOBE()
+    {
+        o_window = new OOBEWindow();
+        o_window.Activate();
+    }
+
+    public void LaunchNewMain()
+    {
         m_window = new MainWindow();
         m_window.Activate();
     }
 
-    private Window? m_window;
+    private static void OnUnobservedException(object sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();
+
+    private static void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
+
+    private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+    {
+    }
 }

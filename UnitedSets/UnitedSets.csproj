@@ -12,9 +12,19 @@
     <EnableMsixTooling>true</EnableMsixTooling>
 	  <Nullable>Enable</Nullable>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+	  <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+	  <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+	  <AppxPackageDir>C:\Users\ayush\source\repos\UnitedSets\UnitedSets\AppPackages\</AppxPackageDir>
+	  <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+	  <GenerateTestArtifacts>True</GenerateTestArtifacts>
+	  <AppxBundle>Never</AppxBundle>
+	  <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="AddTabFlyout.xaml" />
+    <None Remove="OOBEWindow.xaml" />
+    <None Remove="Pages\OOBEPage.xaml" />
     <None Remove="SettingsWindow.xaml" />
   </ItemGroup>
 
@@ -30,6 +40,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
@@ -51,6 +62,11 @@
     <ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="OOBEWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -59,6 +75,14 @@
     <Page Update="AddTabFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\OOBEPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\OOBE\" />
   </ItemGroup>
 
   <!-- 

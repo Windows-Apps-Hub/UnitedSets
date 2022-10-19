@@ -15,15 +15,6 @@ namespace UnitedSets.Services
     {
         private static ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
 
-        public SettingsService()
-        {
-            if (SystemInformation.Instance.IsAppUpdated)
-            {
-                // Place new 
-                ExitOnClose = true;
-            }
-        }
-
         private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
         public bool ExitOnClose
         {

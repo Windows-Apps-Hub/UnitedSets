@@ -92,11 +92,13 @@
             <TextBlock>
             • Drag a Tab out to release the Window
             </TextBlock>
-            <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
+           <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
             <TextBlock>
-            • UWP applications have bugs for now
+            • UWP applications are not stable yet
                 <LineBreak/>
-                  • App Icons are not supported yet
+                   • Some maximized apps can glitch
+                <LineBreak/>
+            • App Icons are not stable yet
             </TextBlock>
         </StackPanel>
     </Grid>

@@ -29,8 +29,7 @@
                             Tag="{x:Bind}">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="20">
-                                        </Image>
+                                        <!--<Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="20"/>-->
                                         <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
                                     </StackPanel>
                                 </TabViewItem.Header>

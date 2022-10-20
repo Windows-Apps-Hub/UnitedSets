@@ -64,15 +64,8 @@ public class HwndHost : FrameworkElement, IDisposable
         VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, Propchanged);
     }
     void Propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
-
-    void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs)
-    {
-        ForceUpdateWindow();
-    }
-    void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e)
-    {
-        ForceUpdateWindow();
-    }
+    void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs) => ForceUpdateWindow();
+    void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e) => ForceUpdateWindow();
     public void DetachAndDispose()
     {
         Dispose();

@@ -17,9 +17,14 @@ namespace UnitedSets;
 public sealed partial class AddTabFlyout : WinUIEx.WindowEx
 {
     public WindowEx Result;
+    private KeyboardHelper KeyboardHook;
+    private const uint VK_TAB = 0x09;
+
     public AddTabFlyout()
     {
         InitializeComponent();
+        KeyboardHook = new KeyboardHelper();
+        KeyboardHook.KeyboardPressed += OnKeyPressed;
         MicaHelper Mica = new();
         Mica.TrySetMicaBackdrop(this);
         this.SetForegroundWindow();
@@ -28,27 +33,24 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
         this.Hide();
     }
 
+    private void OnKeyPressed(object sender, KeyboardHelperEventArgs e)
+    {
+        if (e.KeyboardState == KeyboardHelper.KeyboardState.KeyDown)
+        {
+            if (e.KeyboardData.VirtualCode == VK_TAB && AppWindow.IsVisible)
+            {
+                PInvoke.GetCursorPos(out var pt);
+                Result = WindowEx.GetWindowFromPoint(pt);
+                this.Hide();
+            }
+        }
+    }
+
     public async ValueTask ShowAtCursorAsync()
     {
-        btn.Focus(FocusState.Keyboard);
         AppWindow.Show();
         while (AppWindow.IsVisible) 
             await Task.Delay(1000);
     }
     private void CancelClick(object sender, RoutedEventArgs e) => this.Hide();
-
-    private void KeyDown(object sender, KeyRoutedEventArgs e)
-    {
-        if (e.Key.HasFlag(VirtualKey.Shift))
-        {
-            PInvoke.GetCursorPos(out var pt);
-            Result = WindowEx.GetWindowFromPoint(pt);
-            this.Hide();
-        }
-    }
-
-    private void btn_LostFocus(object sender, RoutedEventArgs e)
-    {
-        btn.Focus(FocusState.Keyboard);
-    }
 }

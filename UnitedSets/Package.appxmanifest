@@ -4,16 +4,17 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  IgnorableNamespaces="uap rescap mp">
 
   <Identity
-    Name="f9f7e132-930a-4a22-9fc3-6a8d90237c5c"
-    Publisher="CN=getdn"
-    Version="1.0.0.0" />
+    Name="2505FireCubeStudios.UnitedSets"
+    Publisher="CN=3C7C8FC9-7104-4B33-8730-EE1E929D5D3B"
+    Version="0.1.0.0" />
 
   <Properties>
-    <DisplayName>United Sets</DisplayName>
-    <PublisherDisplayName>getdn</PublisherDisplayName>
+    <DisplayName>United Sets preview beta</DisplayName>
+    <PublisherDisplayName>FireCubeStudios</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="United Sets"
+        DisplayName="United Sets preview beta"
         Description="United Sets"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
@@ -45,4 +46,6 @@
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
+
+  <mp:PhoneIdentity PhoneProductId="863bfa6e-3c86-4e5f-ae9f-c88f7a390809" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 </Package>

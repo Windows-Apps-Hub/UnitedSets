@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/GlowGradientUI.xaml" />
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Tabs/GlowTabs.xaml" />
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/WindowChrome.xaml" />
+                <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/CubeUI.xaml" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

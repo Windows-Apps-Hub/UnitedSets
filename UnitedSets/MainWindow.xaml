@@ -28,7 +28,8 @@
                             Style="{ThemeResource UndockedTabViewItemStyle}"
                             IsSelected="{x:Bind Selected, Mode=TwoWay}" 
                                 CloseRequested="{x:Bind TabCloseRequested}"
-                            Tag="{x:Bind}">
+                            Tag="{x:Bind}"
+                                PointerPressed="{x:Bind TabClick}">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>

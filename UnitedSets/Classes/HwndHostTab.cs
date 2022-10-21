@@ -13,11 +13,43 @@ using UnitedSets.Interfaces;
 using Microsoft.UI.Xaml.Media;
 using UnitedSets.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Input;
 
 namespace UnitedSets.Classes;
 
 public class HwndHostTab : ITab, INotifyPropertyChanged
 {
+    public static event Action? OnUpdateStatusLoopComplete;
+    static SynchronizedCollection<HwndHostTab> HwndHostTabs = new();
+    static HwndHostTab()
+    {
+        Thread UpdateStatusLoop = new(() =>
+        {
+            while (true)
+            {
+                try
+                {
+                    foreach (var tab in HwndHostTabs)
+                    {
+                        if (tab.HwndHost.IsDisposed) HwndHostTabs.Remove(tab);
+                        else tab.UpdateStatusLoop();
+                    }
+                    OnUpdateStatusLoopComplete?.Invoke();
+                } catch
+                {
+                    
+                }
+                Thread.Sleep(500);
+            }
+        });
+        UpdateStatusLoop.Start();
+    }
+
     public SettingsService Settings = App.Current.Services.GetService<SettingsService>(); // cursed
     public readonly WindowEx Window;
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -25,18 +57,46 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
     MainWindow MainWindow;
     public HwndHost HwndHost { get; }
     public BitmapImage? Icon { get; set; }
+    IntPtr _Icon = IntPtr.Zero;
     string _Title;
     public string Title => Window.TitleText;
+    bool _Selected;
     public bool Selected
     {
-        get => HwndHost.IsWindowVisible;
+        get => _Selected;
         set
         {
+            _Selected = value;
             HwndHost.IsWindowVisible = value;
             if (value) HwndHost.FocusWindow();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
         }
     }
+    
+    void UpdateStatusLoop()
+    {
+        if (_Title != Title)
+        {
+            _Title = Title;
+            HwndHost.DispatcherQueue.TryEnqueue(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title))));
+        }
+        var icon = Window.LargeIconPtr;
+        if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;
+        if (_Icon != icon)
+        {
+            _Icon = icon;
+            HwndHost.DispatcherQueue.TryEnqueue(UpdateAppIcon);
+        }
+        
+    }
+
+    public void TabClick(object sender, PointerRoutedEventArgs e)
+    {
+        HwndHost.IsWindowVisible = true;
+        HwndHost.FocusWindow();
+    }
+
+    bool _IsWindowFlashing = false;
 
 
     public HwndHostTab(MainWindow Window, WindowEx WindowEx)
@@ -49,17 +109,9 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
             if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
         };
         HwndHost.Closed += Closed;
-        HwndHost.Updating += delegate
-        {
-            if (_Title != Title)
-            {
-                _Title = Title;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
-            }
-            UpdateAppIcon();
-        };
         _Title = Title;
         UpdateAppIcon();
+        HwndHostTabs.Add(this);
     }
 
     async void UpdateAppIcon()

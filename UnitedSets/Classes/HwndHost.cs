@@ -11,6 +11,8 @@ using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Window;
 using WinWrapper;
 using Windows.Win32.UI.WindowsAndMessaging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace UnitedSets.Classes;
 
@@ -80,7 +82,7 @@ public class HwndHost : FrameworkElement, IDisposable
 
     public event Action? Closed;
     public event Action? Updating;
-    public void ForceUpdateWindow()
+    public async void ForceUpdateWindow()
     {
         if (XamlRoot is null) return;
         var windowpos = WinUI.Position;
@@ -110,6 +112,7 @@ public class HwndHost : FrameworkElement, IDisposable
         if (IsWindowVisible)
         {
             var YShift = WinUIWindow.IsMaximized ? 8 : 0;
+            var oldBounds = WindowToHost.Bounds;
             WindowToHost.Bounds = new Rectangle(
                 (int)Pt._x + 8,
                 (int)Pt._y + YShift,
@@ -118,17 +121,26 @@ public class HwndHost : FrameworkElement, IDisposable
             );
             if (!IsOwnerSetSuccessful)
             {
-                if (WinUIWindow == WindowEx.InFocus)
-                    WindowToHost.Focus();
+                if (new WinWrapper.WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
+                {
+                    await Task.Delay(200);
+                    if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
+                    {
+                        WindowToHost.IsVisible = false;
+                        WindowToHost.IsVisible = true;
+                        WindowToHost.Focus();
+                    }
+                }
             }
         }
         WindowToHost.IsVisible = IsWindowVisible;
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
-
+    public bool IsDisposed { get; private set; }
     public void Dispose()
     {
+        IsDisposed = true;
         timer.Stop();
         SizeChanged -= WinUIAppWindowChanged;
         WinUI.Changed -= WinUIAppWindowChanged;

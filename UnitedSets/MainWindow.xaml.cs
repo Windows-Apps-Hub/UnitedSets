@@ -165,9 +165,17 @@ public sealed partial class MainWindow
             return;
         if (result.Handle == WindowEx.Handle) 
             return;
+        if (result.ClassName is
+            "Shell_TrayWnd" // Taskbar
+            or "Chrome_WidgetWin_1" // Desktop
+            or "Progman" // Desktop
+            or "WindowsDashboard" // I forget
+            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
+            )
+            return;
         if (Tabs.FirstOrDefault(x => x.Window.Handle == result.Handle) is not null) 
             return;
-        var newTab = new HwndHostTab(this, result);
+            var newTab = new HwndHostTab(this, result);
         Tabs.Add(newTab);
         TabView.SelectedItem = newTab;
     }

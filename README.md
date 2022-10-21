@@ -2,6 +2,8 @@
 
 An open-sourced program that groups windows into tabs, inspired by the unreleased Sets feature 
 
+Microsoft Store Download Link: https://www.microsoft.com/store/apps/9N7CWZ3L5RWL
+
 ## Screenshot
 
 ![Sample Screenshot of United Sets](ReadmeAssets/ss1.jpg)

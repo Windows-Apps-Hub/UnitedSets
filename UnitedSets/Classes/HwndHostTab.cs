@@ -56,6 +56,7 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
                 _Title = Title;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
             }
+            UpdateAppIcon();
         };
         _Title = Title;
         UpdateAppIcon();
@@ -67,14 +68,16 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         if (icon is not null)
         {
             Icon = await ImageFromIcon(icon);
+            icon.Dispose();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
         }
     }
 
-    async static ValueTask<BitmapImage> ImageFromIcon(Icon Icon)
+    async static ValueTask<BitmapImage> ImageFromIcon(Bitmap Icon)
     {
         using var ms = new MemoryStream();
-        Icon.Save(ms);
+        Icon.MakeTransparent(Color.Black);
+        Icon.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
         return await ImageFromStream(ms);
     }
 

@@ -150,9 +150,11 @@ public sealed partial class MainWindow
     readonly AddTabFlyout AddTabFlyout = new();
     private async void AddTab(object sender, RoutedEventArgs e)
     {
-        this.Hide();
+        WindowEx.Minimize();
+        //this.Hide();
         await AddTabFlyout.ShowAtCursorAsync();
-        this.Show();
+        //this.Show();
+        WindowEx.Restore();
         var result = AddTabFlyout.Result;
         if (!result.IsValid) 
             return;

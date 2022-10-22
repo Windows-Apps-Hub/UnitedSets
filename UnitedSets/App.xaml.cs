@@ -22,6 +22,7 @@ public partial class App : Application
     /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
     /// </summary>
     public IServiceProvider Services { get; }
+    
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().

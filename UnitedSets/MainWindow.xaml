@@ -40,7 +40,7 @@
                         </DataTemplate>
                     </TabView.TabItemTemplate>
                     <TabView.TabStripHeader>
-                        <Button Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Margin="4, 4, 0, 0"/>
+                        <Button Visibility="{x:Bind SettingsButtonVisibility, Mode=OneWay}" Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Margin="4, 4, 0, 0"/>
                     </TabView.TabStripHeader>
                     <TabView.TabStripFooter>
                         <Grid>

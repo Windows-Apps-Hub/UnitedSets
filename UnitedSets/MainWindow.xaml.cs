@@ -23,17 +23,24 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using UnitedSets.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.ComponentModel;
 
 namespace UnitedSets;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainWindow
+public sealed partial class MainWindow : INotifyPropertyChanged
 {
     public SettingsService Settings = App.Current.Services.GetService<SettingsService>();
     public ObservableCollection<HwndHostTab> Tabs { get; } = new();
     readonly WindowEx WindowEx;
+    bool _HasOwner = false;
+    Visibility SettingsButtonVisibility => HasOwner ? Visibility.Collapsed : Visibility.Visible;
+    public bool HasOwner
+    {
+        get => WindowEx.Owner.IsValid;
+    }
     public MainWindow()
     {
         Title = "UnitedSets";
@@ -120,6 +127,19 @@ public sealed partial class MainWindow
         Activated += FirstRun;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(CustomDragRegion);
+        HwndHostTab.OnUpdateStatusLoopComplete += delegate
+        {
+            var HasOwner = this.HasOwner;
+            if (_HasOwner != HasOwner)
+            {
+                _HasOwner = HasOwner;
+                DispatcherQueue.TryEnqueue(delegate
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasOwner)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SettingsButtonVisibility)));
+                });
+            }
+        };
     }
 
     private void FirstRun(object sender, WindowActivatedEventArgs args)
@@ -148,6 +168,9 @@ public sealed partial class MainWindow
         CloseButtonText = "Cancel"
     };
     readonly AddTabFlyout AddTabFlyout = new();
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     private async void AddTab(object sender, RoutedEventArgs e)
     {
         WindowEx.Minimize();
@@ -167,13 +190,15 @@ public sealed partial class MainWindow
             return;
         if (result.ClassName is
             "Shell_TrayWnd" // Taskbar
-            or "Chrome_WidgetWin_1" // Desktop
             or "Progman" // Desktop
             or "WindowsDashboard" // I forget
             or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
             )
             return;
-        if (Tabs.FirstOrDefault(x => x.Window.Handle == result.Handle) is not null) 
+        // Check if United Sets has owner (United Sets in United Sets)
+        if (WindowEx.Root.Children.Any(x => x.Handle == result.Handle))
+            return;
+        if (Tabs.Any(x => x.Window.Handle == result.Handle)) 
             return;
             var newTab = new HwndHostTab(this, result);
         Tabs.Add(newTab);

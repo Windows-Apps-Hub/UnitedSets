@@ -24,13 +24,14 @@ namespace UnitedSets.Services
                         SetProperty(ref exitOnClose, ExitOnClose);
                     Thread.Sleep(2000);
                 }
-            }).Start();
-            s_window.Closed += delegate
+            })
             {
-                s_window = new();
-            };
+                Name = "United Sets Settings Update Loop"
+            }.Start();
+            s_window = new(this);
+            s_window.Closed += (_, _) => s_window = new(this);
         }
-        private static ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
+        private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
 
         private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
         public bool ExitOnClose
@@ -41,11 +42,11 @@ namespace UnitedSets.Services
                 Settings.Values["ExitOnClose"] = value;
             }
         }
-        SettingsWindow s_window = new();
+        SettingsWindow s_window;
         [RelayCommand]
         public void LaunchSettings()
         {
-            s_window.Activate();
+            s_window?.Activate();
         }
     }
 }

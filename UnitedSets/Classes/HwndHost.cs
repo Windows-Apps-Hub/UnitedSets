@@ -34,9 +34,10 @@ public class HwndHost : FrameworkElement, IDisposable
             ForceUpdateWindow();
         }
     }
-    long VisiblePropertyChangedToken;
-    DispatcherQueueTimer timer;
-    WINDOW_STYLE InitialStyle;
+    readonly long VisiblePropertyChangedToken;
+    readonly DispatcherQueueTimer timer;
+    readonly WINDOW_STYLE InitialStyle;
+    readonly WINDOW_EX_STYLE InitialExStyle;
     public HwndHost(MicaWindow Window, WindowEx WindowToHost)
     {
         this.Window = Window;
@@ -53,7 +54,8 @@ public class HwndHost : FrameworkElement, IDisposable
         WindowToHost.Owner = WinUIWindow;
         IsOwnerSetSuccessful = WindowToHost.Owner == WinUIWindow;
         InitialStyle = WindowToHost.Style;
-        //WindowToHost.Style &= ~(WindowStyles.WS_CAPTION | WindowStyles.WS_BORDER);
+        //InitialExStyle = WindowToHost.ExStyle;
+        //if (!IsOwnerSetSuccessful) WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
         timer = DispatcherQueue.CreateTimer();
@@ -73,6 +75,7 @@ public class HwndHost : FrameworkElement, IDisposable
         Dispose();
         var WindowToHost = this.WindowToHost;
         WindowToHost.Style = InitialStyle;
+        //WindowToHost.ExStyle = InitialExStyle;
         WindowToHost.Owner = default;
         WindowToHost.IsResizable = _DefaultIsResizable;
         WindowToHost.IsVisible = true;
@@ -82,8 +85,18 @@ public class HwndHost : FrameworkElement, IDisposable
 
     public event Action? Closed;
     public event Action? Updating;
+    public event Action? Detaching;
+    int CountDown = 5;
     public async void ForceUpdateWindow()
     {
+        var WindowToHost = this.WindowToHost;
+        bool Check = false;
+        if (CountDown > 0)
+        {
+            CountDown--;
+            if (CountDown == 0) WindowToHost.Redraw();
+        }
+        else Check = true;
         if (XamlRoot is null) return;
         var windowpos = WinUI.Position;
         var Pt = TransformToVisual(Window.Content).TransformPoint(
@@ -94,7 +107,6 @@ public class HwndHost : FrameworkElement, IDisposable
         Pt.X = windowpos.X + Pt.X * scale;
         Pt.Y = windowpos.Y + Pt.Y * scale;
         var Size = ActualSize;
-        var WindowToHost = this.WindowToHost;
         try
         {
             WindowToHost.IsResizable = false;
@@ -113,17 +125,26 @@ public class HwndHost : FrameworkElement, IDisposable
         {
             var YShift = WinUIWindow.IsMaximized ? 8 : 0;
             var oldBounds = WindowToHost.Bounds;
-            WindowToHost.Bounds = new Rectangle(
+            var newBounds = new Rectangle(
                 (int)Pt._x + 8,
                 (int)Pt._y + YShift,
                 (int)(Size.X * scale),
                 (int)(Size.Y * scale)
             );
+            if (oldBounds != newBounds)
+            {
+                if (Check && WindowEx.ForegroundWindow == WindowToHost)
+                {
+                    DetachAndDispose();
+                    return;
+                }
+                else WindowToHost.Bounds = newBounds;
+            }
             if (!IsOwnerSetSuccessful)
             {
                 if (new WinWrapper.WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
                 {
-                    await Task.Delay(200);
+                    await Task.Delay(500);
                     if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
                     {
                         WindowToHost.IsVisible = false;

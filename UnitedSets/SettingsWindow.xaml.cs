@@ -27,10 +27,11 @@ namespace UnitedSets
     /// </summary>
     public sealed partial class SettingsWindow : WindowEx
     {
-        public SettingsService Settings = App.Current.Services.GetService<SettingsService>();
+        public SettingsService Settings;
 
-        public SettingsWindow()
+        public SettingsWindow(SettingsService Settings)
         {
+            this.Settings = Settings;
             this.InitializeComponent();
             ExtendsContentIntoTitleBar = true;
             MicaHelper Mica = new();

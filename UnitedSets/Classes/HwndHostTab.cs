@@ -19,11 +19,14 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using System.Linq;
 
 namespace UnitedSets.Classes;
 
 public class HwndHostTab : ITab, INotifyPropertyChanged
 {
+    // Assumption: 1 Process = 1 Window
+    public static List<WindowEx> MainWindows = new();
     public static event Action? OnUpdateStatusLoopComplete;
     static SynchronizedCollection<HwndHostTab> HwndHostTabs = new();
     static HwndHostTab()
@@ -32,6 +35,10 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         {
             while (true)
             {
+                do
+                    Thread.Sleep(500);
+                while (!MainWindows.Any(x => x.IsVisible));
+
                 try
                 {
                     foreach (var tab in HwndHostTabs)
@@ -42,15 +49,17 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
                     OnUpdateStatusLoopComplete?.Invoke();
                 } catch
                 {
-                    
+                    Debug.WriteLine("[United Sets Update Status Loop] Exception Occured");
                 }
-                Thread.Sleep(500);
             }
-        });
+        })
+        {
+            Name = "United Sets Update Status Loop"
+        };
         UpdateStatusLoop.Start();
     }
 
-    public SettingsService Settings = App.Current.Services.GetService<SettingsService>(); // cursed
+    public SettingsService Settings = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException("Settings Init Failed"); // cursed
     public readonly WindowEx Window;
     public event PropertyChangedEventHandler? PropertyChanged;
     public event Action Closed;
@@ -95,9 +104,6 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         HwndHost.IsWindowVisible = true;
         HwndHost.FocusWindow();
     }
-
-    bool _IsWindowFlashing = false;
-
 
     public HwndHostTab(MainWindow Window, WindowEx WindowEx)
     {
@@ -145,24 +151,24 @@ public class HwndHostTab : ITab, INotifyPropertyChanged
         return image;
     }
     public async Task TryCloseAsync() => await Window.TryCloseAsync();
-    public void TryClose()
-    {
-        if (Settings.ExitOnClose) // temporary
-            Window.TryClose();
-        else
-            DetachAndDispose();
-    }
+    public void TryClose() => Window.TryClose();
     public void TabCloseRequested(TabViewItem sender, TabViewTabCloseRequestedEventArgs args)
     {
         MainWindow.TabView.SelectedItem = sender;
-        TryClose();
+        if (Settings.ExitOnClose)
+            _ = TryCloseAsync();
+        else
+            DetachAndDispose(JumpToCursor: true);
     }
-    public void DetachAndDispose()
+    public async void DetachAndDispose(bool JumpToCursor)
     {
         var Window = this.Window;
         HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
-        Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
+        if (JumpToCursor)
+            Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
         Window.Focus();
+        Window.Redraw();
+        await Task.Delay(1000).ContinueWith(_ => Window.Redraw());
     }
 }

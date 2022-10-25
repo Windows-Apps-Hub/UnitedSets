@@ -162,10 +162,12 @@ public class HwndHost : FrameworkElement, IDisposable
     public async void ForceUpdateWindow()
     {
         if (CacheWidth == 0 || CacheHeight == 0) return; // wait for update
-        if (!IsWindowVisible) return;
         if (IsDisposed) return;
 
         var WindowToHost = this.WindowToHost;
+        WindowToHost.IsVisible = IsWindowVisible;
+        if (!IsWindowVisible) return;
+        
         bool Check = false;
         if (CountDown > 0)
         {
@@ -225,7 +227,6 @@ public class HwndHost : FrameworkElement, IDisposable
                 }
             }
         }
-        WindowToHost.IsVisible = IsWindowVisible;
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;

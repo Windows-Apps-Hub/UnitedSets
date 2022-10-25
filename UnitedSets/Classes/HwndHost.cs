@@ -165,8 +165,12 @@ public class HwndHost : FrameworkElement, IDisposable
         if (IsDisposed) return;
 
         var WindowToHost = this.WindowToHost;
-        WindowToHost.IsVisible = IsWindowVisible;
-        if (!IsWindowVisible) return;
+
+        if (!IsWindowVisible)
+        {
+            WindowToHost.IsVisible = false;
+            return;
+        }
         
         bool Check = false;
         if (CountDown > 0)
@@ -227,15 +231,16 @@ public class HwndHost : FrameworkElement, IDisposable
                 }
             }
         }
+        WindowToHost.IsVisible = true;
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
     public bool IsDisposed { get; private set; }
     public void Dispose()
     {
+        IsDisposed = true;
         DispatcherQueue.TryEnqueue(delegate
         {
-            IsDisposed = true;
             SizeChanged -= WinUIAppWindowChanged;
             WinUI.Changed -= WinUIAppWindowChanged;
             UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);

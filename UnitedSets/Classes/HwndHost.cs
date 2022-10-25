@@ -13,12 +13,90 @@ using WinWrapper;
 using Windows.Win32.UI.WindowsAndMessaging;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace UnitedSets.Classes;
 
 public class HwndHost : FrameworkElement, IDisposable
 {
-    readonly MicaWindow Window;
+    readonly static System.Collections.Concurrent.ConcurrentDictionary<DispatcherQueue, List<HwndHost>> Dispatchers = new(5, 5);
+    readonly static SynchronizedCollection<HwndHost> ActiveHwndHosts = new();
+    static void AddHwndHost(HwndHost HwndHost)
+    {
+        var dispatcher = HwndHost.DispatcherQueue;
+        if (Dispatchers.TryGetValue(dispatcher, out var list))
+        {
+            list.Add(HwndHost);
+        }
+        else
+        {
+            List<HwndHost> HwndHosts = new()
+            {
+                HwndHost
+            };
+            if (!Dispatchers.TryAdd(dispatcher, HwndHosts))
+                if (Debugger.IsAttached)
+                    Debugger.Break();
+            var timer = dispatcher.CreateTimer();
+            GC.KeepAlive(timer);
+            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Tick += delegate
+            {
+                foreach (var HwndHost in HwndHosts)
+                {
+                    var Pt = HwndHost.TransformToVisual(HwndHost.Window.Content).TransformPoint(
+                        new Windows.Foundation.Point(0, 0)
+                    );
+                    var size = HwndHost.ActualSize;
+
+                    HwndHost.CacheXFromWindow = Pt._x;
+                    HwndHost.CacheYFromWindow = Pt._y;
+
+                    HwndHost.CacheWidth = size.X;
+                    HwndHost.CacheHeight = size.Y;
+                }
+                timer.Start();
+            };
+            timer.Start();
+        }
+        ActiveHwndHosts.Add(HwndHost);
+    }
+    public float CacheXFromWindow { get; private set; }
+    public float CacheYFromWindow { get; private set; }
+    public float CacheWidth { get; private set; }
+    public float CacheHeight { get; private set; }
+    static HwndHost()
+    {
+        new Thread(() =>
+        {
+            while (true)
+            {
+                Thread.Sleep(500);
+                try
+                {
+                Start:
+                    foreach (var HwndHost in ActiveHwndHosts)
+                    {
+                        if (HwndHost.IsDisposed)
+                        {
+                            ActiveHwndHosts.Remove(HwndHost);
+                            goto Start;
+                        }
+                        HwndHost.ForceUpdateWindow();
+                    }
+                }
+                catch
+                {
+                    Debug.WriteLine("[HwndHostLoop] Exception Occured!");
+                }
+            }
+        })
+        {
+            Name = "HwndHostLoop"
+        }.Start();
+    }
+
+    readonly MainWindow Window;
     readonly AppWindow WinUI;
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
@@ -35,10 +113,9 @@ public class HwndHost : FrameworkElement, IDisposable
         }
     }
     readonly long VisiblePropertyChangedToken;
-    readonly DispatcherQueueTimer timer;
     readonly WINDOW_STYLE InitialStyle;
-    readonly WINDOW_EX_STYLE InitialExStyle;
-    public HwndHost(MicaWindow Window, WindowEx WindowToHost)
+    //readonly WINDOW_EX_STYLE InitialExStyle;
+    public HwndHost(MainWindow Window, WindowEx WindowToHost)
     {
         this.Window = Window;
         var WinUIHandle = WinRT.Interop.WindowNative.GetWindowHandle(Window);
@@ -58,14 +135,9 @@ public class HwndHost : FrameworkElement, IDisposable
         //if (!IsOwnerSetSuccessful) WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
-        timer = DispatcherQueue.CreateTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(500);
-        timer.Tick += delegate
-        {
-            ForceUpdateWindow();
-        };
-        timer.Start();
+
         VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, Propchanged);
+        AddHwndHost(this);
     }
     void Propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
     void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs) => ForceUpdateWindow();
@@ -88,7 +160,17 @@ public class HwndHost : FrameworkElement, IDisposable
     int CountDown = 5;
     public async void ForceUpdateWindow()
     {
+        if (CacheWidth == 0 || CacheHeight == 0) return; // wait for update
+        if (IsDisposed) return;
+
         var WindowToHost = this.WindowToHost;
+
+        if (!IsWindowVisible)
+        {
+            WindowToHost.IsVisible = false;
+            return;
+        }
+        
         bool Check = false;
         if (CountDown > 0)
         {
@@ -96,16 +178,14 @@ public class HwndHost : FrameworkElement, IDisposable
             if (CountDown == 0) WindowToHost.Redraw();
         }
         else Check = true;
-        if (XamlRoot is null) return;
-        var windowpos = WinUI.Position;
-        var Pt = TransformToVisual(Window.Content).TransformPoint(
-            new Windows.Foundation.Point(0, 0)
-        );
+        var windowbounds = WinUIWindow.Bounds;
 
         var scale = GetScale(WinUIWindow);
-        Pt.X = windowpos.X + Pt.X * scale;
-        Pt.Y = windowpos.Y + Pt.Y * scale;
-        var Size = ActualSize;
+        var Pt = new Point
+        {
+            X = (int)(windowbounds.X + CacheXFromWindow * scale),
+            Y = (int)(windowbounds.Y + CacheYFromWindow * scale)
+        };
         try
         {
             WindowToHost.IsResizable = false;
@@ -120,15 +200,13 @@ public class HwndHost : FrameworkElement, IDisposable
             return;
         }
         Updating?.Invoke();
-        if (IsWindowVisible)
-        {
             var YShift = WinUIWindow.IsMaximized ? 8 : 0;
             var oldBounds = WindowToHost.Bounds;
             var newBounds = new Rectangle(
-                (int)Pt._x + 8,
-                (int)Pt._y + YShift,
-                (int)(Size.X * scale),
-                (int)(Size.Y * scale)
+            Pt.X + 8,
+            Pt.Y + YShift,
+            (int)(CacheWidth * scale),
+            (int)(CacheHeight * scale)
             );
             if (oldBounds != newBounds)
             {
@@ -141,7 +219,7 @@ public class HwndHost : FrameworkElement, IDisposable
             }
             if (!IsOwnerSetSuccessful)
             {
-                if (new WinWrapper.WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
+            if (new WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
                 {
                     await Task.Delay(500);
                     if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
@@ -152,16 +230,16 @@ public class HwndHost : FrameworkElement, IDisposable
                     }
                 }
             }
+        WindowToHost.IsVisible = true;
         }
-        WindowToHost.IsVisible = IsWindowVisible;
-    }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
     public bool IsDisposed { get; private set; }
     public void Dispose()
     {
         IsDisposed = true;
-        timer.Stop();
+        DispatcherQueue.TryEnqueue(delegate
+        {
         SizeChanged -= WinUIAppWindowChanged;
         WinUI.Changed -= WinUIAppWindowChanged;
         UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);

@@ -102,7 +102,7 @@
                 </TabView>
             </Border>
         </Grid>
-        <Border Grid.Row="1" Canvas.ZIndex="0">
+        <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
             <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

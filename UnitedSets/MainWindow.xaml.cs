@@ -14,7 +14,6 @@ using Keyboard = WinWrapper.Keyboard;
 using UnitedSets.Classes;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.System;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 using UnitedSets.Services;
@@ -22,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;
 using WinUIEx.Messaging;
+using Microsoft.UI.Dispatching;
 
 namespace UnitedSets;
 
@@ -42,7 +42,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         get => WindowEx.Owner.IsValid;
     }
-    readonly WindowMessageMonitor WindowMessageMonitor;
+    DispatcherQueueTimer timer;
+    WindowMessageMonitor WindowMessageMonitor;
+    public System.Drawing.Rectangle CacheMiddleAreaBounds { get; private set; }
     public MainWindow()
     {
         Title = "UnitedSets";
@@ -57,6 +59,18 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         WindowMessageMonitor.WindowMessageReceived += MainWindow_WindowMessageReceived;
         MinWidth = 100;
+
+        timer = DispatcherQueue.CreateTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(500);
+        timer.Tick += delegate
+        {
+            var Pt = MainAreaBorder.TransformToVisual(Content).TransformPoint(
+                new Windows.Foundation.Point(0, 0)
+            );
+            var size = MainAreaBorder.ActualSize;
+            CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
+        };
+        timer.Start();
         Tabs.Add(new CellTab(this));
         TabView.SelectionChanged += delegate
         {

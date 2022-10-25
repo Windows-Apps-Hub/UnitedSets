@@ -19,8 +19,8 @@ namespace UnitedSets.Classes;
 
 public class HwndHost : FrameworkElement, IDisposable
 {
-    static System.Collections.Concurrent.ConcurrentDictionary<DispatcherQueue, List<HwndHost>> Dispatchers = new(5, 5);
-    static SynchronizedCollection<HwndHost> ActiveHwndHosts = new();
+    readonly static System.Collections.Concurrent.ConcurrentDictionary<DispatcherQueue, List<HwndHost>> Dispatchers = new(5, 5);
+    readonly static SynchronizedCollection<HwndHost> ActiveHwndHosts = new();
     static void AddHwndHost(HwndHost HwndHost)
     {
         var dispatcher = HwndHost.DispatcherQueue;

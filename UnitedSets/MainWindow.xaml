@@ -5,7 +5,8 @@
     xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:class="using:UnitedSets.Classes" xmlns:icons="using:Cube.UI.Icons"
+    xmlns:class="using:UnitedSets.Classes"
+    xmlns:icons="using:Cube.UI.Icons"
     MinHeight="300" MinWidth="800"
     mc:Ignorable="d">
     <Grid Canvas.ZIndex="1">
@@ -32,6 +33,7 @@
                     </ColorAnimation.EasingFunction>
                 </ColorAnimation>
             </Storyboard>
+            <local:ITabContentTemplateSelector x:Name="TabDataTemplateSelector"/>
         </Grid.Resources>
         <Grid.Background>
             <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>
@@ -68,15 +70,15 @@
                          MinHeight="40"
                 >
                     <TabView.TabItemTemplate>
-                        <DataTemplate x:DataType="class:HwndHostTab">
+                        <DataTemplate x:DataType="class:TabBase">
                             <TabViewItem
                             Margin="2, 0, 2, 2"
                             Background="{ThemeResource 12Brush}"
                             Style="{ThemeResource UndockedTabViewItemStyle}"
-                            IsSelected="{x:Bind Selected, Mode=TwoWay}" 
-                                CloseRequested="{x:Bind TabCloseRequested}"
+                            IsSelected="{x:Bind Selected, Mode=TwoWay}"
+                            CloseRequested="{x:Bind TabCloseRequestedEv}"
                             Tag="{x:Bind}"
-                                PointerPressed="{x:Bind TabClick}">
+                                PointerPressed="{x:Bind TabClickEv}">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
@@ -100,22 +102,16 @@
                 </TabView>
             </Border>
         </Grid>
-        <Border Grid.Row="1">
-            <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}">
+        <Border Grid.Row="1" Canvas.ZIndex="0">
+            <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="class:HwndHostTab">
-                        <Border Child="{x:Bind HwndHost}"/>
-                        <!--Recreating HwndHost is expensive-->
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Border>
-        <StackPanel VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Center">
+        <StackPanel x:Name="UnitedSetsHomeBackground" VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Center" Canvas.ZIndex="-1">
             <StackPanel Orientation="Horizontal">
                 <Image x:Name="AppFontIcon"
                     HorizontalAlignment="Left" 
@@ -137,7 +133,8 @@
             </StackPanel>
             <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
             <TextBlock>
-            • Drag a Tab out to release the Window
+            • Drag a Tab out to release the Window<LineBreak/>
+                • Hold CTRL while dragging other window into United Sets to add the windoww
             </TextBlock>
             <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
             <TextBlock>

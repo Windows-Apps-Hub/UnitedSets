@@ -22,7 +22,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;
 using WinUIEx.Messaging;
-using UnitedSets.Interfaces;
 
 namespace UnitedSets;
 
@@ -31,11 +30,11 @@ namespace UnitedSets;
 /// </summary>
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-    static readonly uint UnitedSetCommunicationChangeWindowOwnership
+    public static readonly uint UnitedSetCommunicationChangeWindowOwnership
         = PInvoke.RegisterWindowMessage(nameof(UnitedSetCommunicationChangeWindowOwnership));
 
     public SettingsService Settings = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException();
-    public ObservableCollection<HwndHostTab> Tabs { get; } = new();
+    public ObservableCollection<TabBase> Tabs { get; } = new();
     readonly WindowEx WindowEx;
     bool _HasOwner = false;
     Visibility SettingsButtonVisibility => HasOwner ? Visibility.Collapsed : Visibility.Visible;
@@ -43,7 +42,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         get => WindowEx.Owner.IsValid;
     }
-    WindowMessageMonitor WindowMessageMonitor;
+    readonly WindowMessageMonitor WindowMessageMonitor;
     public MainWindow()
     {
         Title = "UnitedSets";
@@ -58,6 +57,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         WindowMessageMonitor.WindowMessageReceived += MainWindow_WindowMessageReceived;
         MinWidth = 100;
+        Tabs.Add(new CellTab(this));
+        TabView.SelectionChanged += delegate
+        {
+            UnitedSetsHomeBackground.Visibility =
+                TabView.SelectedIndex != -1 && Tabs[TabView.SelectedIndex] is CellTab ?
+                Visibility.Collapsed :
+                Visibility.Visible;
+        };
     }
 
     private void MainWindow_WindowMessageReceived(object? sender, WindowMessageEventArgs e)
@@ -65,7 +72,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (e.Message.MessageId == UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
-            if (Tabs.FirstOrDefault(x => x.Window.Handle == winPtr) is HwndHostTab Tab)
+            if (Tabs.FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
             {
                 Tab.DetachAndDispose(false);
                 e.Result = 1;
@@ -238,9 +245,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         for (int i = 0; i < 30; i++)
                         {
                             await Task.Delay(100);
-                            if (Tab.Window.IsValid) continue;
+                            if (!Tab.IsDisposed) continue;
                         }
-                        if (Tab.Window.IsValid) break;
+                        if (!Tab.IsDisposed) break;
                     }
                     catch
                     {
@@ -327,9 +334,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             )
             return;
         // Check if United Sets has owner (United Sets in United Sets)
-        if (WindowEx.Root.Children.Any(x => x.Handle == newWindow.Handle))
+        if (WindowEx.Root.Children.Any(x => x == newWindow))
             return;
-        if (Tabs.Any(x => x.Window.Handle == newWindow.Handle))
+        if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
             return;
         var newTab = new HwndHostTab(this, newWindow);
         Tabs.Add(newTab);

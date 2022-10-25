@@ -85,7 +85,6 @@ public class HwndHost : FrameworkElement, IDisposable
 
     public event Action? Closed;
     public event Action? Updating;
-    public event Action? Detaching;
     int CountDown = 5;
     public async void ForceUpdateWindow()
     {
@@ -167,6 +166,7 @@ public class HwndHost : FrameworkElement, IDisposable
         WinUI.Changed -= WinUIAppWindowChanged;
         UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);
         Closed?.Invoke();
+        GC.SuppressFinalize(this);
         return;
     }
 }

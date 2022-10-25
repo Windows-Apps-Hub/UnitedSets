@@ -1,97 +1,100 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>UnitedSets</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64;arm64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
-    <UseWinUI>true</UseWinUI>
-    <EnableMsixTooling>true</EnableMsixTooling>
-	  <Nullable>Enable</Nullable>
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-	  <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-	  <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-	  <AppxPackageDir>C:\Users\ayush\source\repos\UnitedSets\UnitedSets\AppPackages\</AppxPackageDir>
-	  <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
-	  <GenerateTestArtifacts>True</GenerateTestArtifacts>
-	  <AppxBundle>Never</AppxBundle>
-	  <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="AddTabFlyout.xaml" />
-    <None Remove="OOBEWindow.xaml" />
-    <None Remove="Pages\OOBEPage.xaml" />
-    <None Remove="SettingsWindow.xaml" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>UnitedSets</RootNamespace>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Platforms>x86;x64;arm64</Platforms>
+		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+		<UseWinUI>true</UseWinUI>
+		<EnableMsixTooling>true</EnableMsixTooling>
+		<Nullable>Enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxPackageDir>C:\Users\ayush\source\repos\UnitedSets\UnitedSets\AppPackages\</AppxPackageDir>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppxBundle>Never</AppxBundle>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="AddTabFlyout.xaml" />
+		<None Remove="OOBEWindow.xaml" />
+		<None Remove="Pages\OOBEPage.xaml" />
+		<None Remove="SettingsWindow.xaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Assets\SplashScreen.scale-200.png" />
+		<Content Include="Assets\LockScreenLogo.scale-200.png" />
+		<Content Include="Assets\Square150x150Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
-    <PackageReference Include="WinUIEx" Version="1.8.0" />
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+		<PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+		<PackageReference Include="SourceGenerators.AutoNotify" Version="1.2.3" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+		<PackageReference Include="WinUIEx" Version="1.8.0" />
+		<Manifest Include="$(ApplicationManifest)" />
+	</ItemGroup>
 
-  <!-- 
+	<!-- 
     Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
     Tools extension to be activated for this project even if the Windows App SDK Nuget
     package has not yet been restored.
   -->
-  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-    <ProjectCapability Include="Msix" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-    <ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="OOBEWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="SettingsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="AddTabFlyout.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\OOBEPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\OOBE\" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<ProjectCapability Include="Msix" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
+		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="OOBEWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="SettingsWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="AddTabFlyout.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="Pages\OOBEPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Assets\OOBE\" />
+		<Folder Include="Interfaces\" />
+	</ItemGroup>
+	<!-- Add this as a new ItemGroup, replacing paths and names appropriately -->
 
-  <!-- 
+	<!-- 
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
     Explorer "Package and Publish" context menu entry to be enabled for this project even if 
     the Windows App SDK Nuget package has not yet been restored.
   -->
-  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+	</PropertyGroup>
 </Project>

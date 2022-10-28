@@ -44,7 +44,11 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
             _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainCell)));
         }
     }
-    public CellTab(MainWindow MainWindow) : base(MainWindow.TabView)
+    public CellTab(MainWindow MainWindow)
+        : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal))
+    {
+    }
+    protected CellTab(MainWindow MainWindow, Cell Cell) : base(MainWindow.TabView)
     {
         PropertyChanged += (o, e) => InvokePropertyChanged(e.PropertyName);
         _MainCell = new(MainWindow, null, null, Orientation.Horizontal);
@@ -64,10 +68,10 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
         {
             _Selected = value;
             _MainCell.IsVisible = value;
-            foreach (var cell in ((ICell)_MainCell).AllSubCells)
-            {
-                if (cell.HasWindow) cell.CurrentCell!.IsWindowVisible = value;
-            }
+            //foreach (var cell in ((ICell)_MainCell).IsVisible)
+            //{
+            //    if (cell.HasWindow) cell.CurrentCell!.IsWindowVisible = value;
+            //}
             //HwndHost.IsWindowVisible = value;
             //if (value) HwndHost.FocusWindow();
             _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
@@ -80,7 +84,14 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
 
     public override void DetachAndDispose(bool JumpToCursor = false)
     {
-
+        var window = new MainWindow();
+        window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
+        foreach (var cell in ((ICell)MainCell).AllSubCells)
+        {
+            if (cell.CurrentCell is HwndHost hwndHost) hwndHost.DetachAndDispose();
+        }
+        _IsDisposed = true;
+        window.Activate();
     }
 
     public void ContentLoadEv(object sender, RoutedEventArgs e)

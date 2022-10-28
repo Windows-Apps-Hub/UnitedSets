@@ -64,6 +64,7 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
     {
         ContentTemplate = Cell switch
         {
+            { Empty: true, IsVisible: false } => InvisibleCellDataTemplate,
             { HasWindow: true } => WindowCellDataTemplate,
             { Empty: true, HoverEffect: false } => EmptyCellDataTemplate,
             { Empty: true, HoverEffect: true } => EmptyCellDataTemplateWindowHover,

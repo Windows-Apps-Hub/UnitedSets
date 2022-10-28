@@ -62,14 +62,17 @@
                          VerticalAlignment="Center"
                          TabDragStarting="{x:Bind local:MainWindow.TabDragStarting}"
                          TabDroppedOutside="{x:Bind local:MainWindow.TabDroppedOutside}"
-                         AllowDrop="True"
-                         DragOver="TabView_DragOver"
-                         Drop="TabView_Drop"
                          CanDragTabs="True"
-                         CanReorderTabs="False"
+                         CanReorderTabs="True"
                          Margin="0,0,120,2"
                          MinHeight="40"
                 >
+                    <!-- Windows App SDK 1.1 Bug
+                         AllowDrop="True"
+                         DragOver="TabView_DragOver"
+                         Drop="TabView_Drop"
+                    -->
+                    
                     <TabView.TabItemTemplate>
                         <DataTemplate x:DataType="class:TabBase">
                             <TabViewItem

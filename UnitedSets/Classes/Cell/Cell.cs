@@ -45,15 +45,33 @@ public partial class Cell : ICell, INotifyPropertyChanged
     Cell[]? _SubCells;
 
     Orientation _Orientation;
+    bool _IsParentVisible = true;
+    bool IsParentVisible
+    {
+        get => _IsParentVisible;
+        set
+        {
+            _IsParentVisible = value;
+            OnVisibleChanged();
+        }
+    }
     bool _IsVisible;
     public bool IsVisible
     {
-        get => _IsVisible;
+        get => IsParentVisible && _IsVisible;
         set
         {
             _IsVisible = value;
-            if (CurrentCell is HwndHost hwndHost) hwndHost.IsWindowVisible = value;
+            if (_SubCells is not null)
+                foreach (var cell in _SubCells)
+                    cell.IsParentVisible = value;
+            OnVisibleChanged();
         }
+    }
+    void OnVisibleChanged()
+    {
+        if (CurrentCell is HwndHost hwndHost) hwndHost.IsWindowVisible = IsVisible;
+        else _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
     }
     bool _HoverEffect;
     public bool HoverEffect
@@ -152,12 +170,25 @@ public partial class Cell : ICell, INotifyPropertyChanged
         CurrentCell = new(MainWindow, Window);
 
     }
+
+    public Cell DeepClone(MainWindow NewWindow)
+    {
+        Cell[]? newSubCells =
+            SubCells is null ? null :
+            (from x in SubCells select x.DeepClone(NewWindow)).ToArray();
+        HwndHost? hwndHost =
+            CurrentCell is null ? null
+            : new HwndHost(NewWindow, CurrentCell.HostedWindow);
+        Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
+        return cell;
+    }
 }
 public interface ICell : INotifyPropertyChanged
 {
     MainWindow MainWindow { get; }
     HwndHost? CurrentCell { get; set; }
     Cell[]? SubCells { get; set; }
+    bool IsVisible { get; }
 
     Orientation Orientation { get; set; }
 

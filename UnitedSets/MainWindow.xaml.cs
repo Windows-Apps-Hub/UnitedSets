@@ -118,6 +118,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SettingsButtonVisibility)));
             });
         }
+        foreach (var Tab in Tabs)
+        {
+            if (Tab.IsDisposed)
+            {
+                Tabs.Remove(Tab);
+                break;
+            }
+        }
         {
             static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)
             {
@@ -151,6 +159,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         "Qt5152TrayIconMessageWindowClass" or
                         "Qt5152QWindowIcon")
                         continue;
+                    if (!below.IsVisible) continue;
                     if (below.Bounds.Contains(CursorPos))
                         // If there is window above United Sets and it covers up United Sets
                         // Don't add tabs. User can't see the window
@@ -443,7 +452,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     public static void TabDroppedOutside(TabView _1, TabViewTabDroppedOutsideEventArgs args)
     {
-        if (args.Tab.Tag is HwndHostTab Tab)
+        if (args.Tab.Tag is TabBase Tab)
         {
             Tab.DetachAndDispose(JumpToCursor: true);
         }
@@ -453,12 +462,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         //var firstItem = args.Tab;
         //args.Data.Properties.Add("UnitedSetsTab", firstItem);
-        var item = (HwndHostTab)args.Item;
-        var handleInLong = (long)item.Window.Handle.Value;
-        var ms = new MemoryStream();
-        ms.Write(BitConverter.GetBytes(handleInLong));
-        GC.KeepAlive(ms);
-        args.Data.SetData("UnitedSetsTabWindow", ms.AsRandomAccessStream());
+        if (args.Item is HwndHostTab item)
+        {
+            var handleInLong = (long)item.Window.Handle.Value;
+            var ms = new MemoryStream();
+            ms.Write(BitConverter.GetBytes(handleInLong));
+            GC.KeepAlive(ms);
+            args.Data.SetData("UnitedSetsTabWindow", ms.AsRandomAccessStream());
+        }
         //args.Data.RequestedOperation = DataPackageOperation.Move;
     }
 

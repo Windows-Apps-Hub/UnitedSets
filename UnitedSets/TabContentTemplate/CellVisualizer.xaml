@@ -10,6 +10,9 @@
     Background="Transparent"
     Content="{x:Bind Cell}">
     <ContentPresenter.Resources>
+        <DataTemplate x:Name="InvisibleCellDataTemplate" x:DataType="class:ICell">
+            <Grid Visibility="Collapsed" IsHitTestVisible="False"/>
+        </DataTemplate>
         <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:ICell">
             <Grid Loaded="{x:Bind LoadEv}" AllowDrop="False" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <!---Allow Drop Off until Windows App SDK 1.2 is released. there's a bug.-->

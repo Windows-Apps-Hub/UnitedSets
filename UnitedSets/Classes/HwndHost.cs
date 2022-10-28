@@ -101,6 +101,7 @@ public class HwndHost : FrameworkElement, IDisposable
     bool IsOwnerSetSuccessful;
     bool _IsWindowVisible;
     bool _DefaultIsResizable;
+    public WindowEx HostedWindow => WindowToHost;
     public bool IsWindowVisible
     {
         get => _IsWindowVisible;

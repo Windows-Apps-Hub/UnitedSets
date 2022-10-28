@@ -134,7 +134,8 @@
             </StackPanel>
             <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
             <TextBlock>
-            • Drag a Tab out to release the Window<LineBreak/>
+            • Hold SHIFT while clicking + icon to create Splitable Tab<LineBreak/>
+                • Drag a Tab out to release the Window<LineBreak/>
                 • Hold CTRL while dragging other window into United Sets to add the windoww
             </TextBlock>
             <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>

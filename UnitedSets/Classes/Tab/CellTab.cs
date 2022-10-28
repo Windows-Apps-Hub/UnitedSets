@@ -47,7 +47,7 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
     public CellTab(MainWindow MainWindow) : base(MainWindow.TabView)
     {
         PropertyChanged += (o, e) => InvokePropertyChanged(e.PropertyName);
-        _MainCell = new(null, null, Orientation.Horizontal);
+        _MainCell = new(MainWindow, null, null, Orientation.Horizontal);
     }
 
     public override BitmapImage? Icon => null;
@@ -63,6 +63,11 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
         set
         {
             _Selected = value;
+            _MainCell.IsVisible = value;
+            foreach (var cell in ((ICell)_MainCell).AllSubCells)
+            {
+                if (cell.HasWindow) cell.CurrentCell!.IsWindowVisible = value;
+            }
             //HwndHost.IsWindowVisible = value;
             //if (value) HwndHost.FocusWindow();
             _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));

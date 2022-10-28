@@ -53,7 +53,8 @@
                 <ColumnDefinition x:Name="TabViewRightMargin" Width="0"/>
             </Grid.ColumnDefinitions>
             <Border MinHeight="40">
-                <TabView x:Name="TabView"
+                <TabView 
+                    x:Name="TabView"
                          Background="Transparent"
                          x:FieldModifier="Public"
                          IsAddTabButtonVisible="False"
@@ -65,7 +66,7 @@
                          DragOver="TabView_DragOver"
                          Drop="TabView_Drop"
                          CanDragTabs="True"
-                         CanReorderTabs="True"
+                         CanReorderTabs="False"
                          Margin="0,0,120,2"
                          MinHeight="40"
                 >

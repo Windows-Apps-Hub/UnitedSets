@@ -1,0 +1,101 @@
+﻿<ContentPresenter
+    x:Class="UnitedSets.CellVisualizer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets"
+    xmlns:class="using:UnitedSets.Classes"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent"
+    Content="{x:Bind Cell}">
+    <ContentPresenter.Resources>
+        <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:ICell">
+            <Grid Loaded="{x:Bind LoadEv}" AllowDrop="False" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                <!---Allow Drop Off until Windows App SDK 1.2 is released. there's a bug.-->
+                <ScrollViewer Canvas.ZIndex="1" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                    <local:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                        <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Hold CTRL and Drag Window Here"/>
+                        <TextBlock HorizontalAlignment="Center" FontSize="16" Text="or"/>
+                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitHorizontallyClickEv}">
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
+                                <TextBlock Margin="4,0,4,0" Text="Split Horizontally"/>
+                                <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitVerticallyClickEv}">
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="{ThemeResource VerticalSymbol}"/>
+                                <TextBlock Margin="4,0,4,0" Text="Split Vertically"/>
+                                <SymbolIcon Symbol="{ThemeResource VerticalSymbol}"/>
+                            </StackPanel>
+                        </Button>
+                    </local:FluentVerticalStack>
+                </ScrollViewer>
+                <Rectangle Margin="8"
+                    RadiusX="8" RadiusY="8"
+                    Fill="Transparent"
+                    StrokeDashCap="Flat" StrokeDashOffset="1.5" StrokeDashArray="3"
+                    Stroke="Gray" StrokeThickness="3"
+                >
+                </Rectangle>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="EmptyCellDataTemplateWindowHover" x:DataType="class:ICell">
+            <Grid Loaded="{x:Bind LoadEv}" AllowDrop="False" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                <!---Allow Drop Off until Windows App SDK 1.2 is released. there's a bug.-->
+                <ScrollViewer Canvas.ZIndex="1" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                    <local:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                        <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Hold CTRL and Drag Window Here"/>
+                        <TextBlock HorizontalAlignment="Center" FontSize="16" Text="or"/>
+                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitHorizontallyClickEv}">
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
+                                <TextBlock Margin="4,0,4,0" Text="Split Horizontally"/>
+                                <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitVerticallyClickEv}">
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="{ThemeResource VerticalSymbol}"/>
+                                <TextBlock Margin="4,0,4,0" Text="Split Vertically"/>
+                                <SymbolIcon Symbol="{ThemeResource VerticalSymbol}"/>
+                            </StackPanel>
+                        </Button>
+                    </local:FluentVerticalStack>
+                </ScrollViewer>
+                <Rectangle Margin="8"
+                    RadiusX="8" RadiusY="8"
+                    Fill="{StaticResource LayerFillColorDefault}"
+                    StrokeDashCap="Flat" StrokeDashOffset="1.5" StrokeDashArray="3"
+                    Stroke="Gray" StrokeThickness="3"
+                >
+                </Rectangle>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="VerticalCellDataTemplate" x:DataType="class:ICell">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <local:CellVisualizer Grid.Row="0" Cell="{x:Bind SubCells[0]}"/>
+                <local:CellVisualizer Grid.Row="1" Cell="{x:Bind SubCells[1]}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="HorizontalCellDataTemplate" x:DataType="class:ICell">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <local:CellVisualizer Grid.Column="0" Cell="{x:Bind SubCells[0]}"/>
+                <local:CellVisualizer Grid.Column="1" Cell="{x:Bind SubCells[1]}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:ICell">
+            <ContentPresenter Content="{x:Bind CurrentCell}"/>
+        </DataTemplate>
+    </ContentPresenter.Resources>
+</ContentPresenter>

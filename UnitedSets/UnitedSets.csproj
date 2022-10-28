@@ -26,6 +26,8 @@
 		<None Remove="OOBEWindow.xaml" />
 		<None Remove="Pages\OOBEPage.xaml" />
 		<None Remove="SettingsWindow.xaml" />
+		<None Remove="TabContentTemplate\CellVisualizer.xaml" />
+		<None Remove="TabContentTemplate\TabDataTemplate.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,6 +88,16 @@
 	<ItemGroup>
 		<Folder Include="Assets\OOBE\" />
 		<Folder Include="Interfaces\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="TabContentTemplate\TabDataTemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="TabContentTemplate\CellVisualizer.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	<!-- Add this as a new ItemGroup, replacing paths and names appropriately -->
 

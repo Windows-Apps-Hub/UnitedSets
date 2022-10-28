@@ -22,6 +22,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
+using System.Threading;
+using System.IO;
+using WinWrapper;
 
 namespace UnitedSets;
 
@@ -50,12 +53,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         Title = "UnitedSets";
         InitializeComponent();
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
-        HwndHostTab.MainWindows.Add(WindowEx);
+        TabBase.MainWindows.Add(WindowEx);
         AppWindow.Closing += OnWindowClosing;
         Activated += FirstRun;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(CustomDragRegion);
-        HwndHostTab.OnUpdateStatusLoopComplete += OnLoopCalled;
+        TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         WindowMessageMonitor.WindowMessageReceived += MainWindow_WindowMessageReceived;
         MinWidth = 100;
@@ -69,9 +72,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             );
             var size = MainAreaBorder.ActualSize;
             CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
+            var idx = TabView.SelectedIndex;
+            SelectedTabCache = idx < 0 ? null : Tabs[idx];
         };
         timer.Start();
-        Tabs.Add(new CellTab(this));
         TabView.SelectionChanged += delegate
         {
             UnitedSetsHomeBackground.Visibility =
@@ -79,8 +83,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 Visibility.Collapsed :
                 Visibility.Visible;
         };
+        //AfterInit();
     }
-
+    TabBase? SelectedTabCache;
+    //private async void AfterInit()
+    //{
+    //    await Task.Delay(1000);
+    //    Tabs.Add(new CellTab(this));
+    //}
     private void MainWindow_WindowMessageReceived(object? sender, WindowMessageEventArgs e)
     {
         if (e.Message.MessageId == UnitedSetCommunicationChangeWindowOwnership)
@@ -95,7 +105,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         }
     }
 
-    WindowEx OtherWindowDragging;
     // Different Thread
     void OnLoopCalled()
     {
@@ -109,7 +118,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SettingsButtonVisibility)));
             });
         }
-        if (Keyboard.IsControlDown)
         {
             static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)
             {
@@ -127,74 +135,18 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 return false;
             }
-            bool MouseDown = Cursor.IsLeftButtonDown;
-            if (MouseDown)
+            static bool IsUnitedSetWindowVisible(WindowEx WindowEx, WindowEx ToCheck)
             {
-                var foregroundWindow = WindowEx.ForegroundWindow;
-                if (foregroundWindow != WindowEx)
-                {
-                    // Cursor.IsLeftButtonDown is true
-                    if (IsInTitleBarBounds(WindowEx, foregroundWindow))
-                    {
-                        if (foregroundWindow.Bounds.Contains(WindowEx.Bounds))
-                            // User can't see United Sets.
-                            // User doesn't know United Sets is behind. We can't mess with them.
-                            goto EndOtherWindowCheck;
-                        foreach (var below in new WindowRelative(foregroundWindow).GetBelows())
-                        {
-                            Debug.WriteLine(below);
-                            var CursorPos = Cursor.Position;
-                            if (below == WindowEx)
-                            {
-                                if (OtherWindowDragging == default)
-                                    DispatcherQueue.TryEnqueue(() => WindowHoveringStoryBoard.Begin());
-                                OtherWindowDragging = foregroundWindow;
-                                goto EndOtherWindowCheck;
-                            }
-                            if (below.ClassName is
-                                "Qt5152TrayIconMessageWindowClass" or
-                                "Qt5152QWindowIcon")
-                                continue;
-                            if (below.Bounds.Contains(CursorPos))
-                                // If there is window above United Sets and it covers up United Sets
-                                // Don't add tabs. User can't see the window
-                                break;
-                        }
-                    }
-                }
-                if (OtherWindowDragging != default)
-                {
-                    DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
-                    OtherWindowDragging = default;
-                }
-            }
-            else if (OtherWindowDragging != default)
-            {
-                var window = OtherWindowDragging;
-                OtherWindowDragging = default;
-                DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
-                var foreground = WindowEx.ForegroundWindow;
-                if (foreground != window)
-                {
-                    goto EndOtherWindowCheck;
-                }
-                if (!IsInTitleBarBounds(WindowEx, window))
-                {
-                    goto EndOtherWindowCheck;
-                }
-                if (foreground.Bounds.Contains(WindowEx.Bounds))
+                if (ToCheck.Bounds.Contains(WindowEx.Bounds))
                     // User can't see United Sets.
                     // User doesn't know United Sets is behind. We can't mess with them.
-                    goto EndOtherWindowCheck;
-                foreach (var below in new WindowRelative(foreground).GetBelows())
+                    return false;
+                foreach (var below in new WindowRelative(ToCheck).GetBelows())
                 {
                     Debug.WriteLine(below);
                     var CursorPos = Cursor.Position;
                     if (below == WindowEx)
-                    {
-                        DispatcherQueue.TryEnqueue(() => AddTab(window));
-                        goto EndOtherWindowCheck;
-                    }
+                        return true;
                     if (below.ClassName is
                         "Qt5152TrayIconMessageWindowClass" or
                         "Qt5152QWindowIcon")
@@ -202,20 +154,144 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                     if (below.Bounds.Contains(CursorPos))
                         // If there is window above United Sets and it covers up United Sets
                         // Don't add tabs. User can't see the window
-                        goto EndOtherWindowCheck;
+                        return false;
+                }
+                return false;
+            }
+            Cell? DetectCell()
+            {
+                var cursorPos = Cursor.Position;
+                var windowBounds = WindowEx.Bounds;
+                var diffPos = (X: (double)cursorPos.X - windowBounds.X, Y: (double)cursorPos.Y - windowBounds.Y);
+                var scale = WindowEx.CurrentDisplay.ScaleFactor / 100d;
+                var area = CacheMiddleAreaBounds.Location;
+                diffPos = (diffPos.X - area.X * scale, diffPos.Y - area.Y * scale);
+                if (diffPos is { X: > 0, Y: > 0 })
+                {
+                    if (SelectedTabCache is CellTab CellTab)
+                    {
+                        var normPos = (diffPos.X / windowBounds.Width, diffPos.Y / windowBounds.Height);
+                        var info = GetCellAtCursor(normPos, CellTab.MainCell);
+                        if (info is not null)
+                        {
+                            var (rect, cell) = info.Value;
+                            return cell;
+                        }
+                    }
+                }
+                return null;
+            }
+            if (Cursor.IsLeftButtonDown && Keyboard.IsControlDown)
+            {
+                WindowEx OtherWindowDragging = default;
+                Cell? SelectedCell = null;
+                do
+                {
+                    var foregroundWindow = WindowEx.ForegroundWindow;
+                    if (foregroundWindow != WindowEx)
+                    {
+                        if (IsInTitleBarBounds(WindowEx, foregroundWindow) && IsUnitedSetWindowVisible(WindowEx, foregroundWindow))
+                        {
+                            var NewCell = DetectCell();
+                            var UpdateHoverToTrue = OtherWindowDragging == default;
+                            if (NewCell != SelectedCell)
+                                if (SelectedCell is not null)
+                                    SelectedCell.HoverEffect = false;
+                            if (NewCell is not null)
+                                NewCell.HoverEffect = true;
+                            if (NewCell is not null)
+                            {
+                                if (SelectedCell is null && UpdateHoverToTrue == false)
+                                    DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                            }
+                            else if (UpdateHoverToTrue || (SelectedCell is not null && NewCell is null))
+                                DispatcherQueue.TryEnqueue(() => WindowHoveringStoryBoard.Begin());
+                            SelectedCell = NewCell;
+                            OtherWindowDragging = foregroundWindow;
+                        }
+                        else
+                        {
+                            if (SelectedCell is not null)
+                                SelectedCell.HoverEffect = false;
+                            SelectedCell = null;
+                            if (OtherWindowDragging != default)
+                                DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                            OtherWindowDragging = default;
+                        }
+                    }
+                    Thread.Sleep(200);
+                } while (Cursor.IsLeftButtonDown);
+                if (OtherWindowDragging != default)
+                {
+                    var window = OtherWindowDragging;
+                    OtherWindowDragging = default;
+                    DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                    var foreground = WindowEx.ForegroundWindow;
+                    if (foreground == window &&
+                        IsInTitleBarBounds(WindowEx, window) &&
+                        IsUnitedSetWindowVisible(WindowEx, window))
+                    {
+                        if (SelectedCell is not null)
+                        {
+                            SelectedCell.HoverEffect = false;
+                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(window));
+                        }
+                        else DispatcherQueue.TryEnqueue(() => AddTab(window));
+                    }
                 }
             }
-        EndOtherWindowCheck:
-            ; // in case there is something else I want to add in the future
         }
-        else
+        //else
+        //{
+        //    if (OtherWindowDragging != default)
+        //    {
+        //        DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+        //        OtherWindowDragging = default;
+        //    }
+        //}
+    }
+    static ((double X1, double Y1, double X2, double Y2), Cell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)
+    {
+        if (MainCell.HasWindow)
+            return null;
+        if (MainCell.Empty)
+            return ((0, 0, 1, 1), MainCell);
+        static (int Index, double RemainingScaled) ComputeScale(int count, double pos)
         {
-            if (OtherWindowDragging != default)
-            {
-                DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
-                OtherWindowDragging = default;
-            }
+            // 1 / count * x = value
+            // x = value * count
+            var idx = (int)(pos * count);
+            if (idx == count) idx--;
+            // [ pos - (idx / count) ] * count
+            // = pos * count - idx
+            var remaining = pos * count - idx;
+            return (idx, remaining);
         }
+        static (double Out1, double Out2) ComputeScaleReversed((double In1, double In2) scaledRect, int idx, int totalCount)
+        {
+            return (scaledRect.In1 / totalCount + idx / totalCount, scaledRect.In2 / totalCount + idx / totalCount);
+        }
+        if (MainCell.HasHorizontalSubCells)
+        {
+            var count = MainCell.SubCells!.Length;
+            var (idx, remaining) = ComputeScale(count, CursorPos.X);
+            var output = GetCellAtCursor((remaining, CursorPos.Y), MainCell.SubCells[idx]);
+            if (output is null) return null;
+            var (Rect, cell) = output.Value;
+            (Rect.X1, Rect.X2) = ComputeScaleReversed((Rect.X1, Rect.X2), idx, count);
+            return (Rect, cell);
+        }
+        if (MainCell.HasVerticalSubCells)
+        {
+            var count = MainCell.SubCells!.Length;
+            var (idx, remaining) = ComputeScale(count, CursorPos.Y);
+            var output = GetCellAtCursor((CursorPos.X, remaining), MainCell.SubCells[idx]);
+            if (output is null) return null;
+            var (Rect, cell) = output.Value;
+            (Rect.Y1, Rect.Y2) = ComputeScaleReversed((Rect.Y1, Rect.Y2), idx, count);
+            return (Rect, cell);
+        }
+        return null;
     }
     async void OnWindowClosing(AppWindow _1, AppWindowClosingEventArgs e)
     {
@@ -289,7 +365,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
         }
     }
-    
+
     private void FirstRun(object _1, WindowActivatedEventArgs _2)
     {
         Activated -= FirstRun;
@@ -321,13 +397,21 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     private async void AddTab(object _1, RoutedEventArgs e)
     {
-        WindowEx.Minimize();
-        //this.Hide();
-        await AddTabFlyout.ShowAtCursorAsync();
-        //this.Show();
-        WindowEx.Restore();
-        var result = AddTabFlyout.Result;
-        AddTab(result);
+        if (Keyboard.IsShiftDown)
+        {
+            var newTab = new CellTab(this);
+            Tabs.Add(newTab);
+            TabView.SelectedItem = newTab;
+        } else
+        {
+            WindowEx.Minimize();
+            //this.Hide();
+            await AddTabFlyout.ShowAtCursorAsync();
+            //this.Show();
+            WindowEx.Restore();
+            var result = AddTabFlyout.Result;
+            AddTab(result);
+        }
     }
     void AddTab(WindowEx newWindow)
     {
@@ -367,11 +451,15 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     public static void TabDragStarting(TabView _1, TabViewTabDragStartingEventArgs args)
     {
-        var firstItem = args.Tab;
-        args.Data.Properties.Add("UnitedSetsTab", firstItem);
+        //var firstItem = args.Tab;
+        //args.Data.Properties.Add("UnitedSetsTab", firstItem);
         var item = (HwndHostTab)args.Item;
-        args.Data.SetData("UnitedSetsTabWindow", (long)item.Window.Handle.Value);
-        args.Data.RequestedOperation = DataPackageOperation.Move;
+        var handleInLong = (long)item.Window.Handle.Value;
+        var ms = new MemoryStream();
+        ms.Write(BitConverter.GetBytes(handleInLong));
+        GC.KeepAlive(ms);
+        args.Data.SetData("UnitedSetsTabWindow", ms.AsRandomAccessStream());
+        //args.Data.RequestedOperation = DataPackageOperation.Move;
     }
 
     private void TabView_DragOver(object sender, DragEventArgs e)
@@ -386,6 +474,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         if (e.DataView.AvailableFormats.Contains("UnitedSetsTabWindow"))
         {
+            //var a = Convert.ToInt64(((MemoryStream)await e.DataView.GetDataAsync("UnitedSetsTabWindow")).readz);
             var a = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
             var window = WindowEx.FromWindowHandle((nint)a);
             var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));

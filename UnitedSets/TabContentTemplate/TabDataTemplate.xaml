@@ -4,29 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:class="using:UnitedSets.Classes">
-    <local:CellContentTemplateSelector x:Key="CellContentTemplateSelector"/>
-    
     <DataTemplate x:Name="SingleTabDataTemplate" x:FieldModifier="Public" x:DataType="class:HwndHostTab">
-        <Border Child="{x:Bind HwndHost}"/> <!--Recreating HwndHost is expensive-->
+        <Border Child="{x:Bind HwndHost}"/>
+        <!--Recreating HwndHost is expensive-->
     </DataTemplate>
-    <DataTemplate x:Name="CellTabToControlDataTemplate" x:FieldModifier="Public" x:DataType="class:CellTab">
-        <ContentPresenter Loaded="{x:Bind ContentLoadEv}" Content="{x:Bind MainCell, Mode=OneWay}" ContentTemplateSelector="{StaticResource CellContentTemplateSelector}"/>
-    </DataTemplate>
-    <DataTemplate x:Name="EmptyCellTabDataTemplate" x:FieldModifier="Public" x:DataType="class:Cell">
-        <Grid Background="Transparent">
-            <ScrollViewer Canvas.ZIndex="1">
-                <local:FluentVerticalStack HorizontalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Drag Window Here"/>
-                    <TextBlock HorizontalAlignment="Center" FontSize="16" Text="or"/>
-                    <Button HorizontalAlignment="Center" Content="Split Vertically"/>
-                    <Button HorizontalAlignment="Center" Content="Split Horizontally"/>
-                </local:FluentVerticalStack>
-            </ScrollViewer>
-            <Rectangle Margin="16"
-                       RadiusX="8" RadiusY="8"
-                       StrokeDashCap="Flat" StrokeDashOffset="1.5" StrokeDashArray="3"
-                       Stroke="Gray" StrokeThickness="3"
-            />
-        </Grid>
+    <DataTemplate x:Name="CellTabDataTemplate" x:FieldModifier="Public" x:DataType="class:CellTab">
+        <local:CellVisualizer Cell="{x:Bind MainCell}"/>
     </DataTemplate>
 </ResourceDictionary>

@@ -1,7 +1,8 @@
 {
   "profiles": {
     "UnitedSets (Package)": {
-      "commandName": "MsixPackage"
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
     },
     "UnitedSets (Unpackaged)": {
       "commandName": "Project"

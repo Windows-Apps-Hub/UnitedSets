@@ -3,8 +3,6 @@ using System;
 using Microsoft.UI.Windowing;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using Window = Microsoft.UI.Xaml.Window;
@@ -240,11 +238,12 @@ public class HwndHost : FrameworkElement, IDisposable
         IsDisposed = true;
         DispatcherQueue.TryEnqueue(delegate
         {
-        SizeChanged -= WinUIAppWindowChanged;
-        WinUI.Changed -= WinUIAppWindowChanged;
-        UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);
-        Closed?.Invoke();
-        GC.SuppressFinalize(this);
-        return;
+            SizeChanged -= WinUIAppWindowChanged;
+            WinUI.Changed -= WinUIAppWindowChanged;
+            UnregisterPropertyChangedCallback(VisibilityProperty, VisiblePropertyChangedToken);
+            Closed?.Invoke();
+            GC.SuppressFinalize(this);
+            return;
+        });
     }
 }

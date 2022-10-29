@@ -48,8 +48,10 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
         : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal))
     {
     }
+    MainWindow MainWindow;
     protected CellTab(MainWindow MainWindow, Cell Cell) : base(MainWindow.TabView)
     {
+        this.MainWindow = MainWindow;
         PropertyChanged += (o, e) => InvokePropertyChanged(e.PropertyName);
         _MainCell = new(MainWindow, null, null, Orientation.Horizontal);
     }
@@ -116,9 +118,22 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
     }
     
 
-    public override Task TryCloseAsync()
+    public async override Task TryCloseAsync()
     {
-        _IsDisposed = true;
-        return Task.CompletedTask;
+        var allcells = ((ICell)MainCell).AllSubCells.ToArray();
+        await Task.WhenAll(
+            from cell in allcells
+            where cell.HasWindow
+            select cell.CurrentCell!.HostedWindow.TryCloseAsync()
+        );
+        if (((ICell)MainCell).AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.HostedWindow.IsValid))
+        {
+            return;
+        } else
+        {
+            _IsDisposed = true;
+            if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
+        }
+
     }
 }

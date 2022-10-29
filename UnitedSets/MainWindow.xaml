@@ -82,7 +82,9 @@
                             IsSelected="{x:Bind Selected, Mode=TwoWay}"
                             CloseRequested="{x:Bind TabCloseRequestedEv}"
                             Tag="{x:Bind}"
-                                PointerPressed="{x:Bind TabClickEv}">
+                                PointerPressed="{x:Bind TabClickEv}"
+                                AllowDrop="True"
+                                DragOver="TabViewItem_DragOver">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>

@@ -201,13 +201,16 @@ public interface ICell : INotifyPropertyChanged
     {
         get
         {
-            yield return this;
-            if (SubCells is null) yield break;
-            foreach (var cell in SubCells)
-                if (cell.SubCells is not null)
-                    foreach (var cellsubcell in cell.SubCells)
-                        yield return cellsubcell;
+            return GetAllSubCells();
         }
+    }
+    private IEnumerable<ICell> GetAllSubCells()
+    {
+        yield return this;
+        if (SubCells is null) yield break;
+        foreach (var cell in SubCells)
+            foreach (var cellsubcell in ((ICell)cell).AllSubCells)
+                yield return cellsubcell;
     }
 
     void SplitHorizontally(int Amount);

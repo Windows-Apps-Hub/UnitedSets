@@ -492,4 +492,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             AddTab(window);
         }
     }
+
+    private void TabViewItem_DragOver(object sender, DragEventArgs e)
+    {
+        if (sender is TabViewItem tvi && tvi.Tag is TabBase tb)
+            TabView.SelectedIndex = Tabs.IndexOf(tb);
+    }
 }

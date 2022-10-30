@@ -33,7 +33,7 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
         this.Hide();
     }
 
-    private void OnKeyPressed(object sender, KeyboardHelperEventArgs e)
+    private void OnKeyPressed(object? sender, KeyboardHelperEventArgs e)
     {
         if (e.KeyboardState == KeyboardHelper.KeyboardState.KeyDown)
         {

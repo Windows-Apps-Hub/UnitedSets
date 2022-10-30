@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
-using SourceGenerators;
 using Microsoft.UI.Xaml;
 using System.Linq;
 using System;
@@ -17,26 +16,13 @@ using WinWrapper;
 namespace UnitedSets.Classes;
 public partial class Cell : ICell, INotifyPropertyChanged
 {
-    public MainWindow MainWindow { get; }
+    public override MainWindow MainWindow { get; }
     public Cell(MainWindow MainWindow, HwndHost? CurrentCell, Cell[]? SubCells, Orientation Orientation)
     {
         this.MainWindow = MainWindow;
         _CurrentCell = CurrentCell;
         _SubCells = SubCells;
         _Orientation = Orientation;
-    }
-    PropertyChangedEventHandler? _PropertyChanged;
-    public event PropertyChangedEventHandler? PropertyChanged
-    {
-        add
-        {
-            _PropertyChanged += value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-        }
-        remove
-        {
-            _PropertyChanged -= value;
-        }
     }
 
 
@@ -56,25 +42,25 @@ public partial class Cell : ICell, INotifyPropertyChanged
         }
     }
     bool _IsVisible;
-    public bool IsVisible
+    public override bool IsVisible
     {
         get => IsParentVisible && _IsVisible;
         set
         {
             _IsVisible = value;
-            if (_SubCells is not null)
-                foreach (var cell in _SubCells)
-                    cell.IsParentVisible = value;
             OnVisibleChanged();
         }
     }
     void OnVisibleChanged()
     {
+        if (_SubCells is not null)
+            foreach (var cell in _SubCells)
+                cell.IsParentVisible = IsVisible;
         if (CurrentCell is HwndHost hwndHost) hwndHost.IsWindowVisible = IsVisible;
         else _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
     }
     bool _HoverEffect;
-    public bool HoverEffect
+    public override bool HoverEffect
     {
         get => _HoverEffect;
         set
@@ -84,7 +70,7 @@ public partial class Cell : ICell, INotifyPropertyChanged
             _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HoverEffect)));
         }
     }
-    public HwndHost? CurrentCell
+    public override HwndHost? CurrentCell
     {
         get
         {
@@ -108,7 +94,7 @@ public partial class Cell : ICell, INotifyPropertyChanged
 
 
 
-    public Cell[]? SubCells
+    public override Cell[]? SubCells
     {
         get
         {
@@ -127,7 +113,7 @@ public partial class Cell : ICell, INotifyPropertyChanged
 
 
 
-    public Orientation Orientation
+    public override Orientation Orientation
     {
         get
         {
@@ -141,18 +127,18 @@ public partial class Cell : ICell, INotifyPropertyChanged
         }
     }
     ICell ThisAsICell => this;
-    public bool HasWindow => CurrentCell is not null;
-    public bool HasSubCells => SubCells is not null;
+    public override bool HasWindow => CurrentCell is not null;
+    public override bool HasSubCells => SubCells is not null;
     public bool HasVerticalSubCells => HasSubCells && Orientation == Orientation.Vertical;
     public bool HasHorizontalSubCells => HasSubCells && Orientation == Orientation.Horizontal;
-    public bool Empty => !(HasWindow || HasSubCells);
-    public void SplitHorizontally(int Amount)
+    public override bool Empty => !(HasWindow || HasSubCells);
+    public override void SplitHorizontally(int Amount)
     {
         if (!Empty) throw new InvalidOperationException();
         Orientation = Orientation.Vertical;
         SubCells = CraeteNCells(Amount);
     }
-    public void SplitVertically(int Amount)
+    public override void SplitVertically(int Amount)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!Empty) throw new InvalidOperationException();
@@ -163,7 +149,7 @@ public partial class Cell : ICell, INotifyPropertyChanged
     {
         return (from _ in Enumerable.Range(0, Amount) select new Cell(MainWindow, null, null, default)).ToArray();
     }
-    public void RegisterWindow(Window Window)
+    public override void RegisterWindow(Window Window)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!Empty) throw new InvalidOperationException();
@@ -183,21 +169,21 @@ public partial class Cell : ICell, INotifyPropertyChanged
         return cell;
     }
 }
-public interface ICell : INotifyPropertyChanged
+public abstract class ICell : INotifyPropertyChanged
 {
-    MainWindow MainWindow { get; }
-    HwndHost? CurrentCell { get; set; }
-    Cell[]? SubCells { get; set; }
-    bool IsVisible { get; }
+    public abstract MainWindow MainWindow { get; }
+    public abstract HwndHost? CurrentCell { get; set; }
+    public abstract Cell[]? SubCells { get; set; }
+    public abstract bool IsVisible { get; set; }
 
-    Orientation Orientation { get; set; }
+    public abstract Orientation Orientation { get; set; }
 
-    public bool HasWindow { get; }
-    public bool HasSubCells { get; }
-    public bool Empty { get; }
-    public bool HoverEffect { get; }
+    public abstract bool HasWindow { get; }
+    public abstract bool HasSubCells { get; }
+    public abstract bool Empty { get; }
+    public abstract bool HoverEffect { get; set; }
 
-    IEnumerable<ICell> AllSubCells
+    public IEnumerable<ICell> AllSubCells
     {
         get
         {
@@ -213,52 +199,34 @@ public interface ICell : INotifyPropertyChanged
                 yield return cellsubcell;
     }
 
-    void SplitHorizontally(int Amount);
-    void SplitHorizontallyClickEv(object o, RoutedEventArgs _2)
+    public abstract void SplitHorizontally(int Amount);
+    public void SplitHorizontallyClickEv(object o, RoutedEventArgs _2)
     {
-        //if (Keyboard.IsShiftDown)
-        //{
-        //    var nb = new NumberBox { Value = 2 };
-        //    if (await new ContentDialog
-        //    {
-        //        Title = "Enter The Number of Splits",
-        //        XamlRoot = ((UIElement)o).XamlRoot,
-        //        Content = nb,
-        //        PrimaryButtonText = "Okay",
-        //        SecondaryButtonText = "Cancel"
-        //    }.ShowAsync() == ContentDialogResult.Primary)
-        //        SplitHorizontally((int)nb.Value);
-        //} else
-        //{
-        SplitHorizontally(2);
-        //}
+        SplitHorizontally(CellAddCount);
+    }
+    public int CellAddCount = 2;
+    public string CellAddCountAsString => CellAddCount.ToString();
+    public void AddCellAddCountClickEv(object o, RoutedEventArgs _2)
+    {
+        CellAddCount += 1;
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCount)));
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
+    }
+    public void RemoveCellAddCountClickEv(object o, RoutedEventArgs _2)
+    {
+        if (CellAddCount <= 2) return;
+        CellAddCount -= 1;
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCount)));
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
+    }
+    public abstract void SplitVertically(int Amount);
+    public void SplitVerticallyClickEv(object o, RoutedEventArgs _2)
+    {
+        SplitVertically(CellAddCount);
     }
 
-    void SplitVertically(int Amount);
-    void SplitVerticallyClickEv(object o, RoutedEventArgs _2)
-    {
-        //if (Keyboard.IsShiftDown)
-        //{
-        //    var nb = new NumberBox { Value = 2 };
-        //    if (await new ContentDialog
-        //    {
-        //        Title = "Enter The Number of Splits",
-        //        XamlRoot = ((UIElement)o).XamlRoot,
-        //        Content = nb,
-        //        PrimaryButtonText = "Okay",
-        //        SecondaryButtonText = "Cancel"
-        //    }.ShowAsync() == ContentDialogResult.Primary)
-        //        SplitVertically((int)nb.Value);
-        //}
-        //else
-        //{
-        SplitVertically(2);
-        //}
-    }
-
-    void RegisterWindow(Window Window);
-
-    void DragOverEv(object sender, DragEventArgs e)
+    public abstract void RegisterWindow(Window Window);
+    public void DragOverEv(object sender, DragEventArgs e)
     {
         // Error https://github.com/microsoft/microsoft-ui-xaml/issues/7002
         // There MUST BE NO SUBCELL AND CURRNETCELL
@@ -269,7 +237,7 @@ public interface ICell : INotifyPropertyChanged
             e.AcceptedOperation = DataPackageOperation.Move;
     }
 
-    async void DropEv(object sender, DragEventArgs e)
+    public async void DropEv(object sender, DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!Empty) return;
@@ -285,18 +253,18 @@ public interface ICell : INotifyPropertyChanged
             RegisterWindow(window);
         }
     }
-    public void LoadEv(object sender, RoutedEventArgs e)
+
+    public event PropertyChangedEventHandler? PropertyChanged
     {
-        // ThePresentor does not update the selector when property changed is fired
-        PropertyChanged += delegate
+        add
         {
-            if (sender is Grid CP)
-            {
-                // Invalidate Content Template Selector
-                //var t = CP.ContentTemplateSelector;
-                //CP.ContentTemplateSelector = null;
-                //CP.ContentTemplateSelector = t;
-            }
-        };
+            _PropertyChanged += value;
+            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+        }
+        remove
+        {
+            _PropertyChanged -= value;
+        }
     }
+    protected PropertyChangedEventHandler? _PropertyChanged;
 }

@@ -74,11 +74,11 @@ public partial class App : Application
         m_window.Activate();
     }
 
-    private static void OnUnobservedException(object sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();
+    private static void OnUnobservedException(object? sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();
 
-    private static void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
+    private static void OnUnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
 
-    private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+    private void CurrentDomain_FirstChanceException(object? sender, FirstChanceExceptionEventArgs e)
     {
     }
 }

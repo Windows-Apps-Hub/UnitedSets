@@ -15,7 +15,7 @@ namespace UnitedSets.Helpers
         WindowsSystemDispatcherQueueHelper? m_wsdqHelper;
         MicaController? m_micaController;
         SystemBackdropConfiguration? m_configurationSource;
-        Window window;
+        Window? window;
 
         public bool TrySetMicaBackdrop(Window _window)
         {
@@ -64,7 +64,8 @@ namespace UnitedSets.Helpers
                 m_micaController.Dispose();
                 m_micaController = null;
             }
-            window.Activated -= Window_Activated;
+            if (window is not null)
+                window.Activated -= Window_Activated;
             m_configurationSource = null;
         }
     }

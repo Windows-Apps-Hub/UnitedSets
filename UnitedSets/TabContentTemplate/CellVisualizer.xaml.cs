@@ -47,8 +47,8 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
 
     private void CellChanged(object? sender, PropertyChangedEventArgs e)
     {
-        //if (e.PropertyName != "HoverEffect")
-        DispatcherQueue.TryEnqueue(() => UpdateTemplate());
+        if (e.PropertyName is not (nameof(Cell.CellAddCountAsString) or nameof(Cell.CellAddCount)))
+            DispatcherQueue.TryEnqueue(() => UpdateTemplate());
         //else
         //{
         //    if (Cell is not null)

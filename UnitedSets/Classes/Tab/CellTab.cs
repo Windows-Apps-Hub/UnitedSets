@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
-using SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,7 +57,7 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
 
     public override BitmapImage? Icon => null;
 
-    public override string Title => "Cell Tab Sample";
+    public override string Title => "Cell Tab";
 
     public override IEnumerable<Window> Windows => Enumerable.Repeat(default(Window), 0);
 
@@ -86,14 +85,15 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
 
     public override void DetachAndDispose(bool JumpToCursor = false)
     {
-        var window = new MainWindow();
-        window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
-        foreach (var cell in ((ICell)MainCell).AllSubCells)
+
+        //var window = new MainWindow();
+        //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
+        foreach (var cell in MainCell.AllSubCells)
         {
             if (cell.CurrentCell is HwndHost hwndHost) hwndHost.DetachAndDispose();
         }
         _IsDisposed = true;
-        window.Activate();
+        //window.Activate();
     }
 
     public void ContentLoadEv(object sender, RoutedEventArgs e)
@@ -120,20 +120,20 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
 
     public async override Task TryCloseAsync()
     {
-        var allcells = ((ICell)MainCell).AllSubCells.ToArray();
-        await Task.WhenAll(
-            from cell in allcells
-            where cell.HasWindow
-            select cell.CurrentCell!.HostedWindow.TryCloseAsync()
-        );
-        if (((ICell)MainCell).AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.HostedWindow.IsValid))
+        await Task.Run(async delegate
         {
-            return;
-        } else
-        {
+            var allcells = MainCell.AllSubCells.ToArray();
+            await Task.WhenAll(
+                from cell in allcells
+                where cell.HasWindow
+                select cell.CurrentCell!.HostedWindow.TryCloseAsync()
+            );
+            while (MainCell.AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.HostedWindow.IsValid))
+            {
+                await Task.Delay(500);
+            }
             _IsDisposed = true;
-            if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
-        }
-
+        });
+        if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
     }
 }

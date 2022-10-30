@@ -29,7 +29,7 @@ namespace UnitedSets.Pages
     /// </summary>
     public sealed partial class OOBEPage : Page
     {
-        public SettingsService Settings = App.Current.Services.GetService<SettingsService>();
+        public SettingsService Settings = App.Current.Services.GetService<SettingsService>() ?? throw new NullReferenceException();
         public OOBEPage()
         {
             this.InitializeComponent();
@@ -87,9 +87,9 @@ namespace UnitedSets.Pages
                 Stepper.Visibility = Visibility.Collapsed;
         }
         // TEMPORARY
-        private async void CompletedOOBE_Click(object sender, RoutedEventArgs e)
+        private void CompletedOOBE_Click(object sender, RoutedEventArgs e)
         {
-            App.Current.o_window.Hide();
+            App.Current.o_window?.Hide();
             App.Current.LaunchNewMain();
         }
     }

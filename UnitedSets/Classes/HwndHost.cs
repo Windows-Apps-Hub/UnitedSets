@@ -108,7 +108,7 @@ public class HwndHost : FrameworkElement, IDisposable
         set
         {
             _IsWindowVisible = value;
-            ForceUpdateWindow();
+            Task.Run(ForceUpdateWindow);
         }
     }
     readonly long VisiblePropertyChangedToken;
@@ -138,9 +138,9 @@ public class HwndHost : FrameworkElement, IDisposable
         VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, Propchanged);
         AddHwndHost(this);
     }
-    void Propchanged(DependencyObject _, DependencyProperty _1) => ForceUpdateWindow();
-    void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs) => ForceUpdateWindow();
-    void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e) => ForceUpdateWindow();
+    void Propchanged(DependencyObject _, DependencyProperty _1) => Task.Run(ForceUpdateWindow);
+    void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs) => Task.Run(ForceUpdateWindow);
+    void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e) => Task.Run(ForceUpdateWindow);
     public void DetachAndDispose()
     {
         Dispose();

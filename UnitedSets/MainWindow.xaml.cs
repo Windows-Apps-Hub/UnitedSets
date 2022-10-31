@@ -250,14 +250,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
             }
         }
-        //else
-        //{
-        //    if (OtherWindowDragging != default)
-        //    {
-        //        DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
-        //        OtherWindowDragging = default;
-        //    }
-        //}
     }
     static ((double X1, double Y1, double X2, double Y2), Cell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)
     {

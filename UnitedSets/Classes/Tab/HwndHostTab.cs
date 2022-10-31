@@ -73,7 +73,7 @@ public class HwndHostTab : TabBase
         var icon = Window.LargeIcon ?? Window.SmallIcon;
         if (icon is not null)
         {
-            _IconBmpImg = await IconHelper.ImageFromIcon(icon);
+            _IconBmpImg = await ImageHelper.ImageFromBitmap(icon);
             icon.Dispose();
             InvokePropertyChanged(nameof(Icon));
         }

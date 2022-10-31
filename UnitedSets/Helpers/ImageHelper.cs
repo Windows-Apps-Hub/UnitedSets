@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace UnitedSets.Helpers;
 
-static class IconHelper
+static class ImageHelper
 {
-    public async static ValueTask<BitmapImage> ImageFromIcon(Bitmap Icon)
+    public async static ValueTask<BitmapImage> ImageFromBitmap(Bitmap bmp)
     {
         using var ms = new MemoryStream();
-        Icon.MakeTransparent(Color.Black);
-        Icon.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        bmp.MakeTransparent(Color.Black);
+        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
         return await ImageFromStream(ms);
     }
     public async static ValueTask<BitmapImage> ImageFromStream(Stream Stream)

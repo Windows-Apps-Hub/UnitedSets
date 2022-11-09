@@ -440,6 +440,18 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         var newTab = new HwndHostTab(this, newWindow);
         Tabs.Add(newTab);
         TabView.SelectedItem = newTab;
+        TabView.SelectionChanged += TabSelectionChanged;
+    }
+
+    private void TabSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (TabView.SelectedIndex is not -1)
+        {
+            Title = $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count-1} Tabs) - United Sets";
+        } else
+        {
+            Title = "United Sets";
+        }
     }
 
     public static void TabDroppedOutside(TabView _1, TabViewTabDroppedOutsideEventArgs args)

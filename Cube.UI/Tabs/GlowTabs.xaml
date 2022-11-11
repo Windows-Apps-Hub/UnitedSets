@@ -27,7 +27,9 @@
                             <Grid
                                             x:Name="TabContainerGrid"
                                             Background="Transparent"
-                                            XYFocusKeyboardNavigation="Enabled">
+                                            XYFocusKeyboardNavigation="Enabled"
+                                VerticalAlignment="Stretch"
+                                Grid.RowSpan="2">
 
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition x:Name="LeftContentColumn" Width="Auto" />
@@ -40,15 +42,16 @@
                                                 x:Name="LeftContentPresenter"
                                                 Grid.Column="0"
                                                 Content="{TemplateBinding TabStripHeader}"
-                                                ContentTemplate="{TemplateBinding TabStripHeaderTemplate}" />
+                                                ContentTemplate="{TemplateBinding TabStripHeaderTemplate}"
+                                    VerticalAlignment="Center"/>
 
                                 <Grid x:Name="ShadowReceiver" Grid.ColumnSpan="4" />
 
                                 <primitives:TabViewListView
                                                 x:Name="TabListView"
                                                 Grid.Column="1"
-                                                VerticalAlignment="Bottom"
-                                                Margin="4, 0, 4, 4"
+                                                VerticalAlignment="Top"
+                                                Margin="4, 4, 4, 4"
                                                 AllowDrop="{TemplateBinding AllowDropTabs}"
                                                 CanDragItems="{TemplateBinding CanDragTabs}"
                                                 CanReorderItems="{TemplateBinding CanReorderTabs}"
@@ -89,6 +92,7 @@
                                                 Visibility="{Binding IsAddTabButtonVisible, RelativeSource={RelativeSource TemplatedParent}}" />
 
                                 <ContentPresenter
+                                    VerticalAlignment="Center"
                                                 x:Name="RightContentPresenter"
                                                 Grid.Column="3"
                                                 Margin="0,0,250,0"

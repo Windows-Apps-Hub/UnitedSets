@@ -169,7 +169,7 @@ public class HwndHost : FrameworkElement, IDisposable
             WindowToHost.IsVisible = false;
             return;
         }
-        
+
         bool Check = false;
         if (CountDown > 0)
         {
@@ -199,38 +199,38 @@ public class HwndHost : FrameworkElement, IDisposable
             return;
         }
         Updating?.Invoke();
-            var YShift = WinUIWindow.IsMaximized ? 8 : 0;
-            var oldBounds = WindowToHost.Bounds;
-            var newBounds = new Rectangle(
-            Pt.X + 8,
-            Pt.Y + YShift,
-            (int)(CacheWidth * scale),
-            (int)(CacheHeight * scale)
-            );
-            if (oldBounds != newBounds)
+        var YShift = WinUIWindow.IsMaximized ? 8 : 0;
+        var oldBounds = WindowToHost.Bounds;
+        var newBounds = new Rectangle(
+        Pt.X + 8,
+        Pt.Y + YShift,
+        (int)(CacheWidth * scale),
+        (int)(CacheHeight * scale)
+        );
+        if (oldBounds != newBounds)
+        {
+            if (Check && WindowEx.ForegroundWindow == WindowToHost)
             {
-                if (Check && WindowEx.ForegroundWindow == WindowToHost)
-                {
-                    DetachAndDispose();
-                    return;
-                }
-                else WindowToHost.Bounds = newBounds;
+                DetachAndDispose();
+                return;
             }
-            if (!IsOwnerSetSuccessful)
-            {
-            if (new WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
-                {
-                    await Task.Delay(500);
-                    if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
-                    {
-                        WindowToHost.IsVisible = false;
-                        WindowToHost.IsVisible = true;
-                        WindowToHost.Focus();
-                    }
-                }
-            }
-        WindowToHost.IsVisible = true;
+            else WindowToHost.Bounds = newBounds;
         }
+        if (!IsOwnerSetSuccessful)
+        {
+            if (new WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == WinUIWindow))
+            {
+                await Task.Delay(500);
+                if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
+                {
+                    WindowToHost.IsVisible = false;
+                    WindowToHost.IsVisible = true;
+                    WindowToHost.Focus();
+                }
+            }
+        }
+        WindowToHost.IsVisible = true;
+    }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
     public bool IsDisposed { get; private set; }

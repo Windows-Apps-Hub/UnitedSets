@@ -245,10 +245,8 @@ public abstract class ICell : INotifyPropertyChanged
         var formats = dataview.AvailableFormats.ToList();
         if (formats.Contains("UnitedSetsTabWindow"))
         {
-            var stream = (IRandomAccessStream)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
-            byte[] bytes = new byte[sizeof(long)];
-            await stream.AsStreamForRead().ReadAsync(bytes);
-            var window = Window.FromWindowHandle((nint)BitConverter.ToInt64(bytes));
+            var hwnd = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
+            var window = Window.FromWindowHandle((nint)hwnd);
             var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
             RegisterWindow(window);
         }

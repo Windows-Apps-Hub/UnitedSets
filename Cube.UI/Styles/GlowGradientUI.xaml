@@ -985,7 +985,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="RootGrid" Background="Transparent" Height="32" Width="40">
+                    <Grid x:Name="RootGrid" Background="Transparent" Height="32" Width="32">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">

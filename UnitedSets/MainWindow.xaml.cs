@@ -382,6 +382,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         icon.DangerousAddRef(ref success);
         PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
         PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+
+        if (Keyboard.IsShiftDown)
+        {
+            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle.ToString()}");
+        }
     }
 
     readonly ContentDialog Dialog = new()
@@ -468,11 +473,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         //args.Data.Properties.Add("UnitedSetsTab", firstItem);
         if (args.Item is HwndHostTab item)
         {
-            var handleInLong = (long)item.Window.Handle.Value;
-            var ms = new MemoryStream();
-            ms.Write(BitConverter.GetBytes(handleInLong));
-            GC.KeepAlive(ms);
-            args.Data.SetData("UnitedSetsTabWindow", ms.AsRandomAccessStream());
+            args.Data.SetData("UnitedSetsTabWindow", (long)item.Window.Handle.Value);
         }
         //args.Data.RequestedOperation = DataPackageOperation.Move;
     }

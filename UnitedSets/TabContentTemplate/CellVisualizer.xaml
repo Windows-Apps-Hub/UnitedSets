@@ -14,8 +14,7 @@
             <Grid Visibility="Collapsed" IsHitTestVisible="False"/>
         </DataTemplate>
         <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:ICell">
-            <Grid AllowDrop="False" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
-                <!---Allow Drop Off until Windows App SDK 1.2 is released. there's a bug.-->
+            <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" HorizontalScrollMode="Auto" VerticalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled" MaxZoomFactor="1.5" MinZoomFactor="0.1">
                     <local:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                         <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Hold CTRL and Drag Window Here"/>
@@ -62,8 +61,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="EmptyCellDataTemplateWindowHover" x:DataType="class:ICell">
-            <Grid AllowDrop="False" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
-                <!---Allow Drop Off until Windows App SDK 1.2 is released. there's a bug.-->
+            <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                     <local:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                         <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Release Mouse Cursor To Drop Window"/>

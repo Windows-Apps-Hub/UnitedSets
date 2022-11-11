@@ -223,8 +223,7 @@ public class HwndHost : FrameworkElement, IDisposable
                 await Task.Delay(500);
                 if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
                 {
-                    WindowToHost.IsVisible = false;
-                    WindowToHost.IsVisible = true;
+                    WindowToHost.ActivateTopMost();
                     WindowToHost.Focus();
                 }
             }

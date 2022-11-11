@@ -385,7 +385,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
         if (Keyboard.IsShiftDown)
         {
-            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle.ToString()}");
+            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
         }
     }
 

@@ -142,8 +142,9 @@
             <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
             <TextBlock>
             • Hold SHIFT while clicking + icon to create Splitable Tab<LineBreak/>
-                • Drag a Tab out to release the Window<LineBreak/>
-                • Hold CTRL while dragging other window into United Sets to add the windoww
+            • Drag a Tab out to release the Window<LineBreak/>
+            • Hold CTRL while dragging other window into United Sets to add the window<LineBreak/>
+            • Hold SHIFT while opening new United Sets window to separate taskbar icons
             </TextBlock>
             <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
             <TextBlock>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>UnitedSets</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -13,6 +13,7 @@
 		<Nullable>Enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+		<AppxPackageDir>AppPackages\</AppxPackageDir>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
@@ -22,6 +23,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AddTabFlyout.xaml" />
+		<None Remove="ModifyWindowFlyout.xaml" />
 		<None Remove="OOBEWindow.xaml" />
 		<None Remove="Pages\OOBEPage.xaml" />
 		<None Remove="SettingsWindow.xaml" />
@@ -86,6 +88,11 @@
 	<ItemGroup>
 		<Folder Include="Assets\OOBE\" />
 		<Folder Include="Interfaces\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="ModifyWindowFlyout.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="TabContentTemplate\TabDataTemplate.xaml">

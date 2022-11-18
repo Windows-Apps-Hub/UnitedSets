@@ -25,6 +25,7 @@ using Microsoft.UI.Dispatching;
 using System.Threading;
 using System.IO;
 using WinWrapper;
+using System.Text.RegularExpressions;
 
 namespace UnitedSets;
 
@@ -73,7 +74,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             var size = MainAreaBorder.ActualSize;
             CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
             var idx = TabView.SelectedIndex;
-            SelectedTabCache = idx < 0 ? null : Tabs[idx];
+            SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
         };
         timer.Start();
         TabView.SelectionChanged += delegate
@@ -161,9 +162,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         continue;
                     if (!below.IsVisible) continue;
                     if (below.Bounds.Contains(CursorPos))
-                        // If there is window above United Sets and it covers up United Sets
-                        // Don't add tabs. User can't see the window
-                        return false;
+                        // Also Check Region
+                        if (below.Region is not System.Drawing.Rectangle rect ||
+                            new System.Drawing.Rectangle(below.Bounds.X + rect.X, below.Bounds.Y + rect.Y,
+                            rect.Width, rect.Height).Contains(CursorPos))
+                            // If there is window above United Sets and it covers up United Sets
+                            // Don't add tabs. User can't see the window
+                            return false;
                 }
                 return false;
             }
@@ -419,7 +424,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             AddTab(result);
         }
     }
-    void AddTab(WindowEx newWindow)
+    void AddTab(WindowEx newWindow, int? index = null)
     {
         if (!newWindow.IsValid)
             return;
@@ -443,7 +448,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
             return;
         var newTab = new HwndHostTab(this, newWindow);
-        Tabs.Add(newTab);
+        if (index.HasValue)
+            Tabs.Insert(index.Value, newTab);
+        else
+            Tabs.Add(newTab);
         TabView.SelectedItem = newTab;
         TabView.SelectionChanged += TabSelectionChanged;
     }
@@ -494,7 +502,18 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             var a = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
             var window = WindowEx.FromWindowHandle((nint)a);
             var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-            AddTab(window);
+            var pt = e.GetPosition(TabView);
+            var finalIdx = (
+                        from index in Enumerable.Range(0, Tabs.Count)
+                        let ele = TabView.ContainerFromIndex(index) as UIElement
+                        let posele = ele.TransformToVisual(TabView).TransformPoint(default)
+                        let size = ele.ActualSize
+                        let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
+                        let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
+                        where IsMoreThanTopLeft && IsLessThanBotRigh
+                        select (int?)index
+                    ).FirstOrDefault();
+            AddTab(window, finalIdx);
         }
     }
 

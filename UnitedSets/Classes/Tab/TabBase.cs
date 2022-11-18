@@ -81,4 +81,10 @@ public abstract class TabBase : INotifyPropertyChanged
     public void TabClickEv(object sender, PointerRoutedEventArgs e) => Focus();
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void InvokePropertyChanged(string? PropertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+
+    protected virtual void OnDoubleClick() { }
+    public void TabDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    {
+        OnDoubleClick();
+    }
 }

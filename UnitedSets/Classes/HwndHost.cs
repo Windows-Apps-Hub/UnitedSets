@@ -12,7 +12,8 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-
+using Windows.Win32;
+using Windows.Win32.Graphics.Dwm;
 namespace UnitedSets.Classes;
 
 public class HwndHost : FrameworkElement, IDisposable
@@ -93,11 +94,13 @@ public class HwndHost : FrameworkElement, IDisposable
             Name = "HwndHostLoop"
         }.Start();
     }
+    static bool IsDwmBackdropSupported = Environment.OSVersion.Version.Build > 22621;
 
     readonly MainWindow Window;
     readonly AppWindow WinUI;
     readonly WindowEx WindowToHost;
     readonly WindowEx WinUIWindow;
+    public WindowEx ParentWindow => WinUIWindow;
     bool IsOwnerSetSuccessful;
     bool _IsWindowVisible;
     bool _DefaultIsResizable;
@@ -113,7 +116,94 @@ public class HwndHost : FrameworkElement, IDisposable
     }
     readonly long VisiblePropertyChangedToken;
     readonly WINDOW_STYLE InitialStyle;
-    //readonly WINDOW_EX_STYLE InitialExStyle;
+    readonly Rectangle? InitialRegion;
+    readonly DWM_SYSTEMBACKDROP_TYPE InitialBackdropType;
+    bool _ActivateCrop = false;
+    public bool ActivateCrop
+    {
+        get => _ActivateCrop;
+        set
+        {
+            var WindowToHost = this.WindowToHost;
+            if (value)
+            {
+                if (IsDwmBackdropSupported && !IsDisposed)
+                {
+                    SetBackdrop = true;
+                    WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
+                    WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT;
+                }
+            }
+            else
+            {
+                if (SetBackdrop)
+                {
+                    SetBackdrop = false;
+                    WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, InitialBackdropType);
+                    WindowToHost.ExStyle = InitialExStyle;
+                }
+            }
+            _ActivateCrop = value;
+        }
+    }
+    bool _BorderlessWindow = false;
+    public bool BorderlessWindow
+    {
+        get => _BorderlessWindow;
+        set
+        {
+            var WindowToHost = this.WindowToHost;
+            if (value && !IsDisposed)
+            {
+                WindowToHost.Style = WINDOW_STYLE.WS_POPUP;
+            }
+            else
+            {
+                WindowToHost.Style = InitialStyle;
+            }
+            _BorderlessWindow = value;
+        }
+    }
+    bool SetBackdrop = false;
+    bool ForceInvalidateCrop = false;
+    int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
+    public int CropTop
+    {
+        get => _CropTop;
+        set
+        {
+            _CropTop = value;
+            ForceInvalidateCrop = true;
+        }
+    }
+    public int CropBottom
+    {
+        get => _CropBottom;
+        set
+        {
+            _CropBottom = value;
+            ForceInvalidateCrop = true;
+        }
+    }
+    public int CropLeft
+    {
+        get => _CropLeft;
+        set
+        {
+            _CropLeft = value;
+            ForceInvalidateCrop = true;
+        }
+    }
+    public int CropRight
+    {
+        get => _CropRight;
+        set
+        {
+            _CropRight = value;
+            ForceInvalidateCrop = true;
+        }
+    }
+    readonly WINDOW_EX_STYLE InitialExStyle;
     public HwndHost(MainWindow Window, WindowEx WindowToHost)
     {
         this.Window = Window;
@@ -130,7 +220,12 @@ public class HwndHost : FrameworkElement, IDisposable
         WindowToHost.Owner = WinUIWindow;
         IsOwnerSetSuccessful = WindowToHost.Owner == WinUIWindow;
         InitialStyle = WindowToHost.Style;
-        //InitialExStyle = WindowToHost.ExStyle;
+        InitialExStyle = WindowToHost.ExStyle;
+
+        InitialRegion = WindowToHost.Region;
+        if (IsDwmBackdropSupported)
+            InitialBackdropType = WindowToHost.DwmGetWindowAttribute<DWM_SYSTEMBACKDROP_TYPE>((DWMWINDOWATTRIBUTE)38);
+
         //if (!IsOwnerSetSuccessful) WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
@@ -145,8 +240,9 @@ public class HwndHost : FrameworkElement, IDisposable
     {
         Dispose();
         var WindowToHost = this.WindowToHost;
-        WindowToHost.Style = InitialStyle;
-        //WindowToHost.ExStyle = InitialExStyle;
+        BorderlessWindow = false;
+        WindowToHost.Region = InitialRegion;
+        ActivateCrop = false;
         WindowToHost.Owner = default;
         WindowToHost.IsResizable = _DefaultIsResizable;
         WindowToHost.IsVisible = true;
@@ -157,6 +253,7 @@ public class HwndHost : FrameworkElement, IDisposable
     public event Action? Closed;
     public event Action? Updating;
     int CountDown = 5;
+    Size PrevWindowSize;
     public async void ForceUpdateWindow()
     {
         if (CacheWidth == 0 || CacheHeight == 0) return; // wait for update
@@ -185,6 +282,8 @@ public class HwndHost : FrameworkElement, IDisposable
             X = (int)(windowbounds.X + CacheXFromWindow * scale),
             Y = (int)(windowbounds.Y + CacheYFromWindow * scale)
         };
+
+
         try
         {
             WindowToHost.IsResizable = false;
@@ -202,10 +301,10 @@ public class HwndHost : FrameworkElement, IDisposable
         var YShift = WinUIWindow.IsMaximized ? 8 : 0;
         var oldBounds = WindowToHost.Bounds;
         var newBounds = new Rectangle(
-        Pt.X + 8,
-        Pt.Y + YShift,
-        (int)(CacheWidth * scale),
-        (int)(CacheHeight * scale)
+        Pt.X + 8 - _CropLeft,
+        Pt.Y + YShift - _CropTop,
+        (int)(CacheWidth * scale) + _CropLeft + _CropRight,
+        (int)(CacheHeight * scale) + _CropTop + _CropBottom
         );
         if (oldBounds != newBounds)
         {
@@ -215,6 +314,11 @@ public class HwndHost : FrameworkElement, IDisposable
                 return;
             }
             else WindowToHost.Bounds = newBounds;
+            if (ActivateCrop)
+                if (ForceInvalidateCrop || oldBounds.Size != newBounds.Size)
+                {
+                    WindowToHost.Region = new(_CropLeft, _CropTop, WindowToHost.Bounds.Width - _CropLeft - _CropRight, WindowToHost.Bounds.Height - _CropTop - _CropBottom);
+                }
         }
         if (!IsOwnerSetSuccessful)
         {
@@ -229,6 +333,7 @@ public class HwndHost : FrameworkElement, IDisposable
             }
         }
         WindowToHost.IsVisible = true;
+        PrevWindowSize = WindowToHost.Bounds.Size;
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;

@@ -8,6 +8,8 @@ using WindowEx = WinWrapper.Window;
 using System.Collections.Generic;
 using System.Linq;
 using UnitedSets.Helpers;
+using static WinUIEx.WindowExtensions;
+using WinWrapper;
 
 namespace UnitedSets.Classes;
 
@@ -42,7 +44,7 @@ public class HwndHostTab : TabBase
     {
         MainWindow = Window;
         this.Window = WindowEx;
-        HwndHost = new(Window, WindowEx) { IsWindowVisible = false };
+        HwndHost = new(Window, WindowEx) { IsWindowVisible = false, BorderlessWindow = Keyboard.IsAltDown };
         Closed = delegate
         {
             if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
@@ -96,5 +98,11 @@ public class HwndHostTab : TabBase
     {
         HwndHost.IsWindowVisible = true;
         HwndHost.FocusWindow();
+    }
+    protected override async void OnDoubleClick()
+    {
+        var flyout = new ModifyWindowFlyout(HwndHost);
+        await flyout.ShowAsync();
+        flyout.Close();
     }
 }

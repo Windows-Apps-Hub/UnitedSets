@@ -1,6 +1,8 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EasyCSharp;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
+using Windows.Foundation;
 
 namespace UnitedSets;
 
@@ -10,12 +12,13 @@ public sealed partial class ModifyWindowFlyoutModule
     {
         HwndHost = hwndHost;
         InitializeComponent();
-        WindowCropMarginToggleSwitch_Toggled(null, null);
-        BorderlessToggleSwitch_Toggled(null, null);
+        OnWindowCropMarginToggleSwitchToggled(null, null);
+        OnBorderlessToggleSwitchToggled(null, null);
     }
     readonly HwndHost HwndHost;
 
-    private void TopMarginShortcutClick(object sender, RoutedEventArgs e)
+    [Event(typeof(RoutedEventHandler))]
+    void TopMarginShortcutClick(object sender)
     {
         if (sender is Button btn)
         {
@@ -23,27 +26,24 @@ public sealed partial class ModifyWindowFlyoutModule
         }
     }
 
-    private void TopCropMargin_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        HwndHost.CropTop = (int)TopCropMargin.Value;
-    }
+    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
+    void OnTopCropMarginChanged()
+        => HwndHost.CropTop = (int)TopCropMargin.Value;
 
-    private void LeftCropMargin_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        HwndHost.CropLeft = (int)LeftCropMargin.Value;
-    }
+    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
+    void OnLeftCropMarginChanged()
+        => HwndHost.CropLeft = (int)LeftCropMargin.Value;
 
-    private void RightCropMargin_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        HwndHost.CropRight = (int)RightCropMargin.Value;
-    }
+    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
+    void OnRightCropMarginChanged()
+        => HwndHost.CropRight = (int)RightCropMargin.Value;
 
-    private void BottomCropMargin_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        HwndHost.CropBottom = (int)BottomCropMargin.Value;
-    }
+    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
+    void OnBottomCropMarginChanged()
+        => HwndHost.CropBottom = (int)BottomCropMargin.Value;
 
-    private void WindowCropMarginToggleSwitch_Toggled(object? sender, RoutedEventArgs? e)
+    [Event(typeof(RoutedEventHandler))]
+    void OnWindowCropMarginToggleSwitchToggled()
     {
         if (!WindowCropMarginToggleSwitch.IsOn)
         {
@@ -56,7 +56,8 @@ public sealed partial class ModifyWindowFlyoutModule
         WindowCropMarginSettingsStackPanel.Visibility = WindowCropMarginToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void BorderlessToggleSwitch_Toggled(object? sender, RoutedEventArgs? e)
+    [Event(typeof(RoutedEventHandler))]
+    void OnBorderlessToggleSwitchToggled()
     {
         HwndHost.BorderlessWindow = BorderlessToggleSwitch.IsOn;
         if (!BorderlessToggleSwitch.IsOn)
@@ -64,16 +65,18 @@ public sealed partial class ModifyWindowFlyoutModule
         BorderlessSettingsStackPanel.Visibility = BorderlessToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void ResetClick(object sender, RoutedEventArgs e)
+#pragma warning disable CA1822 // Mark members as static
+    [Event(typeof(RoutedEventHandler))]
+    void OnResetClick(object sender)
     {
         if (sender is Button btn && btn.Tag is NumberBox nbb)
         {
             nbb.Value = 0;
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 
-    private void DrawClick(object sender, RoutedEventArgs e)
-    {
-        HwndHost.HostedWindow.Redraw();
-    }
+    [Event(typeof(RoutedEventHandler))]
+    void OnRedrawClick()
+        => HwndHost.HostedWindow.Redraw();
 }

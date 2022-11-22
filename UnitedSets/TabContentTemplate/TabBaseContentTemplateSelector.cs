@@ -23,18 +23,3 @@ public class TabBaseContentTemplateSelector : DataTemplateSelector
         };
     }
 }
-//public class CellContentTemplateSelector : DataTemplateSelector
-//{
-//    //static TabDataTemplate DataTemplates => TabDataTemplate.Singleton.Value;
-//    protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-//    {
-//        return SelectTemplateCore(item);
-//    }
-//    protected override DataTemplate SelectTemplateCore(object item)
-//    {
-//        //if (item is not Cell cell) return base.SelectTemplateCore(item);
-//        //if (cell.Empty)
-//        //    return DataTemplates.EmptyCellTabDataTemplate;
-//        return base.SelectTemplateCore(item);
-//    }
-//}

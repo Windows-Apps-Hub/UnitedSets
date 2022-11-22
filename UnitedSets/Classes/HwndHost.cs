@@ -333,7 +333,6 @@ public class HwndHost : FrameworkElement, IDisposable
             }
         }
         WindowToHost.IsVisible = true;
-        PrevWindowSize = WindowToHost.Bounds.Size;
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;

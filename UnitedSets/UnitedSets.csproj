@@ -73,17 +73,17 @@
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Update="OOBEWindow.xaml">
+		<Page Update="Window\OOBEWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
 	<ItemGroup>
-		<Page Update="SettingsWindow.xaml">
+		<Page Update="Window\SettingsWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
 	<ItemGroup>
-		<Page Update="AddTabFlyout.xaml">
+		<Page Update="Window\Flyout\AddTabFlyout.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

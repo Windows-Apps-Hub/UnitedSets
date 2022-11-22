@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EasyCSharp;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
 
@@ -17,10 +18,13 @@ public sealed partial class MultiWindowModifyFlyoutModule
     }
     readonly HwndHost[] HwndHosts;
 
-    private void HwndHostSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    [Event(typeof(SelectionChangedEventHandler))]
+    void HwndHostSelector_SelectionChanged()
     {
         if (HwndHostSelector.SelectedIndex != -1)
-            ModifyWindowFlyoutModulePlace.Child = new ModifyWindowFlyoutModule(HwndHosts[HwndHostSelector.SelectedIndex]);
+            ModifyWindowFlyoutModulePlace.Child = new ModifyWindowFlyoutModule(
+                HwndHosts[HwndHostSelector.SelectedIndex]
+            );
         else
             ModifyWindowFlyoutModulePlace.Child = null;
     }

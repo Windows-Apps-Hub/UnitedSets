@@ -1,4 +1,4 @@
-﻿<WinUIEx:WindowEx
+﻿<local:MicaWindow
     x:Class="UnitedSets.TabPropertiesFlyout"
     xmlns:WinUIEx="using:WinUIEx"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -29,4 +29,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</WinUIEx:WindowEx>
+</local:MicaWindow>

@@ -22,7 +22,6 @@ static class ImageHelper
         Stream.Seek(0, SeekOrigin.Begin);
         await image.SetSourceAsync(Stream.AsRandomAccessStream());
 
-
         return image;
     }
 }

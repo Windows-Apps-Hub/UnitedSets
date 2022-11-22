@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using Windows.Storage.Streams;
 using WinWrapper;
+using EasyCSharp;
 
 namespace UnitedSets.Classes;
 public partial class Cell : ICell, INotifyPropertyChanged
@@ -25,22 +26,16 @@ public partial class Cell : ICell, INotifyPropertyChanged
         _Orientation = Orientation;
     }
 
-
+    [Property(OnChanged = nameof(OnCurrentCellChanged), OverrideKeyword = true)]
     HwndHost? _CurrentCell;
 
+    [Property(OnChanged = nameof(OnSubCellsUpdate), OverrideKeyword = true)]
     Cell[]? _SubCells;
 
     Orientation _Orientation;
+    [Property(OnChanged = nameof(OnVisibleChanged))]
     bool _IsParentVisible = true;
-    bool IsParentVisible
-    {
-        get => _IsParentVisible;
-        set
-        {
-            _IsParentVisible = value;
-            OnVisibleChanged();
-        }
-    }
+    
     bool _IsVisible;
     public override bool IsVisible
     {
@@ -70,47 +65,27 @@ public partial class Cell : ICell, INotifyPropertyChanged
             _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HoverEffect)));
         }
     }
-    public override HwndHost? CurrentCell
-    {
-        get
-        {
-            return _CurrentCell;
-        }
 
-        set
+    void OnCurrentCellChanged()
+    {
+        if (_CurrentCell is not null)
         {
-            _CurrentCell = value;
-            if (value is not null)
+            _CurrentCell.Closed += delegate
             {
-                value.Closed += delegate
-                {
-                    CurrentCell = null;
-                };
-                value.IsWindowVisible = IsVisible;
-            }
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+                CurrentCell = null;
+            };
+            _CurrentCell.IsWindowVisible = IsVisible;
         }
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
     }
 
-
-
-    public override Cell[]? SubCells
+    void OnSubCellsUpdate()
     {
-        get
-        {
-            return _SubCells;
-        }
-
-        set
-        {
-            _SubCells = value;
-            if (value is not null)
-                foreach (var cell in value)
-                    cell.IsVisible = IsVisible;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-        }
+        if (_SubCells is not null)
+            foreach (var cell in _SubCells)
+                cell.IsVisible = IsVisible;
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
     }
-
 
 
     public override Orientation Orientation
@@ -195,7 +170,7 @@ public abstract class ICell : INotifyPropertyChanged
         yield return this;
         if (SubCells is null) yield break;
         foreach (var cell in SubCells)
-            foreach (var cellsubcell in ((ICell)cell).AllSubCells)
+            foreach (var cellsubcell in cell.AllSubCells)
                 yield return cellsubcell;
     }
 

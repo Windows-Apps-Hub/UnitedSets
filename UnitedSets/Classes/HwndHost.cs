@@ -14,9 +14,12 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
+using Windows.Foundation;
+using EasyCSharp;
+
 namespace UnitedSets.Classes;
 
-public class HwndHost : FrameworkElement, IDisposable
+public partial class HwndHost : FrameworkElement, IDisposable
 {
     readonly static System.Collections.Concurrent.ConcurrentDictionary<DispatcherQueue, List<HwndHost>> Dispatchers = new(5, 5);
     readonly static SynchronizedCollection<HwndHost> ActiveHwndHosts = new();
@@ -102,109 +105,71 @@ public class HwndHost : FrameworkElement, IDisposable
     readonly WindowEx WinUIWindow;
     public WindowEx ParentWindow => WinUIWindow;
     bool IsOwnerSetSuccessful;
-    bool _IsWindowVisible;
     bool _DefaultIsResizable;
     public WindowEx HostedWindow => WindowToHost;
-    public bool IsWindowVisible
-    {
-        get => _IsWindowVisible;
-        set
-        {
-            _IsWindowVisible = value;
-            Task.Run(ForceUpdateWindow);
-        }
-    }
+
+    bool SetBackdrop = false;
+    bool ForceInvalidateCrop = false;
+
+    [Property(OnChanged = nameof(IsWindowVisibleChanged))]
+    bool _IsWindowVisible;
+    void IsWindowVisibleChanged()
+        => Task.Run(ForceUpdateWindow);
+
     readonly long VisiblePropertyChangedToken;
     readonly WINDOW_STYLE InitialStyle;
     readonly Rectangle? InitialRegion;
     readonly DWM_SYSTEMBACKDROP_TYPE InitialBackdropType;
+
+    [Property(OnChanged = nameof(OnActivateCropChanged))]
     bool _ActivateCrop = false;
-    public bool ActivateCrop
+    void OnActivateCropChanged()
     {
-        get => _ActivateCrop;
-        set
+        var WindowToHost = this.WindowToHost;
+        if (_ActivateCrop)
         {
-            var WindowToHost = this.WindowToHost;
-            if (value)
+            if (IsDwmBackdropSupported && !IsDisposed)
             {
-                if (IsDwmBackdropSupported && !IsDisposed)
-                {
-                    SetBackdrop = true;
-                    WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
-                    WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT;
-                }
+                SetBackdrop = true;
+                WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
+                WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT;
             }
-            else
+        }
+        else
+        {
+            if (SetBackdrop)
             {
-                if (SetBackdrop)
-                {
-                    SetBackdrop = false;
-                    WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, InitialBackdropType);
-                    WindowToHost.ExStyle = InitialExStyle;
-                    WindowToHost.Region = null;
-                }
+                SetBackdrop = false;
+                WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, InitialBackdropType);
+                WindowToHost.ExStyle = InitialExStyle;
+                WindowToHost.Region = null;
             }
-            _ActivateCrop = value;
         }
     }
+
+    [Property(OnChanged = nameof(OnBorderlessWindowChanged))]
     bool _BorderlessWindow = false;
-    public bool BorderlessWindow
+    void OnBorderlessWindowChanged()
     {
-        get => _BorderlessWindow;
-        set
+        var WindowToHost = this.WindowToHost;
+        if (_BorderlessWindow && !IsDisposed)
         {
-            var WindowToHost = this.WindowToHost;
-            if (value && !IsDisposed)
-            {
-                WindowToHost.Style = WINDOW_STYLE.WS_POPUP;
-            }
-            else
-            {
-                WindowToHost.Style = InitialStyle;
-            }
-            _BorderlessWindow = value;
+            WindowToHost.Style = WINDOW_STYLE.WS_POPUP;
+        }
+        else
+        {
+            WindowToHost.Style = InitialStyle;
         }
     }
-    bool SetBackdrop = false;
-    bool ForceInvalidateCrop = false;
-    int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
-    public int CropTop
-    {
-        get => _CropTop;
-        set
-        {
-            _CropTop = value;
-            ForceInvalidateCrop = true;
-        }
-    }
-    public int CropBottom
-    {
-        get => _CropBottom;
-        set
-        {
-            _CropBottom = value;
-            ForceInvalidateCrop = true;
-        }
-    }
-    public int CropLeft
-    {
-        get => _CropLeft;
-        set
-        {
-            _CropLeft = value;
-            ForceInvalidateCrop = true;
-        }
-    }
-    public int CropRight
-    {
-        get => _CropRight;
-        set
-        {
-            _CropRight = value;
-            ForceInvalidateCrop = true;
-        }
-    }
+
+    
     readonly WINDOW_EX_STYLE InitialExStyle;
+    
+    [Property(OnChanged = nameof(SetForceInvalidateCropToTrue))]
+    int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
+
+    void SetForceInvalidateCropToTrue() => ForceInvalidateCrop = true;
+
     public HwndHost(MainWindow Window, WindowEx WindowToHost)
     {
         this.Window = Window;
@@ -231,12 +196,16 @@ public class HwndHost : FrameworkElement, IDisposable
         WinUI.Changed += WinUIAppWindowChanged;
         SizeChanged += WinUIAppWindowChanged;
 
-        VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, Propchanged);
+        VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, OnPropChanged);
         AddHwndHost(this);
     }
-    void Propchanged(DependencyObject _, DependencyProperty _1) => Task.Run(ForceUpdateWindow);
-    void WinUIAppWindowChanged(AppWindow _1, AppWindowChangedEventArgs ChangedArgs) => Task.Run(ForceUpdateWindow);
-    void WinUIAppWindowChanged(object sender, SizeChangedEventArgs e) => Task.Run(ForceUpdateWindow);
+    [Event(typeof(DependencyPropertyChangedCallback))]
+    void OnPropChanged() => Task.Run(ForceUpdateWindow);
+    
+    [Event(typeof(TypedEventHandler<AppWindow, AppWindowChangedEventArgs>))]
+    [Event(typeof(SizeChangedEventHandler))]
+    void WinUIAppWindowChanged() => Task.Run(ForceUpdateWindow);
+    
     public void DetachAndDispose()
     {
         Dispose();
@@ -277,7 +246,7 @@ public class HwndHost : FrameworkElement, IDisposable
         var windowbounds = WinUIWindow.Bounds;
 
         var scale = GetScale(WinUIWindow);
-        var Pt = new Point
+        var Pt = new System.Drawing.Point
         {
             X = (int)(windowbounds.X + CacheXFromWindow * scale),
             Y = (int)(windowbounds.Y + CacheYFromWindow * scale)
@@ -336,6 +305,7 @@ public class HwndHost : FrameworkElement, IDisposable
     }
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
+
     public bool IsDisposed { get; private set; }
     public void Dispose()
     {

@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EasyCSharp;
+using Microsoft.UI.Xaml;
 using System;
 using System.Threading.Tasks;
 using UnitedSets.Helpers;
 using WindowEx = WinWrapper.Window;
-using EasyCSharp;
 using static WinUIEx.WindowExtensions;
 using Windows.Foundation;
 // To learn more about WinUI, the WinUI project structure,

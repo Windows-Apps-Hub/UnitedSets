@@ -254,8 +254,6 @@ public class HwndHost : FrameworkElement, IDisposable
     public event Action? Closed;
     public event Action? Updating;
     int CountDown = 5;
-    Size PrevWindowSize;
-    bool AAAA = false;
     public async void ForceUpdateWindow()
     {
         if (CacheWidth == 0 || CacheHeight == 0) return; // wait for update

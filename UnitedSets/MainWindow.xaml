@@ -58,17 +58,18 @@
                     IsAddTabButtonVisible="True"
                     TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
                     VerticalAlignment="Center"
-                    TabDragStarting="{x:Bind local:MainWindow.TabDragStarting}"
-                    TabDroppedOutside="{x:Bind local:MainWindow.TabDroppedOutside}"
+                    TabDragStarting="TabDragStarting"
+                    TabDroppedOutside="TabDroppedOutside"
                     CanDragTabs="True"
                     CanReorderTabs="True"
                     BorderBrush="Transparent"
                     AllowDrop="True"
-                    DragOver="TabView_DragOver"
-                    Drop="TabView_Drop"
+                    DragOver="OnDragItemOverTabView"
+                    Drop="OnDropOverTabView"
                     MinHeight="42"
                     HorizontalAlignment="Left"
-                    AddTabButtonClick="AddTab"
+                    AddTabButtonClick="OnAddTabButtonClick"
+                    SelectionChanged="TabSelectionChanged"
                 >
                     <TabView.Resources>
                         <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
@@ -85,7 +86,7 @@
                             Tag="{x:Bind}"
                                 PointerPressed="{x:Bind TabClickEv}"
                                 AllowDrop="True"
-                                DragOver="TabViewItem_DragOver">
+                                DragOver="OnDragOverTabViewItem">
                                 <TabViewItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>

@@ -26,7 +26,8 @@ using System.Threading;
 using System.IO;
 using WinWrapper;
 using System.Text.RegularExpressions;
-
+using EasyCSharp;
+using Windows.Foundation;
 namespace UnitedSets;
 
 /// <summary>
@@ -34,6 +35,9 @@ namespace UnitedSets;
 /// </summary>
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public const string UnitedSetsTabWindowDragProperty = "UnitedSetsTabWindow";
     public static readonly uint UnitedSetCommunicationChangeWindowOwnership
         = PInvoke.RegisterWindowMessage(nameof(UnitedSetCommunicationChangeWindowOwnership));
 
@@ -48,65 +52,70 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
     DispatcherQueueTimer timer;
     WindowMessageMonitor WindowMessageMonitor;
-    public System.Drawing.Rectangle CacheMiddleAreaBounds { get; private set; }
+    public System.Drawing.Rectangle CacheMiddleAreaBounds { get; set; }
+
+    TabBase? SelectedTabCache;
     public MainWindow()
     {
         Title = "UnitedSets";
         InitializeComponent();
+        MinWidth = 100;
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
-        TabBase.MainWindows.Add(WindowEx);
-        AppWindow.Closing += OnWindowClosing;
-        Activated += FirstRun;
+        WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(CustomDragRegion);
-        CustomDragRegionUpdator.EffectiveViewportChanged += CustomDragRegionUpdator_EffectiveViewportChanged;
-        TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
-        WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
-        WindowMessageMonitor.WindowMessageReceived += MainWindow_WindowMessageReceived;
-        MinWidth = 100;
 
         timer = DispatcherQueue.CreateTimer();
         timer.Interval = TimeSpan.FromMilliseconds(500);
-        timer.Tick += delegate
-        {
-            var Pt = MainAreaBorder.TransformToVisual(Content).TransformPoint(
-                new Windows.Foundation.Point(0, 0)
-            );
-            var size = MainAreaBorder.ActualSize;
-            CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
-            var idx = TabView.SelectedIndex;
-            SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
-        };
+
+        TabBase.MainWindows.Add(WindowEx);
+        AppWindow.Closing += OnWindowClosing;
+        Activated += FirstRun;
+        SizeChanged += OnMainWindowResize;
+        CustomDragRegionUpdator.EffectiveViewportChanged += OnCustomDragRegionUpdatorCalled;
+        WindowMessageMonitor.WindowMessageReceived += OnWindowMessageReceived;
+        TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
+        timer.Tick += OnTimerLoopTick;
         timer.Start();
-        TabView.SelectionChanged += delegate
-        {
-            UnitedSetsHomeBackground.Visibility =
-                TabView.SelectedIndex != -1 && Tabs[TabView.SelectedIndex] is CellTab ?
-                Visibility.Collapsed :
-                Visibility.Visible;
-        };
-        SizeChanged += MainWindow_SizeChanged;
-        //AfterInit();
+        
     }
 
-    private void CustomDragRegionUpdator_EffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+    [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
+    void FirstRun()
+    {
+        Activated -= FirstRun;
+        var icon = PInvoke.LoadImage(
+            hInst: null,
+            name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
+            type: GDI_IMAGE_TYPE.IMAGE_ICON,
+        cx: 0,
+        cy: 0,
+            fuLoad: IMAGE_FLAGS.LR_LOADFROMFILE | IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_SHARED
+        );
+        bool success = false;
+        icon.DangerousAddRef(ref success);
+        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
+        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+
+        if (Keyboard.IsShiftDown)
+            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
+    }
+
+    [Event(typeof(TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs>))]
+    void OnCustomDragRegionUpdatorCalled()
     {
         CustomDragRegion.Width = CustomDragRegionUpdator.ActualWidth - 10;
         CustomDragRegion.Height = CustomDragRegionUpdator.ActualHeight;
     }
 
-    private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+    [Event(typeof(TypedEventHandler<object, WindowSizeChangedEventArgs>))]
+    void OnMainWindowResize()
     {
         TabView.MaxWidth = RootGrid.ActualWidth - 140;
     }
 
-    TabBase? SelectedTabCache;
-    //private async void AfterInit()
-    //{
-    //    await Task.Delay(1000);
-    //    Tabs.Add(new CellTab(this));
-    //}
-    private void MainWindow_WindowMessageReceived(object? sender, WindowMessageEventArgs e)
+    [Event(typeof(EventHandler<WindowMessageEventArgs>))]
+    void OnWindowMessageReceived(WindowMessageEventArgs e)
     {
         if (e.Message.MessageId == UnitedSetCommunicationChangeWindowOwnership)
         {
@@ -118,6 +127,143 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             }
             else e.Result = 0;
         }
+    }
+
+    readonly AddTabFlyout AddTabFlyout = new();
+
+    [Event(typeof(TypedEventHandler<TabView, object>))]
+    async void OnAddTabButtonClick()
+    {
+        if (Keyboard.IsShiftDown)
+        {
+            var newTab = new CellTab(this);
+            Tabs.Add(newTab);
+            TabView.SelectedItem = newTab;
+        } else
+        {
+            WindowEx.Minimize();
+            await AddTabFlyout.ShowAsync();
+            WindowEx.Restore();
+            var result = AddTabFlyout.Result;
+            AddTab(result);
+        }
+    }
+
+    void AddTab(WindowEx newWindow, int? index = null)
+    {
+        if (!newWindow.IsValid)
+            return;
+        newWindow = newWindow.Root;
+        if (newWindow.Handle == IntPtr.Zero)
+            return;
+        if (newWindow.Handle == AddTabFlyout.GetWindowHandle())
+            return;
+        if (newWindow.Handle == WindowEx.Handle)
+            return;
+        if (newWindow.ClassName is
+            "Shell_TrayWnd" // Taskbar
+            or "Progman" // Desktop
+            or "WindowsDashboard" // I forget
+            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
+            )
+            return;
+        // Check if United Sets has owner (United Sets in United Sets)
+        if (WindowEx.Root.Children.Any(x => x == newWindow))
+            return;
+        if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
+            return;
+        var newTab = new HwndHostTab(this, newWindow);
+        if (index.HasValue)
+            Tabs.Insert(index.Value, newTab);
+        else
+            Tabs.Add(newTab);
+        TabView.SelectedItem = newTab;
+    }
+
+    [Event(typeof(SelectionChangedEventHandler))]
+    void TabSelectionChanged()
+    {
+        UnitedSetsHomeBackground.Visibility =
+                TabView.SelectedIndex != -1 && Tabs[TabView.SelectedIndex] is CellTab ?
+                Visibility.Collapsed :
+                Visibility.Visible;
+
+        if (TabView.SelectedIndex is not -1)
+        {
+            Title = $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count-1} Tabs) - United Sets";
+        } else
+        {
+            Title = "United Sets";
+        }
+    }
+#pragma warning disable CA1822 // Mark members as static
+    
+    [Event(typeof(TypedEventHandler<TabView, TabViewTabDragStartingEventArgs>))]
+    void TabDragStarting(TabViewTabDragStartingEventArgs args)
+    {
+        if (args.Item is HwndHostTab item)
+            args.Data.SetData(UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+    }
+
+
+    [Event(typeof(DragEventHandler))]
+    void OnDragItemOverTabView(DragEventArgs e)
+    {
+        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
+            e.AcceptedOperation = DataPackageOperation.Move;
+    }
+#pragma warning restore CA1822 // Mark members as static
+
+    [Event(typeof(DragEventHandler))]
+    void OnDragOverTabViewItem(object sender)
+    {
+        if (sender is TabViewItem tvi && tvi.Tag is TabBase tb)
+            TabView.SelectedIndex = Tabs.IndexOf(tb);
+    }
+
+    [Event(typeof(DragEventHandler))]
+    async void OnDropOverTabView(DragEventArgs e)
+    {
+        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
+        {
+            var a = (long)await e.DataView.GetDataAsync(UnitedSetsTabWindowDragProperty);
+            var window = WindowEx.FromWindowHandle((nint)a);
+            var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+            var pt = e.GetPosition(TabView);
+            var finalIdx = (
+                from index in Enumerable.Range(0, Tabs.Count)
+                let ele = TabView.ContainerFromIndex(index) as UIElement
+                let posele = ele.TransformToVisual(TabView).TransformPoint(default)
+                let size = ele.ActualSize
+                let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
+                let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
+                where IsMoreThanTopLeft && IsLessThanBotRigh
+                select (int?)index
+            ).FirstOrDefault();
+            AddTab(window, finalIdx);
+        }
+    }
+
+#pragma warning disable CA1822 // Mark members as static
+    [Event(typeof(TypedEventHandler<TabView, TabViewTabDroppedOutsideEventArgs>))]
+    void TabDroppedOutside(TabViewTabDroppedOutsideEventArgs args)
+    {
+        if (args.Tab.Tag is TabBase Tab)
+            Tab.DetachAndDispose(JumpToCursor: true);
+    }
+#pragma warning restore CA1822 // Mark members as static
+
+    // UI Thread
+    [Event(typeof(TypedEventHandler<DispatcherQueueTimer, object>))]
+    void OnTimerLoopTick()
+    {
+        var Pt = MainAreaBorder.TransformToVisual(Content).TransformPoint(
+            new Point(0, 0)
+        );
+        var size = MainAreaBorder.ActualSize;
+        CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
+        var idx = TabView.SelectedIndex;
+        SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
     }
 
     // Different Thread
@@ -313,10 +459,21 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         }
         return null;
     }
-    async void OnWindowClosing(AppWindow _1, AppWindowClosingEventArgs e)
+
+    readonly ContentDialog ClosingWindowDialog = new()
+    {
+        Title = "Closing UnitedSets",
+        Content = "How do you want to close the app?",
+        PrimaryButtonText = "Release all Windows",
+        SecondaryButtonText = "Close all Windows",
+        CloseButtonText = "Cancel"
+    };
+
+    [Event(typeof(TypedEventHandler<AppWindow, AppWindowClosingEventArgs>))]
+    async void OnWindowClosing(AppWindowClosingEventArgs e)
     {
         e.Cancel = true;
-        Dialog.XamlRoot = Content.XamlRoot;
+        ClosingWindowDialog.XamlRoot = Content.XamlRoot;
         var item = TabView.SelectedItem;
         TabView.SelectedIndex = -1;
         TabView.Visibility = Visibility.Collapsed;
@@ -324,7 +481,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         ContentDialogResult result;
         try
         {
-            result = await Dialog.ShowAsync();
+            result = await ClosingWindowDialog.ShowAsync();
         }
         catch
         {
@@ -384,156 +541,5 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 TabView.Visibility = Visibility.Visible;
                 break;
         }
-    }
-
-    private void FirstRun(object _1, WindowActivatedEventArgs _2)
-    {
-        Activated -= FirstRun;
-        var icon = PInvoke.LoadImage(
-            hInst: null,
-            name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
-            type: GDI_IMAGE_TYPE.IMAGE_ICON,
-        cx: 0,
-        cy: 0,
-            fuLoad: IMAGE_FLAGS.LR_LOADFROMFILE | IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_SHARED
-        );
-        bool success = false;
-        icon.DangerousAddRef(ref success);
-        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
-        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
-
-        if (Keyboard.IsShiftDown)
-        {
-            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
-        }
-    }
-
-    readonly ContentDialog Dialog = new()
-    {
-        Title = "Closing UnitedSets",
-        Content = "How do you want to close the app?",
-        PrimaryButtonText = "Release all Windows",
-        SecondaryButtonText = "Close all Windows",
-        CloseButtonText = "Cancel"
-    };
-    readonly AddTabFlyout AddTabFlyout = new();
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private async void AddTab(TabView _1, object e)
-    {
-        if (Keyboard.IsShiftDown)
-        {
-            var newTab = new CellTab(this);
-            Tabs.Add(newTab);
-            TabView.SelectedItem = newTab;
-        } else
-        {
-            WindowEx.Minimize();
-            //this.Hide();
-            await AddTabFlyout.ShowAsync();
-            //this.Show();
-            WindowEx.Restore();
-            var result = AddTabFlyout.Result;
-            AddTab(result);
-        }
-    }
-    void AddTab(WindowEx newWindow, int? index = null)
-    {
-        if (!newWindow.IsValid)
-            return;
-        newWindow = newWindow.Root;
-        if (newWindow.Handle == IntPtr.Zero)
-            return;
-        if (newWindow.Handle == AddTabFlyout.GetWindowHandle())
-            return;
-        if (newWindow.Handle == WindowEx.Handle)
-            return;
-        if (newWindow.ClassName is
-            "Shell_TrayWnd" // Taskbar
-            or "Progman" // Desktop
-            or "WindowsDashboard" // I forget
-            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
-            )
-            return;
-        // Check if United Sets has owner (United Sets in United Sets)
-        if (WindowEx.Root.Children.Any(x => x == newWindow))
-            return;
-        if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
-            return;
-        var newTab = new HwndHostTab(this, newWindow);
-        if (index.HasValue)
-            Tabs.Insert(index.Value, newTab);
-        else
-            Tabs.Add(newTab);
-        TabView.SelectedItem = newTab;
-        TabView.SelectionChanged += TabSelectionChanged;
-    }
-
-    private void TabSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (TabView.SelectedIndex is not -1)
-        {
-            Title = $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count-1} Tabs) - United Sets";
-        } else
-        {
-            Title = "United Sets";
-        }
-    }
-
-    public static void TabDroppedOutside(TabView _1, TabViewTabDroppedOutsideEventArgs args)
-    {
-        if (args.Tab.Tag is TabBase Tab)
-        {
-            Tab.DetachAndDispose(JumpToCursor: true);
-        }
-    }
-
-    public static void TabDragStarting(TabView _1, TabViewTabDragStartingEventArgs args)
-    {
-        //var firstItem = args.Tab;
-        //args.Data.Properties.Add("UnitedSetsTab", firstItem);
-        if (args.Item is HwndHostTab item)
-        {
-            args.Data.SetData("UnitedSetsTabWindow", (long)item.Window.Handle.Value);
-        }
-        //args.Data.RequestedOperation = DataPackageOperation.Move;
-    }
-
-    private void TabView_DragOver(object sender, DragEventArgs e)
-    {
-        if (e.DataView.AvailableFormats.Contains("UnitedSetsTabWindow"))
-            e.AcceptedOperation = DataPackageOperation.Move;
-        //if (e.Data.Properties["UnitedSetsTab"])
-        //PInvoke.SendMessage(WindowEx, UnitedSetCommunicationChangeWindowOwnership, default, new(WindowEx));
-    }
-
-    private async void TabView_Drop(object sender, DragEventArgs e)
-    {
-        if (e.DataView.AvailableFormats.Contains("UnitedSetsTabWindow"))
-        {
-            //var a = Convert.ToInt64(((MemoryStream)await e.DataView.GetDataAsync("UnitedSetsTabWindow")).readz);
-            var a = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
-            var window = WindowEx.FromWindowHandle((nint)a);
-            var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-            var pt = e.GetPosition(TabView);
-            var finalIdx = (
-                        from index in Enumerable.Range(0, Tabs.Count)
-                        let ele = TabView.ContainerFromIndex(index) as UIElement
-                        let posele = ele.TransformToVisual(TabView).TransformPoint(default)
-                        let size = ele.ActualSize
-                        let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
-                        let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
-                        where IsMoreThanTopLeft && IsLessThanBotRigh
-                        select (int?)index
-                    ).FirstOrDefault();
-            AddTab(window, finalIdx);
-        }
-    }
-
-    private void TabViewItem_DragOver(object sender, DragEventArgs e)
-    {
-        if (sender is TabViewItem tvi && tvi.Tag is TabBase tb)
-            TabView.SelectedIndex = Tabs.IndexOf(tb);
     }
 }

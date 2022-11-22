@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
-
+using EasyCSharp;
 namespace UnitedSets;
 
 public sealed partial class BasicTabFlyoutModule
@@ -13,13 +13,14 @@ public sealed partial class BasicTabFlyoutModule
     }
     readonly TabBase TabBase;
 
-
-    private void TabNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    [Event(typeof(TextChangedEventHandler))]
+    private void TabNameTextBoxChanged()
     {
         TabBase.CustomTitle = TabNameTextBox.Text;
     }
 
-    private void TabNameReset(object sender, RoutedEventArgs e)
+    [Event(typeof(RoutedEventHandler))]
+    private void TabNameReset()
     {
         TabNameTextBox.Text = "";
     }

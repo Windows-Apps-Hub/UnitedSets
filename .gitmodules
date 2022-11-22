@@ -1,3 +1,6 @@
 [submodule "WinWrapper"]
 	path = WinWrapper
 	url = https://github.com/Get0457/WinWrapper
+[submodule "EasyXAMLTools"]
+	path = EasyXAMLTools
+	url = https://github.com/Get0457/EasyXAMLTools

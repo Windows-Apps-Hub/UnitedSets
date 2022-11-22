@@ -23,6 +23,6 @@
                 </TextBlock>
             </StackPanel>
         </StackPanel>
-        <Button x:Name="btn" Style="{ThemeResource CloseButton}" Click="CancelClick" HorizontalAlignment="Right"/>
+        <Button Style="{ThemeResource CloseButton}" Click="CancelClick" HorizontalAlignment="Right"/>
     </Grid>
 </WinUIEx:WindowEx>

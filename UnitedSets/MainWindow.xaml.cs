@@ -59,6 +59,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         Activated += FirstRun;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(CustomDragRegion);
+        CustomDragRegionUpdator.EffectiveViewportChanged += CustomDragRegionUpdator_EffectiveViewportChanged;
         TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         WindowMessageMonitor.WindowMessageReceived += MainWindow_WindowMessageReceived;
@@ -84,8 +85,21 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 Visibility.Collapsed :
                 Visibility.Visible;
         };
+        SizeChanged += MainWindow_SizeChanged;
         //AfterInit();
     }
+
+    private void CustomDragRegionUpdator_EffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+    {
+        CustomDragRegion.Width = CustomDragRegionUpdator.ActualWidth - 10;
+        CustomDragRegion.Height = CustomDragRegionUpdator.ActualHeight;
+    }
+
+    private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+    {
+        TabView.MaxWidth = RootGrid.ActualWidth - 140;
+    }
+
     TabBase? SelectedTabCache;
     //private async void AfterInit()
     //{
@@ -406,7 +420,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private async void AddTab(object _1, RoutedEventArgs e)
+    private async void AddTab(TabView _1, object e)
     {
         if (Keyboard.IsShiftDown)
         {
@@ -417,7 +431,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         {
             WindowEx.Minimize();
             //this.Hide();
-            await AddTabFlyout.ShowAtCursorAsync();
+            await AddTabFlyout.ShowAsync();
             //this.Show();
             WindowEx.Restore();
             var result = AddTabFlyout.Result;

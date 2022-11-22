@@ -23,12 +23,15 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AddTabFlyout.xaml" />
-		<None Remove="ModifyWindowFlyout.xaml" />
+		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
 		<None Remove="Pages\OOBEPage.xaml" />
 		<None Remove="SettingsWindow.xaml" />
+		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
+		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
 		<None Remove="TabContentTemplate\CellVisualizer.xaml" />
 		<None Remove="TabContentTemplate\TabDataTemplate.xaml" />
+		<None Remove="TabPropertiesFlyout.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -90,7 +93,15 @@
 		<Folder Include="Interfaces\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Page Update="ModifyWindowFlyout.xaml">
+	  <Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="Tab Settings\Modules\BasicTabFlyoutModule.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="Tab Settings\TabPropertiesFlyout.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>
@@ -114,4 +125,10 @@
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 	</PropertyGroup>
+	<ItemGroup>
+	  <CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Remove="ModifyWindowFlyoutModule.xaml" />
+	</ItemGroup>
 </Project>

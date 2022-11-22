@@ -10,25 +10,12 @@ using System.Threading.Tasks;
 using WinWrapper;
 using Window = WinWrapper.Window;
 using Visibility = Microsoft.UI.Xaml.Visibility;
+using WinUIEx;
 
 namespace UnitedSets.Classes;
 
-public partial class CellTab : TabBase, INotifyPropertyChanged
+public partial class CellTab : TabBase
 {
-
-    PropertyChangedEventHandler? _PropertyChanged;
-    public new event PropertyChangedEventHandler? PropertyChanged
-    {
-        add
-        {
-            _PropertyChanged += value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-        }
-        remove
-        {
-            _PropertyChanged -= value;
-        }
-    }
     public Cell _MainCell;
     public Cell MainCell
     {
@@ -40,7 +27,7 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
         set
         {
             _MainCell = value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainCell)));
+            InvokePropertyChanged(nameof(MainCell));
         }
     }
     public CellTab(MainWindow MainWindow)
@@ -51,13 +38,12 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
     protected CellTab(MainWindow MainWindow, Cell Cell) : base(MainWindow.TabView)
     {
         this.MainWindow = MainWindow;
-        PropertyChanged += (o, e) => InvokePropertyChanged(e.PropertyName);
         _MainCell = new(MainWindow, null, null, Orientation.Horizontal);
     }
 
     public override BitmapImage? Icon => null;
 
-    public override string Title => "Cell Tab";
+    public override string DefaultTitle => "Cell Tab";
 
     public override IEnumerable<Window> Windows => Enumerable.Repeat(default(Window), 0);
 
@@ -75,8 +61,8 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
             //}
             //HwndHost.IsWindowVisible = value;
             //if (value) HwndHost.FocusWindow();
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Visibility)));
+            InvokePropertyChanged(nameof(Selected));
+            InvokePropertyChanged(nameof(Visibility));
         }
     }
     Visibility Visibility => Selected ? Visibility.Visible : Visibility.Collapsed;
@@ -135,5 +121,21 @@ public partial class CellTab : TabBase, INotifyPropertyChanged
             _IsDisposed = true;
         });
         if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
+    }
+    protected override async void OnDoubleClick()
+    {
+        var flyout = new TabPropertiesFlyout(
+            Window.FromWindowHandle(MainWindow.GetWindowHandle()),
+            new BasicTabFlyoutModule(this),
+            new MultiWindowModifyFlyoutModule(
+                (
+                    from x in MainCell.AllSubCells
+                    where x.HasWindow
+                    select x.CurrentCell
+                ).ToArray()
+            )
+        );
+        await flyout.ShowAsync();
+        flyout.Close();
     }
 }

@@ -10,7 +10,7 @@
   <Identity
     Name="3749Get.6496034D6FE7C"
     Publisher="CN=95122495-0FC5-4CBE-B461-D28358AFE57A"
-    Version="0.1.7.0" />
+    Version="0.1.8.0" />
 
   <Properties>
     <DisplayName>United Sets Beta (InDev)</DisplayName>

@@ -46,8 +46,11 @@ public sealed partial class AddTabFlyout : WinUIEx.WindowEx
         }
     }
 
-    public async ValueTask ShowAtCursorAsync()
+    public async ValueTask ShowAsync()
     {
+        Result = default;
+        this.CenterOnScreen();
+        AppWindow.Move(new PointInt32(this.AppWindow.Position.X, 80));
         AppWindow.Show();
         while (AppWindow.IsVisible) 
             await Task.Delay(1000);

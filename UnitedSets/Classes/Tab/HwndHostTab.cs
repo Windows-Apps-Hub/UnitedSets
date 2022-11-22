@@ -10,6 +10,7 @@ using System.Linq;
 using UnitedSets.Helpers;
 using static WinUIEx.WindowExtensions;
 using WinWrapper;
+using WinUIEx;
 
 namespace UnitedSets.Classes;
 
@@ -24,7 +25,7 @@ public class HwndHostTab : TabBase
     BitmapImage? _IconBmpImg;
     public override BitmapImage? Icon => _IconBmpImg;
     string _Title;
-    public override string Title => Window.TitleText;
+    public override string DefaultTitle => Window.TitleText;
     bool _Selected;
     public override bool Selected
     {
@@ -50,16 +51,18 @@ public class HwndHostTab : TabBase
             if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
         };
         HwndHost.Closed += Closed;
-        _Title = Title;
+        _Title = DefaultTitle;
         UpdateAppIcon();
     }
 
     public override void UpdateStatusLoop()
     {
-        if (_Title != Title)
+        if (_Title != DefaultTitle)
         {
-            _Title = Title;
-            HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(Title)));
+            _Title = DefaultTitle;
+            HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(DefaultTitle)));
+            if (!string.IsNullOrWhiteSpace(CustomTitle))
+                HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(Title)));
         }
         var icon = Window.LargeIconPtr;
         if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;
@@ -101,7 +104,11 @@ public class HwndHostTab : TabBase
     }
     protected override async void OnDoubleClick()
     {
-        var flyout = new ModifyWindowFlyout(HwndHost);
+        var flyout = new TabPropertiesFlyout(
+            WindowEx.FromWindowHandle(MainWindow.GetWindowHandle()),
+            new BasicTabFlyoutModule(this),
+            new ModifyWindowFlyoutModule(HwndHost)
+        );
         await flyout.ShowAsync();
         flyout.Close();
     }

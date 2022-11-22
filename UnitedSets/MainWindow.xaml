@@ -9,7 +9,7 @@
     xmlns:icons="using:Cube.UI.Icons"
     MinHeight="300" MinWidth="800"
     mc:Ignorable="d">
-    <Grid Canvas.ZIndex="1">
+    <Grid x:Name="RootGrid" Canvas.ZIndex="1">
         <Grid.Resources>
             <Storyboard x:Name="WindowHoveringStoryBoard">
                 <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
@@ -47,30 +47,28 @@
 
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition x:Name="TabViewRightMargin" Width="0"/>
-            </Grid.ColumnDefinitions>
+        <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
+        <local:FluentHorizontalDynamicSizer Canvas.ZIndex="1">
             <Border MinHeight="40">
                 <TabView 
                     Style="{ThemeResource GlowTabView}"
                     x:Name="TabView"
                     Background="Transparent"
                     x:FieldModifier="Public"
-                    IsAddTabButtonVisible="False"
+                    IsAddTabButtonVisible="True"
                     TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
                     VerticalAlignment="Center"
                     TabDragStarting="{x:Bind local:MainWindow.TabDragStarting}"
                     TabDroppedOutside="{x:Bind local:MainWindow.TabDroppedOutside}"
                     CanDragTabs="True"
                     CanReorderTabs="True"
-                    Margin="0,0,120,2"
                     BorderBrush="Transparent"
                     AllowDrop="True"
                     DragOver="TabView_DragOver"
                     Drop="TabView_Drop"
                     MinHeight="42"
+                    HorizontalAlignment="Left"
+                    AddTabButtonClick="AddTab"
                 >
                     <TabView.Resources>
                         <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
@@ -100,17 +98,15 @@
                     <TabView.TabStripHeader>
                         <Button VerticalAlignment="Center" Visibility="{x:Bind SettingsButtonVisibility, Mode=OneWay}" Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
                     </TabView.TabStripHeader>
-                    <TabView.TabStripFooter>
-                        <Grid>
-                            <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="AddTab" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                                <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                            </Button>
-                            <Grid x:Name="CustomDragRegion" Background="Transparent" Margin="46, 0, 120, 0"/>
-                        </Grid>
-                    </TabView.TabStripFooter>
+                    <!--<TabView.TabStripFooter>
+                        <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="AddTab" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0">
+                            <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
+                        </Button>
+                    </TabView.TabStripFooter>-->
                 </TabView>
             </Border>
-        </Grid>
+            <Grid x:Name="CustomDragRegionUpdator" Background="Transparent"/>
+        </local:FluentHorizontalDynamicSizer>
         <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
             <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
                 <ItemsControl.ItemsPanel>

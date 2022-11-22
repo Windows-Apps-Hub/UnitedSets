@@ -60,7 +60,19 @@ public abstract class TabBase : INotifyPropertyChanged
 
     public TabView ParentTabView { get; }
     public abstract BitmapImage? Icon { get; }
-    public abstract string Title { get; }
+    public abstract string DefaultTitle { get; }
+    public string Title => string.IsNullOrWhiteSpace(CustomTitle) ? DefaultTitle : CustomTitle;
+    public string CustomTitle
+    {
+        get => _CustomTitle;
+        set
+        {
+            _CustomTitle = value;
+            InvokePropertyChanged(nameof(CustomTitle));
+            InvokePropertyChanged(nameof(Title));
+        }
+    }
+    string _CustomTitle = "";
     public abstract IEnumerable<Window> Windows { get; }
     public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }

@@ -1,0 +1,32 @@
+﻿<Grid
+    x:Class="UnitedSets.BasicTabFlyoutModule"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
+    >
+    <Border BorderThickness="1"
+        CornerRadius="8"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        Padding="16">
+        <StackPanel Orientation="Vertical" Spacing="12">
+            <StackPanel.Resources>
+                <communitytoolkitconverters:BoolToVisibilityConverter x:Name="BoolToVisibilityConvertor"/>
+            </StackPanel.Resources>
+            <TextBlock Text="Tab Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
+            <Grid>
+                <TextBlock Text="Display Name: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <TextBox x:Name="TabNameTextBox" TextChanged="TabNameTextBox_TextChanged" Text="{x:Bind TabBase.CustomTitle}" PlaceholderText="{x:Bind TabBase.DefaultTitle}" MinWidth="100" MaxWidth="200"/>
+                    <Button Padding="5" Click="TabNameReset">
+                        <SymbolIcon Symbol="Undo"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
+</Grid>

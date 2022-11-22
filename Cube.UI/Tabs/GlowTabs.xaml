@@ -6,48 +6,48 @@
     xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls" 
     xmlns:icons="using:Cube.UI.Icons">
     <Style x:Key="GlowTabView" TargetType="TabView">
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Padding" Value="8,8,4,0" />
-            <Setter Property="IsTabStop" Value="False" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="CanDragTabs" Value="True"/>
-            <Setter Property="CanReorderTabs" Value="True"/>
-            <Setter Property="AllowDropTabs" Value="True"/>
-            <Setter Property="IsAddTabButtonVisible" Value="False"/>
-            <Setter Property="TabWidthMode" Value="Equal"/>
-            <Setter Property="KeyboardAcceleratorPlacementMode" Value="Hidden" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabView">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid
-                                            x:Name="TabContainerGrid"
-                                            Background="Transparent"
-                                            XYFocusKeyboardNavigation="Enabled"
-                                VerticalAlignment="Stretch"
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Padding" Value="8,8,4,0" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CanDragTabs" Value="True"/>
+        <Setter Property="CanReorderTabs" Value="True"/>
+        <Setter Property="AllowDropTabs" Value="True"/>
+        <Setter Property="IsAddTabButtonVisible" Value="False"/>
+        <Setter Property="TabWidthMode" Value="Equal"/>
+        <Setter Property="KeyboardAcceleratorPlacementMode" Value="Hidden" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabView">
+                    <Grid Margin="0,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid x:Name="TabContainerGrid" IsHitTestVisible="False" Grid.RowSpan="2"></Grid>
+                        <Grid
+                                Background="Transparent"
+                                XYFocusKeyboardNavigation="Enabled"
+                                Margin="0,0,0,0"
                                 Grid.RowSpan="2">
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition x:Name="LeftContentColumn" Width="Auto" />
-                                    <ColumnDefinition x:Name="TabColumn" Width="Auto" />
-                                    <ColumnDefinition x:Name="AddButtonColumn" Width="Auto" />
-                                    <ColumnDefinition x:Name="RightContentColumn" Width="*" />
-                                </Grid.ColumnDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="LeftContentColumn" Width="Auto" />
+                                <ColumnDefinition x:Name="TabColumn" Width="*" />
+                                <ColumnDefinition x:Name="AddButtonColumn" Width="Auto" />
+                                <ColumnDefinition x:Name="RightContentColumn" Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <ContentPresenter
+                            <ContentPresenter
                                                 x:Name="LeftContentPresenter"
                                                 Grid.Column="0"
                                                 Content="{TemplateBinding TabStripHeader}"
                                                 ContentTemplate="{TemplateBinding TabStripHeaderTemplate}"
                                     VerticalAlignment="Center"/>
 
-                                <Grid x:Name="ShadowReceiver" Grid.ColumnSpan="4" />
+                            <Grid x:Name="ShadowReceiver" Grid.ColumnSpan="4" />
 
-                                <primitives:TabViewListView
+                            <primitives:TabViewListView
                                                 x:Name="TabListView"
                                                 Grid.Column="1"
                                                 VerticalAlignment="Top"
@@ -58,116 +58,114 @@
                                                 ItemTemplate="{TemplateBinding TabItemTemplate}"
                                                 ItemTemplateSelector="{TemplateBinding TabItemTemplateSelector}"
                                                 ItemsSource="{TemplateBinding TabItemsSource}">
-                                    <ListView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <ItemsStackPanel
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsStackPanel
                          VerticalAlignment="Stretch" 
                          Orientation="Horizontal"
                          GroupHeaderPlacement="Left"
                          ScrollViewer.HorizontalScrollMode="Disabled" 
                          ScrollViewer.VerticalScrollMode="Enabled" />
-                                        </ItemsPanelTemplate>
-                                    </ListView.ItemsPanel>
-                                    <ListView.ItemContainerTransitions>
-                                        <TransitionCollection>
-                                            <AddDeleteThemeTransition />
-                                            <RepositionThemeTransition />
-                                            <ContentThemeTransition />
-                                        </TransitionCollection>
-                                    </ListView.ItemContainerTransitions>
-                                </primitives:TabViewListView>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemContainerTransitions>
+                                    <TransitionCollection>
+                                        <AddDeleteThemeTransition />
+                                        <RepositionThemeTransition />
+                                        <ContentThemeTransition />
+                                    </TransitionCollection>
+                                </ListView.ItemContainerTransitions>
+                            </primitives:TabViewListView>
 
-                                <Button
-                                                x:Name="AddButton"
-                                                Grid.Column="2"
-                                                Command="{TemplateBinding AddTabButtonCommand}"
-                                                CommandParameter="{TemplateBinding AddTabButtonCommandParameter}"
-                                                Content="&#xE710;"
-                                                VerticalAlignment="Bottom"
-                                                Margin="0, 6, 0, 4"
-                                                CornerRadius="2"
-                                                HighContrastAdjustment="None"
-                                                IsTextScaleFactorEnabled="False"
-                                                Style="{StaticResource TabViewButtonStyle}"
-                                                Visibility="{Binding IsAddTabButtonVisible, RelativeSource={RelativeSource TemplatedParent}}" />
-
-                                <ContentPresenter
+                            <Button
+                                                    x:Name="AddButton"
+                                                    Grid.Column="2"
+                                                    Command="{TemplateBinding AddTabButtonCommand}"
+                                                    CommandParameter="{TemplateBinding AddTabButtonCommandParameter}"
+                                                    Width="32" Height="32"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0, 6, 0, 4"
+                                                    Style="{StaticResource ToolbarButton}"
+                                                    Visibility="{Binding IsAddTabButtonVisible, RelativeSource={RelativeSource TemplatedParent}}">
+                                <icons:FluentSymbolIcon Symbol="Add20" Margin="-4,-4,-2,-2"/>
+                            </Button>
+                            <ContentPresenter
                                     VerticalAlignment="Center"
                                                 x:Name="RightContentPresenter"
                                                 Grid.Column="3"
-                                                Margin="0,0,250,0"
+                                                Margin="0,0,20,0"
                                                 HorizontalAlignment="Stretch"
                                                 Content="{TemplateBinding TabStripFooter}"
                                                 ContentTemplate="{TemplateBinding TabStripFooterTemplate}" />
-                            </Grid>
+                        </Grid>
 
-                            <!--  We don't want this to take space on the second row in case the user isn't using tab content.  -->
-                            <Grid
+                        <!--  We don't want this to take space on the second row in case the user isn't using tab content.  -->
+                        <Grid
                                             x:Name="ShadowCaster"
                                             Grid.Row="0"
                                             Height="10"
-                                            Margin="0,0,0,-10"
+                                            Margin="0,0,0,0"
                                             VerticalAlignment="Bottom"
                                             Background="Transparent" />
 
-                            <ContentPresenter
+                        <ContentPresenter
                                             x:Name="TabContentPresenter"
                                             Grid.Row="1"
                                             BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Key="GlowTabViewListView" TargetType="primitives:TabViewListView">
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Padding" Value="8,8,4,0" />
-            <Setter Property="IsTabStop" Value="False" />
-            <Setter Property="TabNavigation" Value="Once" />
-            <Setter Property="IsSwipeEnabled" Value="False" />
-            <Setter Property="CanDrag" Value="False" />
-            <Setter Property="AllowDrop" Value="False" />
-            <Setter Property="CanReorderItems" Value="True" />
-            <Setter Property="SingleSelectionFollowsFocus" Value="False" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Enabled" />
-            <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
-            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
-            <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
-            <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
-            <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
-            <Setter Property="ItemContainerTransitions">
-                <Setter.Value>
-                    <TransitionCollection>
-                        <AddDeleteThemeTransition />
-                        <ContentThemeTransition />
-                        <ReorderThemeTransition />
-                        <EntranceThemeTransition IsStaggeringEnabled="False" />
-                    </TransitionCollection>
-                </Setter.Value>
-            </Setter>
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Padding" Value="8,8,4,0" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="TabNavigation" Value="Once" />
+        <Setter Property="IsSwipeEnabled" Value="False" />
+        <Setter Property="CanDrag" Value="False" />
+        <Setter Property="AllowDrop" Value="False" />
+        <Setter Property="CanReorderItems" Value="True" />
+        <Setter Property="SingleSelectionFollowsFocus" Value="False" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Enabled" />
+        <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+        <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
+        <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
+        <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+        <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+        <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
+        <Setter Property="ItemContainerTransitions">
+            <Setter.Value>
+                <TransitionCollection>
+                    <AddDeleteThemeTransition />
+                    <ContentThemeTransition />
+                    <ReorderThemeTransition />
+                    <EntranceThemeTransition IsStaggeringEnabled="False" />
+                </TransitionCollection>
+            </Setter.Value>
+        </Setter>
 
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <ItemsStackPanel VerticalAlignment="Center" Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel VerticalAlignment="Center" Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
 
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="primitives:TabViewListView">
-                        <Border
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="primitives:TabViewListView">
+                    <Border
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         CornerRadius="{TemplateBinding CornerRadius}">
-                            <ScrollViewer
+                        <ScrollViewer
                                             x:Name="ScrollViewer"
                                             Grid.Column="1"
                                             AutomationProperties.AccessibilityView="Raw"
@@ -185,32 +183,32 @@
                                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
                                             ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
 
-                                <ItemsPresenter x:Name="TabsItemsPresenter" />
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                            <ItemsPresenter x:Name="TabsItemsPresenter" />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <Border
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollViewer">
+                    <Border
                             x:Name="Root"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <RepeatButton
+                            <RepeatButton
                                                 x:Name="ScrollDecreaseButton"
                                                 Width="{ThemeResource TabViewItemScrollButtonWidth}"
                                                 Height="{ThemeResource TabViewItemScrollButtonHeight}"
@@ -228,13 +226,13 @@
                                                 Style="{StaticResource ToolbarRepeatButton}"
                                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
 
-                                <ScrollContentPresenter
+                            <ScrollContentPresenter
                                                 x:Name="ScrollContentPresenter"
                                                 Grid.Column="1"
                                                 Padding="1,0,0,0"
                                                 TabFocusNavigation="Once" />
 
-                                <RepeatButton
+                            <RepeatButton
                                                 x:Name="ScrollIncreaseButton"
                                                 Grid.Column="2"
                                                 Width="{ThemeResource TabViewItemScrollButtonWidth}"
@@ -253,12 +251,12 @@
                                                 Interval="100"
                                                 Style="{StaticResource ToolbarRepeatButton}"
                                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Key="UndockedTabViewItemStyle" TargetType="TabViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Left" />

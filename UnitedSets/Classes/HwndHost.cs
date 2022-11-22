@@ -141,6 +141,7 @@ public class HwndHost : FrameworkElement, IDisposable
                     SetBackdrop = false;
                     WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, InitialBackdropType);
                     WindowToHost.ExStyle = InitialExStyle;
+                    WindowToHost.Region = null;
                 }
             }
             _ActivateCrop = value;
@@ -254,6 +255,7 @@ public class HwndHost : FrameworkElement, IDisposable
     public event Action? Updating;
     int CountDown = 5;
     Size PrevWindowSize;
+    bool AAAA = false;
     public async void ForceUpdateWindow()
     {
         if (CacheWidth == 0 || CacheHeight == 0) return; // wait for update

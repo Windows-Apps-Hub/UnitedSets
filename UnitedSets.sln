@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCSharp", "EasyXAMLTools
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyCSharp.Generator", "EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj", "{A4C7B15F-D579-492C-8945-A6841DC0B236}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CopySourceGenerator", "EasyXAMLTools\EasyCSharp\CopySourceGenerator\CopySourceGenerator.csproj", "{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,22 @@ Global
 		{A4C7B15F-D579-492C-8945-A6841DC0B236}.Release|x64.Build.0 = Release|Any CPU
 		{A4C7B15F-D579-492C-8945-A6841DC0B236}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4C7B15F-D579-492C-8945-A6841DC0B236}.Release|x86.Build.0 = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|arm64.Build.0 = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|x64.Build.0 = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Debug|x86.Build.0 = Debug|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|arm64.ActiveCfg = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|arm64.Build.0 = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|x64.ActiveCfg = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|x64.Build.0 = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|x86.ActiveCfg = Release|Any CPU
+		{CBABDB9C-3B34-4D7E-B473-A26CF49F0F85}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

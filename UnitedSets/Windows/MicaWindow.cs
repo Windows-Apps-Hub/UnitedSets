@@ -14,7 +14,7 @@ namespace UnitedSets;
 
 public partial class MicaWindow : WindowEx
 {
-    static bool IsMicaInfinite = true;
+    readonly static bool IsMicaInfinite = true;
     WindowsSystemDispatcherQueueHelper? m_wsdqHelper;
     MicaController? m_micaController;
     SystemBackdropConfiguration? m_configurationSource;

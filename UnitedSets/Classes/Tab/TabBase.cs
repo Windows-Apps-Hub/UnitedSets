@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EasyCSharp;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -14,7 +15,7 @@ using WinWrapper;
 
 namespace UnitedSets.Classes;
 
-public abstract class TabBase : INotifyPropertyChanged
+public abstract partial class TabBase : INotifyPropertyChanged
 {
     public readonly static List<Window> MainWindows = new();
     public static event Action? OnUpdateStatusLoopComplete;
@@ -61,18 +62,16 @@ public abstract class TabBase : INotifyPropertyChanged
     public TabView ParentTabView { get; }
     public abstract BitmapImage? Icon { get; }
     public abstract string DefaultTitle { get; }
+
     public string Title => string.IsNullOrWhiteSpace(CustomTitle) ? DefaultTitle : CustomTitle;
-    public string CustomTitle
-    {
-        get => _CustomTitle;
-        set
-        {
-            _CustomTitle = value;
-            InvokePropertyChanged(nameof(CustomTitle));
-            InvokePropertyChanged(nameof(Title));
-        }
-    }
+    
+    [Property(OnChanged = nameof(OnCustomTitleChanged))]
     string _CustomTitle = "";
+    void OnCustomTitleChanged()
+    {
+        InvokePropertyChanged(nameof(CustomTitle));
+        InvokePropertyChanged(nameof(Title));
+    }
     public abstract IEnumerable<Window> Windows { get; }
     public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }

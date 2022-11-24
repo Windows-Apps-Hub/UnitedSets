@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.Helpers;
+using EasyCSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,15 +34,9 @@ namespace UnitedSets.Services
         }
         private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
 
+        [Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", CustomSetExpression = "Settings.Values[\"ExitOnClose\"] = value")]
         private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
-        public bool ExitOnClose
-        {
-            get => (bool)(Settings.Values["ExitOnClose"] ?? true);
-            set
-            {
-                Settings.Values["ExitOnClose"] = value;
-            }
-        }
+
         SettingsWindow s_window;
         [RelayCommand]
         public void LaunchSettings()

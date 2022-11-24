@@ -3,38 +3,26 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WinWrapper;
 using Window = WinWrapper.Window;
 using Visibility = Microsoft.UI.Xaml.Visibility;
 using WinUIEx;
+using EasyCSharp;
 
 namespace UnitedSets.Classes;
 
 public partial class CellTab : TabBase
 {
+    [Property(OnChanged = nameof(OnMainCellChanged))]
     public Cell _MainCell;
-    public Cell MainCell
-    {
-        get
-        {
-            return _MainCell;
-        }
+    void OnMainCellChanged() => InvokePropertyChanged(nameof(MainCell));
 
-        set
-        {
-            _MainCell = value;
-            InvokePropertyChanged(nameof(MainCell));
-        }
-    }
     public CellTab(MainWindow MainWindow)
         : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal))
     {
     }
-    MainWindow MainWindow;
+    readonly MainWindow MainWindow;
     protected CellTab(MainWindow MainWindow, Cell Cell) : base(MainWindow.TabView)
     {
         this.MainWindow = MainWindow;
@@ -46,32 +34,21 @@ public partial class CellTab : TabBase
     public override string DefaultTitle => "Cell Tab";
 
     public override IEnumerable<Window> Windows => Enumerable.Repeat(default(Window), 0);
-
+    [Property(OnChanged = nameof(OnSelectedChanged), OverrideKeyword = true)]
     bool _Selected;
-    public override bool Selected
+    void OnSelectedChanged()
     {
-        get => _Selected;
-        set
-        {
-            _Selected = value;
-            _MainCell.IsVisible = value;
-            //foreach (var cell in ((ICell)_MainCell).IsVisible)
-            //{
-            //    if (cell.HasWindow) cell.CurrentCell!.IsWindowVisible = value;
-            //}
-            //HwndHost.IsWindowVisible = value;
-            //if (value) HwndHost.FocusWindow();
-            InvokePropertyChanged(nameof(Selected));
-            InvokePropertyChanged(nameof(Visibility));
-        }
+        _MainCell.IsVisible = _Selected;
+        InvokePropertyChanged(nameof(Selected));
+        InvokePropertyChanged(nameof(Visibility));
     }
+
     Visibility Visibility => Selected ? Visibility.Visible : Visibility.Collapsed;
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate, OverrideKeyword = true)]
     bool _IsDisposed;
-    public override bool IsDisposed => _IsDisposed;
 
     public override void DetachAndDispose(bool JumpToCursor = false)
     {
-
         //var window = new MainWindow();
         //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
         foreach (var cell in MainCell.AllSubCells)
@@ -82,7 +59,8 @@ public partial class CellTab : TabBase
         //window.Activate();
     }
 
-    public void ContentLoadEv(object sender, RoutedEventArgs e)
+    [Event(typeof(RoutedEventHandler))]
+    public void ContentLoadEv(object sender)
     {
         // ContentPresentor does not update the selector when property changed is fired
         PropertyChanged += delegate
@@ -98,12 +76,8 @@ public partial class CellTab : TabBase
         };
     }
 
-    public override void Focus()
-    {
-
-    }
+    public override void Focus() { }
     
-
     public async override Task TryCloseAsync()
     {
         await Task.Run(async delegate

@@ -26,7 +26,7 @@ public sealed partial class TabPropertiesFlyout
         var parentbounds = ParentWindow.Bounds;
         CurrentWindowEx.Bounds = CurrentWindowEx.Bounds with
         {
-            X = Math.Max(10, parentbounds.X - 405),
+            X = Math.Max(10, parentbounds.X - 455),
             Y = parentbounds.Y
         };
         Activated += OnActivatedChanged;

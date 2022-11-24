@@ -22,7 +22,6 @@ namespace UnitedSets.Classes;
 
 partial class HwndHost
 {
-
     int CountDown = 5;
     async void OnWindowUpdate()
     {
@@ -87,7 +86,8 @@ partial class HwndHost
             if (ActivateCrop)
                 if (ForceInvalidateCrop || oldBounds.Size != newBounds.Size)
                 {
-                    WindowToHost.Region = new(_CropLeft, _CropTop, WindowToHost.Bounds.Width - _CropLeft - _CropRight, WindowToHost.Bounds.Height - _CropTop - _CropBottom);
+                    ForceInvalidateCrop = false;
+                    _ = WindowToHost.SetRegionAsync(new(_CropLeft, _CropTop, WindowToHost.Bounds.Width - _CropLeft - _CropRight, WindowToHost.Bounds.Height - _CropTop - _CropBottom));
                 }
         }
         if (!IsOwnerSetSuccessful)

@@ -21,7 +21,7 @@
             <Grid>
                 <TextBlock Text="Display Name: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <TextBox x:Name="TabNameTextBox" TextChanged="TabNameTextBoxChanged" Text="{x:Bind TabBase.CustomTitle}" PlaceholderText="{x:Bind TabBase.DefaultTitle}" MinWidth="100" MaxWidth="200"/>
+                    <TextBox x:Name="TabNameTextBox" TextChanged="TabNameTextBoxChanged" Text="{x:Bind TabBase.CustomTitle, Mode=TwoWay}" PlaceholderText="{x:Bind TabBase.DefaultTitle, Mode=OneWay}" MinWidth="100" MaxWidth="200"/>
                     <Button Padding="5" Click="TabNameReset">
                         <SymbolIcon Symbol="Undo"/>
                     </Button>

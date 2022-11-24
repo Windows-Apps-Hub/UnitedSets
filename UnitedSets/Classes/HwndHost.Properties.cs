@@ -21,13 +21,13 @@ namespace UnitedSets.Classes;
 
 partial class HwndHost
 {
-    [Property(SetVisibility = PropertyVisibility.DoNotGenerate)]
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
     float _CacheXFromWindow, _CacheYFromWindow, _CacheWidth, _CacheHeight;
 
-    [Property(SetVisibility = PropertyVisibility.DoNotGenerate)]
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
     readonly WindowEx _ParentWindow;
 
-    [Property(SetVisibility = PropertyVisibility.DoNotGenerate)]
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
     readonly WindowEx _HostedWindow;
 
     [Property(OnChanged = nameof(IsWindowVisibleChanged))]
@@ -35,7 +35,7 @@ partial class HwndHost
     void IsWindowVisibleChanged()
         => Task.Run(ForceUpdateWindow);
 
-    [Property(OnChanged = nameof(OnActivateCropChanged))]
+    [AutoNotifyProperty(OnChanged = nameof(OnActivateCropChanged))]
     bool _ActivateCrop = false;
     void OnActivateCropChanged()
     {
@@ -48,7 +48,7 @@ partial class HwndHost
             if (SetBackdrop)
                 SetBackdrop = false;
     }
-    [Property(Visibility = PropertyVisibility.Private)]
+    [Property(Visibility = GeneratorVisibility.Private, OnChanged = nameof(OnSetBackdropChange))]
     bool _SetBackdrop = false;
     void OnSetBackdropChange()
     {
@@ -65,7 +65,7 @@ partial class HwndHost
         }
     }
 
-    [Property(OnChanged = nameof(OnBorderlessWindowChanged))]
+    [AutoNotifyProperty(OnChanged = nameof(OnBorderlessWindowChanged))]
     bool _BorderlessWindow = false;
     void OnBorderlessWindowChanged()
     {
@@ -80,10 +80,10 @@ partial class HwndHost
         }
     }
 
-    [Property(Visibility = PropertyVisibility.Private)]
+    [Property(Visibility = GeneratorVisibility.Private)]
     bool _ForceInvalidateCrop = false;
 
-    [Property(OnChanged = nameof(SetForceInvalidateCropToTrue))]
+    [AutoNotifyProperty(OnChanged = nameof(SetForceInvalidateCropToTrue))]
     int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
 
     void SetForceInvalidateCropToTrue() => ForceInvalidateCrop = true;

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnitedSets.Classes;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
+using EasyCSharp;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -26,39 +26,28 @@ namespace UnitedSets;
 /// </summary>
 public sealed partial class CellVisualizer : INotifyPropertyChanged
 {
+    [Property(OnBeforeChanged = nameof(OnBeforeCellChanged), OnChanged = nameof(OnCellChanged))]
     ICell? _Cell;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ICell? Cell
+    void OnBeforeCellChanged()
     {
-        get => _Cell;
-        set
-        {
-            if (_Cell is not null)
-                _Cell.PropertyChanged -= CellChanged;
-            _Cell = value;
-            if (value is not null)
-                value.PropertyChanged += CellChanged;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cell)));
-            UpdateTemplate();
-        }
+        if (_Cell is not null)
+            _Cell.PropertyChanged -= OnCellChanged;
     }
-
-    private void CellChanged(object? sender, PropertyChangedEventArgs e)
+    void OnCellChanged()
+    {
+        if (_Cell is not null)
+            _Cell.PropertyChanged += OnCellChanged;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cell)));
+        UpdateTemplate();
+    }
+    [Event(typeof(PropertyChangedEventHandler))]
+    void OnCellChanged(PropertyChangedEventArgs e)
     {
         if (e.PropertyName is not (nameof(Cell.CellAddCountAsString) or nameof(Cell.CellAddCount)))
             DispatcherQueue.TryEnqueue(() => UpdateTemplate());
-        //else
-        //{
-        //    if (Cell is not null)
-        //    {
-        //        if (Cell.HoverEffect)
-        //            DispatcherQueue.TryEnqueue(() => BG.Color = (Windows.UI.Color)Resources["LayerFillColorDefault"]);
-        //        else
-        //            DispatcherQueue.TryEnqueue(() => BG.Color = Colors.Transparent);
-        //    }
-        //}
     }
     void UpdateTemplate()
     {

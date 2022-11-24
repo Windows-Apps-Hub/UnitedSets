@@ -28,11 +28,30 @@ public partial class Cell : ICell, INotifyPropertyChanged
 
     [Property(OnChanged = nameof(OnCurrentCellChanged), OverrideKeyword = true)]
     HwndHost? _CurrentCell;
+    void OnCurrentCellChanged()
+    {
+        if (_CurrentCell is not null)
+        {
+            _CurrentCell.Closed += delegate
+            {
+                CurrentCell = null;
+            };
+            _CurrentCell.IsWindowVisible = IsVisible;
+        }
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+    }
 
     [Property(OnChanged = nameof(OnSubCellsUpdate), OverrideKeyword = true)]
     Cell[]? _SubCells;
+    void OnSubCellsUpdate()
+    {
+        if (_SubCells is not null)
+            foreach (var cell in _SubCells)
+                cell.IsVisible = IsVisible;
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+    }
 
-    Orientation _Orientation;
+    
     [Property(OnChanged = nameof(OnVisibleChanged))]
     bool _IsParentVisible = true;
     
@@ -54,65 +73,36 @@ public partial class Cell : ICell, INotifyPropertyChanged
         if (CurrentCell is HwndHost hwndHost) hwndHost.IsWindowVisible = IsVisible;
         else _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
     }
+    [Property(OverrideKeyword = true, OnChanged = nameof(OnHoverEffectChanegd))]
     bool _HoverEffect;
-    public override bool HoverEffect
+    void OnHoverEffectChanegd()
     {
-        get => _HoverEffect;
-        set
-        {
-            if (_HoverEffect == value) return;
-            _HoverEffect = value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HoverEffect)));
-        }
+        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HoverEffect)));
     }
 
-    void OnCurrentCellChanged()
+    [Property(OverrideKeyword = true, OnChanged = nameof(OnOrientationChanged))]
+    Orientation _Orientation;
+
+    void OnOrientationChanged()
     {
-        if (_CurrentCell is not null)
-        {
-            _CurrentCell.Closed += delegate
-            {
-                CurrentCell = null;
-            };
-            _CurrentCell.IsWindowVisible = IsVisible;
-        }
         _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
     }
 
-    void OnSubCellsUpdate()
-    {
-        if (_SubCells is not null)
-            foreach (var cell in _SubCells)
-                cell.IsVisible = IsVisible;
-        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-    }
-
-
-    public override Orientation Orientation
-    {
-        get
-        {
-            return _Orientation;
-        }
-
-        set
-        {
-            _Orientation = value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-        }
-    }
     ICell ThisAsICell => this;
     public override bool HasWindow => CurrentCell is not null;
     public override bool HasSubCells => SubCells is not null;
     public bool HasVerticalSubCells => HasSubCells && Orientation == Orientation.Vertical;
     public bool HasHorizontalSubCells => HasSubCells && Orientation == Orientation.Horizontal;
+    
     public override bool Empty => !(HasWindow || HasSubCells);
+    
     public override void SplitHorizontally(int Amount)
     {
         if (!Empty) throw new InvalidOperationException();
         Orientation = Orientation.Vertical;
         SubCells = CraeteNCells(Amount);
     }
+    
     public override void SplitVertically(int Amount)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
@@ -120,10 +110,12 @@ public partial class Cell : ICell, INotifyPropertyChanged
         Orientation = Orientation.Horizontal;
         SubCells = CraeteNCells(Amount);
     }
+    
     Cell[] CraeteNCells(int Amount)
     {
         return (from _ in Enumerable.Range(0, Amount) select new Cell(MainWindow, null, null, default)).ToArray();
     }
+    
     public override void RegisterWindow(Window Window)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
@@ -143,101 +135,4 @@ public partial class Cell : ICell, INotifyPropertyChanged
         Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
         return cell;
     }
-}
-public abstract class ICell : INotifyPropertyChanged
-{
-    public abstract MainWindow MainWindow { get; }
-    public abstract HwndHost? CurrentCell { get; set; }
-    public abstract Cell[]? SubCells { get; set; }
-    public abstract bool IsVisible { get; set; }
-
-    public abstract Orientation Orientation { get; set; }
-
-    public abstract bool HasWindow { get; }
-    public abstract bool HasSubCells { get; }
-    public abstract bool Empty { get; }
-    public abstract bool HoverEffect { get; set; }
-
-    public IEnumerable<ICell> AllSubCells
-    {
-        get
-        {
-            return GetAllSubCells();
-        }
-    }
-    private IEnumerable<ICell> GetAllSubCells()
-    {
-        yield return this;
-        if (SubCells is null) yield break;
-        foreach (var cell in SubCells)
-            foreach (var cellsubcell in cell.AllSubCells)
-                yield return cellsubcell;
-    }
-
-    public abstract void SplitHorizontally(int Amount);
-    public void SplitHorizontallyClickEv(object o, RoutedEventArgs _2)
-    {
-        SplitHorizontally(CellAddCount);
-    }
-    public int CellAddCount = 2;
-    public string CellAddCountAsString => CellAddCount.ToString();
-    public void AddCellAddCountClickEv(object o, RoutedEventArgs _2)
-    {
-        CellAddCount += 1;
-        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCount)));
-        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
-    }
-    public void RemoveCellAddCountClickEv(object o, RoutedEventArgs _2)
-    {
-        if (CellAddCount <= 2) return;
-        CellAddCount -= 1;
-        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCount)));
-        _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
-    }
-    public abstract void SplitVertically(int Amount);
-    public void SplitVerticallyClickEv(object o, RoutedEventArgs _2)
-    {
-        SplitVertically(CellAddCount);
-    }
-
-    public abstract void RegisterWindow(Window Window);
-    public void DragOverEv(object sender, DragEventArgs e)
-    {
-        // Error https://github.com/microsoft/microsoft-ui-xaml/issues/7002
-        // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) return;
-        DataPackageView dataview = e.DataView;
-        var formats = dataview.AvailableFormats.ToList();
-        if (formats.Contains("UnitedSetsTabWindow"))
-            e.AcceptedOperation = DataPackageOperation.Move;
-    }
-
-    public async void DropEv(object sender, DragEventArgs e)
-    {
-        // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) return;
-        DataPackageView dataview = e.DataView;
-        var formats = dataview.AvailableFormats.ToList();
-        if (formats.Contains("UnitedSetsTabWindow"))
-        {
-            var hwnd = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
-            var window = Window.FromWindowHandle((nint)hwnd);
-            var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-            RegisterWindow(window);
-        }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged
-    {
-        add
-        {
-            _PropertyChanged += value;
-            _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-        }
-        remove
-        {
-            _PropertyChanged -= value;
-        }
-    }
-    protected PropertyChangedEventHandler? _PropertyChanged;
 }

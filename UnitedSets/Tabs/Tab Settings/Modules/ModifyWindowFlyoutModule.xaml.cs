@@ -12,8 +12,6 @@ public sealed partial class ModifyWindowFlyoutModule
     {
         HwndHost = hwndHost;
         InitializeComponent();
-        OnWindowCropMarginToggleSwitchToggled(null, null);
-        OnBorderlessToggleSwitchToggled(null, null);
     }
     readonly HwndHost HwndHost;
 
@@ -26,22 +24,6 @@ public sealed partial class ModifyWindowFlyoutModule
         }
     }
 
-    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
-    void OnTopCropMarginChanged()
-        => HwndHost.CropTop = (int)TopCropMargin.Value;
-
-    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
-    void OnLeftCropMarginChanged()
-        => HwndHost.CropLeft = (int)LeftCropMargin.Value;
-
-    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
-    void OnRightCropMarginChanged()
-        => HwndHost.CropRight = (int)RightCropMargin.Value;
-
-    [Event(typeof(TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs>))]
-    void OnBottomCropMarginChanged()
-        => HwndHost.CropBottom = (int)BottomCropMargin.Value;
-
     [Event(typeof(RoutedEventHandler))]
     void OnWindowCropMarginToggleSwitchToggled()
     {
@@ -52,14 +34,12 @@ public sealed partial class ModifyWindowFlyoutModule
             LeftCropMargin.Value =
             RightCropMargin.Value = 0;
         }
-        HwndHost.ActivateCrop = WindowCropMarginToggleSwitch.IsOn;
         WindowCropMarginSettingsStackPanel.Visibility = WindowCropMarginToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }
 
     [Event(typeof(RoutedEventHandler))]
     void OnBorderlessToggleSwitchToggled()
     {
-        HwndHost.BorderlessWindow = BorderlessToggleSwitch.IsOn;
         if (!BorderlessToggleSwitch.IsOn)
             WindowCropMarginToggleSwitch.IsOn = false;
         BorderlessSettingsStackPanel.Visibility = BorderlessToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;

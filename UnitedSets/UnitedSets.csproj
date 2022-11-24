@@ -29,8 +29,6 @@
 		<None Remove="SettingsWindow.xaml" />
 		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
 		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
-		<None Remove="TabContentTemplate\CellVisualizer.xaml" />
-		<None Remove="TabContentTemplate\TabDataTemplate.xaml" />
 		<None Remove="TabPropertiesFlyout.xaml" />
 	</ItemGroup>
 
@@ -97,6 +95,7 @@
 	<ItemGroup>
 		<Folder Include="Assets\OOBE\" />
 		<Folder Include="Interfaces\" />
+		<Folder Include="Tabs\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">

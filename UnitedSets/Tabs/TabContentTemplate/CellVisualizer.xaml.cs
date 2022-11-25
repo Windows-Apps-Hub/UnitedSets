@@ -26,11 +26,15 @@ namespace UnitedSets;
 /// </summary>
 public sealed partial class CellVisualizer : INotifyPropertyChanged
 {
+    public CellVisualizer()
+    {
+        Resources["HorizontalSymbol"] = (Symbol)0xE76F;
+        Resources["VerticalSymbol"] = (Symbol)0xE784;
+        InitializeComponent();
+    }
+
     [Property(OnBeforeChanged = nameof(OnBeforeCellChanged), OnChanged = nameof(OnCellChanged))]
     ICell? _Cell;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     void OnBeforeCellChanged()
     {
         if (_Cell is not null)
@@ -43,6 +47,9 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cell)));
         UpdateTemplate();
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
     [Event(typeof(PropertyChangedEventHandler))]
     void OnCellChanged(PropertyChangedEventArgs e)
     {
@@ -63,10 +70,5 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
         };
     }
 
-    public CellVisualizer()
-    {
-        Resources["HorizontalSymbol"] = (Symbol)0xE76F;
-        Resources["VerticalSymbol"] = (Symbol)0xE784;
-        InitializeComponent();
-    }
+    
 }

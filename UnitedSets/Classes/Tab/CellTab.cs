@@ -98,7 +98,7 @@ public partial class CellTab : TabBase
     }
     protected override async void OnDoubleClick()
     {
-        var flyout = new TabPropertiesFlyout(
+        var flyout = new LeftFlyout(
             Window.FromWindowHandle(MainWindow.GetWindowHandle()),
             new BasicTabFlyoutModule(this),
             new MultiWindowModifyFlyoutModule(

@@ -28,6 +28,8 @@ using System.IO;
 using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
+using System.Diagnostics.CodeAnalysis;
+
 namespace UnitedSets;
 
 /// <summary>
@@ -105,6 +107,33 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             AddTab(result);
         }
     }
+
+    LeftFlyout? MenuFlyout;
+    // Use With OpenMenu
+    [MemberNotNull(nameof(MenuFlyout))]
+    void CreateMeufFlyout()
+    {
+        MenuFlyout = LeftFlyout.CreateSingletonMode(WindowEx, new MainWindowMenuFlyoutModule(this));
+        MenuFlyout.HeaderText = "";
+        MenuFlyout.ExtendToTop = true;
+    }
+    [Event(typeof(RoutedEventHandler))]
+    async void OpenMenu()
+    {
+        if (MenuFlyout is null or { IsDisposed : true })
+        {
+            CreateMeufFlyout();
+        }
+        try
+        {
+            await MenuFlyout.ShowAsync();
+        } catch
+        {
+            CreateMeufFlyout();
+            OpenMenu();
+        }
+    }
+
 #pragma warning disable CA1822 // Mark members as static
 
     [Event(typeof(TypedEventHandler<TabView, TabViewTabDragStartingEventArgs>))]

@@ -72,6 +72,27 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
             }
         }
+        foreach (var TabGroup in HiddenTabs)
+        {
+            foreach (var Tab in TabGroup.Tabs)
+            {
+                if (Tab.IsDisposed)
+                {
+                    DispatcherQueue.TryEnqueue(delegate
+                    {
+                        TabGroup.Tabs.Remove(Tab);
+                    });
+                    break;
+                }
+            }
+            if (TabGroup.Tabs.Count == 0)
+            {
+                DispatcherQueue.TryEnqueue(delegate
+                {
+                    HiddenTabs.Remove(TabGroup);
+                });
+            }
+        }
         {
             static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)
             {

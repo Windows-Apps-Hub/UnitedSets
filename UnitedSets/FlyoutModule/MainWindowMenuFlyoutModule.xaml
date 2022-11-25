@@ -1,0 +1,115 @@
+﻿<Grid
+    x:Class="UnitedSets.MainWindowMenuFlyoutModule"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:class="using:UnitedSets.Classes"
+    xmlns:ezxaml="using:EasyXAMLTools"
+    >
+    <StackPanel Orientation="Vertical" Spacing="8">
+        <Border BorderThickness="1"
+        CornerRadius="8"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        Padding="8">
+            <Button VerticalAlignment="Center" 
+                        Command="{x:Bind MainWindow.Settings.LaunchSettingsCommand}"
+                        Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
+        </Border>
+        <Border BorderThickness="1"
+        CornerRadius="8"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        Padding="16">
+            <StackPanel Spacing="8">
+
+                <Grid>
+                    <TextBlock Text="Set Asided Tabs" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Button ToolTipService.ToolTip="Set All Currently Opened Tabs Aside" Click="SetTabsAside" HorizontalAlignment="Right" Padding="5">
+                        <SymbolIcon Symbol="ClosePane"/>
+                    </Button>
+                </Grid>
+                <TextBlock Text="Right click for more actions" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <ListView x:Name="TabGroupListView" MinHeight="200" MaxHeight="400" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" CanReorderItems="True" SelectionChanged="GroupSelectionChanged" ItemsSource="{x:Bind MainWindow.HiddenTabs}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="class:TabGroup">
+                                <ListViewItem>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                                    </Grid>
+                                    <ListViewItem.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Text="Send all tabs back to Window" Click="ShowGroupOnWindow" Tag="{x:Bind}"/>
+                                            <MenuFlyoutItem Text="Rename" Click="OpenContentDialogTag">
+                                                <MenuFlyoutItem.Tag>
+                                                    <ContentDialog Title="Rename" PrimaryButtonText="Okay">
+                                                        <TextBox PlaceholderText="New Name Here" Text="{x:Bind Name, Mode=TwoWay}"/>
+                                                    </ContentDialog>
+                                                </MenuFlyoutItem.Tag>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutSubItem Text="Delete Group">
+                                                <MenuFlyoutSubItem.Items>
+                                                    <MenuFlyoutItem Text="Detach All Windows" Click="DetachTabGroup"/>
+                                                    <MenuFlyoutItem Text="Close All Windows" Click="CloseTabGroup"/>
+                                                </MenuFlyoutSubItem.Items>
+                                            </MenuFlyoutSubItem>
+                                        </MenuFlyout>
+                                    </ListViewItem.ContextFlyout>
+                                </ListViewItem>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <ListView x:Name="TabListView" MinHeight="200" MaxHeight="400" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Grid.Column="2">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="class:TabBase">
+                                <ListViewItem>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Source="{x:Bind Icon, Mode=OneWay}" Margin="10" Width="30"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <ListViewItem.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Text="Rename" Click="OpenContentDialogTag">
+                                                <MenuFlyoutItem.Tag>
+                                                    <ContentDialog Title="Rename"  PrimaryButtonText="Okay">
+                                                        <TextBox PlaceholderText="{x:Bind DefaultTitle, Mode=OneWay}" Text="{x:Bind CustomTitle, Mode=TwoWay}"/>
+                                                    </ContentDialog>
+                                                </MenuFlyoutItem.Tag>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem Text="Show on Window" Click="ShowOnWindow" Tag="{x:Bind}"/>
+                                            <MenuFlyoutSubItem Text="Remove">
+                                                <MenuFlyoutSubItem.Items>
+                                                    <MenuFlyoutItem Text="Detach Window" Tag="{x:Bind}" Click="DetachTab"/>
+                                                    <MenuFlyoutItem Text="Close Window" Tag="{x:Bind}" Click="CloseTab"/>
+                                                </MenuFlyoutSubItem.Items>
+                                            </MenuFlyoutSubItem>
+                                        </MenuFlyout>
+                                    </ListViewItem.ContextFlyout>
+                                </ListViewItem>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</Grid>

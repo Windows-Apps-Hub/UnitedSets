@@ -104,7 +104,7 @@ public class HwndHostTab : TabBase
     }
     protected override async void OnDoubleClick()
     {
-        var flyout = new TabPropertiesFlyout(
+        var flyout = new LeftFlyout(
             WindowEx.FromWindowHandle(MainWindow.GetWindowHandle()),
             new BasicTabFlyoutModule(this),
             new ModifyWindowFlyoutModule(HwndHost)

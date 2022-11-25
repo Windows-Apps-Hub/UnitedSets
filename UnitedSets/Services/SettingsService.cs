@@ -1,14 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI.Helpers;
 using EasyCSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Storage;
 
 namespace UnitedSets.Services
@@ -34,9 +27,9 @@ namespace UnitedSets.Services
         }
         private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
 
-        [Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", CustomSetExpression = "Settings.Values[\"ExitOnClose\"] = value")]
+        [Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", OnChanged = nameof(ExitOnCloseChanged))]
         private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
-
+        private void ExitOnCloseChanged() => Settings.Values["ExitOnClose"] = exitOnClose;
         SettingsWindow s_window;
         [RelayCommand]
         public void LaunchSettings()

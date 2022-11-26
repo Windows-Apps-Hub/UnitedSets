@@ -5,7 +5,7 @@ using Microsoft.UI.Dispatching;
 using System.Threading;
 using WindowEx = WinWrapper.Window;
 
-namespace UnitedSets.Classes;
+namespace WinUI3HwndHostPlus;
 
 partial class HwndHost
 {

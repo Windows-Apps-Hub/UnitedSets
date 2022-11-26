@@ -71,6 +71,7 @@
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj">
 		  <Aliases></Aliases>
 		</ProjectReference>
+		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
 	<ItemGroup>

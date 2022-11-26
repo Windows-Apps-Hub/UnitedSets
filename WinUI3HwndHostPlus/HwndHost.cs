@@ -7,7 +7,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
 
-namespace UnitedSets.Classes;
+namespace WinUI3HwndHostPlus;
 
 public partial class HwndHost : FrameworkElement, IDisposable
 {

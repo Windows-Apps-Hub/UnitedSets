@@ -1,9 +1,13 @@
 ﻿using EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics;
+using System.Linq;
 using UnitedSets.Classes;
 using Windows.Foundation;
-
+using WinWrapper;
+using Process = System.Diagnostics.Process;
+using WinUI3HwndHostPlus;
 namespace UnitedSets;
 
 public sealed partial class ModifyWindowFlyoutModule
@@ -57,6 +61,17 @@ public sealed partial class ModifyWindowFlyoutModule
 #pragma warning restore CA1822 // Mark members as static
 
     [Event(typeof(RoutedEventHandler))]
-    void OnRedrawClick()
-        => HwndHost.HostedWindow.Redraw();
+    void OpenWindowLocation()
+    {
+        string? FileName = HwndHost.HostedWindow.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+        if (FileName is null) return;
+        if (FileName is @"C:\WINDOWS\system32\ApplicationFrameHost.exe")
+        {
+            var child = HwndHost.HostedWindow.Children.FirstOrDefault(x =>
+                x.ClassName is "Windows.UI.Core.CoreWindow", HwndHost.HostedWindow);
+            FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+            if (FileName is null) return;
+        }
+        Process.Start("explorer.exe", $"/select,\"{FileName}\"");
+    }
 }

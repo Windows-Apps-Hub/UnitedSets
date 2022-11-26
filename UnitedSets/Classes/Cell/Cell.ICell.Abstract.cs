@@ -8,7 +8,7 @@ using Windows.Win32;
 using Window = WinWrapper.Window;
 using System.Collections.Generic;
 using EasyCSharp;
-
+using WinUI3HwndHostPlus;
 namespace UnitedSets.Classes;
 public abstract partial class ICell : INotifyPropertyChanged
 {

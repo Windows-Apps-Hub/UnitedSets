@@ -1,24 +1,8 @@
-﻿using Microsoft.UI.Xaml;
-using System;
-using Microsoft.UI.Windowing;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Diagnostics;
+﻿using System;
 using Microsoft.UI.Dispatching;
-using Window = Microsoft.UI.Xaml.Window;
-using WindowEx = WinWrapper.Window;
-using WinWrapper;
-using Windows.Win32.UI.WindowsAndMessaging;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
-using Windows.Win32;
-using Windows.Win32.Graphics.Dwm;
-using Windows.Foundation;
-using EasyCSharp;
 using System.Runtime.CompilerServices;
 
-namespace UnitedSets.Classes;
+namespace WinUI3HwndHostPlus;
 
 partial class HwndHost
 {

@@ -9,7 +9,7 @@ using Window = WinWrapper.Window;
 using Visibility = Microsoft.UI.Xaml.Visibility;
 using WinUIEx;
 using EasyCSharp;
-
+using WinUI3HwndHostPlus;
 namespace UnitedSets.Classes;
 
 public partial class CellTab : TabBase

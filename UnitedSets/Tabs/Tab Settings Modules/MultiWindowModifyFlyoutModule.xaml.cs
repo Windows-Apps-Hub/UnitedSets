@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
-
+using WinUI3HwndHostPlus;
 namespace UnitedSets;
 
 public sealed partial class MultiWindowModifyFlyoutModule

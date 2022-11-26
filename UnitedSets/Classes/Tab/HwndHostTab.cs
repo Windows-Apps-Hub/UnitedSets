@@ -11,7 +11,7 @@ using UnitedSets.Helpers;
 using static WinUIEx.WindowExtensions;
 using WinWrapper;
 using WinUIEx;
-
+using WinUI3HwndHostPlus;
 namespace UnitedSets.Classes;
 
 public class HwndHostTab : TabBase

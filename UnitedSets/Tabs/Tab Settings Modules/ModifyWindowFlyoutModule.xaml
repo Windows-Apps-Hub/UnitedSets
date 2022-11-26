@@ -69,7 +69,7 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
-            <Button HorizontalAlignment="Center" Click="OnRedrawClick">Force Rerender Window</Button>
+            <Button HorizontalAlignment="Center" Click="OpenWindowLocation">Open Window file location</Button>
         </StackPanel>
     </Border>
 </Grid>

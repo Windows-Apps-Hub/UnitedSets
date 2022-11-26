@@ -17,7 +17,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Foundation;
 using EasyCSharp;
 
-namespace UnitedSets.Classes;
+namespace WinUI3HwndHostPlus;
 
 partial class HwndHost
 {

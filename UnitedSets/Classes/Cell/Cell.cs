@@ -13,7 +13,7 @@ using System.IO;
 using Windows.Storage.Streams;
 using WinWrapper;
 using EasyCSharp;
-
+using WinUI3HwndHostPlus;
 namespace UnitedSets.Classes;
 public partial class Cell : ICell, INotifyPropertyChanged
 {

@@ -19,6 +19,9 @@ namespace UnitedSets;
 public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule
 {
     MainWindow MainWindow;
+
+    public event Action? RequestClose;
+
     public MainWindowMenuFlyoutModule(MainWindow mainWindow)
     {
         MainWindow = mainWindow;

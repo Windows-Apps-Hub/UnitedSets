@@ -8,9 +8,11 @@ using Windows.Foundation;
 using WinWrapper;
 using Process = System.Diagnostics.Process;
 using WinUI3HwndHostPlus;
+using System;
+
 namespace UnitedSets;
 
-public sealed partial class ModifyWindowFlyoutModule
+public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
 {
     public ModifyWindowFlyoutModule(HwndHost hwndHost)
     {
@@ -18,6 +20,8 @@ public sealed partial class ModifyWindowFlyoutModule
         InitializeComponent();
     }
     readonly HwndHost HwndHost;
+
+    public event Action? RequestClose;
 
     [Event(typeof(RoutedEventHandler))]
     void TopMarginShortcutClick(object sender)
@@ -73,5 +77,22 @@ public sealed partial class ModifyWindowFlyoutModule
             if (FileName is null) return;
         }
         Process.Start("explorer.exe", $"/select,\"{FileName}\"");
+    }
+    [Event(typeof(RoutedEventHandler))]
+    async void CloseWindow()
+    {
+        await HwndHost.HostedWindow.TryCloseAsync();
+        RequestClose?.Invoke();
+    }
+    [Event(typeof(RoutedEventHandler))]
+    void DetachWindow()
+    {
+        HwndHost.DetachAndDispose();
+        RequestClose?.Invoke();
+    }
+
+    public void OnActivated()
+    {
+        
     }
 }

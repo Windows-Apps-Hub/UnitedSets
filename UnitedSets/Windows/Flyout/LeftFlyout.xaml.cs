@@ -31,7 +31,12 @@ public sealed partial class LeftFlyout
         InitializeComponent();
         foreach (var Module in Modules)
             ModuleContainer.Children.Add(Module);
+        
         RegisteredEventModules = Modules.Where(x => x is IWindowFlyoutModule).Select(x => (IWindowFlyoutModule)x).ToArray();
+        
+        foreach (var modules in RegisteredEventModules)
+            modules.RequestClose += CloseClick;
+
         CurrentWindowEx = WindowEx.FromWindowHandle(
             WinRT.Interop.WindowNative.GetWindowHandle(this)
         );
@@ -109,4 +114,5 @@ public sealed partial class LeftFlyout
 interface IWindowFlyoutModule
 {
     void OnActivated();
+    event Action RequestClose;
 }

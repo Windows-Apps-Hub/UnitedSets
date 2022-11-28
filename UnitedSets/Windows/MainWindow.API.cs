@@ -32,7 +32,7 @@ namespace UnitedSets;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-    void AddTab(WindowEx newWindow, int? index = null)
+    async void AddTab(WindowEx newWindow, int? index = null)
     {
         if (!newWindow.IsValid)
             return;

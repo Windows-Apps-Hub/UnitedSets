@@ -49,7 +49,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
-        <ezxaml:FluentHorizontalDynamicSizer Canvas.ZIndex="1">
+        <ezxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1">
             <Border MinHeight="40">
                 <TabView 
                     Style="{ThemeResource GlowTabView}"
@@ -71,6 +71,7 @@
                     HorizontalAlignment="Left"
                     AddTabButtonClick="OnAddTabButtonClick"
                     SelectionChanged="TabSelectionChanged"
+                    SizeChanged="TabView_SizeChanged"
                 >
                     <TabView.Resources>
                         <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
@@ -124,13 +125,16 @@
             </ItemsControl>
         </Border>
         <StackPanel x:Name="UnitedSetsHomeBackground" VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Center" Canvas.ZIndex="-1">
-            <StackPanel Orientation="Horizontal">
-                <Image x:Name="AppFontIcon"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!--<Image x:Name="AppFontIcon"
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center"
                     Source="Assets/Square44x44Logo.scale-100.png"   
                     Width="48" 
                     Height="48"/>
+                It does not work for some reason...
+                
+                -->
                 <TextBlock
                     Text="United Sets"
                     VerticalAlignment="Center"

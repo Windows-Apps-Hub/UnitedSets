@@ -291,4 +291,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
         }
     }
+
+    [Event(typeof(SizeChangedEventHandler))]
+    void TabView_SizeChanged()
+    {
+        DispatcherQueue.TryEnqueue(() => TabViewSizer.InvalidateArrange());
+    }
 }

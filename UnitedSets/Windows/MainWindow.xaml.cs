@@ -48,7 +48,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     // Readonly
     public ObservableCollection<TabBase> Tabs { get; } = new();
     public ObservableCollection<TabGroup> HiddenTabs { get; } = new();
-    readonly WindowEx WindowEx;
+
+    public readonly WindowEx WindowEx;
     
     // Property
     [Property(CustomGetExpression = $"{nameof(_HasOwner)} = {nameof(WindowEx)}.Owner.IsValid", SetVisibility = GeneratorVisibility.DoNotGenerate)]

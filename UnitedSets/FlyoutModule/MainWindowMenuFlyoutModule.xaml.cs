@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 using UnitedSets.Classes;
 using Windows.Foundation;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Win32;
+using WinWrapper;
+using Window = WinWrapper.Window;
+using System.Collections;
+using System.Collections.Generic;
+
 namespace UnitedSets;
 
 public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule
@@ -136,5 +143,84 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModu
                     DetachTab(sender);
                     break;
             }
+    }
+
+#pragma warning disable CA1822 // Mark members as static
+    [Event(typeof(DragItemsStartingEventHandler))]
+    void TabDragStarting(DragItemsStartingEventArgs args)
+    {
+        if (args.Items.Count is not 0) return;
+        if (args.Items[0] is HwndHostTab item)
+            args.Data.SetData(MainWindow.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+    }
+
+
+    [Event(typeof(DragEventHandler))]
+    void OnDragItemOverTabListView(DragEventArgs e)
+    {
+        if (e.DataView.AvailableFormats.Contains(MainWindow.UnitedSetsTabWindowDragProperty))
+            e.AcceptedOperation = DataPackageOperation.Move;
+    }
+#pragma warning restore CA1822 // Mark members as static
+    [Event(typeof(DragEventHandler))]
+    void OnDragItemOverTabGroupListViewItem([CastFrom(typeof(object))] ListViewItem listviewitem)
+    {
+        TabListView.SelectedItem = listviewitem.Tag;
+    }
+    [Event(typeof(DragEventHandler))]
+    async void OnDropItemOverTabListView(DragEventArgs e)
+    {
+        const string UnitedSetsTabWindowDragProperty = MainWindow.UnitedSetsTabWindowDragProperty;
+
+        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
+        {
+            var pt = e.GetPosition(TabListView);
+            if (TabGroupListView.SelectedIndex is -1) return;
+            var tabgroup = MainWindow.HiddenTabs[TabGroupListView.SelectedIndex];
+            var a = (long)await e.DataView.GetDataAsync(UnitedSetsTabWindowDragProperty);
+            var window = Window.FromWindowHandle((nint)a);
+            var finalIdx = (
+                from index in Enumerable.Range(0, tabgroup.Tabs.Count)
+                let ele = TabListView.ContainerFromIndex(index) as UIElement
+                let posele = ele.TransformToVisual(TabListView).TransformPoint(default)
+                let size = ele.ActualSize
+                let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
+                let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
+                where IsMoreThanTopLeft && IsLessThanBotRigh
+                select (int?)index
+            ).FirstOrDefault();
+            TabBase? tabValue;
+            if (window.Owner != MainWindow.WindowEx)
+            {
+                var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+                tabValue = new HwndHostTab(MainWindow, window);
+            } else
+            {
+                tabValue = null;
+                foreach (var tab in MainWindow.Tabs)
+                {
+                    if (tab.Windows.Contains(window))
+                    {
+                        tabValue = tab;
+                        MainWindow.Tabs.Remove(tab);
+                    }
+                }
+                foreach (var tg in MainWindow.HiddenTabs)
+                {
+                    foreach (var tab in tg.Tabs)
+                    {
+                        if (tab.Windows.Contains(window))
+                        {
+                            tabValue = tab;
+                            tg.Tabs.Remove(tab);
+                        }
+                    }
+                }
+            }
+            if (tabValue is null) return;
+            if (finalIdx.HasValue)
+                tabgroup.Tabs.Insert(finalIdx.Value, tabValue);
+            else tabgroup.Tabs.Add(tabValue);
+        }
     }
 }

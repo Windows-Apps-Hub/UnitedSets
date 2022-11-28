@@ -40,10 +40,18 @@
                         <ColumnDefinition Width="8" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <ListView x:Name="TabGroupListView" MinHeight="200" MaxHeight="400" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" CanReorderItems="True" SelectionChanged="GroupSelectionChanged" ItemsSource="{x:Bind MainWindow.HiddenTabs}">
+                    <ListView x:Name="TabGroupListView"
+                              MinHeight="200"
+                              MaxHeight="400"
+                              Background="{ThemeResource LayerFillColorDefaultBrush}"
+                              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                              BorderThickness="1" CornerRadius="4" CanReorderItems="True"
+                              SelectionChanged="GroupSelectionChanged" ItemsSource="{x:Bind MainWindow.HiddenTabs}"
+                              AllowDrop="True"
+                              Drop="OnDropItemOverTabListView">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="class:TabGroup">
-                                <ListViewItem>
+                                <ListViewItem Tag="{x:Bind}" AllowDrop="True" DragOver="OnDragItemOverTabGroupListViewItem">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -73,7 +81,19 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <ListView x:Name="TabListView" MinHeight="200" MaxHeight="400" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Grid.Column="2">
+                    <ListView x:Name="TabListView"
+                              MinHeight="200"
+                              MaxHeight="400"
+                              Background="{ThemeResource LayerFillColorDefaultBrush}"
+                              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                              BorderThickness="1"
+                              CornerRadius="4"
+                              Grid.Column="2"
+                              CanDragItems="True"
+                              IsMultiSelectCheckBoxEnabled="False"
+                              SelectionMode="Single"
+                              AllowDrop="True"
+                              >
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="class:TabBase">
                                 <ListViewItem>

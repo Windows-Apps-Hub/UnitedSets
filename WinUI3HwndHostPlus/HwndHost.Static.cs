@@ -80,4 +80,13 @@ partial class HwndHost
 
     public static double GetScale(WindowEx Window)
         => Window.CurrentDisplay.ScaleFactor / 100.0;
+
+
+    public static bool ShouldBeBlacklisted(WindowEx Window)
+        => Window.ClassName is
+            "Shell_TrayWnd" // Taskbar
+            or "Progman" // Desktop
+            or "WindowsDashboard" // I forget
+            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
+        ;
 }

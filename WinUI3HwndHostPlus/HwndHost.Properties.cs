@@ -35,10 +35,12 @@ partial class HwndHost
     void IsWindowVisibleChanged()
         => Task.Run(ForceUpdateWindow);
 
+    bool ActivateCropAllowed => !_NoMovingMode;
     [AutoNotifyProperty(OnChanged = nameof(OnActivateCropChanged))]
     bool _ActivateCrop = false;
     void OnActivateCropChanged()
     {
+        if (!ActivateCropAllowed && _ActivateCrop) throw new InvalidOperationException($"{nameof(ActivateCropAllowed)} is false");
         if (_ActivateCrop)
         {
             if (IsDwmBackdropSupported && !IsDisposed)

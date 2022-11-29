@@ -17,7 +17,7 @@
         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
         Padding="8">
             <Button VerticalAlignment="Center" 
-                        Command="{x:Bind MainWindow.Settings.LaunchSettingsCommand}"
+                        Click="{x:Bind MainWindow.Settings.LaunchSettings}"
                         Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
         </Border>
         <Border BorderThickness="1"

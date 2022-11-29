@@ -54,30 +54,34 @@ partial class HwndHost
         }
         Updating?.Invoke();
         var YShift = _ParentWindow.IsMaximized ? 8 : 0;
-        var oldBounds = WindowToHost.Bounds;
-        var newBounds = new Rectangle(
-        Pt.X + 8 - _CropLeft,
-        Pt.Y + YShift - _CropTop,
-        (int)(_CacheWidth * scale) + _CropLeft + _CropRight,
-        (int)(_CacheHeight * scale) + _CropTop + _CropBottom
-        );
-        if (oldBounds != newBounds)
+        if (!_NoMovingMode)
         {
-            if (Check && WindowEx.ForegroundWindow == WindowToHost)
+            var oldBounds = WindowToHost.Bounds;
+            var newBounds = new Rectangle(
+            Pt.X + 8 - _CropLeft,
+            Pt.Y + YShift - _CropTop,
+            (int)(_CacheWidth * scale) + _CropLeft + _CropRight,
+            (int)(_CacheHeight * scale) + _CropTop + _CropBottom
+            );
+            if (oldBounds != newBounds)
             {
-                DetachAndDispose();
-                return;
-            }
-            else WindowToHost.Bounds = newBounds;
-            if (ActivateCrop)
-                if (ForceInvalidateCrop || oldBounds.Size != newBounds.Size)
+                if (Check && WindowEx.ForegroundWindow == WindowToHost)
                 {
-                    ForceInvalidateCrop = false;
-                    _ = WindowToHost.SetRegionAsync(new(_CropLeft, _CropTop, WindowToHost.Bounds.Width - _CropLeft - _CropRight, WindowToHost.Bounds.Height - _CropTop - _CropBottom));
+                    DetachAndDispose();
+                    return;
                 }
+                else WindowToHost.Bounds = newBounds;
+                if (ActivateCrop)
+                    if (ForceInvalidateCrop || oldBounds.Size != newBounds.Size)
+                    {
+                        ForceInvalidateCrop = false;
+                        _ = WindowToHost.SetRegionAsync(new(_CropLeft, _CropTop, WindowToHost.Bounds.Width - _CropLeft - _CropRight, WindowToHost.Bounds.Height - _CropTop - _CropBottom));
+                    }
+            }
         }
-        if (!IsOwnerSetSuccessful)
+        if (!_IsOwnerSetSuccessful)
         {
+            var oldBounds = WindowToHost.Bounds;
             if (new WindowRelative(WindowToHost).GetAboves().Take(10).Any(x => x == _ParentWindow))
             {
                 await Task.Delay(500);

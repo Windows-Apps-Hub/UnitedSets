@@ -49,6 +49,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
         var idx = TabView.SelectedIndex;
         SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
+        if (double.IsNaN(TabViewSizer.Width))
+            TabViewSizer.Width = TabViewSizer.ActualWidth - 1;
+        else TabViewSizer.Width = double.NaN;
     }
 
     // Different Thread

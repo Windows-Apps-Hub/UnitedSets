@@ -28,11 +28,13 @@ using System.IO;
 using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
+using WinUI3HwndHostPlus;
+
 namespace UnitedSets;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-    async void AddTab(WindowEx newWindow, int? index = null)
+    void AddTab(WindowEx newWindow, int? index = null)
     {
         if (!newWindow.IsValid)
             return;
@@ -43,12 +45,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             return;
         if (newWindow.Handle == WindowEx.Handle)
             return;
-        if (newWindow.ClassName is
-            "Shell_TrayWnd" // Taskbar
-            or "Progman" // Desktop
-            or "WindowsDashboard" // I forget
-            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
-            )
+        if (HwndHost.ShouldBeBlacklisted(newWindow))
             return;
         // Check if United Sets has owner (United Sets in United Sets)
         if (WindowEx.Root.Children.Any(x => x == newWindow))

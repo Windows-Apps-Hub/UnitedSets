@@ -19,56 +19,62 @@
             </StackPanel.Resources>
             <TextBlock Text="Window Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
             <Grid>
-                <TextBlock Text="Borderless Window" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
-                <ToggleSwitch x:Name="BorderlessToggleSwitch" OnContent="On" OffContent="Off" Margin="0,-5,-80,-5" IsOn="{x:Bind HwndHost.BorderlessWindow, Mode=TwoWay}" HorizontalAlignment="Right" Toggled="OnBorderlessToggleSwitchToggled"/>
+                <TextBlock Text="Compatability Mode" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="CompatabilityModeTB" HorizontalAlignment="Right" />
             </Grid>
-            <StackPanel Orientation="Vertical" Spacing="12" x:Name="BorderlessSettingsStackPanel" Visibility="Collapsed">
+            <Grid x:Name="BorderlessWindowSettings">
                 <Grid>
-                    <TextBlock Text="Window Crop Margin" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <ToggleSwitch x:Name="WindowCropMarginToggleSwitch" OnContent="On" OffContent="Off" Margin="0,-5,-80,-5" IsOn="{x:Bind HwndHost.ActivateCrop, Mode=TwoWay}" HorizontalAlignment="Right" Toggled="OnWindowCropMarginToggleSwitchToggled"/>
+                    <TextBlock Text="Borderless Window" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <ToggleSwitch x:Name="BorderlessToggleSwitch" OnContent="On" OffContent="Off" Margin="0,-5,-80,-5" IsOn="{x:Bind HwndHost.BorderlessWindow, Mode=TwoWay}" HorizontalAlignment="Right" Toggled="OnBorderlessToggleSwitchToggled"/>
                 </Grid>
-                <StackPanel Orientation="Vertical" Spacing="12" x:Name="WindowCropMarginSettingsStackPanel" Visibility="Collapsed">
+                <StackPanel Orientation="Vertical" Spacing="12" x:Name="BorderlessSettingsStackPanel" Visibility="Collapsed">
                     <Grid>
-                        <TextBlock Text="Top: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                            <Button Click="TopMarginShortcutClick">32</Button>
-                            <Button Click="TopMarginShortcutClick">40</Button>
-                            <Button Click="TopMarginShortcutClick">41</Button>
-                            <NumberBox x:Name="TopCropMargin" Value="{x:Bind HwndHost.CropTop, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
-                            <Button Padding="5" Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
-                                <SymbolIcon Symbol="Undo"/>
-                            </Button>
-                        </StackPanel>
+                        <TextBlock Text="Window Crop Margin" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <ToggleSwitch x:Name="WindowCropMarginToggleSwitch" OnContent="On" OffContent="Off" Margin="0,-5,-80,-5" IsOn="{x:Bind HwndHost.ActivateCrop, Mode=TwoWay}" HorizontalAlignment="Right" Toggled="OnWindowCropMarginToggleSwitchToggled"/>
                     </Grid>
-                    <Grid>
-                        <TextBlock Text="Left: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                            <NumberBox x:Name="LeftCropMargin" Value="{x:Bind HwndHost.CropLeft, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
-                            <Button Padding="5" Tag="{x:Bind LeftCropMargin}" Click="OnResetClick">
-                                <SymbolIcon Symbol="Undo"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                    <Grid>
-                        <TextBlock Text="Right: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                            <NumberBox x:Name="RightCropMargin" Value="{x:Bind HwndHost.CropRight, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
-                            <Button Padding="5" Tag="{x:Bind RightCropMargin}" Click="OnResetClick">
-                                <SymbolIcon Symbol="Undo"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                    <Grid>
-                        <TextBlock Text="Bottom: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                            <NumberBox x:Name="BottomCropMargin" Value="{x:Bind HwndHost.CropBottom, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
-                            <Button Padding="5" Tag="{x:Bind BottomCropMargin}" Click="OnResetClick">
-                                <SymbolIcon Symbol="Undo"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                    <StackPanel Orientation="Vertical" Spacing="12" x:Name="WindowCropMarginSettingsStackPanel" Visibility="Collapsed">
+                        <Grid>
+                            <TextBlock Text="Top: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <Button Click="TopMarginShortcutClick">32</Button>
+                                <Button Click="TopMarginShortcutClick">40</Button>
+                                <Button Click="TopMarginShortcutClick">41</Button>
+                                <NumberBox x:Name="TopCropMargin" Value="{x:Bind HwndHost.CropTop, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
+                                <Button Padding="5" Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Left: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <NumberBox x:Name="LeftCropMargin" Value="{x:Bind HwndHost.CropLeft, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
+                                <Button Padding="5" Tag="{x:Bind LeftCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Right: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <NumberBox x:Name="RightCropMargin" Value="{x:Bind HwndHost.CropRight, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
+                                <Button Padding="5" Tag="{x:Bind RightCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Bottom: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <NumberBox x:Name="BottomCropMargin" Value="{x:Bind HwndHost.CropBottom, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0" MinWidth="100"/>
+                                <Button Padding="5" Tag="{x:Bind BottomCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="8">
                 <Button Click="CloseWindow">Close Window</Button>
                 <Button Click="DetachWindow">Detach Window</Button>

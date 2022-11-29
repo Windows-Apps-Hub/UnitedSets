@@ -90,7 +90,7 @@ public class HwndHostTab : TabBase
         var Window = this.Window;
         HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
-        if (JumpToCursor)
+        if (JumpToCursor && !HwndHost.NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
         Window.Focus();
         Window.Redraw();

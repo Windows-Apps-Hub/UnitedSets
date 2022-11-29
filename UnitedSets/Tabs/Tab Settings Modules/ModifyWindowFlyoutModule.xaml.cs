@@ -18,6 +18,17 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
     {
         HwndHost = hwndHost;
         InitializeComponent();
+        string CompatablityString = string.Join(", ",
+            new string?[]
+            {
+                hwndHost.IsOwnerSetSuccessful ? null : "No Owner",
+                hwndHost.NoMovingMode ? "No Move" : null
+            }.Where(x => x is not null)
+        );
+        if (string.IsNullOrEmpty(CompatablityString)) CompatablityString = "None";
+        CompatabilityModeTB.Text = CompatablityString;
+        
+        BorderlessWindowSettings.Visibility = hwndHost.NoMovingMode ? Visibility.Collapsed : Visibility.Visible;
     }
     readonly HwndHost HwndHost;
 

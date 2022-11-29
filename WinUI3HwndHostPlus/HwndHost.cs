@@ -6,6 +6,7 @@ using WindowEx = WinWrapper.Window;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
+using EasyCSharp;
 
 namespace WinUI3HwndHostPlus;
 
@@ -31,10 +32,13 @@ public partial class HwndHost : FrameworkElement, IDisposable
         );
         
         this._HostedWindow = WindowToHost;
+
+        _NoMovingMode = WindowToHost.ClassName is "RAIL_WINDOW";
+
         InitialIsResizable = WindowToHost.IsResizable;
         
         WindowToHost.Owner = _ParentWindow;
-        IsOwnerSetSuccessful = WindowToHost.Owner == _ParentWindow;
+        _IsOwnerSetSuccessful = WindowToHost.Owner == _ParentWindow;
         if (IsDwmBackdropSupported)
             InitialBackdropType = WindowToHost.DwmGetWindowAttribute<DWM_SYSTEMBACKDROP_TYPE>((DWMWINDOWATTRIBUTE)38);
 
@@ -52,9 +56,12 @@ public partial class HwndHost : FrameworkElement, IDisposable
     readonly DWM_SYSTEMBACKDROP_TYPE InitialBackdropType;
     readonly WINDOW_EX_STYLE InitialExStyle;
     readonly bool InitialIsResizable;
-
-    readonly bool IsOwnerSetSuccessful;
-    
+    // Compatability Mode
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
+    readonly bool _NoMovingMode;
+    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
+    readonly bool _IsOwnerSetSuccessful;
+    bool IsInCompatabilityMode => _NoMovingMode || !_IsOwnerSetSuccessful;
     // For Disposing Logic
     readonly long VisiblePropertyChangedToken;
 }

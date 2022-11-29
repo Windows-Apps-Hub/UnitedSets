@@ -10,7 +10,7 @@ using Windows.Foundation;
 using EasyCSharp;
 
 
-namespace UnitedSets;
+namespace UnitedSets.Windows;
 
 public partial class MicaWindow : WindowEx
 {

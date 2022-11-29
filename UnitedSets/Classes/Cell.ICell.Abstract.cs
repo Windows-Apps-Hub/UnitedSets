@@ -1,14 +1,9 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
-using Microsoft.UI.Xaml;
-using System.Linq;
-using System;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Win32;
 using Window = WinWrapper.Window;
-using System.Collections.Generic;
-using EasyCSharp;
 using WinUI3HwndHostPlus;
+using UnitedSets.Windows;
+
 namespace UnitedSets.Classes;
 public abstract partial class ICell : INotifyPropertyChanged
 {

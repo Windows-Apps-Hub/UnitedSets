@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitedSets.Helpers
+namespace UnitedSets.Helpers;
+
+internal class NativeHelper
 {
-    internal class NativeHelper
-    {
-    }
 }

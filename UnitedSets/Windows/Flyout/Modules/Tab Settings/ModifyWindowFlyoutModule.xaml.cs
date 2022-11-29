@@ -9,8 +9,9 @@ using WinWrapper;
 using Process = System.Diagnostics.Process;
 using WinUI3HwndHostPlus;
 using System;
+using UnitedSets.Windows.Flyout;
 
-namespace UnitedSets;
+namespace UnitedSets.Windows.Flyout.Modules;
 
 public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
 {

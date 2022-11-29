@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
 
-namespace UnitedSets;
+namespace UnitedSets.Templates;
 
 public partial class TabDataTemplate
 {

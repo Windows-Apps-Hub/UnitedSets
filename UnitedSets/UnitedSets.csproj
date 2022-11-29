@@ -22,11 +22,21 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="AppPackages\**" />
+	  <Compile Remove="Interfaces\**" />
+	  <EmbeddedResource Remove="AppPackages\**" />
+	  <EmbeddedResource Remove="Interfaces\**" />
+	  <None Remove="AppPackages\**" />
+	  <None Remove="Interfaces\**" />
+	  <Page Remove="AppPackages\**" />
+	  <Page Remove="Interfaces\**" />
+	</ItemGroup>
+	<ItemGroup>
 		<None Remove="AddTabFlyout.xaml" />
-		<None Remove="FlyoutModule\MainWindowMenuFlyoutModule.xaml" />
+		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
-		<None Remove="OOBE\OOBEPage.xaml" />
+		<None Remove="Windows\OOBE\OOBE.Page.cs.xaml" />
 		<None Remove="SettingsWindow.xaml" />
 		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
 		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
@@ -98,7 +108,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\OOBE\" />
-		<Folder Include="Interfaces\" />
+		<Folder Include="Controls\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
@@ -138,5 +148,11 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Remove="ModifyWindowFlyoutModule.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PRIResource Remove="AppPackages\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PRIResource Remove="Interfaces\**" />
 	</ItemGroup>
 </Project>

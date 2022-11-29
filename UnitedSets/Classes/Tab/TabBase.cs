@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using UnitedSets.Services;
 using WinWrapper;
 
-namespace UnitedSets.Classes;
+namespace UnitedSets.Classes.Tabs;
 
 public abstract partial class TabBase : INotifyPropertyChanged
 {

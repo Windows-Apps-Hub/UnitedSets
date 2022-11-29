@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
+using UnitedSets.Classes.Tabs;
 
-namespace UnitedSets;
+namespace UnitedSets.Templates;
 
 public class TabBaseContentTemplateSelector : DataTemplateSelector
 {

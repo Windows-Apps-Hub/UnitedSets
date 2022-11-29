@@ -12,7 +12,11 @@ using static WinUIEx.WindowExtensions;
 using WinWrapper;
 using WinUIEx;
 using WinUI3HwndHostPlus;
-namespace UnitedSets.Classes;
+using UnitedSets.Windows;
+using UnitedSets.Windows.Flyout;
+using UnitedSets.Windows.Flyout.Modules;
+
+namespace UnitedSets.Classes.Tabs;
 
 public class HwndHostTab : TabBase
 {

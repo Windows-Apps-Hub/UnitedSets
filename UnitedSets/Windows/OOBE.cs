@@ -13,27 +13,26 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnitedSets.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using UnitedSets.Pages;
+using UnitedSets.Windows.Pages;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace UnitedSets
+namespace UnitedSets.Windows;
+
+/// <summary>
+/// An empty window that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class OOBEWindow : WindowEx
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class OOBEWindow : WindowEx
+    public OOBEWindow()
     {
-        public OOBEWindow()
-        {
-            this.InitializeComponent();
-            ExtendsContentIntoTitleBar = true;
-            MicaHelper Mica = new();
-            Mica.TrySetMicaBackdrop(this);
-            SetTitleBar(AppTitleBar);
-            OOBE.Navigate(typeof(OOBEPage));
-        }
+        this.InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
+        MicaHelper Mica = new();
+        Mica.TrySetMicaBackdrop(this);
+        SetTitleBar(AppTitleBar);
+        OOBE.Navigate(typeof(OOBEPage));
     }
 }

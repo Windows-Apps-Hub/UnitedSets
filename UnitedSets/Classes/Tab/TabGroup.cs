@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitedSets.Classes;
+namespace UnitedSets.Classes.Tabs;
 
 public partial class TabGroup
 {

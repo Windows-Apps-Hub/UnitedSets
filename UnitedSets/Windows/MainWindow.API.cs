@@ -29,8 +29,9 @@ using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using WinUI3HwndHostPlus;
+using UnitedSets.Classes.Tabs;
 
-namespace UnitedSets;
+namespace UnitedSets.Windows;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {

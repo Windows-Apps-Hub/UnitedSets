@@ -1,12 +1,13 @@
-﻿<local:MicaWindow
+﻿<windows:MicaWindow
     xmlns:WinUIEx="using:WinUIEx"
-    x:Class="UnitedSets.AddTabFlyout"
+    x:Class="UnitedSets.Windows.Flyout.AddTabFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:icons="using:Cube.UI.Icons"
+    xmlns:windows="using:UnitedSets.Windows"
     IsResizable="False"
     IsMaximizable="False"
     IsMinimizable="False"
@@ -25,4 +26,4 @@
         </StackPanel>
         <Button Style="{ThemeResource CloseButton}" Click="CancelClick" HorizontalAlignment="Right"/>
     </Grid>
-</local:MicaWindow>
+</windows:MicaWindow>

@@ -6,7 +6,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
 using Window = WinWrapper.Window;
 using EasyCSharp;
-
+using UnitedSets.Windows;
 namespace UnitedSets.Classes;
 public abstract partial class ICell : INotifyPropertyChanged
 {

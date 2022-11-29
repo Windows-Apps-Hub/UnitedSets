@@ -28,7 +28,8 @@ using System.IO;
 using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
-namespace UnitedSets;
+using UnitedSets.Classes.Tabs;
+namespace UnitedSets.Windows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.

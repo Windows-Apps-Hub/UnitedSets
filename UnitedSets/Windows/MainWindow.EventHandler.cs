@@ -29,8 +29,11 @@ using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
+using UnitedSets.Windows.Flyout;
+using UnitedSets.Classes.Tabs;
+using UnitedSets.Windows.Flyout.Modules;
 
-namespace UnitedSets;
+namespace UnitedSets.Windows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.

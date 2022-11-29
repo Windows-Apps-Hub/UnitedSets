@@ -1,5 +1,5 @@
 ﻿<Grid
-    x:Class="UnitedSets.MainWindowMenuFlyoutModule"
+    x:Class="UnitedSets.Windows.Flyout.Modules.MainWindowMenuFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:tabs="using:UnitedSets.Classes.Tabs"
     xmlns:class="using:UnitedSets.Classes"
     xmlns:ezxaml="using:EasyXAMLTools"
     >
@@ -50,7 +51,7 @@
                               AllowDrop="True"
                               Drop="OnDropItemOverTabListView">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="class:TabGroup">
+                            <DataTemplate x:DataType="tabs:TabGroup">
                                 <ListViewItem Tag="{x:Bind}" AllowDrop="True" DragOver="OnDragItemOverTabGroupListViewItem">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -95,7 +96,7 @@
                               AllowDrop="True"
                               >
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="class:TabBase">
+                            <DataTemplate x:DataType="tabs:TabBase">
                                 <ListViewItem>
                                     <Grid>
                                         <Grid.ColumnDefinitions>

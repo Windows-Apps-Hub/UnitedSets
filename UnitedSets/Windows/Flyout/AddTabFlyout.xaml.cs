@@ -14,7 +14,7 @@ using UnitedSets.Helpers;
 using EasyCSharp;
 using System;
 
-namespace UnitedSets;
+namespace UnitedSets.Windows.Flyout;
 
 public sealed partial class AddTabFlyout
 {

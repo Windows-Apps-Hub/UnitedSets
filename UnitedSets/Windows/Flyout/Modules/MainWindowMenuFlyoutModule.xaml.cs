@@ -13,8 +13,11 @@ using WinWrapper;
 using Window = WinWrapper.Window;
 using System.Collections;
 using System.Collections.Generic;
+using UnitedSets.Classes.Tabs;
+using UnitedSets.Windows;
+using UnitedSets.Windows.Flyout;
 
-namespace UnitedSets;
+namespace UnitedSets.Windows.Flyout.Modules;
 
 public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule
 {

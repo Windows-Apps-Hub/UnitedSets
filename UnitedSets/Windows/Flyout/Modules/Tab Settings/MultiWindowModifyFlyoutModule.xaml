@@ -1,10 +1,11 @@
 ﻿<Grid
-    x:Class="UnitedSets.BasicTabFlyoutModule"
+    x:Class="UnitedSets.Windows.Flyout.Modules.MultiWindowModifyFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:localclass="using:UnitedSets.Classes"
     mc:Ignorable="d"
     xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
     >
@@ -19,14 +20,19 @@
             </StackPanel.Resources>
             <TextBlock Text="Tab Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
             <Grid>
-                <TextBlock Text="Display Name: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <TextBox x:Name="TabNameTextBox" TextChanged="TabNameTextBoxChanged" Text="{x:Bind TabBase.CustomTitle, Mode=TwoWay}" PlaceholderText="{x:Bind TabBase.DefaultTitle, Mode=OneWay}" MinWidth="100" MaxWidth="200"/>
-                    <Button Padding="5" Click="TabNameReset">
-                        <SymbolIcon Symbol="Undo"/>
-                    </Button>
-                </StackPanel>
+                <TextBlock Text="Window To Modify: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <ComboBox x:Name="HwndHostSelector"
+                    SelectionChanged="HwndHostSelector_SelectionChanged"
+                    PlaceholderText="Select"
+                    HorizontalAlignment="Right"
+                    MinWidth="100"
+                    MaxWidth="200"
+                >
+                </ComboBox>
             </Grid>
+            <Border x:Name="ModifyWindowFlyoutModulePlace">
+                
+            </Border>
         </StackPanel>
     </Border>
 </Grid>

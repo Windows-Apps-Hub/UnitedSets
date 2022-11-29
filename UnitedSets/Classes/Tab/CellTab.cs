@@ -10,7 +10,11 @@ using Visibility = Microsoft.UI.Xaml.Visibility;
 using WinUIEx;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
-namespace UnitedSets.Classes;
+using UnitedSets.Windows;
+using UnitedSets.Windows.Flyout;
+using UnitedSets.Windows.Flyout.Modules;
+
+namespace UnitedSets.Classes.Tabs;
 
 public partial class CellTab : TabBase
 {

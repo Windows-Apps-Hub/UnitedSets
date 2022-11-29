@@ -1,5 +1,5 @@
 ﻿<Grid
-    x:Class="UnitedSets.ModifyWindowFlyoutModule"
+    x:Class="UnitedSets.Windows.Flyout.Modules.ModifyWindowFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"

@@ -1,14 +1,16 @@
 ﻿<ResourceDictionary
-    x:Class="UnitedSets.TabDataTemplate"
+    x:Class="UnitedSets.Templates.TabDataTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
-    xmlns:class="using:UnitedSets.Classes">
-    <DataTemplate x:Name="SingleTabDataTemplate" x:FieldModifier="Public" x:DataType="class:HwndHostTab">
+    xmlns:class="using:UnitedSets.Classes"
+    xmlns:tabs="using:UnitedSets.Classes.Tabs"
+    xmlns:controls="using:UnitedSets.Controls">
+    <DataTemplate x:Name="SingleTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:HwndHostTab">
         <Border Child="{x:Bind HwndHost}"/>
         <!--Recreating HwndHost is expensive-->
     </DataTemplate>
-    <DataTemplate x:Name="CellTabDataTemplate" x:FieldModifier="Public" x:DataType="class:CellTab">
-        <local:CellVisualizer Cell="{x:Bind MainCell}"/>
+    <DataTemplate x:Name="CellTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:CellTab">
+        <controls:CellVisualizer Cell="{x:Bind MainCell}"/>
     </DataTemplate>
 </ResourceDictionary>

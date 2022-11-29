@@ -26,7 +26,7 @@
 		<None Remove="FlyoutModule\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
-		<None Remove="Pages\OOBEPage.xaml" />
+		<None Remove="OOBE\OOBEPage.xaml" />
 		<None Remove="SettingsWindow.xaml" />
 		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
 		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />

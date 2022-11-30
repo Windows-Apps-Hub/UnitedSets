@@ -59,7 +59,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     Visibility SettingsButtonVisibility => HasOwner ? Visibility.Collapsed : Visibility.Visible;
     readonly DispatcherQueueTimer timer;
     readonly WindowMessageMonitor WindowMessageMonitor;
-    
+    public bool IsAltTabVisible;
     public MainWindow()
     {
         Title = "UnitedSets";

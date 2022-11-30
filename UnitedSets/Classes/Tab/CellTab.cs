@@ -13,6 +13,7 @@ using WinUI3HwndHostPlus;
 using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
+using System.Drawing;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -22,12 +23,12 @@ public partial class CellTab : TabBase
     public Cell _MainCell;
     void OnMainCellChanged() => InvokePropertyChanged(nameof(MainCell));
 
-    public CellTab(MainWindow MainWindow)
-        : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal))
+    public CellTab(MainWindow MainWindow, bool IsTabSwitcherVisibile)
+        : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal), IsTabSwitcherVisibile)
     {
     }
     readonly MainWindow MainWindow;
-    protected CellTab(MainWindow MainWindow, Cell Cell) : base(MainWindow.TabView)
+    protected CellTab(MainWindow MainWindow, Cell Cell, bool IsTabSwitcherVisibile) : base(MainWindow.TabView, IsTabSwitcherVisibile)
     {
         this.MainWindow = MainWindow;
         _MainCell = new(MainWindow, null, null, Orientation.Horizontal);

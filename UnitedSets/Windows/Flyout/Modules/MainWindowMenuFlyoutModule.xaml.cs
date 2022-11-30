@@ -199,7 +199,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModu
             if (window.Owner != MainWindow.WindowEx)
             {
                 var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-                tabValue = new HwndHostTab(MainWindow, window);
+                tabValue = new HwndHostTab(MainWindow, window, MainWindow.IsAltTabVisible);
             } else
             {
                 tabValue = null;

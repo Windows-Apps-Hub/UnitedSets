@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnitedSets.Services;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
 using WinWrapper;
 
 namespace UnitedSets.Classes.Tabs;
@@ -20,8 +22,18 @@ public abstract partial class TabBase : INotifyPropertyChanged
     public readonly static List<Window> MainWindows = new();
     public static event Action? OnUpdateStatusLoopComplete;
     static readonly SynchronizedCollection<TabBase> AllTabs = new();
+    static readonly WindowClass UnitedSetsSwitcherWindowClass;
     static TabBase()
     {
+        UnitedSetsSwitcherWindowClass = new WindowClass(nameof(UnitedSetsSwitcherWindowClass), (hwnd, msg, wparam, lparam) =>
+        {
+            if (msg == PInvoke.WM_ACTIVATE)
+            {
+                var tab = AllTabs.FirstOrDefault(x => x.Windows.FirstOrDefault(x => x.Handle == hwnd, default) != default);
+                tab?.SwitcherWindowFocusCallback();
+            }
+            return PInvoke.DefWindowProc(hwnd, msg, wparam, lparam);
+        });
         Thread UpdateStatusLoop = new(() =>
         {
             while (true)
@@ -53,23 +65,34 @@ public abstract partial class TabBase : INotifyPropertyChanged
     static readonly SettingsService Settings
         = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException("Settings Init Failed");
 
-    public TabBase(TabView Parent)
+    public TabBase(TabView Parent, bool IsSwitcherVisible)
     {
         AllTabs.Add(this);
         ParentTabView = Parent;
+        //SwitcherWindow = Window.CreateNewWindow("", UnitedSetsSwitcherWindowClass);
+        //SwitcherWindow.ExStyle = WINDOW_EX_STYLE.WS_EX_TRANSPARENT | WINDOW_EX_STYLE.WS_EX_LAYERED;
+        //if (!IsSwitcherVisible) SwitcherWindow.ExStyle |= WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
+
     }
 
+    Window SwitcherWindow;
+    public bool IsSwitcherVisible { get; }
     public TabView ParentTabView { get; }
     public abstract BitmapImage? Icon { get; }
     public abstract string DefaultTitle { get; }
 
     public string Title => string.IsNullOrWhiteSpace(CustomTitle) ? DefaultTitle : CustomTitle;
-    
+
     [Property(OnChanged = nameof(OnCustomTitleChanged))]
     string _CustomTitle = "";
     void OnCustomTitleChanged()
     {
         InvokePropertyChanged(nameof(CustomTitle));
+        TitleChanged();
+    }
+    protected void TitleChanged()
+    {
+        SwitcherWindow.TitleText = Title;
         InvokePropertyChanged(nameof(Title));
     }
     public abstract IEnumerable<Window> Windows { get; }
@@ -97,5 +120,10 @@ public abstract partial class TabBase : INotifyPropertyChanged
     public void TabDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
         OnDoubleClick();
+    }
+
+    void SwitcherWindowFocusCallback()
+    {
+
     }
 }

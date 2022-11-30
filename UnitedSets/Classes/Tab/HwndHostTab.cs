@@ -45,7 +45,7 @@ public class HwndHostTab : TabBase
     bool _IsDisposed = false;
     public override bool IsDisposed => _IsDisposed || !Window.IsValid;
     
-    public HwndHostTab(MainWindow Window, WindowEx WindowEx) : base(Window.TabView)
+    public HwndHostTab(MainWindow Window, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(Window.TabView, IsTabSwitcherVisibile)
     {
         MainWindow = Window;
         this.Window = WindowEx;
@@ -66,7 +66,7 @@ public class HwndHostTab : TabBase
             _Title = DefaultTitle;
             HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(DefaultTitle)));
             if (!string.IsNullOrWhiteSpace(CustomTitle))
-                HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(Title)));
+                HwndHost.DispatcherQueue.TryEnqueue(() => TitleChanged());
         }
         var icon = Window.LargeIconPtr;
         if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;

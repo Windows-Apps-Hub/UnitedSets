@@ -53,7 +53,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             return;
         if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
             return;
-        var newTab = new HwndHostTab(this, newWindow);
+        var newTab = new HwndHostTab(this, newWindow, IsAltTabVisible);
         if (index.HasValue)
             Tabs.Insert(index.Value, newTab);
         else

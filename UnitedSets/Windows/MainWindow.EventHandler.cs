@@ -97,7 +97,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         if (Keyboard.IsShiftDown)
         {
-            var newTab = new CellTab(this);
+            var newTab = new CellTab(this, IsAltTabVisible);
             Tabs.Add(newTab);
             TabView.SelectedItem = newTab;
         }

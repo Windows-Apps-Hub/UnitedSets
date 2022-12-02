@@ -4,7 +4,7 @@ An open-sourced program that groups windows into tabs, inspired by the unrelease
 
 Microsoft Store Download Link: https://www.microsoft.com/store/apps/9N7CWZ3L5RWL
 
-Experimental InDev Version (Contains more features, but some are still buggy): https://www.microsoft.com/store/apps/9N9FR4ZZ6TQP
+Experimental InDev Version (Contains more features, but some are still buggy): https://www.microsoft.com/store/apps/9N9FR4ZZ6TQP (Warning: Installing this version will replace the regular version!)
 
 ## Screenshot
 

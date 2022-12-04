@@ -14,6 +14,7 @@ using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
 using System.Drawing;
+using Windows.Win32.Graphics.Gdi;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -22,7 +23,7 @@ public partial class CellTab : TabBase
     [Property(OnChanged = nameof(OnMainCellChanged))]
     public Cell _MainCell;
     void OnMainCellChanged() => InvokePropertyChanged(nameof(MainCell));
-
+    protected override HBITMAP? NativeIcon => null;
     public CellTab(MainWindow MainWindow, bool IsTabSwitcherVisibile)
         : this(MainWindow, new(MainWindow, null, null, Orientation.Horizontal), IsTabSwitcherVisibile)
     {

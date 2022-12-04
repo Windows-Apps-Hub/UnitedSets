@@ -22,14 +22,14 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="AppPackages\**" />
-	  <Compile Remove="Interfaces\**" />
-	  <EmbeddedResource Remove="AppPackages\**" />
-	  <EmbeddedResource Remove="Interfaces\**" />
-	  <None Remove="AppPackages\**" />
-	  <None Remove="Interfaces\**" />
-	  <Page Remove="AppPackages\**" />
-	  <Page Remove="Interfaces\**" />
+		<Compile Remove="AppPackages\**" />
+		<Compile Remove="Interfaces\**" />
+		<EmbeddedResource Remove="AppPackages\**" />
+		<EmbeddedResource Remove="Interfaces\**" />
+		<None Remove="AppPackages\**" />
+		<None Remove="Interfaces\**" />
+		<Page Remove="AppPackages\**" />
+		<Page Remove="Interfaces\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="AddTabFlyout.xaml" />
@@ -78,14 +78,14 @@
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp\EasyCSharp.csproj"></ProjectReference>
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj">
-		  <Aliases></Aliases>
+			<Aliases></Aliases>
 		</ProjectReference>
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="FlyoutModule\MainWindowMenuFlyoutModule.xaml">
-		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="Window\OOBEWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -111,27 +111,27 @@
 		<Folder Include="Controls\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
-	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-	    <SubType>Designer</SubType>
-	  </Page>
-	  <Page Update="Tab Settings\Modules\BasicTabFlyoutModule.xaml">
-	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-	    <SubType>Designer</SubType>
-	  </Page>
-	  <Page Update="Tab Settings\TabPropertiesFlyout.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
+		<Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tab Settings\Modules\BasicTabFlyoutModule.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tab Settings\TabPropertiesFlyout.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
 	<ItemGroup>
-	  <Page Update="TabContentTemplate\TabDataTemplate.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
+		<Page Update="TabContentTemplate\TabDataTemplate.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
 	<ItemGroup>
-	  <Page Update="TabContentTemplate\CellVisualizer.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
+		<Page Update="TabContentTemplate\CellVisualizer.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
 	<!-- Add this as a new ItemGroup, replacing paths and names appropriately -->
 
@@ -144,15 +144,15 @@
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 	</PropertyGroup>
 	<ItemGroup>
-	  <CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
+		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Resource Remove="ModifyWindowFlyoutModule.xaml" />
+		<Resource Remove="ModifyWindowFlyoutModule.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PRIResource Remove="AppPackages\**" />
+		<PRIResource Remove="AppPackages\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PRIResource Remove="Interfaces\**" />
+		<PRIResource Remove="Interfaces\**" />
 	</ItemGroup>
 </Project>

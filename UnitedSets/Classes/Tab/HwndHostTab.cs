@@ -15,7 +15,8 @@ using WinUI3HwndHostPlus;
 using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
-
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.WindowsAndMessaging;
 namespace UnitedSets.Classes.Tabs;
 
 public class HwndHostTab : TabBase
@@ -27,6 +28,8 @@ public class HwndHostTab : TabBase
     public HwndHost HwndHost { get; }
     IntPtr _Icon = IntPtr.Zero;
     BitmapImage? _IconBmpImg;
+    HBITMAP _NativeIcon;
+    protected override HBITMAP? NativeIcon => _NativeIcon;//new WinWrapper.Icon(new HICON(_Icon)).Bitmap;
     public override BitmapImage? Icon => _IconBmpImg;
     string _Title;
     public override string DefaultTitle => Window.TitleText;
@@ -83,8 +86,9 @@ public class HwndHostTab : TabBase
         if (icon is not null)
         {
             _IconBmpImg = await ImageHelper.ImageFromBitmap(icon);
+            _NativeIcon = new(icon.GetHbitmap(Color.FromArgb(0)));
             icon.Dispose();
-            InvokePropertyChanged(nameof(Icon));
+            OnIconChanged();
         }
     }
 

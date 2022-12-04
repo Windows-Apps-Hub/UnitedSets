@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Services;
@@ -23,7 +26,7 @@ public partial class App : Application
     /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
     /// </summary>
     public IServiceProvider Services { get; }
-    
+
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -53,6 +56,7 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
+        DebugRedir.Listen();
         if (SystemInformation.Instance.IsFirstRun)
             LaunchNewOOBE();
         else
@@ -81,5 +85,32 @@ public partial class App : Application
 
     private void CurrentDomain_FirstChanceException(object? sender, FirstChanceExceptionEventArgs e)
     {
+    }
+}
+
+public class DebugRedir : StringWriter
+{
+    static DebugRedir? instance = null;
+    public static void Listen()
+    {
+        instance ??= new DebugRedir(Console.Out);
+    }
+    private readonly TextWriter OldWriter;
+
+    private DebugRedir(TextWriter oldWriter)
+    {
+        OldWriter = oldWriter;
+    }
+    public override void Write(string? x)
+    {
+        OldWriter.Write(x);
+        Debug.Write(x);
+        base.Write(x);
+    }
+    public override void WriteLine(string? x)
+    {
+        OldWriter.Write(x);
+        Debug.WriteLine(x);
+        base.WriteLine(x);
     }
 }

@@ -83,12 +83,17 @@
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ezxaml:FluentVerticalEqualDivideGrid HorizontalAlignment="Left"/>
+                            <ezxaml:EzRelativeStackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="class:Cell">
-                            <controls:CellVisualizer Cell="{x:Bind}"/>
+                            <Grid ezxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
+                                <controls:CellVisualizer Cell="{x:Bind}"/>
+                                <ezxaml:EzRelativeStackPanelResizer VerticalAlignment="Bottom" Canvas.ZIndex="100" Background="Transparent" Orientation="Horizontal">
+
+                                </ezxaml:EzRelativeStackPanelResizer>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -99,19 +104,24 @@
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ezxaml:FluentHorizontalEqualDivideGrid/>
+                            <ezxaml:EzRelativeStackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="class:Cell">
-                            <controls:CellVisualizer Cell="{x:Bind}"/>
+                            <Grid ezxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
+                                <controls:CellVisualizer Cell="{x:Bind}"/>
+                                <ezxaml:EzRelativeStackPanelResizer HorizontalAlignment="Right" Canvas.ZIndex="100" Background="Transparent" Orientation="Vertical">
+                                    
+                                </ezxaml:EzRelativeStackPanelResizer>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:Cell">
-            <ContentPresenter Content="{x:Bind CurrentCell}"/>
+            <ContentPresenter Content="{x:Bind CurrentCell}" Margin="10"/>
         </DataTemplate>
     </ContentPresenter.Resources>
 </ContentPresenter>

@@ -47,4 +47,33 @@ partial class Cell
         Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
         return cell;
     }
+
+    public (Cell?, double renamining) GetChildFromPosition(double normalizedPosition)
+    {
+        if (SubCells is null) return (null, 0);
+        var RSes = SubCells.Select(x => (x, x.RelativeSize)).ToArray();
+        var RStotal = RSes.Sum(x => x.RelativeSize);
+        var posInRSScale = normalizedPosition * RStotal;
+        foreach (var (cell, rs) in RSes)
+        {
+            if (posInRSScale < rs) return (cell, posInRSScale / RStotal);
+            posInRSScale -= rs;
+        }
+        return (null, 0);
+    }
+
+    public (double In1, double In2) TranslatePositionFromChild((double In1, double In2) a, Cell childCell)
+    {
+        if (SubCells is null) return a;
+        var RSes = SubCells.Select(x => (x, x.RelativeSize)).ToArray();
+        var RStotal = RSes.Sum(x => x.RelativeSize);
+        var front = 0d;
+        foreach (var (cell, rs) in RSes)
+        {
+            if (cell == childCell) return (front / RStotal + a.In1, front / RStotal + a.In2);
+            front += rs;
+        }
+        return a;
+    }
+
 }

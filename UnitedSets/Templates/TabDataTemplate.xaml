@@ -11,6 +11,6 @@
         <!--Recreating HwndHost is expensive-->
     </DataTemplate>
     <DataTemplate x:Name="CellTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:CellTab">
-        <controls:CellVisualizer Cell="{x:Bind MainCell}"/>
+        <controls:CellVisualizer Cell="{x:Bind MainCell}" IsHitTestVisible="{x:Bind Selected,Mode=OneWay}"/>
     </DataTemplate>
 </ResourceDictionary>

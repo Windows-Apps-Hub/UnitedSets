@@ -26,4 +26,7 @@ partial class Cell
 
     [AutoNotifyProperty]
     Orientation _Orientation;
+
+    [AutoNotifyProperty]
+    double _RelativeSize = 1;
 }

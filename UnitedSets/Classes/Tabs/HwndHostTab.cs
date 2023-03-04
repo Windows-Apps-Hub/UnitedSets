@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -18,6 +18,7 @@ using UnitedSets.Windows.Flyout.Modules;
 using Windows.Win32.Graphics.Gdi;
 using EasyCSharp;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Dispatching;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -26,8 +27,10 @@ public partial class HwndHostTab : TabBase
     IntPtr _Icon = IntPtr.Zero;
     string _Title;
     
+    DispatcherQueue UIDispatcher;
     public HwndHostTab(MainWindow Window, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(Window.TabView, IsTabSwitcherVisibile)
     {
+        UIDispatcher = Window.DispatcherQueue;
         MainWindow = Window;
         this.Window = WindowEx;
         HwndHost = new(Window, WindowEx) { IsWindowVisible = false, BorderlessWindow = Keyboard.IsAltDown };

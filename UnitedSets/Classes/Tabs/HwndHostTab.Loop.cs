@@ -16,6 +16,8 @@ using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
 using Windows.Win32.Graphics.Gdi;
+using Microsoft.UI.Dispatching;
+using CommunityToolkit.WinUI;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -26,16 +28,16 @@ partial class HwndHostTab
         if (_Title != DefaultTitle)
         {
             _Title = DefaultTitle;
-            HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(DefaultTitle)));
-            if (string.IsNullOrWhiteSpace(CustomTitle))
-                HwndHost.DispatcherQueue.TryEnqueue(() => TitleChanged());
+            UIDispatcher?.EnqueueAsync(() => InvokePropertyChanged(nameof(DefaultTitle)));
+            if (!string.IsNullOrWhiteSpace(CustomTitle))
+                UIDispatcher?.EnqueueAsync(() => TitleChanged());
         }
         var icon = Window.LargeIconPtr;
         if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;
         if (_Icon != icon)
         {
             _Icon = icon;
-            HwndHost.DispatcherQueue.TryEnqueue(UpdateAppIcon);
+            UIDispatcher?.EnqueueAsync(UpdateAppIcon);
         }
     }
 }

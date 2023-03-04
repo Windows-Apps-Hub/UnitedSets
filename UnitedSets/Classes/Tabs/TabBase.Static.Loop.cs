@@ -16,7 +16,7 @@ partial class TabBase
 
             try
             {
-                foreach (var tab in AllTabs)
+                foreach (var tab in AllTabs.ToArray())
                 {
                     if (tab.IsDisposed) AllTabs.Remove(tab);
                     else tab.UpdateStatusLoop();

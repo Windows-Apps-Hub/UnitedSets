@@ -27,7 +27,7 @@ partial class HwndHostTab
     public override async void DetachAndDispose(bool JumpToCursor)
     {
         var Window = this.Window;
-        HwndHost.DetachAndDispose();
+        await HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
         if (JumpToCursor && !HwndHost.NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
@@ -36,13 +36,11 @@ partial class HwndHostTab
         await Task.Delay(1000).ContinueWith(_ => Window.Redraw());
         _IsDisposed = true;
     }
-    
     public override void Focus()
     {
         HwndHost.IsWindowVisible = true;
         HwndHost.FocusWindow();
     }
-    
     protected override async void OnDoubleClick()
     {
         var flyout = new LeftFlyout(

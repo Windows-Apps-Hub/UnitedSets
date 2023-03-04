@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +16,10 @@ partial class TabBase
     static readonly SynchronizedCollection<TabBase> AllTabs = new();
     static readonly WindowClass UnitedSetsSwitcherWindowClass;
 
-    static readonly SettingsService Settings
+	static readonly PreservedTabDataService PreservedTabService
+		= App.Current.Services.GetService<PreservedTabDataService>() ?? throw new InvalidOperationException("PreservedTabDataService Init Failed");
+
+	static readonly SettingsService Settings
         = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException("Settings Init Failed");
 
     static TabBase()

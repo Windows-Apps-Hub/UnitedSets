@@ -1,11 +1,13 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes.Tabs;
 using EasyCSharp;
+using WinUI3HwndHostPlus;
+using System;
+
 namespace UnitedSets.Windows.Flyout.Modules;
 
-public sealed partial class BasicTabFlyoutModule
-{
+public sealed partial class BasicTabFlyoutModule : IWindowFlyoutModule {
     public BasicTabFlyoutModule(TabBase TabBase)
     {
         this.TabBase = TabBase;
@@ -13,7 +15,17 @@ public sealed partial class BasicTabFlyoutModule
     }
     readonly TabBase TabBase;
 
-    [Event(typeof(TextChangedEventHandler))]
+	public event Action RequestClose;
+
+	[Event(typeof(RoutedEventHandler))]
+	void DetachWindow() {
+
+
+		TabBase.DetachAndDispose();
+		RequestClose?.Invoke();
+	}
+
+	[Event(typeof(TextChangedEventHandler))]
     private void TabNameTextBoxChanged()
     {
         TabBase.CustomTitle = TabNameTextBox.Text;
@@ -24,4 +36,8 @@ public sealed partial class BasicTabFlyoutModule
     {
         TabNameTextBox.Text = "";
     }
+
+	public void OnActivated() {
+		
+	}
 }

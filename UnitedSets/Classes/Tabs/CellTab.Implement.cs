@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,7 +48,10 @@ partial class CellTab
         //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
         foreach (var cell in MainCell.AllSubCells)
         {
-            if (cell.CurrentCell is HwndHost hwndHost) hwndHost.DetachAndDispose();
+			if (cell.CurrentCell is HwndHost hwndHost) {
+				SaveTabData(hwndHost);
+				hwndHost.DetachAndDispose();
+			}
         }
         _IsDisposed = true;
         //window.Activate();

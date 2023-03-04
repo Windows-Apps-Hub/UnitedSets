@@ -1,4 +1,4 @@
-﻿<Grid
+<Grid
     x:Class="UnitedSets.Windows.Flyout.Modules.BasicTabFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -27,6 +27,7 @@
                     </Button>
                 </StackPanel>
             </Grid>
-        </StackPanel>
+			<Button Click="DetachWindow">Detach Window</Button>
+		</StackPanel>
     </Border>
 </Grid>

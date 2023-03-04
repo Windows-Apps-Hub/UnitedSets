@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using Microsoft.UI.Windowing;
 using System.Collections.Generic;
@@ -29,6 +29,7 @@ partial class HwndHost
 
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
     readonly WindowEx _HostedWindow;
+	public Windows.Win32.Foundation.HWND GetRawHWND() => _HostedWindow.Handle;
 
     [Property(OnChanged = nameof(IsWindowVisibleChanged))]
     bool _IsWindowVisible;

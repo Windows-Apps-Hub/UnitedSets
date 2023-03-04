@@ -49,6 +49,7 @@ public partial class App : Application
         var services = new ServiceCollection();
 
         services.AddSingleton<SettingsService>();
+		services.AddSingleton<PreservedTabDataService>();
 
         return services.BuildServiceProvider();
     }

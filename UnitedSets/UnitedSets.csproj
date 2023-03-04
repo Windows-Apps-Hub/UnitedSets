@@ -20,6 +20,7 @@
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppxBundle>Never</AppxBundle>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<LangVersion>preview</LangVersion>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 	</PropertyGroup>
 	<ItemGroup>

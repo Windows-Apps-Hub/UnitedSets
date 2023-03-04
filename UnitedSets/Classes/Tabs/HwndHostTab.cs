@@ -41,7 +41,9 @@ public partial class HwndHostTab : TabBase
         HwndHost.Closed += Closed;
         _Title = DefaultTitle;
         UpdateAppIcon();
-    }
+		LoadTabData(HwndHost);
+
+	}
 
     async void UpdateAppIcon()
     {

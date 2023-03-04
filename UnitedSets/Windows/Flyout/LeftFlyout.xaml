@@ -1,4 +1,4 @@
-﻿<windows:MicaWindow
+<windows:MicaWindow
     x:Class="UnitedSets.Windows.Flyout.LeftFlyout"
     xmlns:WinUIEx="using:WinUIEx"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,13 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:windows="using:UnitedSets.Windows"
-    IsResizable="False"
+    IsResizable="True"
     IsMaximizable="False"
     IsMinimizable="False"
     IsTitleBarVisible="False"
     IsAlwaysOnTop="True"
     xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
-    mc:Ignorable="d" Width="450" Height="400">
+    mc:Ignorable="d" Width="450" Height="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

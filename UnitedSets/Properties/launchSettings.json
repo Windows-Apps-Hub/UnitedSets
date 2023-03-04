@@ -6,6 +6,11 @@
     },
     "UnitedSets (Unpackaged)": {
       "commandName": "Project"
+    },
+    "AddNotepad": {
+      "commandName": "MsixPackage",
+      "commandLineArgs": "--add-window-by-exe notepad --edit-last-added --edit-no-autoclose",
+      "nativeDebugging": false
     }
   }
 }

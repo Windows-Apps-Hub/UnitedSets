@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
@@ -29,6 +29,9 @@ using WinWrapper;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using UnitedSets.Classes.Tabs;
+using Windows.UI.Core;
+using CommunityToolkit.WinUI;
+
 namespace UnitedSets.Windows;
 
 /// <summary>
@@ -50,13 +53,16 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
         var idx = TabView.SelectedIndex;
         SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
-        if (double.IsNaN(TabViewSizer.Width))
+        if (double.IsNaN(TabViewSizer.Width) && TabViewSizer.ActualWidth != 0)
             TabViewSizer.Width = TabViewSizer.ActualWidth - 1;
         else TabViewSizer.Width = double.NaN;
+		
     }
 
+	private Task UIRunAsync(Action action) => DispatcherQueue.EnqueueAsync(action);
+	private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(()=>collection.Remove(item));
     // Different Thread
-    void OnLoopCalled()
+	async void OnLoopCalled()
     {
         WindowEx.SetOverlayIconPtr(new(SelectedTabCache?.Windows.First().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
 
@@ -70,34 +76,20 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SettingsButtonVisibility)));
             });
         }
-        foreach (var Tab in Tabs)
+        foreach (var Tab in Tabs.ToArray())
         {
             if (Tab.IsDisposed)
-            {
-                Tabs.Remove(Tab);
-                break;
+				await UIRemoveFromCollection(Tabs, Tab);
             }
-        }
-        foreach (var TabGroup in HiddenTabs)
+        foreach (var TabGroup in HiddenTabs.ToArray())
         {
-            foreach (var Tab in TabGroup.Tabs)
+            foreach (var Tab in TabGroup.Tabs.ToArray())
             {
                 if (Tab.IsDisposed)
-                {
-                    DispatcherQueue.TryEnqueue(delegate
-                    {
-                        TabGroup.Tabs.Remove(Tab);
-                    });
-                    break;
-                }
+					await UIRemoveFromCollection(TabGroup.Tabs, Tab);
             }
             if (TabGroup.Tabs.Count == 0)
-            {
-                DispatcherQueue.TryEnqueue(delegate
-                {
-                    HiddenTabs.Remove(TabGroup);
-                });
-            }
+				await UIRemoveFromCollection(HiddenTabs, TabGroup);
         }
         {
             static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -17,6 +17,9 @@ using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI.Dispatching;
+using CommunityToolkit.WinUI;
+
 namespace UnitedSets.Classes.Tabs;
 
 public class HwndHostTab : TabBase
@@ -50,7 +53,8 @@ public class HwndHostTab : TabBase
     
     public HwndHostTab(MainWindow Window, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(Window.TabView, IsTabSwitcherVisibile)
     {
-        MainWindow = Window;
+		UIDispatcher = Window.DispatcherQueue;
+		MainWindow = Window;
         this.Window = WindowEx;
         HwndHost = new(Window, WindowEx) { IsWindowVisible = false, BorderlessWindow = Keyboard.IsAltDown };
         Closed = delegate
@@ -61,22 +65,22 @@ public class HwndHostTab : TabBase
         _Title = DefaultTitle;
         UpdateAppIcon();
     }
-
-    public override void UpdateStatusLoop()
+	DispatcherQueue UIDispatcher;
+	public override void UpdateStatusLoop()
     {
         if (_Title != DefaultTitle)
         {
             _Title = DefaultTitle;
-            HwndHost.DispatcherQueue.TryEnqueue(() => InvokePropertyChanged(nameof(DefaultTitle)));
+			UIDispatcher?.EnqueueAsync(() => InvokePropertyChanged(nameof(DefaultTitle)));
             if (!string.IsNullOrWhiteSpace(CustomTitle))
-                HwndHost.DispatcherQueue.TryEnqueue(() => TitleChanged());
+				UIDispatcher?.EnqueueAsync(() => TitleChanged());
         }
         var icon = Window.LargeIconPtr;
         if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;
         if (_Icon != icon)
         {
             _Icon = icon;
-            HwndHost.DispatcherQueue.TryEnqueue(UpdateAppIcon);
+			UIDispatcher?.EnqueueAsync(UpdateAppIcon);
         }
     }
     
@@ -96,7 +100,7 @@ public class HwndHostTab : TabBase
     public override async void DetachAndDispose(bool JumpToCursor)
     {
         var Window = this.Window;
-        HwndHost.DetachAndDispose();
+        await HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
         if (JumpToCursor && !HwndHost.NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);

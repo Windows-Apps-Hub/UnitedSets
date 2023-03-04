@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
@@ -49,10 +49,7 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
     {
         if (!WindowCropMarginToggleSwitch.IsOn)
         {
-            TopCropMargin.Value =
-            BottomCropMargin.Value =
-            LeftCropMargin.Value =
-            RightCropMargin.Value = 0;
+			HwndHost.ClearCrop();
         }
         WindowCropMarginSettingsStackPanel.Visibility = WindowCropMarginToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }

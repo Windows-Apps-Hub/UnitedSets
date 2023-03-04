@@ -220,25 +220,29 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         SecondaryButtonText = "Close all Windows",
         CloseButtonText = "Cancel"
     };
+	async Task TimerStop() {
+		timer.Stop();
+		OnTimerLoopTick();
+		await Task.Delay(100);
+	}
 
     [Event(typeof(TypedEventHandler<AppWindow, AppWindowClosingEventArgs>))]
     async void OnWindowClosing(AppWindowClosingEventArgs e)
     {
-        e.Cancel = true;
+        e.Cancel = true;//as we will just exit if we want to actually close
         ClosingWindowDialog.XamlRoot = Content.XamlRoot;
         var item = TabView.SelectedItem;
         TabView.SelectedIndex = -1;
         TabView.Visibility = Visibility.Collapsed;
         WindowEx.Focus();
-        ContentDialogResult result;
-        try
-        {
-            result = await ClosingWindowDialog.ShowAsync();
-        }
-        catch
-        {
-            result = ContentDialogResult.None;
-        }
+		ContentDialogResult result = ContentDialogResult.Primary;
+		if (Tabs.Count > 0) {
+			try {
+				result = await ClosingWindowDialog.ShowAsync();
+			} catch {
+				result = ContentDialogResult.None;
+			}
+		}
         switch (result)
         {
             case ContentDialogResult.Primary:
@@ -249,7 +253,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                     Tabs.RemoveAt(0);
                     Tab.DetachAndDispose(JumpToCursor: false);
                 }
-                Environment.Exit(0);
+				await TimerStop();
+
+				Environment.Exit(0);
                 return;
             case ContentDialogResult.Secondary:
                 // Close all windows
@@ -275,7 +281,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 if (Tabs.Count == 0)
                 {
-                    Environment.Exit(0);
+					await TimerStop();
+					Environment.Exit(0);
                     return;
                 }
                 goto default;

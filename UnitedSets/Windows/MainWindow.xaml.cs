@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Windowing;
 using System.Collections.ObjectModel;
 using WinRT.Interop;
@@ -12,6 +12,8 @@ using System.ComponentModel;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Classes.Tabs;
+using UnitedSets.Windows.Flyout;
+
 namespace UnitedSets.Windows;
 
 /// <summary>
@@ -52,8 +54,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
-
-        ExtendsContentIntoTitleBar = true;
+#if !UNPKG
+		ExtendsContentIntoTitleBar = true;
+#endif
         SetTitleBar(CustomDragRegion);
 
         timer = DispatcherQueue.CreateTimer();
@@ -69,5 +72,19 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
         timer.Tick += OnTimerLoopTick;
         timer.Start();
-    }
+		// --add-window-by-exe
+		var toAdd = CLI.GetArrVal("add-window-by-exe");
+		var editLastAddedWindow = CLI.GetFlag("edit-last-added");
+		LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+		foreach (var itm in toAdd) {
+			var procs = System.Diagnostics.Process.GetProcesses().Where(p=>p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
+			foreach (var proc in procs) {
+				if (!proc.HasExited) {
+					AddTab( WindowEx.FromWindowHandle(proc.MainWindowHandle));
+				}
+			}
+		}
+		if (editLastAddedWindow && Tabs.Count > 0)
+			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+	}
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
@@ -20,6 +20,7 @@
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppxBundle>Never</AppxBundle>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="AppPackages\**" />
@@ -145,6 +146,21 @@
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
+	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
+	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
+	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	</PropertyGroup>
 	<ItemGroup>
 		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
 	</ItemGroup>
@@ -168,4 +184,14 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>
+	<Choose>
+		<When Condition="'$(Configuration)'=='DebugUnpackaged'">
+			<PropertyGroup>
+				<WindowsPackageType>None</WindowsPackageType>
+			</PropertyGroup>
+			<ItemGroup>
+				<None Remove="Package.appxmanifest" />
+			</ItemGroup>
+		</When>
+	</Choose>
 </Project>

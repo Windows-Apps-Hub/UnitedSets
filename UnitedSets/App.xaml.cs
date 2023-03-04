@@ -1,14 +1,18 @@
-﻿using CommunityToolkit.WinUI.Helpers;
+using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net.WebSockets;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Services;
 using UnitedSets.Windows;
+using Windows.Foundation.Metadata;
+using Windows.Management.Core;
+using Windows.Storage;
 
 namespace UnitedSets;
 
@@ -57,10 +61,18 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         DebugRedir.Listen();
-        if (SystemInformation.Instance.IsFirstRun)
-            LaunchNewOOBE();
-        else
-            LaunchNewMain();
+
+		var isFirstRun = false;
+#if !UNPKG
+		try {
+			isFirstRun = SystemInformation.Instance.IsFirstRun;
+		} catch { }
+#endif
+
+		if (isFirstRun)
+			LaunchNewOOBE();
+		else
+			LaunchNewMain();
     }
 
     private Window? m_window;

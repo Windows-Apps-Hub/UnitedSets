@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using Microsoft.UI.Windowing;
 using System.Drawing;
@@ -7,13 +7,18 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
 using EasyCSharp;
+using Windows.UI.Core;
+using Microsoft.UI.Dispatching;
 
 namespace WinUI3HwndHostPlus;
 
 public partial class HwndHost : FrameworkElement, IDisposable
 {
     readonly Window XAMLWindow;
-    readonly AppWindow WinUIAppWindow;
+
+	private DispatcherQueue UIDispatcher;
+
+	readonly AppWindow WinUIAppWindow;
     
     public HwndHost(Window XAMLWindow, WindowEx WindowToHost)
     {
@@ -22,8 +27,11 @@ public partial class HwndHost : FrameworkElement, IDisposable
         InitialRegion = WindowToHost.Region;
         
         this.XAMLWindow = XAMLWindow;
+		
+		this.UIDispatcher = XAMLWindow.DispatcherQueue;//caching incase our window dies
 
-        var WinUIHandle = WinRT.Interop.WindowNative.GetWindowHandle(XAMLWindow);
+
+		var WinUIHandle = WinRT.Interop.WindowNative.GetWindowHandle(XAMLWindow);
         _ParentWindow = WindowEx.FromWindowHandle(WinUIHandle);
         WinUIAppWindow = AppWindow.GetFromWindowId(
             Microsoft.UI.Win32Interop.GetWindowIdFromWindow(

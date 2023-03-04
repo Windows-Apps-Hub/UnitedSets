@@ -1,4 +1,4 @@
-﻿using Windows.System;
+using Windows.System;
 using WinRT.Interop;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -39,6 +39,7 @@ public sealed partial class AddTabFlyout
         {
             if (e.KeyboardData.VirtualCode == VK_TAB && AppWindow.IsVisible)
             {
+				e.Handled = true;//don't pass the tab through
                 PInvoke.GetCursorPos(out var pt);
                 Result = WindowEx.GetWindowFromPoint(pt);
                 this.Hide();

@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
@@ -44,7 +44,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
     void FirstRun()
     {
-        Activated -= FirstRun;
+#if UNPKG
+		var Package = SettingsService.Settings;
+#endif
+		Activated -= FirstRun;
         var icon = PInvoke.LoadImage(
             hInst: null,
             name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
@@ -72,8 +75,15 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [Event(typeof(TypedEventHandler<object, WindowSizeChangedEventArgs>))]
     void OnMainWindowResize()
     {
-        TabView.MaxWidth = RootGrid.ActualWidth - 140;
-    }
+#if !UNPKG
+		if (RootGrid.ActualWidth > 140)
+			TabView.MaxWidth = RootGrid.ActualWidth - 140;
+#else
+		if (RootGrid.ActualWidth != 0)
+			TabView.MaxWidth = RootGrid.ActualWidth;
+#endif
+
+	}
 
     [Event(typeof(EventHandler<WindowMessageEventArgs>))]
     void OnWindowMessageReceived(WindowMessageEventArgs e)

@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Xaml;
 using System;
 using System.Threading.Tasks;
@@ -59,13 +59,17 @@ public sealed partial class LeftFlyout
     }
 
     TaskCompletionSource? ShowTaskCompletion;
+	public static bool NoAutoClose;
 
     [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
     void OnActivatedChanged(WindowActivatedEventArgs args)
     {
         if (args.WindowActivationState == WindowActivationState.Deactivated)
         {
-            ShowTaskCompletion?.SetResult();
+			if (NoAutoClose)
+				return;
+
+			ShowTaskCompletion?.TrySetResult();
             ShowTaskCompletion = null;
         } else
         {

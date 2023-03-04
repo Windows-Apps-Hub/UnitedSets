@@ -17,12 +17,13 @@ using System.Linq;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using Windows.Win32.Storage.Xps;
-using Windows.Win32.UI.Accessibility;
 
 namespace UnitedSets.Classes.Tabs;
 
 partial class TabBase
 {
+    // Code is not yet ready for real use
+#if false
     FormWndProc? SwitcherForm;
     Window SwitcherWindow;
     KeyboardHelper KeyboardHelper = new();
@@ -125,4 +126,9 @@ partial class TabBase
     {
 
     }
+#else
+    void InitSwitcher() { }
+    void ChangeSwitcherTitle() { }
+    void ChangeSwitcherIcon() { }
+#endif
 }

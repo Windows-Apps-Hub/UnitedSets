@@ -13,6 +13,8 @@ using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout;
+using UnitedSets.Classes;
+using System.Linq;
 
 namespace UnitedSets.Windows;
 

@@ -64,7 +64,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     // Different Thread
 	async void OnLoopCalled()
     {
-        WindowEx.SetOverlayIconPtr(new(SelectedTabCache?.Windows.First().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
+        WindowEx.SetOverlayIconPtr(new(SelectedTabCache?.Windows.FirstOrDefault().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
 
         var HasOwner = this.HasOwner;
         if (_HasOwner != HasOwner)

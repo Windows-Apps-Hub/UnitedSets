@@ -34,16 +34,17 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
     }
 
     [Property(OnBeforeChanged = nameof(OnBeforeCellChanged), OnChanged = nameof(OnCellChanged))]
-    ICell? _Cell;
+    Cell? _Cell;
     void OnBeforeCellChanged()
     {
         if (_Cell is not null)
-            _Cell.PropertyChanged -= OnCellChanged;
+            _Cell.PropertyChanged -= OnCellPropertyChanged;
     }
+    
     void OnCellChanged()
     {
         if (_Cell is not null)
-            _Cell.PropertyChanged += OnCellChanged;
+            _Cell.PropertyChanged += OnCellPropertyChanged;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cell)));
         UpdateTemplate();
     }
@@ -51,7 +52,7 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     
     [Event(typeof(PropertyChangedEventHandler))]
-    void OnCellChanged(PropertyChangedEventArgs e)
+    void OnCellPropertyChanged(PropertyChangedEventArgs e)
     {
         if (e.PropertyName is not (nameof(Cell.CellAddCountAsString) or nameof(Cell.CellAddCount)))
             DispatcherQueue.TryEnqueue(() => UpdateTemplate());

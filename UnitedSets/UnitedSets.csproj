@@ -33,6 +33,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="AddTabFlyout.xaml" />
+		<None Remove="Controls\CellVisualizer.xaml" />
+		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
 		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
@@ -80,6 +82,7 @@
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj">
 			<Aliases></Aliases>
 		</ProjectReference>
+		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
@@ -108,7 +111,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\OOBE\" />
-		<Folder Include="Controls\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
@@ -154,5 +156,16 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PRIResource Remove="Interfaces\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Controls\CellVisualizerUnderConstruction.xaml.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="Controls\CellVisualizer.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 </Project>

@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
-namespace Cube.UI.Icons
+namespace Swift.UI.Icons
 {
     public partial class FluentSymbolIcon : Control
     {
@@ -69,7 +69,7 @@ namespace Cube.UI.Icons
         public static PathIcon GetPathIcon(FluentSymbol symbol)
         {
             return new PathIcon {
-                Data = (Geometry)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Geometry), GetPathData(symbol)),
+                Data = (Geometry)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Geometry), GetPathData(symbol)),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
@@ -89,9 +89,10 @@ namespace Cube.UI.Icons
         /// </summary>
         public static Geometry GetPathData(FluentSymbol symbol)
         {
-            if (AllFluentIcons.TryGetValue(symbol, out string pathData))
+            string? pathData = GetFluentIcon(symbol);
+            if (pathData is not null)
             {
-                return (Geometry)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Geometry), pathData);
+                return (Geometry)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Geometry), pathData);
             }
             else
             {

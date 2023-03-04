@@ -12,10 +12,10 @@
     Background="Transparent"
     Content="{x:Bind Cell}">
     <ContentPresenter.Resources>
-        <DataTemplate x:Name="InvisibleCellDataTemplate" x:DataType="class:ICell">
+        <DataTemplate x:Name="InvisibleCellDataTemplate" x:DataType="class:Cell">
             <Grid Visibility="Collapsed" IsHitTestVisible="False"/>
         </DataTemplate>
-        <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:ICell">
+        <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:Cell">
             <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" HorizontalScrollMode="Auto" VerticalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled" MaxZoomFactor="1.5" MinZoomFactor="0.1">
                     <ezxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
@@ -62,7 +62,7 @@
                 </Rectangle>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="EmptyCellDataTemplateWindowHover" x:DataType="class:ICell">
+        <DataTemplate x:Name="EmptyCellDataTemplateWindowHover" x:DataType="class:Cell">
             <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                     <ezxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
@@ -78,7 +78,7 @@
                 </Rectangle>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="VerticalCellDataTemplate" x:DataType="class:ICell">
+        <DataTemplate x:Name="VerticalCellDataTemplate" x:DataType="class:Cell">
             <Grid>
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
@@ -87,14 +87,14 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="class:ICell">
+                        <DataTemplate x:DataType="class:Cell">
                             <controls:CellVisualizer Cell="{x:Bind}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="HorizontalCellDataTemplate" x:DataType="class:ICell">
+        <DataTemplate x:Name="HorizontalCellDataTemplate" x:DataType="class:Cell">
             <Grid>
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
@@ -103,14 +103,14 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="class:ICell">
+                        <DataTemplate x:DataType="class:Cell">
                             <controls:CellVisualizer Cell="{x:Bind}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:ICell">
+        <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:Cell">
             <ContentPresenter Content="{x:Bind CurrentCell}"/>
         </DataTemplate>
     </ContentPresenter.Resources>

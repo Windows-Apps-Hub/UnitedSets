@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -50,7 +50,7 @@ public abstract partial class TabBase : INotifyPropertyChanged
 
                 try
                 {
-                    foreach (var tab in AllTabs)
+                    foreach (var tab in AllTabs.ToArray())
                     {
                         if (tab.IsDisposed) AllTabs.Remove(tab);
                         else tab.UpdateStatusLoop();

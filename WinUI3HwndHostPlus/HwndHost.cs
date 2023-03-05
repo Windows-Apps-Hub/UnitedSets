@@ -9,10 +9,11 @@ using Windows.Win32.Graphics.Dwm;
 using EasyCSharp;
 using Windows.UI.Core;
 using Microsoft.UI.Dispatching;
+using System.ComponentModel;
 
 namespace WinUI3HwndHostPlus;
 
-public partial class HwndHost : FrameworkElement, IDisposable
+public partial class HwndHost : FrameworkElement, IDisposable, INotifyPropertyChanged
 {
     readonly Window XAMLWindow;
 
@@ -72,4 +73,6 @@ public partial class HwndHost : FrameworkElement, IDisposable
     bool IsInCompatabilityMode => _NoMovingMode || !_IsOwnerSetSuccessful;
     // For Disposing Logic
     readonly long VisiblePropertyChangedToken;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }

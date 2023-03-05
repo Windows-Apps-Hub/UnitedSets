@@ -16,4 +16,6 @@ public partial class Cell : INotifyPropertyChanged
         _SubCells = SubCells;
         _Orientation = Orientation;
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }

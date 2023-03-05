@@ -8,12 +8,13 @@ using static WinUIEx.WindowExtensions;
 using Windows.Foundation;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
+using System.ComponentModel;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace UnitedSets.Windows.Flyout;
 
-public sealed partial class LeftFlyout
+public sealed partial class LeftFlyout : INotifyPropertyChanged
 {
     readonly bool SignletonMode;
     readonly WindowEx CurrentWindowEx;
@@ -102,6 +103,9 @@ public sealed partial class LeftFlyout
     }
     [AutoNotifyProperty(OnChanged = nameof(ExtendToTopChanged))]
     bool _ExtendToTop = false;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     void ExtendToTopChanged()
     {
         if (_ExtendToTop)

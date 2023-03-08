@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -27,6 +27,7 @@ partial class HwndHostTab
     public override async void DetachAndDispose(bool JumpToCursor)
     {
         var Window = this.Window;
+		SaveTabData(HwndHost);
         await HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
         if (JumpToCursor && !HwndHost.NoMovingMode)

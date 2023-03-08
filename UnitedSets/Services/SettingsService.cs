@@ -20,7 +20,9 @@ public partial class SettingsService : ObservableObject
             {
                 if (exitOnClose != ExitOnClose)
                     SetProperty(ref exitOnClose, ExitOnClose);
-                Thread.Sleep(2000);
+				if (tempState != TempState)
+					SetProperty(ref tempState, TempState);
+				Thread.Sleep(2000);
             }
         })
         {
@@ -59,7 +61,13 @@ private static readonly ApplicationDataContainer Settings = ApplicationData.Curr
 	[Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", OnChanged = nameof(ExitOnCloseChanged))]
     private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
     private void ExitOnCloseChanged() => Settings.Values["ExitOnClose"] = exitOnClose;
-    SettingsWindow s_window;
+
+	[Property(CustomGetExpression = "(bool)(Settings.Values[" + nameof(TEMP_STATE_SETTING_NAME) + "] ?? false)", OnChanged = nameof(TempStateChanged))]
+	private bool tempState = (bool)(Settings.Values[TEMP_STATE_SETTING_NAME] ?? false);
+	private void TempStateChanged() => Settings.Values[TEMP_STATE_SETTING_NAME] = exitOnClose;
+	private const string TEMP_STATE_SETTING_NAME = "TempState";
+
+	SettingsWindow s_window;
     [RelayCommand]
     public void LaunchSettings()
     {

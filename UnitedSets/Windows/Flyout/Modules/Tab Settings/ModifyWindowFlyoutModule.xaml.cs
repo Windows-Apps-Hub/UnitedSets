@@ -93,15 +93,11 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
         await HwndHost.HostedWindow.TryCloseAsync();
         RequestClose?.Invoke();
     }
-    [Event(typeof(RoutedEventHandler))]
-    void DetachWindow()
-    {
-        HwndHost.DetachAndDispose();
-        RequestClose?.Invoke();
-    }
+    
 
     public void OnActivated()
     {
         
     }
+
 }

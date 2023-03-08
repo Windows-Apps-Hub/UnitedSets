@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Linq;
 using System;
@@ -33,7 +33,7 @@ partial class Cell
     
     Cell[] CraeteNCells(int Amount)
     {
-        return (from _ in 0..Amount select new Cell(MainWindow, null, null, default)).ToArray();
+		return Enumerable.Range(0,Amount).Select(_ => new Cell(MainWindow, null, null, default)).ToArray();
     }
 
     public Cell DeepClone(MainWindow NewWindow)

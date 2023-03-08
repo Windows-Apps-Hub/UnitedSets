@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -157,14 +157,14 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModu
     {
         if (args.Items.Count is not 0) return;
         if (args.Items[0] is HwndHostTab item)
-            args.Data.SetData(MainWindow.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+            args.Data.Properties.Add(MainWindow.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
     }
 
 
     [Event(typeof(DragEventHandler))]
     void OnDragItemOverTabListView(DragEventArgs e)
     {
-        if (e.DataView.AvailableFormats.Contains(MainWindow.UnitedSetsTabWindowDragProperty))
+        if (e.DataView.Properties.ContainsKey(MainWindow.UnitedSetsTabWindowDragProperty))
             e.AcceptedOperation = DataPackageOperation.Move;
     }
 #pragma warning restore CA1822 // Mark members as static
@@ -174,16 +174,15 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModu
         TabListView.SelectedItem = listviewitem.Tag;
     }
     [Event(typeof(DragEventHandler))]
-    async void OnDropItemOverTabListView(DragEventArgs e)
+    void OnDropItemOverTabListView(DragEventArgs e)
     {
         const string UnitedSetsTabWindowDragProperty = MainWindow.UnitedSetsTabWindowDragProperty;
 
-        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
-        {
-            var pt = e.GetPosition(TabListView);
+		if (e.DataView.Properties.TryGetValue(UnitedSetsTabWindowDragProperty, out var _a) && _a is long a)
+		{
+			var pt = e.GetPosition(TabListView);
             if (TabGroupListView.SelectedIndex is -1) return;
             var tabgroup = MainWindow.HiddenTabs[TabGroupListView.SelectedIndex];
-            var a = (long)await e.DataView.GetDataAsync(UnitedSetsTabWindowDragProperty);
             var window = Window.FromWindowHandle((nint)a);
             var finalIdx = (
                 from index in Enumerable.Range(0, tabgroup.Tabs.Count)

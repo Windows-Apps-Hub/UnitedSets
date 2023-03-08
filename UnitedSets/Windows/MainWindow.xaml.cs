@@ -56,9 +56,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
-#if !UNPKG
 		ExtendsContentIntoTitleBar = true;
-#endif
         SetTitleBar(CustomDragRegion);
 
         timer = DispatcherQueue.CreateTimer();

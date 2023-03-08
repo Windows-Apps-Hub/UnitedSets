@@ -7,6 +7,7 @@ using Windows.Storage;
 using UnitedSets.Windows;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace UnitedSets.Services;
 
@@ -26,8 +27,7 @@ public partial class SettingsService : ObservableObject
         {
             Name = "United Sets Settings Update Loop"
         }.Start();
-        s_window = new(this);
-        s_window.Closed += (_, _) => s_window = new(this);
+		CreateWindow();
     }
 #if !UNPKG
 private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
@@ -63,6 +63,18 @@ private static readonly ApplicationDataContainer Settings = ApplicationData.Curr
     [RelayCommand]
     public void LaunchSettings()
     {
-        s_window?.Activate();
-    }
+		try {
+			s_window?.Activate();
+		} catch (COMException) {
+			CreateWindow();
+			s_window.Activate();
+		}
+
+	}
+	
+
+	private void CreateWindow() {
+		s_window = new(this);
+		s_window.Closed += (_, _) => s_window = new(this);
+	}
 }

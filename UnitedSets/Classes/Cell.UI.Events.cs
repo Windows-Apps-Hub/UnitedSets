@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using System.Linq;
 using System;
@@ -14,27 +14,21 @@ partial class Cell
     public void OnDragOver(DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) return;
-        DataPackageView dataview = e.DataView;
-        var formats = dataview.AvailableFormats.ToList();
-        if (formats.Contains("UnitedSetsTabWindow"))
-            e.AcceptedOperation = DataPackageOperation.Move;
+        if (!Empty || !e.DataView.Properties.ContainsKey(MainWindow.UnitedSetsTabWindowDragProperty)) return;
+        e.AcceptedOperation = DataPackageOperation.Move;
     }
 
     [Event(typeof(DragEventHandler), Name = "DropEv")]
-    public async void OnItemDrop(DragEventArgs e)
+    public void OnItemDrop(DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) return;
-        DataPackageView dataview = e.DataView;
-        var formats = dataview.AvailableFormats.ToList();
-        if (formats.Contains("UnitedSetsTabWindow"))
-        {
-            var hwnd = (long)await e.DataView.GetDataAsync("UnitedSetsTabWindow");
-            var window = Window.FromWindowHandle((nint)hwnd);
-            var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-            RegisterWindow(window);
-        }
+		if (!Empty || !e.DataView.Properties.TryGetValue(MainWindow.UnitedSetsTabWindowDragProperty, out var _a) || _a is long hwnd == false)
+			return;
+
+		var window = Window.FromWindowHandle((nint)hwnd);
+		var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+		RegisterWindow(window);
+
     }
 
     [Event(typeof(RoutedEventHandler), Name = "AddCellAddCountClickEv")]

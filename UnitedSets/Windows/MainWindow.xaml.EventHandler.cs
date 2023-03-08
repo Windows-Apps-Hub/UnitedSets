@@ -32,6 +32,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout.Modules;
+using Microsoft.VisualBasic.Logging;
 
 namespace UnitedSets.Windows;
 
@@ -153,15 +154,15 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {
         if (args.Item is HwndHostTab item)
-            args.Data.SetData(UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
-    }
+			args.Data.Properties.Add(UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+	}
 
 
     [Event(typeof(DragEventHandler))]
     void OnDragItemOverTabView(DragEventArgs e)
     {
-        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
-            e.AcceptedOperation = DataPackageOperation.Move;
+		if (e.DataView.Properties?.ContainsKey(UnitedSetsTabWindowDragProperty) == true)
+			e.AcceptedOperation = DataPackageOperation.Move;
     }
 #pragma warning restore CA1822 // Mark members as static
 
@@ -173,11 +174,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
 
     [Event(typeof(DragEventHandler))]
-    async void OnDropOverTabView(DragEventArgs e)
+    void OnDropOverTabView(DragEventArgs e)
     {
-        if (e.DataView.AvailableFormats.Contains(UnitedSetsTabWindowDragProperty))
+		if (e.DataView.Properties.TryGetValue(UnitedSetsTabWindowDragProperty, out var _a) && _a is long a)
         {
-            var a = (long)await e.DataView.GetDataAsync(UnitedSetsTabWindowDragProperty);
+
             var window = WindowEx.FromWindowHandle((nint)a);
             var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
             var pt = e.GetPosition(TabView);

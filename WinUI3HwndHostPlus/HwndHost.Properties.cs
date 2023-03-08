@@ -16,9 +16,7 @@ using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
 using Windows.Foundation;
 using EasyCSharp;
-
 namespace WinUI3HwndHostPlus;
-
 partial class HwndHost
 {
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]

@@ -21,6 +21,7 @@
 		<AppxBundle>Never</AppxBundle>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="AppPackages\**" />
@@ -82,6 +83,7 @@
 		<ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp\EasyCSharp.csproj"></ProjectReference>
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools.Generator\EasyXAMLTools.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj">
 			<Aliases></Aliases>
 		</ProjectReference>

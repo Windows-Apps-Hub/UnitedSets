@@ -1,30 +1,18 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnitedSets.Classes;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using EasyCSharp;
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using EasyXAMLTools;
 
 namespace UnitedSets.Controls;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
-public sealed partial class CellVisualizer : INotifyPropertyChanged
+[DependencyProperty(
+    typeof(Cell),
+    "Cell",
+    UseNullableReferenceType = true,
+    GenerateLocalOnPropertyChangedMethod = true
+)]
+public sealed partial class CellVisualizer
 {
     public CellVisualizer()
     {
@@ -33,23 +21,12 @@ public sealed partial class CellVisualizer : INotifyPropertyChanged
         InitializeComponent();
     }
 
-    [Property(OnBeforeChanged = nameof(OnBeforeCellChanged), OnChanged = nameof(OnCellChanged))]
-    Cell? _Cell;
-    void OnBeforeCellChanged()
+    partial void OnCellChanged(Cell? oldValue, Cell? newValue)
     {
-        if (_Cell is not null)
-            _Cell.PropertyChanged -= OnCellPropertyChanged;
-    }
-    
-    void OnCellChanged()
-    {
-        if (_Cell is not null)
-            _Cell.PropertyChanged += OnCellPropertyChanged;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cell)));
+        if (oldValue != null) oldValue.PropertyChanged -= OnCellPropertyChanged!;
+        if (newValue != null) newValue.PropertyChanged += OnCellPropertyChanged!;
         UpdateTemplate();
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
     
     [Event(typeof(PropertyChangedEventHandler))]
     void OnCellPropertyChanged(PropertyChangedEventArgs e)

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Linq;
 using System;
@@ -9,11 +9,11 @@ using UnitedSets.Windows;
 namespace UnitedSets.Classes;
 partial class Cell
 {
-    public void RegisterWindow(Window Window)
+    public void RegisterWindow(OurHwndHost host)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!Empty) throw new InvalidOperationException();
-        CurrentCell = new(MainWindow, Window);
+        CurrentCell = host;
     }
 
     public void SplitHorizontally(int Amount)
@@ -33,20 +33,20 @@ partial class Cell
     
     Cell[] CraeteNCells(int Amount)
     {
-        return (from _ in 0..Amount select new Cell(MainWindow, null, null, default)).ToArray();
+        return (from _ in 0..Amount select new Cell(null, null, default)).ToArray();
     }
 
-    public Cell DeepClone(MainWindow NewWindow)
-    {
-        Cell[]? newSubCells =
-            SubCells is null ? null :
-            (from x in SubCells select x.DeepClone(NewWindow)).ToArray();
-        HwndHost? hwndHost =
-            CurrentCell is null ? null
-            : new HwndHost(NewWindow, CurrentCell.HostedWindow);
-        Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
-        return cell;
-    }
+    //public Cell DeepClone(MainWindow NewWindow)
+    //{
+    //    Cell[]? newSubCells =
+    //        SubCells is null ? null :
+    //        (from x in SubCells select x.DeepClone(NewWindow)).ToArray();
+    //    HwndHost? hwndHost =
+    //        CurrentCell is null ? null
+    //        : new HwndHost(NewWindow, CurrentCell.HostedWindow);
+    //    Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
+    //    return cell;
+    //}
 
     public (Cell?, double renamining) GetChildFromPosition(double normalizedPosition)
     {

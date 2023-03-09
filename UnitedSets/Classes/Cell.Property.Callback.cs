@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
@@ -15,7 +15,9 @@ partial class Cell
             {
                 CurrentCell = null;
             };
-            _CurrentCell.IsWindowVisible = IsVisible;
+			_CurrentCell.SetVisible(IsVisible, false);
+			
+
         }
     }
 
@@ -31,7 +33,10 @@ partial class Cell
         if (_SubCells is not null)
             foreach (var cell in _SubCells)
                 cell.IsParentVisible = IsVisible;
-        if (CurrentCell is HwndHost hwndHost) hwndHost.IsWindowVisible = IsVisible;
-        else PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
-    }
+		if (CurrentCell != null)
+			CurrentCell.SetVisible(IsVisible); 
+		else
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+
+	}
 }

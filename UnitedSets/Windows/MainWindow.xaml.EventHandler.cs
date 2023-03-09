@@ -33,6 +33,7 @@ using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout.Modules;
 using Microsoft.VisualBasic.Logging;
+using CommunityToolkit.WinUI;
 
 namespace UnitedSets.Windows;
 
@@ -64,9 +65,22 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
         if (Keyboard.IsShiftDown)
             WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
+		Cell.ValidDrop += Cell_ValidDrop;
     }
 
-    [Event(typeof(TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs>))]
+	private void Cell_ValidDrop(object? sender, Cell.ValidItemDropArgs e) {
+		var cell = sender as Cell;
+		if (cell == null)
+			throw new Exception("Only cells should be generating this event");
+		var window = WinWrapper.Window.FromWindowHandle((nint)e.HwndId);
+		var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+		var tab = Tabs.ToArray().OfType<CellTab>().FirstOrDefault(tab => tab._MainCell.AllSubCells.Any(c=>c == cell));
+		if (tab == null)
+			throw new Exception("Cannot find the tab parent of that cell");
+		cell.RegisterWindow(new OurHwndHost(tab,this,window));
+	}
+
+	[Event(typeof(TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs>))]
     void OnCustomDragRegionUpdatorCalled()
     {
         CustomDragRegion.Width = CustomDragRegionUpdator.ActualWidth - 10;
@@ -92,7 +106,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (e.Message.MessageId == UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
-            if (Tabs.FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
+            if (Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
             {
                 Tab.DetachAndDispose(false);
                 e.Result = 1;
@@ -108,8 +122,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         if (Keyboard.IsShiftDown)
         {
-            var newTab = new CellTab(this, IsAltTabVisible);
-            Tabs.Add(newTab);
+            var newTab = new CellTab(IsAltTabVisible);
+			AddTab(newTab);
             TabView.SelectedItem = newTab;
         }
         else
@@ -260,8 +274,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 // Release all windows
                 while (Tabs.Count > 0)
                 {
-                    var Tab = Tabs[0];
-                    Tabs.RemoveAt(0);
+                    var Tab = Tabs.First();
+					RemoveTab(Tab);
                     Tab.DetachAndDispose(JumpToCursor: false);
                 }
 				await TimerStop();
@@ -318,4 +332,30 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         DispatcherQueue.TryEnqueue(() => TabViewSizer.InvalidateArrange());
     }
+	private async void TabRemoveRequest(object? sender, EventArgs e) {
+		var tab = sender as TabBase;
+		if (tab == null)
+			throw new ArgumentException();
+		await DispatcherQueue.EnqueueAsync(() => RemoveTab(tab));
+		UnwireTabEvents(tab);
+	}
+	private async void TabShowFlyoutRequest(object? sender, TabBase.ShowFlyoutEventArgs e) {
+		var tab = sender as TabBase;
+		if (tab == null)
+			throw new ArgumentException();
+		var flyout = new LeftFlyout(
+		WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this)),
+			new BasicTabFlyoutModule(tab),
+				e.element
+		);
+		await flyout.ShowAsync();
+		flyout.Close();
+
+	}
+	private void TabShowRequest(object? sender, EventArgs e) {
+		var tab = sender as TabBase;
+		if (tab == null)
+			throw new ArgumentException();
+		TabView.SelectedItem = tab;
+	}
 }

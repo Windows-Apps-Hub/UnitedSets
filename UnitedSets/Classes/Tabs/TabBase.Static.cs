@@ -14,7 +14,7 @@ partial class TabBase
     public readonly static List<Window> MainWindows = new();
     public static event Action? OnUpdateStatusLoopComplete;
     static readonly SynchronizedCollection<TabBase> AllTabs = new();
-    static readonly WindowClass UnitedSetsSwitcherWindowClass;
+    //static readonly WindowClass UnitedSetsSwitcherWindowClass;
 
     static readonly SettingsService Settings
         = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException("Settings Init Failed");

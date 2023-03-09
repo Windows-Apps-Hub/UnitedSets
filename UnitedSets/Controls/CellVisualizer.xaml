@@ -1,4 +1,4 @@
-﻿<ContentPresenter
+<ContentPresenter
     x:Class="UnitedSets.Controls.CellVisualizer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -121,7 +121,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:Cell">
-            <ContentPresenter Content="{x:Bind CurrentCell}" Margin="10"/>
+            <ContentPresenter Content="{x:Bind CurrentCell.HwndHostForRenderBinding}" Margin="10"/>
         </DataTemplate>
     </ContentPresenter.Resources>
 </ContentPresenter>

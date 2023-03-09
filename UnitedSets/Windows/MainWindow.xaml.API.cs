@@ -1,4 +1,4 @@
-﻿using EasyCSharp;
+using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
@@ -30,34 +30,41 @@ using System.Text.RegularExpressions;
 using Windows.Foundation;
 using WinUI3HwndHostPlus;
 using UnitedSets.Classes.Tabs;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using UnitedSets.Windows.Flyout.Modules;
+using UnitedSets.Windows.Flyout;
 
 namespace UnitedSets.Windows;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-    void AddTab(WindowEx newWindow, int? index = null)
+    public void AddTab(WindowEx newWindow, int? index = null)
     {
-        if (!newWindow.IsValid)
-            return;
-        newWindow = newWindow.Root;
-        if (newWindow.Handle == IntPtr.Zero)
-            return;
-        if (newWindow.Handle == AddTabFlyout.GetWindowHandle())
-            return;
-        if (newWindow.Handle == WindowEx.Handle)
-            return;
-        if (HwndHost.ShouldBeBlacklisted(newWindow))
-            return;
-        // Check if United Sets has owner (United Sets in United Sets)
-        if (WindowEx.Root.Children.Any(x => x == newWindow))
-            return;
-        if (Tabs.Any(x => x.Windows.Any(y => y == newWindow)))
-            return;
-        var newTab = new HwndHostTab(this, newWindow, IsAltTabVisible);
-        if (index.HasValue)
-            Tabs.Insert(index.Value, newTab);
-        else
-            Tabs.Add(newTab);
-        TabView.SelectedItem = newTab;
+		var newTab = JustCreateTab(newWindow);
+		if (newTab == null)
+			return;
+		AddTab(newTab, index);
+		TabView.SelectedItem = newTab;
     }
+
+	
+	public HwndHostTab? JustCreateTab(WindowEx newWindow) {
+		if (!newWindow.IsValid)
+			return null;
+		newWindow = newWindow.Root;
+		if (newWindow.Handle == IntPtr.Zero)
+			return null;
+		if (newWindow.Handle == AddTabFlyout.GetWindowHandle())
+			return null;
+		if (newWindow.Handle == WindowEx.Handle)
+			return null;
+		if (HwndHost.ShouldBeBlacklisted(newWindow))
+			return null;
+		// Check if United Sets has owner (United Sets in United Sets)
+		if (WindowEx.Root.Children.Any(x => x == newWindow))
+			return null;
+		if (Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
+			return null;
+		return new HwndHostTab((IHwndHostParent tab) => new OurHwndHost(tab, this, newWindow),DispatcherQueue, newWindow, IsAltTabVisible);
+	}
 }

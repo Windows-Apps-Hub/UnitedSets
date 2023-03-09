@@ -22,27 +22,27 @@ using Microsoft.UI.Dispatching;
 
 namespace UnitedSets.Classes.Tabs;
 
-public partial class HwndHostTab : TabBase
+public partial class HwndHostTab : TabBase, IHwndHostParent
 {
     IntPtr _Icon = IntPtr.Zero;
     string _Title;
-    
-    DispatcherQueue UIDispatcher;
-    public HwndHostTab(MainWindow Window, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(Window.TabView, IsTabSwitcherVisibile)
+	private DispatcherQueue UIDispatcher;
+	public HwndHostTab(Func<IHwndHostParent,OurHwndHost> GetHwndHost, DispatcherQueue UIDispatcher, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(IsTabSwitcherVisibile)
     {
-        UIDispatcher = Window.DispatcherQueue;
-        MainWindow = Window;
-        this.Window = WindowEx;
-        HwndHost = new(Window, WindowEx) { IsWindowVisible = false, BorderlessWindow = Keyboard.IsAltDown };
-        Closed = delegate
-        {
-            if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
-        };
-        HwndHost.Closed += Closed;
+		this.UIDispatcher = UIDispatcher;
+
+		this.Window = WindowEx;
+		HwndHost = GetHwndHost(this);
+		HwndHost.SetVisible(false);
+		HwndHost.SetBorderless(Keyboard.IsAltDown);
+
+
+		HwndHost.Closed += (_,_) => DoRemoveTab();
         _Title = DefaultTitle;
         UpdateAppIcon();
     }
 
+	TabBase IHwndHostParent.Tab => this;
     async void UpdateAppIcon()
     {
         var icon = Window.LargeIcon ?? Window.SmallIcon;

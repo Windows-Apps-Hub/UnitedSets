@@ -15,7 +15,7 @@ namespace UnitedSets.Windows.Flyout.Modules;
 
 public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
 {
-    public ModifyWindowFlyoutModule(HwndHost hwndHost)
+    public ModifyWindowFlyoutModule(OurHwndHost hwndHost)
     {
         HwndHost = hwndHost;
         InitializeComponent();
@@ -23,15 +23,15 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
             new string?[]
             {
                 hwndHost.IsOwnerSetSuccessful ? null : "No Owner",
-                hwndHost.NoMovingMode ? "No Move" : null
+                hwndHost.NoMoving ? "No Move" : null
             }.Where(x => x is not null)
         );
         if (string.IsNullOrEmpty(CompatablityString)) CompatablityString = "None";
         CompatabilityModeTB.Text = CompatablityString;
         
-        BorderlessWindowSettings.Visibility = hwndHost.NoMovingMode ? Visibility.Collapsed : Visibility.Visible;
+        BorderlessWindowSettings.Visibility = hwndHost.NoMoving ? Visibility.Collapsed : Visibility.Visible;
     }
-    readonly HwndHost HwndHost;
+    readonly OurHwndHost HwndHost;
 
     public event Action? RequestClose;
 
@@ -76,21 +76,15 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
     [Event(typeof(RoutedEventHandler))]
     void OpenWindowLocation()
     {
-        string? FileName = HwndHost.HostedWindow.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+        string? FileName = HwndHost.GetOwnerProcessModuleFilename();
         if (FileName is null) return;
-        if (FileName is @"C:\WINDOWS\system32\ApplicationFrameHost.exe")
-        {
-            var child = HwndHost.HostedWindow.Children.FirstOrDefault(x =>
-                x.ClassName is "Windows.UI.Core.CoreWindow", HwndHost.HostedWindow);
-            FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
-            if (FileName is null) return;
-        }
+    
         Process.Start("explorer.exe", $"/select,\"{FileName}\"");
     }
     [Event(typeof(RoutedEventHandler))]
     async void CloseWindow()
     {
-        await HwndHost.HostedWindow.TryCloseAsync();
+        await HwndHost.Close();
         RequestClose?.Invoke();
     }
     [Event(typeof(RoutedEventHandler))]

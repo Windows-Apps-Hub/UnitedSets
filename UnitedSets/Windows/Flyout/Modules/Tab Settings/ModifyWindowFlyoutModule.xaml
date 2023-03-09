@@ -49,13 +49,13 @@
 								<Setter Property="Spacing" Value="8" />
 								<Setter Property="Orientation" Value="Horizontal" />
 							</Style>
-							<Style TargetType="NumberBox">
+                            <Style TargetType="NumberBox">
 								<Setter Property="SpinButtonPlacementMode" Value="Compact" />
 								<Setter Property="Minimum" Value="0" />
 								<Setter Property="MinWidth" Value="100" />
 							</Style>
 
-							<Style TargetType="Button">
+							<Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
 								<Setter Property="Padding" Value="5" />
 							</Style>
 

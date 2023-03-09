@@ -62,9 +62,9 @@
 						</StackPanel.Resources>
 							<settings:SettingsItem Label="Top:">
 								<StackPanel>
-									<Button Background="LightBlue" Click="TopMarginShortcutClick">32</Button>
-									<Button Background="LightBlue" Click="TopMarginShortcutClick">40</Button>
-									<Button Background="LightBlue" Click="TopMarginShortcutClick">41</Button>
+									<Button Click="TopMarginShortcutClick">32</Button>
+									<Button Click="TopMarginShortcutClick">40</Button>
+									<Button Click="TopMarginShortcutClick">41</Button>
 									<NumberBox x:Name="TopCropMargin" Value="{x:Bind HwndHost.CropTop, Mode=TwoWay}"/>
 									<Button Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
 										<SymbolIcon Symbol="Undo"/>

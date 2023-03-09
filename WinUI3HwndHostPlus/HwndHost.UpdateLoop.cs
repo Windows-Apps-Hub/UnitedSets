@@ -13,6 +13,8 @@ partial class HwndHost
 		CropLeft = CropRight = CropBottom = CropTop = 0;
 		await _HostedWindow.SetRegionAsync(null);//could do initial region as well
 	}
+	public void FixSizeBug() => _HostedWindow.Restore();
+	public bool MayBeSizeBug =>  _CacheWidth == 0 && _CacheHeight ==0 && ! IsDisposed && _HostedWindow.IsValid && _HostedWindow.IsNormalSize && Visibility == Microsoft.UI.Xaml.Visibility.Visible;
     async void OnWindowUpdate()
     {
         if (_CacheWidth == 0 || _CacheHeight == 0) return; // wait for update

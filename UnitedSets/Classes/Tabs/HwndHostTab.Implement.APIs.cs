@@ -32,9 +32,6 @@ partial class HwndHostTab
         PInvoke.GetCursorPos(out var CursorPos);
         if (JumpToCursor && !NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
-        Window.Focus();
-        Window.Redraw();
-        await Task.Delay(1000).ContinueWith(_ => Window.Redraw());
         _IsDisposed = true;
     }
     public override void Focus()

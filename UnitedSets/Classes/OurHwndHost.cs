@@ -67,15 +67,10 @@ namespace UnitedSets.Classes {
 			_CropTop = _CropBottom = _CropLeft = _CropRight = 0;
 			RaisePropertyChanged(nameof(_CropTop),nameof(_CropBottom),nameof(_CropLeft),nameof(_CropRight));
 			host.ClearCrop();
-			host.Loaded += Host_Loaded;
 		}
 
-		private void Host_Loaded(object sender, RoutedEventArgs e) {
-			OurDbg.Log("HostLoaded");
-		}
-
-		public async Task DetachAndDispose() {
-			await host.DetachAndDispose();
+		public async Task DetachAndDispose(bool Focus = true) {
+			await host.DetachAndDispose(Focus);
 			Detached?.Invoke(this, EventArgs.Empty);
 		}
 		public bool NoMoving => host.NoMovingMode;
@@ -104,7 +99,7 @@ namespace UnitedSets.Classes {
 		private bool _clean_close;
 		public event EventHandler Closed;
 		public event EventHandler Detached;
-		public void SetBorderless(bool borderless) =>BorderlessWindow = borderless;
+		public void SetBorderless(bool borderless) => BorderlessWindow = borderless;
 
 		public void SetVisible(bool visible, bool FocusOnVisible=true) {
 			host.IsWindowVisible = visible;

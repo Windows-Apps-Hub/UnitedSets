@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:windows="using:UnitedSets.Windows"
-    IsResizable="True"
+    IsResizable="False"
     IsMaximizable="False"
     IsMinimizable="False"
     IsTitleBarVisible="False"

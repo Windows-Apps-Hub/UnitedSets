@@ -3,15 +3,17 @@ using Microsoft.UI.Dispatching;
 using System.Runtime.CompilerServices;
 using Windows.UI.Core;
 using Microsoft.Toolkit.Uwp;
+using System.Threading.Tasks;
+
 namespace WinUI3HwndHostPlus;
 
 partial class HwndHost
 {
-    public async System.Threading.Tasks.Task DetachAndDispose()
+    public async Task DetachAndDispose(bool Focus = true)
     {
 
-        var WindowToHost = this._HostedWindow;
-		await UIDispatcher.EnqueueAsync(() => {
+        var WindowToHost = _HostedWindow;
+		await UIDispatcher.EnqueueAsync(async () => {
 
 			WindowToHost.Region = InitialRegion;
 			ActivateCrop = false;
@@ -21,7 +23,12 @@ partial class HwndHost
 			WindowToHost.IsResizable = InitialIsResizable;
 			WindowToHost.IsVisible = true;
 			Dispose();
-		});
+
+            WindowToHost.Focus();
+            WindowToHost.Redraw();
+            WindowToHost.SetAsForegroundWindow();
+            await Task.Delay(100).ContinueWith(_ => WindowToHost.Redraw());
+        });
 	}
 
     public void FocusWindow() => _HostedWindow.Focus();

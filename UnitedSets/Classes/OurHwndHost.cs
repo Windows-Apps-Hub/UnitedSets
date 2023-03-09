@@ -101,11 +101,28 @@ namespace UnitedSets.Classes {
 		public event EventHandler Detached;
 		public void SetBorderless(bool borderless) => BorderlessWindow = borderless;
 
-		public void SetVisible(bool visible, bool FocusOnVisible=true) {
+
+		private object CurFix;
+		private async void DelaySizeFix() {
+			var us = CurFix = new();
+			await Task.Delay(700);
+			if (us != CurFix)
+				return;
+			if (host.MayBeSizeBug) {
+				System.Diagnostics.Debug.WriteLine($"Warning for the host: {host} had to fix the size as think we had a size bug is win visible: {host.Visibility}.");
+				host.FixSizeBug();
+			}
+		}
+		public void SetVisible(bool visible, bool FocusOnVisible = true) {
 			host.IsWindowVisible = visible;
 			if (visible && FocusOnVisible)
 				host.FocusWindow();
+			if (visible) {
+				if (host.MayBeSizeBug)
+					DelaySizeFix();
+
+			}
 		}
-		
+
 	}
 }

@@ -1,16 +1,22 @@
 {
   "profiles": {
-    "UnitedSets (Package)": {
+    "UnitedSets (Packaged)": {
       "commandName": "MsixPackage",
       "nativeDebugging": false
     },
-    "UnitedSets (Unpackaged)": {
-      "commandName": "Project"
-    },
-    "AddNotepad": {
+    "AddNotepad (Packaged)": {
       "commandName": "MsixPackage",
       "commandLineArgs": "--add-window-by-exe notepad --edit-last-added --edit-no-autoclose",
       "nativeDebugging": false
-    }
+    },    
+    "UnitedSets (Unpackaged) Must Use DebugUnpackaged Config": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "AddNotepad (Unpackaged) Must Use DebugUnpackaged Config": {
+      "commandName": "Project",
+      "commandLineArgs": "--add-window-by-exe notepad --edit-last-added --edit-no-autoclose",
+      "nativeDebugging": false
+    },  
   }
 }

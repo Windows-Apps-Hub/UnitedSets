@@ -21,7 +21,8 @@
 		<AppxBundle>Never</AppxBundle>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
-		<LangVersion>preview</LangVersion>
+		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
+		<LangVersion>preview</LangVersion>				
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="AppPackages\**" />

@@ -38,16 +38,16 @@ namespace UnitedSets.Classes {
 			return FileName;
 		}
 
-		[AutoNotifyProperty]
+		[AutoNotifyProperty(OnChanged = nameof(CropTopChanged))]
 		int _CropTop;
 		private void CropTopChanged() => host.CropTop = _CropTop;
-		[AutoNotifyProperty]
+		[AutoNotifyProperty(OnChanged = nameof(CropLeftChanged))]
 		private int _CropLeft;
 		private void CropLeftChanged() => host.CropLeft = _CropLeft;
-		[AutoNotifyProperty]
+		[AutoNotifyProperty(OnChanged = nameof(CropRightChanged))]
 		private int _CropRight;
-		private void CropBRightChanged() => host.CropRight = _CropRight;
-		[AutoNotifyProperty]
+		private void CropRightChanged() => host.CropRight = _CropRight;
+		[AutoNotifyProperty(OnChanged = nameof(CropBottomChanged))]
 		private int _CropBottom;
 		private void CropBottomChanged() => host.CropBottom = _CropBottom;
 

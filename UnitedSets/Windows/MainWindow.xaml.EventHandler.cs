@@ -32,7 +32,6 @@ using System.Diagnostics.CodeAnalysis;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout.Modules;
-using Microsoft.VisualBasic.Logging;
 using CommunityToolkit.WinUI;
 
 namespace UnitedSets.Windows;
@@ -122,10 +121,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         if (Keyboard.IsShiftDown)
         {
-            var newTab = new CellTab(IsAltTabVisible);
-			AddTab(newTab);
-            TabView.SelectedItem = newTab;
-        }
+            LayoutManagerToggle();
+		}
         else
         {
             WindowEx.Minimize();
@@ -135,6 +132,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             AddTab(result);
         }
     }
+	[CommunityToolkit.Mvvm.Input.RelayCommand]
+	public void LayoutManagerToggle() { 
+		var newTab = new CellTab(IsAltTabVisible);
+		AddTab(newTab);
+		TabView.SelectedItem = newTab;
+	}
 
     LeftFlyout? MenuFlyout;
     // Use With OpenMenu

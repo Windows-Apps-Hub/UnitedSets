@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -27,9 +27,10 @@ partial class HwndHostTab
     public override async void DetachAndDispose(bool JumpToCursor)
     {
         var Window = this.Window;
-        await HwndHost.DetachAndDispose();
+		var NoMovingMode = HwndHost.NoMoving;
+		await HwndHost.DetachAndDispose();
         PInvoke.GetCursorPos(out var CursorPos);
-        if (JumpToCursor && !HwndHost.NoMovingMode)
+        if (JumpToCursor && !NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
         Window.Focus();
         Window.Redraw();
@@ -38,17 +39,10 @@ partial class HwndHostTab
     }
     public override void Focus()
     {
-        HwndHost.IsWindowVisible = true;
-        HwndHost.FocusWindow();
+		HwndHost.SetVisible(true);
     }
-    protected override async void OnDoubleClick()
+    protected override void OnDoubleClick()
     {
-        var flyout = new LeftFlyout(
-            WindowEx.FromWindowHandle(MainWindow.GetWindowHandle()),
-            new BasicTabFlyoutModule(this),
-            new ModifyWindowFlyoutModule(HwndHost)
-        );
-        await flyout.ShowAsync();
-        flyout.Close();
+		DoShowFlyout(new ModifyWindowFlyoutModule(HwndHost));
     }
 }

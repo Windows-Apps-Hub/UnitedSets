@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using System.Threading;
 using WindowEx = WinWrapper.Window;
+using System.Linq;
 
 namespace WinUI3HwndHostPlus;
 
@@ -29,7 +30,7 @@ partial class HwndHost
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += delegate
             {
-                foreach (var HwndHost in HwndHosts)
+                foreach (var HwndHost in HwndHosts.ToArray())
                 {
                     var Pt = HwndHost.TransformToVisual(HwndHost.XAMLWindow.Content).TransformPoint(
                         new Windows.Foundation.Point(0, 0)
@@ -52,7 +53,7 @@ partial class HwndHost
     static void OnHwndHostLoopCalled()
     {
     Start:
-        foreach (var HwndHost in ActiveHwndHosts)
+        foreach (var HwndHost in ActiveHwndHosts.ToArray())
         {
             if (HwndHost.IsDisposed)
             {

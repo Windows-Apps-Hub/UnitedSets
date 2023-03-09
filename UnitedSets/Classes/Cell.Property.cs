@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
@@ -7,10 +7,9 @@ using UnitedSets.Windows;
 namespace UnitedSets.Classes;
 partial class Cell
 {
-    public MainWindow MainWindow { get; }
 
     [AutoNotifyProperty(OnChanged = nameof(OnCurrentCellChanged))]
-    HwndHost? _CurrentCell;
+    OurHwndHost? _CurrentCell;
 
     [AutoNotifyProperty(OnChanged = nameof(OnSubCellsUpdate))]
     Cell[]? _SubCells;

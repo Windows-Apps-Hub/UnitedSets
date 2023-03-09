@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using EasyCSharp;
 
@@ -7,8 +7,6 @@ namespace UnitedSets.Classes.Tabs;
 partial class TabBase
 {
     public bool IsSwitcherVisible { get; }
-
-    public TabView ParentTabView { get; }
 
     public string Title => string.IsNullOrWhiteSpace(CustomTitle) ? DefaultTitle : CustomTitle;
 

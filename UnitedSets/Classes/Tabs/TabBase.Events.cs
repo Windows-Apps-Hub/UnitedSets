@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using EasyCSharp;
 using Windows.Foundation;
 
@@ -9,7 +9,7 @@ partial class TabBase
     [Event(typeof(TypedEventHandler<TabViewItem, TabViewTabCloseRequestedEventArgs>), Visibility = GeneratorVisibility.Public, Name = "TabCloseRequestedEv")]
     void TabCloseRequested(TabViewItem sender)
     {
-        ParentTabView.SelectedItem = sender;
+		DoShowTab();
         if (Settings.ExitOnClose)
             _ = TryCloseAsync();
         else

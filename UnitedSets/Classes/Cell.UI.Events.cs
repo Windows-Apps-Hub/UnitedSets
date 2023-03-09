@@ -22,16 +22,18 @@ partial class Cell
     public void OnItemDrop(DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-		if (!Empty || !e.DataView.Properties.TryGetValue(MainWindow.UnitedSetsTabWindowDragProperty, out var _a) || _a is long hwnd == false)
+        if (!Empty || !e.DataView.Properties.TryGetValue(MainWindow.UnitedSetsTabWindowDragProperty, out var _a) || _a is long hwnd == false)
 			return;
-
-		var window = Window.FromWindowHandle((nint)hwnd);
-		var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-		RegisterWindow(window);
+		ValidDrop?.Invoke(this, new ValidItemDropArgs(hwnd));
 
     }
+	public class ValidItemDropArgs : EventArgs {
+		public ValidItemDropArgs(long HwndId) => this.HwndId = HwndId;
+		public long HwndId;
+	}
+	public static event EventHandler<ValidItemDropArgs>? ValidDrop;
 
-    [Event(typeof(RoutedEventHandler), Name = "AddCellAddCountClickEv")]
+	[Event(typeof(RoutedEventHandler), Name = "AddCellAddCountClickEv")]
     public void AddCellAddCount()
     {
         CellAddCount += 1;

@@ -136,7 +136,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 return false;
             }
-            Cell? DetectCell()
+            (CellTab? tab, Cell ? cell) DetectCell()
             {
                 var cursorPos = Cursor.Position;
                 var windowBounds = WindowEx.Bounds;
@@ -153,16 +153,17 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         if (info is not null)
                         {
                             var (rect, cell) = info.Value;
-                            return cell;
+                            return (CellTab, cell);
                         }
                     }
                 }
-                return null;
+                return (null,null);
             }
             if (Cursor.IsLeftButtonDown && Keyboard.IsControlDown)
             {
                 WindowEx OtherWindowDragging = default;
                 Cell? SelectedCell = null;
+				CellTab? SelectedCellTab = null;
                 do
                 {
                     var foregroundWindow = WindowEx.ForegroundWindow;
@@ -170,7 +171,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                     {
                         if (IsInTitleBarBounds(WindowEx, foregroundWindow) && IsUnitedSetWindowVisible(WindowEx, foregroundWindow))
                         {
-                            var NewCell = DetectCell();
+                            var (NewTab, NewCell) = DetectCell();
                             var UpdateHoverToTrue = OtherWindowDragging == default;
                             if (NewCell != SelectedCell)
                                 if (SelectedCell is not null)
@@ -185,6 +186,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                             else if (UpdateHoverToTrue || (SelectedCell is not null && NewCell is null))
                                 DispatcherQueue.TryEnqueue(() => WindowHoveringStoryBoard.Begin());
                             SelectedCell = NewCell;
+							SelectedCellTab = NewTab;
                             OtherWindowDragging = foregroundWindow;
                         }
                         else
@@ -192,6 +194,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                             if (SelectedCell is not null)
                                 SelectedCell.HoverEffect = false;
                             SelectedCell = null;
+							SelectedCellTab = null;
                             if (OtherWindowDragging != default)
                                 DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
                             OtherWindowDragging = default;
@@ -212,7 +215,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         if (SelectedCell is not null)
                         {
                             SelectedCell.HoverEffect = false;
-                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(window));
+                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(new OurHwndHost(SelectedCellTab!,this, window)));
                         }
                         else DispatcherQueue.TryEnqueue(() => AddTab(window));
                     }

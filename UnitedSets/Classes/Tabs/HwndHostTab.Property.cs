@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -21,20 +21,18 @@ namespace UnitedSets.Classes.Tabs;
 
 partial class HwndHostTab
 {
-    readonly MainWindow MainWindow;
     public readonly WindowEx Window;
-    public event Action Closed;
 
-    public HwndHost HwndHost { get; }
+    public OurHwndHost HwndHost { get; }
 
     [Property(OverrideKeyword = true, OnChanged = nameof(OnSelectedChanged))]
     bool _Selected;
-    void OnSelectedChanged()
+    async void OnSelectedChanged()
     {
-        HwndHost.IsWindowVisible = _Selected;
-        if (_Selected) HwndHost.FocusWindow();
-        InvokePropertyChanged(nameof(Selected));
-    }
+		HwndHost.SetVisible(_Selected);
+		InvokePropertyChanged(nameof(Selected));
+		
+	}
 
     
 }

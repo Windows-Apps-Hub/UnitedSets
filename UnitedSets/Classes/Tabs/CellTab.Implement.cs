@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,44 +31,39 @@ partial class CellTab
             await Task.WhenAll(
                 from cell in allcells
                 where cell.HasWindow
-                select cell.CurrentCell!.HostedWindow.TryCloseAsync()
+                select cell.CurrentCell!.Close()
             );
-            while (MainCell.AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.HostedWindow.IsValid))
+            while (MainCell.AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.IsWindowStillValid()))
             {
                 await Task.Delay(500);
             }
             _IsDisposed = true;
         });
-        if (MainWindow.Tabs.Contains(this)) MainWindow.Tabs.Remove(this);
+		DoRemoveTab();
     }
 
     public override void DetachAndDispose(bool JumpToCursor = false)
     {
         //var window = new MainWindow();
         //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
-        foreach (var cell in MainCell.AllSubCells)
+        foreach (var cell in MainCell.AllSubCells.ToArray())
         {
-            if (cell.CurrentCell is HwndHost hwndHost) hwndHost.DetachAndDispose();
+			cell.CurrentCell?.DetachAndDispose();
         }
         _IsDisposed = true;
         //window.Activate();
     }
 
     // UI
-    protected override async void OnDoubleClick()
+    protected override void OnDoubleClick()
     {
-        var flyout = new LeftFlyout(
-            Window.FromWindowHandle(MainWindow.GetWindowHandle()),
-            new BasicTabFlyoutModule(this),
-            new MultiWindowModifyFlyoutModule(
-                (
-                    from x in MainCell.AllSubCells
-                    where x.HasWindow
-                    select x.CurrentCell
-                ).ToArray()
-            )
-        );
-        await flyout.ShowAsync();
-        flyout.Close();
+		DoShowFlyout(new MultiWindowModifyFlyoutModule(
+				(
+					from x in MainCell.AllSubCells
+					where x.HasWindow
+					select x.CurrentCell
+				).ToArray()
+			)
+		);
     }
 }

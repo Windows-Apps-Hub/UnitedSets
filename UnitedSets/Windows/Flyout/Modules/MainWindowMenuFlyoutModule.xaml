@@ -1,4 +1,4 @@
-﻿<Grid
+<Grid
     x:Class="UnitedSets.Windows.Flyout.Modules.MainWindowMenuFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,6 +10,7 @@
     xmlns:tabs="using:UnitedSets.Classes.Tabs"
     xmlns:class="using:UnitedSets.Classes"
     xmlns:ezxaml="using:EasyXAMLTools"
+	xmlns:icons="using:Cube.UI.Icons" 
     >
     <StackPanel Orientation="Vertical" Spacing="8">
         <Border BorderThickness="1"
@@ -17,9 +18,20 @@
         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
         Padding="8">
-            <Button VerticalAlignment="Center" 
-                        Click="{x:Bind MainWindow.Settings.LaunchSettings}"
-                        Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
+			<StackPanel Spacing="8" Margin="6,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+				<StackPanel.Resources>
+					<Style TargetType="Button">
+						<Setter Property="VerticalAlignment" Value="Center" />
+						<Setter Property="Padding" Value="5" />
+					</Style>
+				</StackPanel.Resources>
+				<Button ToolTipService.ToolTip="App Settings" Click="{x:Bind MainWindow.Settings.LaunchSettings}" Style="{ThemeResource ToolbarButton}">
+					<SymbolIcon Symbol="Setting" />
+				</Button>
+				<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.LayoutManagerToggle}" Style="{ThemeResource ToolbarButton}">
+					<SymbolIcon Symbol="SelectAll" />
+				</Button>
+			</StackPanel>
         </Border>
         <Border BorderThickness="1"
         CornerRadius="8"

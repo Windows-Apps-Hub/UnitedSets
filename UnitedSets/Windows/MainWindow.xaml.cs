@@ -15,11 +15,16 @@ using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes;
 using System.Linq;
-using System.Linq.Expressions;
-using CommunityToolkit.WinUI;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using UnitedSets.Windows.Flyout.Modules;
 using System.Collections.Generic;
+using Microsoft.UI;
+using TransparentWinUIWindowLib;
+using System.Threading.Tasks;
+using IT = Windows.Foundation;
+using System.Text.Json;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
 
 namespace UnitedSets.Windows;
 
@@ -99,12 +104,16 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 	//	var lambdaExpression = Expression.Call(Expression.Constant(this), info!, args);
 	//	return Expression.Lambda<Func<TabBase?>>(lambdaExpression, args).Compile();//compiled expressions have a one time setup cost but should be near equivalent of bare metal code for each call
 	//}
-    public MainWindow()
+	TransparentWindowManager trans_mgr;
+	    public MainWindow()
     {
        
         Title = "UnitedSets";
-        InitializeComponent();
-        MinWidth = 100;
+		InitializeComponent();
+		if (FeatureFlags.USE_TRANSPARENT_WINDOW)
+			TransparentSetup();
+
+		MinWidth = 100;
         
         WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
         WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
@@ -138,7 +147,32 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		}
 		if (editLastAddedWindow && Tabs.Count > 0)
 			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+		
 	}
+	private bool firstActivation;
+	private void TransparentSetup() {
+		var border = new Border {BorderThickness=new(10), Background=new SolidColorBrush(Color.FromArgb(0xdd,0xff,0xff,0xff)), CornerRadius=new(15,5,15,5), HorizontalAlignment=HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+		border.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Color = Color.FromArgb(0x99, 0x87, 0xC7, 0xFF), Offset = 1 }, new GradientStop { Color = Color.FromArgb(0x99, 0x00, 0x00, 0x8b), Offset = 0 } }, 45);
+		Grid.SetColumnSpan(border, 50);
+		Grid.SetRowSpan(border, 50);
+		Canvas.SetZIndex(border, -5);
+		MainAreaBorder.Margin = new(8, 0, 8, 8);
+		RootGrid.Children.Insert(0, border);
+		trans_mgr = new(this, swapChainPanel, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Assets\NearTransparentBG.png"), FeatureFlags.ENTIRE_WINDOW_DRAGGABLE);
+		trans_mgr.AfterInitialize();
+
+	}
+
+	private async void TransparentFinalize() {
+		var width = this.Width;
+		var height = this.Height;
+		trans_mgr.RemoveBorderSetTransparentMap();
+		Width = width;
+		Height = height;
+
+	}
+
+	
 	private void WireTabEvents(TabBase tab) {
 		tab.RemoveTab += TabRemoveRequest;
 		tab.ShowFlyout += TabShowFlyoutRequest;

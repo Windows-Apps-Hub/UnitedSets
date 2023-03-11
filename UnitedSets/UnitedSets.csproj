@@ -88,6 +88,7 @@
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj">
 			<Aliases></Aliases>
 		</ProjectReference>
+		<ProjectReference Include="..\TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj" />
 		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
@@ -153,7 +154,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
-	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
@@ -161,10 +162,10 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
-	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
-	  <DefineConstants>$(DefineConstants);UNPKG</DefineConstants>
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />

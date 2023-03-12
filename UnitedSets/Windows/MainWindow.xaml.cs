@@ -158,19 +158,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		Canvas.SetZIndex(border, -5);
 		MainAreaBorder.Margin = new(8, 0, 8, 8);
 		RootGrid.Children.Insert(0, border);
-		trans_mgr = new(this, swapChainPanel, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Assets\NearTransparentBG.png"), FeatureFlags.ENTIRE_WINDOW_DRAGGABLE);
+		trans_mgr = new(this, swapChainPanel, FeatureFlags.ENTIRE_WINDOW_DRAGGABLE);
 		trans_mgr.AfterInitialize();
 
 	}
 
-	private async void TransparentFinalize() {
-		var width = this.Width;
-		var height = this.Height;
-		trans_mgr.RemoveBorderSetTransparentMap();
-		Width = width;
-		Height = height;
 
-	}
 
 	
 	private void WireTabEvents(TabBase tab) {

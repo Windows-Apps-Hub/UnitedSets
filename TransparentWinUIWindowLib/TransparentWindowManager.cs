@@ -234,19 +234,16 @@ namespace TransparentWinUIWindowLib {
 		IDXGISwapChain1 m_pDXGISwapChain1 = null;
 
 		private SwapChainPanel swapChainPanel1;
-		public TransparentWindowManager(Window window, SwapChainPanel swapChainPanel1, String background_file, bool EnableDragMoveAnywhere) {
+		public TransparentWindowManager(Window window, SwapChainPanel swapChainPanel1, bool EnableDragMoveAnywhere, String background_alpha_file = null) {
 			this.window = window;
 			window.Closed += Window_Closed;
 			this.swapChainPanel1 = swapChainPanel1;
-			this.background_file = background_file;
+			this.background_file = background_alpha_file;
 			this.EnableDragMoveAnywhere = EnableDragMoveAnywhere;
 
 		}
-		private string background_file;
+		private string? background_file;
 		private bool EnableDragMoveAnywhere;
-		public void DoButtonThing() {
-			
-		}
 		public void AfterInitialize() {
 			HRESULT hr = HRESULT.S_OK;
 
@@ -264,15 +261,18 @@ namespace TransparentWinUIWindowLib {
 			int nValue = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
 			hr = DwmSetWindowAttribute(hWndMain, (int)DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, ref nValue, Marshal.SizeOf(typeof(int)));
 			
+
 			StartupInput input = StartupInput.GetDefault();
 			StartupOutput output;
 			GpStatus nStatus = GdiplusStartup(out m_initToken, ref input, out output);
 
 			IntPtr pImage = IntPtr.Zero;
-			nStatus = GdipCreateBitmapFromFile(background_file, out pImage);
-			if (nStatus == GpStatus.Ok) {
-				GdipCreateHBITMAPFromBitmap(pImage, out m_hBitmap, RGB(Microsoft.UI.Colors.Black.R, Microsoft.UI.Colors.Black.G, Microsoft.UI.Colors.Black.B));
-				GdipDisposeImage(pImage);
+			if (background_file != null) {
+				nStatus = GdipCreateBitmapFromFile(background_file, out pImage);
+				if (nStatus == GpStatus.Ok) {
+					GdipCreateHBITMAPFromBitmap(pImage, out m_hBitmap, RGB(Microsoft.UI.Colors.Black.R, Microsoft.UI.Colors.Black.G, Microsoft.UI.Colors.Black.B));
+					GdipDisposeImage(pImage);
+				}
 			}
 
 			hr = CreateD2D1Factory();
@@ -284,24 +284,12 @@ namespace TransparentWinUIWindowLib {
 					hr = panelNative.SetSwapChain(m_pDXGISwapChain1);
 				}
 			}
-
+			//GetAlphaChromaKeyColor();
 			long nExStyle = GetWindowLong(hWndMain, GWL_EXSTYLE);
 			if ((nExStyle & WS_EX_LAYERED) == 0) {
 				SetWindowLong(hWndMain, GWL_EXSTYLE, (IntPtr)(nExStyle | WS_EX_LAYERED));
 
-				int nAppsUseLightTheme = 0;
-				int nSystemUsesLightTheme = 0;
-				string sPathKey = @"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-				using (RegistryKey rkLocal = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)) {
-					using (RegistryKey rk = rkLocal.OpenSubKey(sPathKey, false)) {
-						nAppsUseLightTheme = (int)rk.GetValue("AppsUseLightTheme", 0);
-						nSystemUsesLightTheme = (int)rk.GetValue("SystemUsesLightTheme", 0);
-					}
-				}
-				uint nColorBackground = (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.Black);
-				if (nAppsUseLightTheme == 1)
-					nColorBackground = (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.White);
-				bool bReturn = SetLayeredWindowAttributes(hWndMain, nColorBackground, 255, LWA_COLORKEY);
+				//bool bReturn = SetLayeredWindowAttributes(hWndMain, nAlphaBackgroundColor, 255, LWA_COLORKEY); // NOTE this only applies to GDI drawn items which most of WinUI is not,  this will also  transparent out the titlebar which also hittests through then so generrally not what you want (plus swindow border by default is not transparent).
 			}
 			if (EnableDragMoveAnywhere) {
 				UIElement root = (UIElement)window.Content;
@@ -311,20 +299,45 @@ namespace TransparentWinUIWindowLib {
 				root.PointerReleased += Root_PointerReleased;
 			}
 		}
-		bool bSet = false;
 
+		bool bSet = false;
+		private void GetAlphaChromaKeyColor() {
+			int nAppsUseLightTheme = 0;
+			int nSystemUsesLightTheme = 0;
+			string sPathKey = @"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
+			using (RegistryKey rkLocal = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)) {
+				using (RegistryKey rk = rkLocal.OpenSubKey(sPathKey, false)) {
+					nAppsUseLightTheme = (int)rk.GetValue("AppsUseLightTheme", 0);
+					nSystemUsesLightTheme = (int)rk.GetValue("SystemUsesLightTheme", 0);
+				}
+			}
+			nAlphaBackgroundColor = (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.Black);
+			if (nAppsUseLightTheme == 1)
+				nAlphaBackgroundColor = (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.White);
+		}
+		private uint nAlphaBackgroundColor;
 
 		public void RemoveBorderSetTransparentMap() {
-			if (m_hBitmap != IntPtr.Zero && !bSet) {
+
+			if (!bSet && m_hBitmap != IntPtr.Zero) {
 				SetWindowLong(hWndMain, GWL_EXSTYLE, (IntPtr)(GetWindowLong(hWndMain, GWL_EXSTYLE) & ~WS_EX_LAYERED));
 				RedrawWindow(hWndMain, IntPtr.Zero, IntPtr.Zero, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
 				SetWindowLong(hWndMain, GWL_EXSTYLE, (IntPtr)(GetWindowLong(hWndMain, GWL_EXSTYLE) | WS_EX_LAYERED));
-				if (SetPictureToLayeredWindow(hWndMain, m_hBitmap)) {
-					GetWindowRect(hWndMain, out var rectWnd);
-					SetWindowPos(hWndMain, IntPtr.Zero, rectWnd.left, rectWnd.top - 1, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
-					SetWindowPos(hWndMain, IntPtr.Zero, rectWnd.left, rectWnd.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
-					bSet = true;
-				}
+
+					SetPictureToLayeredWindow(hWndMain, m_hBitmap);
+					//bool bReturn = SetLayeredWindowAttributes(hWndMain, nAlphaBackgroundColor, 0, LWA_COLORKEY);
+					//if (bReturn != true)
+					//	throw new Exception("Unable to set window attribs");
+				//}
+
+				GetWindowRect(hWndMain, out var rectWnd);
+				
+				//PInvoke.SetLayeredWindowAttributes((HWND)WindowHandle, new COLORREF(it), 0, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_COLORKEY);
+
+				SetWindowPos(hWndMain, IntPtr.Zero, rectWnd.left, rectWnd.top - 1, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+				SetWindowPos(hWndMain, IntPtr.Zero, rectWnd.left, rectWnd.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+				bSet = true;
 			}
 		}
 
@@ -333,7 +346,7 @@ namespace TransparentWinUIWindowLib {
 
 
 		private void Window_Closed(object sender, WindowEventArgs args) {
-			Clean();
+			Cleanup();
 		}
 		private int nX = 0, nY = 0, nXWindow = 0, nYWindow = 0;
 		private bool bMoving = false;
@@ -495,7 +508,11 @@ namespace TransparentWinUIWindowLib {
 		}
 
 		private Window window;
-		void Clean() {
+		private volatile bool cleaned = false;
+		public void Cleanup() {
+			if (cleaned)
+				return;
+			cleaned = true;
 			GlobalTools.SafeRelease(ref m_pD2DDeviceContext);
 			GlobalTools.SafeRelease(ref m_pDXGISwapChain1);
 

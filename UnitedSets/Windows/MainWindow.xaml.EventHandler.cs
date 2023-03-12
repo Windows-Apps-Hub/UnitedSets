@@ -286,8 +286,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
 				await TimerStop();
 
-				Environment.Exit(0);
-                return;
+				await Suicide();
+				return;
             case ContentDialogResult.Secondary:
                 // Close all windows
                 TabView.Visibility = Visibility.Visible;
@@ -313,8 +313,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 if (Tabs.Count == 0)
                 {
 					await TimerStop();
-					Environment.Exit(0);
-                    return;
+					await Suicide();
+
+					return;
                 }
                 goto default;
             default:
@@ -332,7 +333,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
         }
     }
+	public async Task Suicide() {
+		trans_mgr?.Cleanup();
+		await Task.Delay(300);
+		Debug.WriteLine("Cleanish exit");
+		Environment.Exit(0);
 
+	}
     [Event(typeof(SizeChangedEventHandler))]
     void TabView_SizeChanged()
     {

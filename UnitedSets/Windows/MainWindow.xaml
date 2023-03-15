@@ -13,49 +13,69 @@
     xmlns:windows="using:UnitedSets.Windows"
     MinHeight="300" MinWidth="800"
     mc:Ignorable="d">
-	<SwapChainPanel x:Name="swapChainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="1">
-		<Grid x:Name="RootGrid" Canvas.ZIndex="1">
-        <Grid.Resources>
-            <Storyboard x:Name="WindowHoveringStoryBoard">
-                <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
+    <SwapChainPanel x:Name="swapChainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="1">
+        <Grid x:Name="RootGrid" Canvas.ZIndex="1">
+            <Grid.Resources>
+                <Storyboard x:Name="WindowHoveringStoryBoard">
+                    <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
                                 Storyboard.TargetProperty="Color"
                                 Duration="0:0:0.5"
                                 From="Transparent"
                                 To="{ThemeResource LayerFillColorDefault}">
-                    <ColorAnimation.EasingFunction>
-                        <CircleEase EasingMode="EaseOut" />
-                    </ColorAnimation.EasingFunction>
-                </ColorAnimation>
-            </Storyboard>
-            <Storyboard x:Name="NoWindowHoveringStoryBoard">
-                <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
+                        <ColorAnimation.EasingFunction>
+                            <CircleEase EasingMode="EaseOut" />
+                        </ColorAnimation.EasingFunction>
+                    </ColorAnimation>
+                </Storyboard>
+                <Storyboard x:Name="NoWindowHoveringStoryBoard">
+                    <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
                                 Storyboard.TargetProperty="Color"
                                 Duration="0:0:0.5"
                                 From="{ThemeResource LayerFillColorDefault}"
                                 To="Transparent">
-                    <ColorAnimation.EasingFunction>
-                        <CircleEase EasingMode="EaseOut" />
-                    </ColorAnimation.EasingFunction>
-                </ColorAnimation>
-            </Storyboard>
-            <templates:TabBaseContentTemplateSelector x:Name="TabDataTemplateSelector"/>
-        </Grid.Resources>
-        <Grid.Background>
-            <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>
-        </Grid.Background>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+                        <ColorAnimation.EasingFunction>
+                            <CircleEase EasingMode="EaseOut" />
+                        </ColorAnimation.EasingFunction>
+                    </ColorAnimation>
+                </Storyboard>
+                <templates:TabBaseContentTemplateSelector x:Name="TabDataTemplateSelector"/>
+            </Grid.Resources>
+            <Grid.Background>
+                <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
 
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-        <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
-        <ezxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1" HorizontalAlignment="Left">
-            <Border MinHeight="40">
-                <TabView 
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Border x:Name="WindowBorderOnTransparent"
+                Visibility="Collapsed"
+                Grid.RowSpan="50"
+                Grid.ColumnSpan="50"
+                Canvas.ZIndex="-5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                CornerRadius="15, 5, 15, 5"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderThickness="3"
+            >
+                <Border.BorderBrush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="{ThemeResource SystemListAccentHighColor}" Offset="1"/>
+                            <GradientStop Color="{ThemeResource SystemListAccentLowColor}" Offset="0"/>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+            </Border>
+            <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
+            <ezxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1" HorizontalAlignment="Left">
+                <Border MinHeight="40">
+                    <TabView 
                     Style="{ThemeResource GlowTabView}"
                     x:Name="TabView"
                     Background="Transparent"
@@ -77,12 +97,12 @@
                     SelectionChanged="TabSelectionChanged"
                     SizeChanged="TabView_SizeChanged"
                 >
-                    <TabView.Resources>
-                        <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
-                    </TabView.Resources>
-                    <TabView.TabItemTemplate>
-                        <DataTemplate x:DataType="tabs:TabBase">
-                            <TabViewItem
+                        <TabView.Resources>
+                            <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
+                        </TabView.Resources>
+                        <TabView.TabItemTemplate>
+                            <DataTemplate x:DataType="tabs:TabBase">
+                                <TabViewItem
                             Margin="2, 0, 2, 2"
                             Background="{ThemeResource 12Brush}"
                             Style="{ThemeResource UndockedTabViewItemStyle}"
@@ -93,44 +113,44 @@
                                 PointerPressed="{x:Bind TabClickEv}"
                                 AllowDrop="True"
                                 DragOver="OnDragOverTabViewItem">
-                                <TabViewItem.Header>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
-                                        <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
-                                    </StackPanel>
-                                </TabViewItem.Header>
-                            </TabViewItem>
-                        </DataTemplate>
-                    </TabView.TabItemTemplate>
-                    <TabView.TabStripHeader>
-                        <Button VerticalAlignment="Center" Click="OpenMenu" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
-                            <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
-                        </Button>
-                        <!--
+                                    <TabViewItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
+                                            <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
+                                        </StackPanel>
+                                    </TabViewItem.Header>
+                                </TabViewItem>
+                            </DataTemplate>
+                        </TabView.TabItemTemplate>
+                        <TabView.TabStripHeader>
+                            <Button VerticalAlignment="Center" Click="OpenMenu" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
+                                <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
+                            </Button>
+                            <!--
                         <Button VerticalAlignment="Center" Visibility="{x:Bind SettingsButtonVisibility, Mode=OneWay}" Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
                         -->
-                    </TabView.TabStripHeader>
-                    <!--<TabView.TabStripFooter>
+                        </TabView.TabStripHeader>
+                        <!--<TabView.TabStripFooter>
                         <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="AddTab" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0">
                             <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
                         </Button>
                     </TabView.TabStripFooter>-->
-                </TabView>
+                    </TabView>
+                </Border>
+                <Grid x:Name="CustomDragRegionUpdator" Background="Transparent"/>
+            </ezxaml:FluentHorizontalDynamicSizer>
+            <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
+                <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </Border>
-            <Grid x:Name="CustomDragRegionUpdator" Background="Transparent"/>
-        </ezxaml:FluentHorizontalDynamicSizer>
-        <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
-            <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Border>
-        <StackPanel x:Name="UnitedSetsHomeBackground" VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Center" Canvas.ZIndex="-1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <!--<Image x:Name="AppFontIcon"
+            <StackPanel x:Name="UnitedSetsHomeBackground" VerticalAlignment="Center" Grid.Row="1" HorizontalAlignment="Center" Canvas.ZIndex="-1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <!--<Image x:Name="AppFontIcon"
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center"
                     Source="Assets/Square44x44Logo.scale-100.png"   
@@ -139,29 +159,29 @@
                 It does not work for some reason...
                 
                 -->
-                <TextBlock
+                    <TextBlock
                     Text="United Sets"
                     VerticalAlignment="Center"
                     Margin="8, 0, 0, 0"
                     FontSize="28"/>
-                <TextBlock
+                    <TextBlock
                     Text="- Preview Beta"
                     VerticalAlignment="Center"
                     Margin="8, 0, 0, 0"
                     Opacity="0.7"
                     FontSize="24"/>
-            </StackPanel>
-            <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
-            <TextBlock>
+                </StackPanel>
+                <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
+                <TextBlock>
                 • Hold SHIFT while clicking + icon to create Splitable Tab<LineBreak/>
                 • Drag a Tab out to release the Window<LineBreak/>
                 • Hold CTRL while dragging other window into United Sets to add the window<LineBreak/>
                 • Hold SHIFT while opening new United Sets window to separate taskbar icons<LineBreak/>
                 • [Experimental] Hold ALT while adding window to make it borderless<LineBreak/>
                 • [Experimental] Double Click On Tab to open window settings
-            </TextBlock>
-            <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
-            <TextBlock>
+                </TextBlock>
+                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
+                <TextBlock>
                 • UWP applications are not stable yet<LineBreak/>
                 • Some maximized apps can glitch<LineBreak/>
                 • App Icons are not stable yet<LineBreak/>
@@ -174,8 +194,8 @@
                 (Some apps might still not work with this workaround<LineBreak/>
                 Therefore, please avoid removing title bar on splittable tab<LineBreak/>
                 unless you know what you are doing)
-            </TextBlock>
-        </StackPanel>
-    </Grid>
-	</SwapChainPanel>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </SwapChainPanel>
 </windows:MicaWindow>

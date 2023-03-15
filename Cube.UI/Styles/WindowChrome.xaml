@@ -18,7 +18,7 @@
     <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled">Transparent</SolidColorBrush>
     <SolidColorBrush x:Key="WindowCaptionForegroundDisabled" Color="{ThemeResource TextFillColorDisabled}"/>
     <!-- change Key to WindowChromeStyle to work-->
-    <Style x:Key="WindowChromeStyle" TargetType="ContentControl">
+    <Style x:Key="WindowChromeStyle" TargetType="ContentControl" BasedOn="{StaticResource WindowChromeStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">

@@ -256,6 +256,16 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		OnTimerLoopTick();
 		await Task.Delay(100);
 	}
+	private async Task SafeClose(TabBase tab) {
+		try {
+			var tsk = tab.TryCloseAsync();
+			await await Task.WhenAny(tsk,Task.Delay(TimeSpan.FromSeconds(3)));//yes double await to get exceptions....
+			if (tsk.IsCompletedSuccessfully)
+				return;
+		} catch (Exception) {
+		}
+		tab.DetachAndDispose();
+	}
 
     [Event(typeof(TypedEventHandler<AppWindow, AppWindowClosingEventArgs>))]
     async void OnWindowClosing(AppWindowClosingEventArgs e)
@@ -292,24 +302,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 // Close all windows
                 TabView.Visibility = Visibility.Visible;
                 await Task.Delay(100);
-                foreach (var Tab in Tabs.ToArray()) // ToArray = Clone Collection
-                {
-                    try
-                    {
-                        _ = Tab.TryCloseAsync();
-                        // Try closing tab in 3 second, otherwise give up
-                        for (int i = 0; i < 30; i++)
-                        {
-                            await Task.Delay(100);
-                            if (!Tab.IsDisposed) continue;
-                        }
-                        if (!Tab.IsDisposed) break;
-                    }
-                    catch
-                    {
-                        Tab.DetachAndDispose(JumpToCursor: false);
-                    }
-                }
+
+				await Task.WhenAll(Tabs.ToArray().Select(SafeClose));//shouldnt need timeout here each task has its own timeout
                 if (Tabs.Count == 0)
                 {
 					await TimerStop();

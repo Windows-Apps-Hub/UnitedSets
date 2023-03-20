@@ -21,6 +21,7 @@ public sealed partial class AddTabFlyout
     public WindowEx Result;
     readonly KeyboardHelper KeyboardHook = new();
     const uint VK_TAB = 0x09;
+	const uint VK_ESCAPE = 0x1B;
 
     public AddTabFlyout()
     {
@@ -30,18 +31,28 @@ public sealed partial class AddTabFlyout
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
         this.Hide();
-    }
+		Closed +=  FlyoutClosed;
 
-    [Event(typeof(EventHandler<KeyboardHelperEventArgs>))]
+	}
+
+	private void FlyoutClosed(object sender, WindowEventArgs args) {
+		KeyboardHook.KeyboardPressed -= OnKeyPressed;
+	}
+
+	[Event(typeof(EventHandler<KeyboardHelperEventArgs>))]
     private void OnKeyPressed(KeyboardHelperEventArgs e)
     {
         if (e.KeyboardState == KeyboardHelper.KeyboardState.KeyDown)
         {
-            if (e.KeyboardData.VirtualCode == VK_TAB && AppWindow.IsVisible)
+            if ( (e.KeyboardData.VirtualCode == VK_TAB || e.KeyboardData.VirtualCode == VK_ESCAPE) && AppWindow.IsVisible)
             {
+				
 				e.Handled = true;//don't pass the tab through
-                PInvoke.GetCursorPos(out var pt);
-                Result = WindowEx.GetWindowFromPoint(pt);
+				if (e.KeyboardData.VirtualCode != VK_ESCAPE) {
+					PInvoke.GetCursorPos(out var pt);
+					Result = WindowEx.GetWindowFromPoint(pt);
+				} else
+					Result = default;
                 this.Hide();
             }
         }

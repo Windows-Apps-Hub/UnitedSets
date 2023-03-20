@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using UnitedSets.Classes;
 using UnitedSets.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -29,7 +30,8 @@ namespace UnitedSets.Windows.Pages;
 /// </summary>
 public sealed partial class OOBEPage : Page
 {
-    public SettingsService Settings = App.Current.Services.GetService<SettingsService>() ?? throw new NullReferenceException();
+	public USConfig cfg  => SettingsService.Settings;
+
     public OOBEPage()
     {
         this.InitializeComponent();

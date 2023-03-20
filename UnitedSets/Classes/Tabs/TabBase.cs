@@ -14,12 +14,12 @@ public abstract partial class TabBase : INotifyPropertyChanged
         this.IsSwitcherVisible = IsSwitcherVisible;
         InitSwitcher();
     }
-	public event EventHandler RemoveTab;
-	public event EventHandler ShowTab;
+	public event EventHandler? RemoveTab;
+	public event EventHandler? ShowTab;
 	protected virtual void DoShowTab() {
 		this.ShowTab?.Invoke(this, EventArgs.Empty);
 	}
-	public event EventHandler<ShowFlyoutEventArgs> ShowFlyout;
+	public event EventHandler<ShowFlyoutEventArgs>? ShowFlyout;
 	public class ShowFlyoutEventArgs : EventArgs {
 		public ShowFlyoutEventArgs(UIElement element) {
 			this.element = element;

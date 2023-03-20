@@ -1,0 +1,26 @@
+<Page
+    x:Class="UnitedSets.Windows.ExportImportInputPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vms="using:UnitedSets.Classes"
+	xmlns:local="using:UnitedSets.Windows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
+	mc:Ignorable="d"
+	d:DataContext="{d:DesignInstance Type=vms:ExportImportInputViewModel}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+		<Grid.Resources>
+			<communitytoolkitconverters:BoolToVisibilityConverter x:Name="boolToVisibilityConvertor"/>
+		</Grid.Resources>
+		<StackPanel Spacing="10">
+			<StackPanel Spacing="10" Margin="10" Orientation="Horizontal">
+				<TextBox Text="{Binding Filename, Mode=TwoWay}" PlaceholderText="File" Width="300" Name="txtFile"  />
+				<Button Content="Browse" Command="{Binding FileBrowseCommand }"/>
+			</StackPanel>
+			<CheckBox Content="Only export non-default settings" IsChecked="{Binding OnlyExportNonDefault, Mode=TwoWay}" Visibility="{Binding SaveNotLoad, Converter={StaticResource boolToVisibilityConvertor}}"/>
+
+		</StackPanel>
+	</Grid>
+</Page>

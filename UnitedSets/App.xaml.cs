@@ -39,10 +39,14 @@ public partial class App : Application
     {
         Services = ConfigureServices();
         this.InitializeComponent();
+		
+		cfg = new();
+		cfg.LoadInitialSettingsAndTheme();
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
     }
+	private PreservedTabDataService cfg;
 
     private static IServiceProvider ConfigureServices()
     {
@@ -87,7 +91,7 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        m_window = new MainWindow();
+        m_window = new MainWindow(cfg);
         m_window.Activate();
     }
 

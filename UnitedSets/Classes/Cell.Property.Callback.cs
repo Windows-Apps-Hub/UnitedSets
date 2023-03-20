@@ -13,7 +13,7 @@ partial class Cell
         {
             _CurrentCell.Closed += delegate
             {
-                CurrentCell = null;
+                CurrentCell = null!;
             };
 			_CurrentCell.SetVisible(IsVisible, false);
 			

@@ -21,7 +21,9 @@ namespace UnitedSets.Classes
 			return args[pos + 1];
 		}
 		private static int ArgPosition(String name) {
+#pragma warning disable CS8604 // Possible null reference argument.
 			return args.FirstMatch(a => a.StartsWith($"--{name}",StringComparison.OrdinalIgnoreCase));
+#pragma warning restore CS8604 // Possible null reference argument.
 		}
 		public static IEnumerable<string> GetArrVal(String name) {
 			var ret = new List<string>();

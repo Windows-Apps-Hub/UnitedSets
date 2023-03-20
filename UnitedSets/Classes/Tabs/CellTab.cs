@@ -14,7 +14,7 @@ public partial class CellTab : TabBase, IHwndHostParent {
     {
     }
     
-    protected CellTab(Cell Cell, bool IsTabSwitcherVisibile)
+    public CellTab(Cell Cell, bool IsTabSwitcherVisibile)
         : base(IsTabSwitcherVisibile)
     {
         _MainCell = Cell;

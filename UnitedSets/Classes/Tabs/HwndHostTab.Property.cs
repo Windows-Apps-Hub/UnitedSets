@@ -27,7 +27,7 @@ partial class HwndHostTab
 
     [Property(OverrideKeyword = true, OnChanged = nameof(OnSelectedChanged))]
     bool _Selected;
-    async void OnSelectedChanged()
+    void OnSelectedChanged()
     {
 		HwndHost.SetVisible(_Selected);
 		InvokePropertyChanged(nameof(Selected));

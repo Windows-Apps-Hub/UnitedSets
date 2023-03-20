@@ -21,8 +21,10 @@ namespace UnitedSets.Classes {
 		public HwndHost HwndHostForRenderBinding => host;
 		public IHwndHostParent parent { get; }
 
-		public OurHwndHost(IHwndHostParent parent, Window XAMLWindow, WindowEx WindowToHost) {
-			host = new HwndHost(XAMLWindow, WindowToHost);
+		public OurHwndHost(IHwndHostParent parent, Window XAMLWindow, WindowEx? WindowToHost) {
+			if (parent == null || XAMLWindow == null || WindowToHost == null)
+				throw new ArgumentNullException();
+			host = new HwndHost(XAMLWindow, (WindowEx)WindowToHost);
 			this.parent = parent;
 			host.Closed += Host_Closed;
 		}
@@ -95,14 +97,14 @@ namespace UnitedSets.Classes {
 				Closed?.Invoke(this, EventArgs.Empty);
 			_closed = true;
 		}
-		private bool _closed;
-		private bool _clean_close;
-		public event EventHandler Closed;
-		public event EventHandler Detached;
+		private bool _closed=false;
+		private bool _clean_close=false;
+		public event EventHandler? Closed;
+		public event EventHandler? Detached;
 		public void SetBorderless(bool borderless) => BorderlessWindow = borderless;
 
 
-		private object CurFix;
+		private object? CurFix;
 		private async void DelaySizeFix() {
 			var us = CurFix = new();
 			await Task.Delay(700);

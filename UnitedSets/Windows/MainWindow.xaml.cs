@@ -104,8 +104,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 	//	var lambdaExpression = Expression.Call(Expression.Constant(this), info!, args);
 	//	return Expression.Lambda<Func<TabBase?>>(lambdaExpression, args).Compile();//compiled expressions have a one time setup cost but should be near equivalent of bare metal code for each call
 	//}
-	TransparentWindowManager trans_mgr;
-	    public MainWindow()
+	TransparentWindowManager? trans_mgr;
     {
        
         Title = "UnitedSets";

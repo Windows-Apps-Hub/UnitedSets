@@ -9,6 +9,7 @@ using WinUI3HwndHostPlus;
 using WindowEx = WinWrapper.Window;
 
 using EasyCSharp;
+using UnitedSets.Helpers;
 
 namespace UnitedSets.Classes {
 	public interface IHwndHostParent {
@@ -38,6 +39,10 @@ namespace UnitedSets.Classes {
 				FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
 			}
 			return FileName;
+		}
+		public (string cmd, string args) GetOwnerProcessInfo() {
+			var parse = ExternalProcessHelper.GetProcessCommandLineByPID(host.HostedWindow.OwnerProcess.Id.ToString());
+			return ExternalProcessHelper.ParseCmdLine(parse!);
 		}
 
 		[AutoNotifyProperty(OnChanged = nameof(CropTopChanged))]

@@ -62,10 +62,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 	private Task UIRunAsync(Action action) => DispatcherQueue.EnqueueAsync(action);
 	private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(()=>collection.Remove(item));
     // Different Thread
+	private IntPtr lastIcon = IntPtr.Zero;
 	async void OnLoopCalled()
     {
-        WindowEx.SetOverlayIconPtr(new(SelectedTabCache?.Windows.FirstOrDefault().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
-
+		var icon = SelectedTabCache?.Windows.FirstOrDefault().LargeIconPtr ?? IntPtr.Zero;
+		if (icon != lastIcon){
+			WindowEx.SetOverlayIconPtr(new(icon), SelectedTabCache?.Title ?? "");
+			lastIcon = icon;
+		}
         var HasOwner = this.HasOwner;
         if (_HasOwner != HasOwner)
         {

@@ -103,8 +103,8 @@
                         </DataTemplate>
                     </TabView.TabItemTemplate>
                     <TabView.TabStripHeader>
-                        <Button VerticalAlignment="Center" Click="OpenMenu" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
-                            <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
+                        <Button  VerticalAlignment="Center" Click="OpenMenu" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="12,10,0,0" Width="32" Height="32">
+                            <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Button>
                         <!--
                         <Button VerticalAlignment="Center" Visibility="{x:Bind SettingsButtonVisibility, Mode=OneWay}" Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
@@ -119,7 +119,7 @@
             </Border>
             <Grid x:Name="CustomDragRegionUpdator" Background="Transparent"/>
         </ezxaml:FluentHorizontalDynamicSizer>
-        <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
+        <Border Grid.Row="1" x:Name="MainAreaBorder">
             <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

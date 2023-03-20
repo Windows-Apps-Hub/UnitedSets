@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
-using UnitedSets.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -47,7 +46,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		TabView.SelectedItem = newTab;
     }
 
-	
+	public void SaveCurSettingsAsDefault() => persistantService.ExportSettings(USConfig.DefaultConfigFile, true, true);//don't give user any choice as to what for now so will exclude current tabs
+	public async Task ResetSettingsToDefault() {
+		await persistantService.ResetSettings();
+		SaveCurSettingsAsDefault();
+	}
 	public HwndHostTab? JustCreateTab(WindowEx newWindow) {
 		if (!newWindow.IsValid)
 			return null;

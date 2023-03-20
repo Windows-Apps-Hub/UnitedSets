@@ -1,32 +1,23 @@
 using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
 using System.Linq;
 using WinRT.Interop;
 using WinUIEx;
 using Microsoft.UI.Xaml;
 using Windows.ApplicationModel.DataTransfer;
 using System;
-using WindowRelative = WinWrapper.WindowRelative;
 using WindowEx = WinWrapper.Window;
-using Cursor = WinWrapper.Cursor;
 using Keyboard = WinWrapper.Keyboard;
 using UnitedSets.Classes;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
-using UnitedSets.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
-using System.Threading;
 using System.IO;
-using WinWrapper;
-using System.Text.RegularExpressions;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using UnitedSets.Windows.Flyout;
@@ -45,13 +36,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
     void FirstRun()
     {
-#if UNPKG
-		var Package = SettingsService.Settings;
-#endif
 		Activated -= FirstRun;
+		var icoFile = Path.IsPathRooted(cfg.TaskbarIco) ? cfg.TaskbarIco : Path.Combine(USConfig.RootLocation,cfg.TaskbarIco!);
+		if (File.Exists(icoFile)){
         var icon = PInvoke.LoadImage(
             hInst: null,
-            name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
+				name: icoFile,
             type: GDI_IMAGE_TYPE.IMAGE_ICON,
         cx: 0,
         cy: 0,
@@ -61,13 +51,42 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         icon.DangerousAddRef(ref success);
         PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
         PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+		}
 
         if (Keyboard.IsShiftDown)
             WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
 		Cell.ValidDrop += Cell_ValidDrop;
-		if (FeatureFlags.USE_TRANSPARENT_WINDOW)
-			TransparentFinalize();
+		HandleCLICmds();
+	}
+	async void HandleCLICmds() {
+		var toAdd = CLI.GetArrVal("add-window-by-exe");
+		var editLastAddedWindow = CLI.GetFlag("edit-last-added");
+		LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+		var profile = CLI.GetVal("profile");
+		if (!String.IsNullOrWhiteSpace(profile)) {
+			if (Path.HasExtension(profile) == false)
+				profile += ".json";
+			if (! File.Exists(profile) && ! Path.IsPathRooted(profile) )
+				profile = Path.Combine(USConfig.BaseProfileFolder,profile);
+			if (File.Exists(profile)) {
+				await Task.Delay(1500);
+				await persistantService.ImportSettings(profile);
+			}
 
+
+		}
+
+		foreach (var itm in toAdd) {
+			var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
+			foreach (var proc in procs) {
+				if (!proc.HasExited)
+					AddTab( WindowEx.FromWindowHandle(proc.MainWindowHandle));
+			}
+		}
+		if (editLastAddedWindow && Tabs.Count > 0)
+			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+		
+	}
 	}
 
 	private void Cell_ValidDrop(object? sender, Cell.ValidItemDropArgs e) {
@@ -124,7 +143,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         if (Keyboard.IsShiftDown)
         {
-            LayoutManagerToggle();
+            StartNewCellTab();
 		}
         else
         {
@@ -136,11 +155,35 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         }
     }
 	[CommunityToolkit.Mvvm.Input.RelayCommand]
-	public void LayoutManagerToggle() { 
+	public void LaunchSettings() {
+		CloseMainFlyout();
+		Settings.LaunchSettings(this);
+	}
+	[CommunityToolkit.Mvvm.Input.RelayCommand]
+	public void StartNewCellTab() {
+		CloseMainFlyout();
 		var newTab = new CellTab(IsAltTabVisible);
 		AddTab(newTab);
 		TabView.SelectedItem = newTab;
 	}
+
+	[CommunityToolkit.Mvvm.Input.RelayCommand]
+	public async Task ExportData() {
+		CloseMainFlyout();
+		var res = await ExportImportInputPage.ShowExportImport(true, this);
+		if (res == null)
+			return;
+		persistantService.ExportSettings(res.FullFilename,res.OnlyExportNonDefault);
+	}
+	[CommunityToolkit.Mvvm.Input.RelayCommand]
+	public async Task ImportData() {
+		CloseMainFlyout();
+		var res = await ExportImportInputPage.ShowExportImport(false, this);
+		if (res == null)
+			return;
+		persistantService.ImportSettings(res.FullFilename);
+	}
+	private void CloseMainFlyout() => MenuFlyout?.Hide();
 
     LeftFlyout? MenuFlyout;
     // Use With OpenMenu
@@ -233,14 +276,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 Visibility.Collapsed :
                 Visibility.Visible;
 
-        if (TabView.SelectedIndex is not -1)
-        {
-            Title = $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count - 1} Tabs) - United Sets";
-        }
-        else
-        {
-            Title = "United Sets";
-        }
+		UpdateTitle();
     }
 
     readonly ContentDialog ClosingWindowDialog = new()

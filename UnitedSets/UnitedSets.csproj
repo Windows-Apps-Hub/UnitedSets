@@ -38,6 +38,7 @@
 		<None Remove="AddTabFlyout.xaml" />
 		<None Remove="Controls\CellVisualizer.xaml" />
 		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+		<None Remove="Windows\ExportImportInputPage.xaml" />
 		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
@@ -67,6 +68,7 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.Management" Version="8.0.0-preview.1.23110.8" />
 		<PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
 		<PackageReference Include="WinUIEx" Version="1.8.0" />
 		<Manifest Include="$(ApplicationManifest)" />
@@ -184,6 +186,11 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="Windows\ExportImportInputPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="Controls\CellVisualizer.xaml">

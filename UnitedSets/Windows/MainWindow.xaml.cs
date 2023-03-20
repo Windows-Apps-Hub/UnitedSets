@@ -105,11 +105,24 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 	//	return Expression.Lambda<Func<TabBase?>>(lambdaExpression, args).Compile();//compiled expressions have a one time setup cost but should be near equivalent of bare metal code for each call
 	//}
 	TransparentWindowManager? trans_mgr;
+	    public MainWindow(PreservedTabDataService persistantService)
     {
-       
-        Title = "UnitedSets";
+		this.persistantService = persistantService;
+		
 		InitializeComponent();
-		if (FeatureFlags.USE_TRANSPARENT_WINDOW)
+		if (cfg.Design.Theme != null && cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED) {
+			(this.Content as FrameworkElement).RequestedTheme = cfg.Design.Theme.Value;
+			///not sure why settng the requested theme doesnt seem to work
+			//MainAreaBorder.RequestedTheme = this.RootGrid.RequestedTheme = swapChainPanel.RequestedTheme = cfg.Design.Theme.Value;
+			
+		}
+		ui_configs = new() { TitleUpdate = UpdateTitle, swapChain=this.swapChainPanel};
+		persistantService.init(this,ui_configs);
+
+		
+		
+        Title = "UnitedSets";
+		if (cfg.Design.UseDXBorderTransparency == true)
 			TransparentSetup();
 
 		MinWidth = 100;
@@ -132,38 +145,49 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
         timer.Tick += OnTimerLoopTick;
         timer.Start();
-		// --add-window-by-exe
-		var toAdd = CLI.GetArrVal("add-window-by-exe");
-		var editLastAddedWindow = CLI.GetFlag("edit-last-added");
-		LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
-		foreach (var itm in toAdd) {
-			var procs = System.Diagnostics.Process.GetProcesses().Where(p=>p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
-			foreach (var proc in procs)
-				if (!proc.HasExited)
-					AddTab( WindowEx.FromWindowHandle(proc.MainWindowHandle));
-				
-			
-		}
-		if (editLastAddedWindow && Tabs.Count > 0)
-			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
-		
+		// --add-window-by-exe	
 	}
-	private bool firstActivation;
-	private void TransparentSetup() {
-		var border = new Border {BorderThickness=new(10), Background=new SolidColorBrush(Color.FromArgb(0xdd,0xff,0xff,0xff)), CornerRadius=new(15,5,15,5), HorizontalAlignment=HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-		border.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Color = Color.FromArgb(0x99, 0x87, 0xC7, 0xFF), Offset = 1 }, new GradientStop { Color = Color.FromArgb(0x99, 0x00, 0x00, 0x8b), Offset = 0 } }, 45);
-		Grid.SetColumnSpan(border, 50);
-		Grid.SetRowSpan(border, 50);
-		Canvas.SetZIndex(border, -5);
-		MainAreaBorder.Margin = new(8, 0, 8, 8);
-		RootGrid.Children.Insert(0, border);
-		trans_mgr = new(this, swapChainPanel, FeatureFlags.ENTIRE_WINDOW_DRAGGABLE);
+		private void TransparentSetup() {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+		ui_configs.WindowBorder = new Border() {HorizontalAlignment = HorizontalAlignment.Stretch,VerticalAlignment = VerticalAlignment.Stretch  };
+		ui_configs.WindowBorder.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Offset = 1 }, new GradientStop { Offset = 0 } }, 45);
+		//ui_configs.WindowBorder.RequestedTheme = MainAreaBorder.RequestedTheme;
+		Grid.SetColumnSpan(ui_configs.WindowBorder, 50);
+		Grid.SetRowSpan(ui_configs.WindowBorder, 50);
+		Canvas.SetZIndex(ui_configs.WindowBorder, -5);
+		ui_configs.MainAreaBorder = MainAreaBorder;
+		RootGrid.Children.Insert(0, ui_configs.WindowBorder);
+		persistantService.SetPrimaryDesignProperties();
+		trans_mgr = new(this, swapChainPanel, cfg.DragAnywhere == true);
 		trans_mgr.AfterInitialize();
+		
+#pragma warning restore CS8604 // Possible null reference argument.
+		#pragma warning restore CS8602 // Dereference of a possibly null reference.
+	}
+	public class CfgElements {
+		public Border? WindowBorder;
+		public Border? MainAreaBorder;
+		public SwapChainPanel swapChain;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		public Action TitleUpdate { init; get; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	}
+	
+	private CfgElements ui_configs;
+
+	private void UpdateTitle() {
+		var prefix = cfg.TitlePrefix + " ";
+		if (TabView.SelectedIndex != -1)
+			prefix += $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count - 1} Tabs) - ";
+
+		Title = $"{prefix.TrimStart()}United Sets";
 
 	}
 
+	public USConfig cfg => Settings.cfg;
 
-
+	private PreservedTabDataService persistantService;
 	
 	private void WireTabEvents(TabBase tab) {
 		tab.RemoveTab += TabRemoveRequest;
@@ -178,5 +202,5 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		tab.ShowFlyout -= TabShowFlyoutRequest;
 		tab.ShowTab -= TabShowRequest;
 	}
-	
+
 }

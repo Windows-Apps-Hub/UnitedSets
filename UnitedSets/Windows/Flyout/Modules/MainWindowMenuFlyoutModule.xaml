@@ -25,11 +25,18 @@
 						<Setter Property="Padding" Value="5" />
 					</Style>
 				</StackPanel.Resources>
-				<Button ToolTipService.ToolTip="App Settings" Click="{x:Bind MainWindow.Settings.LaunchSettings}" Style="{ThemeResource ToolbarButton}">
+				<Button ToolTipService.ToolTip="App Settings" Command="{x:Bind MainWindow.LaunchSettingsCommand}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="Setting" />
 				</Button>
-				<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.LayoutManagerToggle}" Style="{ThemeResource ToolbarButton}">
+				<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.StartNewCellTab}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="SelectAll" />
+				</Button>
+				<Button ToolTipService.ToolTip="Export Window Data" Command="{x:Bind MainWindow.ExportDataCommand}" Style="{ThemeResource ToolbarButton}">
+					<SymbolIcon Symbol="Save" />
+				</Button>
+
+				<Button ToolTipService.ToolTip="Import Window Data" Command="{x:Bind MainWindow.ImportDataCommand}" Style="{ThemeResource ToolbarButton}">
+					<SymbolIcon Symbol="OpenFile" />
 				</Button>
 			</StackPanel>
         </Border>

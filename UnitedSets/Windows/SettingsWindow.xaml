@@ -1,4 +1,4 @@
-﻿<winex:WindowEx 
+<winex:WindowEx 
     xmlns:winex="using:WinUIEx" 
     x:Class="UnitedSets.Windows.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
-    MinWidth="890"
+	xmlns:local="using:UnitedSets.Controls"
+	MinWidth="890"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Name="gridMain">
         <Border x:Name="AppTitleBar"
                 IsHitTestVisible="True"
                 VerticalAlignment="Top"
@@ -47,13 +48,24 @@
                         <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7">Preview</TextBlock>
                     </StackPanel>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 24, 4, 4">Options</TextBlock>
+					<TextBlock FontSize="12" FontWeight="SemiBold" Margin="4">Warning options only effect this instance unless you click Make Default Settings</TextBlock>
                     <settings:SettingsBlockControl Title="Exit window" Margin="2" Description="Exits the window when closing a tab">
                         <settings:SettingsBlockControl.Icon>
                             <icons:FluentIconElement VerticalAlignment="Center" Symbol="Delete24"/>
                         </settings:SettingsBlockControl.Icon>
-                        <ToggleSwitch IsOn="{x:Bind Settings.ExitOnClose, Mode=TwoWay}" Style="{ThemeResource GlowSwitch}" OnContent="On" HorizontalAlignment="Right" OffContent="Off"/>
+                        <ToggleSwitch IsOn="{x:Bind cfg.ExitOnClose, Mode=TwoWay}" Style="{ThemeResource GlowSwitch}" OnContent="On" HorizontalAlignment="Right" OffContent="Off"/>
                     </settings:SettingsBlockControl>
-                    <settings:SettingsBlockControl Title="About" Margin="2" Description="Credits, links and information">
+					<settings:SettingsBlockControl Title="Use Translucent Bordering/Background" Margin="2" Description="Allow the opacity of our background/borders (not the pinned apps) to be translucent">
+						<ToggleSwitch IsOn="{Binding cfg.Design.UseTranslucentWindow, Mode=TwoWay, Converter={StaticResource nullableBoolConverter}}" Style="{ThemeResource GlowSwitch}" OnContent="On" HorizontalAlignment="Right" OffContent="Off" />
+					</settings:SettingsBlockControl>
+					<settings:SettingsBlockControl  Title="Window Title Prefix" Margin="2" Description="Prefix that shows up before the normal US title">
+						<TextBox Text="{x:Bind cfg.TitlePrefix,Mode=TwoWay}" PlaceholderText="None - Normal Title Mode" />
+					</settings:SettingsBlockControl>
+					<settings:SettingsBlockControl x:Name="themeCntrl" Title="Theme Override" Margin="2" Description="Override the windows theme (takes effect on restart)">
+						<ComboBox ItemsSource="{Binding theme_options}" SelectedValue="{Binding cfg.Design.Theme, Mode=TwoWay, Converter={StaticResource enumToStringConverter}, ConverterParameter=ElementTheme}" />
+					</settings:SettingsBlockControl>
+					<Button Content="Make Default Settings" Command="{x:Bind SaveDefaultSettingsCommand}" />
+					<settings:SettingsBlockControl Title="About" Margin="2" Description="Credits, links and information">
                         <settings:SettingsBlockControl.Icon>
                             <icons:FluentIconElement VerticalAlignment="Center" Symbol="Info24"/>
                         </settings:SettingsBlockControl.Icon>
@@ -84,7 +96,7 @@
                         </settings:SettingsBlockControl.ExpandableContent>
                     </settings:SettingsBlockControl>
                 </StackPanel>
-
+				
                 <StackPanel Margin="100, 100, 50, 80" Width="220" x:Name="AboutPanel" HorizontalAlignment="Right" VerticalAlignment="Top">
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 4, 4, 8">About this app</TextBlock>
                     <StackPanel Margin="4, 0, 4, 0" Orientation="Horizontal">

@@ -5,53 +5,35 @@ using System.Threading;
 using Windows.Storage;
 using UnitedSets.Windows;
 using System.Runtime.InteropServices;
+using UnitedSets.Classes;
 
 namespace UnitedSets.Services;
 
 public partial class SettingsService : ObservableObject
 {
-    public SettingsService()
-    {
-        new Thread(() =>
-        {
-            while (true)
-            {
-                if (exitOnClose != ExitOnClose)
-                    SetProperty(ref exitOnClose, ExitOnClose);
-                Thread.Sleep(2000);
-            }
-        })
-        {
-            Name = "United Sets Settings Update Loop"
-        }.Start();
-		CreateWindow();
-    }
-#if !UNPKG
-private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
-#else
-	internal static Classes.FauxSettings Settings = new();
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	public static USConfig Settings;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	public USConfig cfg => Settings;
 
-#endif
-
-	[Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", OnChanged = nameof(ExitOnCloseChanged))]
-    private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
-    private void ExitOnCloseChanged() => Settings.Values["ExitOnClose"] = exitOnClose;
-    SettingsWindow s_window;
+    SettingsWindow? s_window;
     [RelayCommand]
-    public void LaunchSettings()
+    public void LaunchSettings(MainWindow mainWindow)
     {
 		try {
+			if (s_window == null)
+				CreateWindow(mainWindow);
 			s_window?.Activate();
 		} catch (COMException) {
-			CreateWindow();
-			s_window.Activate();
+			CreateWindow(mainWindow);
+			s_window?.Activate();
 		}
 
 	}
 	
 
-	private void CreateWindow() {
-		s_window = new(this);
-		s_window.Closed += (_, _) => s_window = new(this);
+	private void CreateWindow(MainWindow mainWindow) {
+		s_window = new(this,mainWindow) { };
+		s_window.Closed += (_, _) => s_window = new(this, mainWindow) { };
 	}
 }

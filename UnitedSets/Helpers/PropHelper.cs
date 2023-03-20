@@ -10,7 +10,7 @@ using System.Reflection;
 #pragma warning disable CS8605 // Unboxing a possibly null value.
 #pragma warning disable CS8602 // 
 #pragma warning disable CS8601 // Possible null reference assignment.
-namespace UnitedSets.Services {
+namespace UnitedSets.Helpers {
 	public class PropHelper {
 		private static ConcurrentDictionary<Type, ConcurrentDictionary<string, PropertyInfo>> type_to_properties = new();
 		private static ConcurrentDictionary<string, PropertyInfo> GetTypeDictionary(Type t) {
@@ -49,7 +49,7 @@ namespace UnitedSets.Services {
 					dst_val = dst_prop.GetValue(dest_instance);
 
 
-				if (val.Equals(dst_val) || (dst_val is ICollection col && col.Count == 0))
+				if (val.Equals(dst_val) || dst_val is ICollection col && col.Count == 0)
 					dst_prop.SetValue(dest_instance, null);
 
 			}, recurse);
@@ -71,7 +71,7 @@ namespace UnitedSets.Services {
 			if (srcType.Equals(typeof(string)) || srcType.IsArray)
 				return false;
 
-			if (srcType.Namespace?.StartsWith("UnitedSets.Services") != true)
+			if (srcType.Namespace?.StartsWith("UnitedSets.Classes.PreservedDataClasses") != true)
 				return false;
 
 			if (srcType.IsClass)

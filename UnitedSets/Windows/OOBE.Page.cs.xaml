@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="UnitedSets.Windows.Pages.OOBEPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -317,7 +317,7 @@
                                                 <TextBlock Text="Exit window" MaxWidth="220" FontWeight="SemiBold" Margin="0, 0, 0, 4"/>
                                                 <TextBlock Text="Exits the window when closing a tab" MaxWidth="220" Opacity="0.7" />
                                             </StackPanel>
-                                            <ToggleSwitch IsOn="{x:Bind Settings.ExitOnClose, Mode=TwoWay}" Margin="4, 4, -80, 4" Style="{ThemeResource GlowSwitch}" HorizontalAlignment="Right"/>
+                                            <ToggleSwitch IsOn="{x:Bind cfg.ExitOnClose, Mode=TwoWay}" Margin="4, 4, -80, 4" Style="{ThemeResource GlowSwitch}" HorizontalAlignment="Right"/>
                                         </Grid>
                                     </StackPanel>
                                 </StackPanel>

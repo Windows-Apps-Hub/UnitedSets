@@ -86,7 +86,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		if (editLastAddedWindow && Tabs.Count > 0)
 			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
 		
-	}
+	
 	}
 
 	private void Cell_ValidDrop(object? sender, Cell.ValidItemDropArgs e) {

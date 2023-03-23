@@ -17,20 +17,21 @@ using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using CommunityToolkit.WinUI;
+using System.ComponentModel;
 
 namespace UnitedSets.Windows.Flyout.Modules;
 
-public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule
+public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule, INotifyPropertyChanged
 {
-    MainWindow MainWindow;
+    [AutoNotifyProperty]
+    MainWindow _MainWindow;
 #pragma warning disable CS0067
     public event Action? RequestClose;
+    public event PropertyChangedEventHandler? PropertyChanged;
 #pragma warning restore CS0067
-    public MainWindowMenuFlyoutModule(MainWindow mainWindow)
+    public MainWindowMenuFlyoutModule()
     {
-        MainWindow = mainWindow;
         InitializeComponent();
-
     }
 
     public void OnActivated()

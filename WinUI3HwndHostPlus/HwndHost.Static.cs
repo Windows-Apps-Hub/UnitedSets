@@ -5,6 +5,8 @@ using Microsoft.UI.Dispatching;
 using System.Threading;
 using WindowEx = WinWrapper.Window;
 using System.Linq;
+using System.Drawing;
+using Microsoft.UI.Xaml;
 
 namespace WinUI3HwndHostPlus;
 
@@ -32,22 +34,29 @@ partial class HwndHost
             {
                 foreach (var HwndHost in HwndHosts.ToArray())
                 {
-                    var Pt = HwndHost.TransformToVisual(HwndHost.XAMLWindow.Content).TransformPoint(
-                        new Windows.Foundation.Point(0, 0)
-                    );
-                    var size = HwndHost.ActualSize;
+                    var rect = GetBoundsRelativeToWindow(HwndHost, HwndHost.XAMLWindow, HwndHost._ParentWindow);
 
-                    HwndHost._CacheXFromWindow = Pt._x;
-                    HwndHost._CacheYFromWindow = Pt._y;
+                    HwndHost._CacheXFromWindow = rect.X;
+                    HwndHost._CacheYFromWindow = rect.Y;
 
-                    HwndHost._CacheWidth = size.X;
-                    HwndHost._CacheHeight = size.Y;
+                    HwndHost._CacheWidth = rect.Width;
+                    HwndHost._CacheHeight = rect.Height;
                 }
                 timer.Start();
             };
             timer.Start();
         }
         ActiveHwndHosts.Add(HwndHost);
+    }
+    static RectangleF GetBoundsRelativeToWindow(UIElement Element, Window window, WindowEx windowEX)
+    {
+        var Pt = Element.TransformToVisual(window.Content).TransformPoint(
+            new Windows.Foundation.Point(0, 0)
+        );
+
+        var scale = (float)GetScale(windowEX);
+        var size = Element.ActualSize;
+        return new(Pt._x * scale, Pt._y * scale, size.X * scale, size.Y * scale);
     }
     static bool IsDwmBackdropSupported = Environment.OSVersion.Version.Build > 22621;
     static void OnHwndHostLoopCalled()

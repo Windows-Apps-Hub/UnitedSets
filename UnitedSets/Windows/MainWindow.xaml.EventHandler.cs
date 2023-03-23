@@ -119,12 +119,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     readonly AddTabFlyout AddTabFlyout = new();
 
-    [Event(typeof(TypedEventHandler<TabView, object>))]
+    [Event(typeof(RoutedEventHandler))]
     async void OnAddTabButtonClick()
     {
         if (Keyboard.IsShiftDown)
         {
-            LayoutManagerToggle();
+            AddSplitableTab();
 		}
         else
         {
@@ -136,7 +136,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         }
     }
 	[CommunityToolkit.Mvvm.Input.RelayCommand]
-	public void LayoutManagerToggle() { 
+	public void AddSplitableTab() { 
 		var newTab = new CellTab(IsAltTabVisible);
 		AddTab(newTab);
 		TabView.SelectedItem = newTab;
@@ -147,7 +147,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [MemberNotNull(nameof(MenuFlyout))]
     void CreateMeufFlyout()
     {
-        MenuFlyout = LeftFlyout.CreateSingletonMode(WindowEx, new MainWindowMenuFlyoutModule(this));
+        MenuFlyout = LeftFlyout.CreateSingletonMode(WindowEx, new MainWindowMenuFlyoutModule() { MainWindow = this });
         MenuFlyout.HeaderText = "";
         MenuFlyout.ExtendToTop = true;
     }

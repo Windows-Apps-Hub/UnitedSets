@@ -11,6 +11,7 @@
     xmlns:class="using:UnitedSets.Classes"
     xmlns:ezxaml="using:EasyXAMLTools"
 	xmlns:icons="using:Cube.UI.Icons" 
+    MinWidth="400"
     >
     <StackPanel Orientation="Vertical" Spacing="8">
         <Border BorderThickness="1"
@@ -28,9 +29,9 @@
 				<Button ToolTipService.ToolTip="App Settings" Click="{x:Bind MainWindow.Settings.LaunchSettings}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="Setting" />
 				</Button>
-				<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.LayoutManagerToggle}" Style="{ThemeResource ToolbarButton}">
+				<!--<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.LayoutManagerToggle}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="SelectAll" />
-				</Button>
+				</Button>-->
 			</StackPanel>
         </Border>
         <Border BorderThickness="1"

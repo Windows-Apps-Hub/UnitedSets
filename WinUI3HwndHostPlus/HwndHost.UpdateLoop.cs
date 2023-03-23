@@ -40,8 +40,8 @@ partial class HwndHost
         var scale = GetScale(_ParentWindow);
         var Pt = new System.Drawing.Point
         {
-            X = (int)(windowbounds.X + _CacheXFromWindow * scale),
-            Y = (int)(windowbounds.Y + _CacheYFromWindow * scale)
+            X = (int)(windowbounds.X + _CacheXFromWindow),
+            Y = (int)(windowbounds.Y + _CacheYFromWindow)
         };
 
 
@@ -67,8 +67,8 @@ partial class HwndHost
             var newBounds = new Rectangle(
             Pt.X + 8 - _CropLeft,
             Pt.Y + YShift - _CropTop,
-            (int)(_CacheWidth * scale) + _CropLeft + _CropRight,
-            (int)(_CacheHeight * scale) + _CropTop + _CropBottom
+            (int)_CacheWidth + _CropLeft + _CropRight,
+            (int)_CacheHeight + _CropTop + _CropBottom
             );
             if (oldBounds != newBounds)
             {

@@ -11,6 +11,8 @@
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:ezxaml="using:EasyXAMLTools"
     xmlns:windows="using:UnitedSets.Windows"
+    xmlns:oobf="using:UnitedSets.OutOfBoundsFlyout"
+    xmlns:module="using:UnitedSets.Windows.Flyout.Modules"
     MinHeight="300" MinWidth="800"
     mc:Ignorable="d">
     <SwapChainPanel x:Name="swapChainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="1">
@@ -80,7 +82,7 @@
                     x:Name="TabView"
                     Background="Transparent"
                     x:FieldModifier="Public"
-                    IsAddTabButtonVisible="True"
+                    IsAddTabButtonVisible="False"
                     TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
                     VerticalAlignment="Center"
                     TabDragStarting="TabDragStarting"
@@ -93,7 +95,6 @@
                     Drop="OnDropOverTabView"
                     MinHeight="42"
                     HorizontalAlignment="Left"
-                    AddTabButtonClick="OnAddTabButtonClick"
                     SelectionChanged="TabSelectionChanged"
                     SizeChanged="TabView_SizeChanged"
                 >
@@ -123,18 +124,33 @@
                             </DataTemplate>
                         </TabView.TabItemTemplate>
                         <TabView.TabStripHeader>
-                            <Button VerticalAlignment="Center" Click="OpenMenu" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
+                            <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
                                 <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
+                                <oobf:AttachedOutOfBoundsFlyout.Flyout>
+                                    <oobf:FlyoutContainer>
+                                        <Flyout>
+                                            <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
+                                        </Flyout>
+                                    </oobf:FlyoutContainer>
+                                </oobf:AttachedOutOfBoundsFlyout.Flyout>
                             </Button>
                             <!--
                         <Button VerticalAlignment="Center" Visibility="{x:Bind SettingsButtonVisibility, Mode=OneWay}" Command="{x:Bind Settings.LaunchSettingsCommand}" Style="{ThemeResource SettingsToolbarButton}" Padding="5" Margin="6,0,0,0"/>
                         -->
                         </TabView.TabStripHeader>
-                        <!--<TabView.TabStripFooter>
-                        <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="AddTab" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0">
-                            <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                        </Button>
-                    </TabView.TabStripFooter>-->
+                        <TabView.TabStripFooter>
+                            <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0">
+                                <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
+                                <oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
+                                    <oobf:FlyoutContainer>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Click="OnAddTabButtonClick">Add Window</MenuFlyoutItem>
+                                            <MenuFlyoutItem Command="{x:Bind AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
+                                        </MenuFlyout>
+                                    </oobf:FlyoutContainer>
+                                </oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
+                            </Button>
+                        </TabView.TabStripFooter>
                     </TabView>
                 </Border>
                 <Grid x:Name="CustomDragRegionUpdator" Background="Transparent"/>

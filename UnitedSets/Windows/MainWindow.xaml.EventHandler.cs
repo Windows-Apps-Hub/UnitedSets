@@ -335,6 +335,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
 	public async Task Suicide() {
 		trans_mgr?.Cleanup();
+        Flyout.OutOfBoundsFlyout.OutOfBoundsFlyoutSystem.Dispose();
 		await Task.Delay(300);
 		Debug.WriteLine("Cleanish exit");
 		Environment.Exit(0);

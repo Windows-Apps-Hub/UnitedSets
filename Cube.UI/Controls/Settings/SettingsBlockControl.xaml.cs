@@ -22,7 +22,7 @@ namespace Cube.UI.Controls.Settings
     [ContentProperty(Name = nameof(SettingsActionableElement))]
     public sealed partial class SettingsBlockControl : UserControl
     {
-        public FrameworkElement SettingsActionableElement { get; set; }
+        public FrameworkElement? SettingsActionableElement { get; set; }
 
         public static readonly DependencyProperty ExpandableContentProperty = DependencyProperty.Register(
           "ExpandableContent",
@@ -105,7 +105,7 @@ namespace Cube.UI.Controls.Settings
         //
         // Summary:
         //     Occurs when a button control is clicked.
-        public event RoutedEventHandler Click;
+        public event RoutedEventHandler? Click;
 
         public SettingsBlockControl()
         {

@@ -8,7 +8,7 @@ namespace Cube.UI.Icons
 {
     public partial class FluentSymbolIcon : Control
     {
-        private PathIcon iconDisplay;
+        private PathIcon? iconDisplay;
 
         public FluentSymbolIcon()
         {
@@ -50,7 +50,9 @@ namespace Cube.UI.Icons
                 this.iconDisplay = pi;
                 // Awkward workaround for a weird bug where iconDisplay is null
                 // when OnSymbolChanged fires in a newly created FluentSymbolIcon
+#pragma warning disable CA2245
                 Symbol = Symbol;
+#pragma warning restore CA2245
             }
         }
 
@@ -79,7 +81,7 @@ namespace Cube.UI.Icons
         /// Returns a new <see cref="Geometry"/> using the path associated with the provided <see cref="int"/>.
         /// The <paramref name="symbol"/> parameter is cast to <see cref="FluentSymbol"/>.
         /// </summary>
-        public static Geometry GetPathData(int symbol)
+        public static Geometry? GetPathData(int symbol)
         {
             return GetPathData((FluentSymbol)symbol);
         }
@@ -87,7 +89,7 @@ namespace Cube.UI.Icons
         /// <summary>
         /// Returns a new <see cref="Geometry"/> using the path associated with the provided <see cref="int"/>.
         /// </summary>
-        public static Geometry GetPathData(FluentSymbol symbol)
+        public static Geometry? GetPathData(FluentSymbol symbol)
         {
             string? pathData = GetFluentIcon(symbol);
             if (pathData is not null)

@@ -23,9 +23,9 @@ namespace UnitedSets.Windows.Flyout.Modules;
 public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule
 {
     MainWindow MainWindow;
-
+#pragma warning disable CS0067
     public event Action? RequestClose;
-
+#pragma warning restore CS0067
     public MainWindowMenuFlyoutModule(MainWindow mainWindow)
     {
         MainWindow = mainWindow;

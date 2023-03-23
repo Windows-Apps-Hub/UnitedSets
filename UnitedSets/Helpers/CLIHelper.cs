@@ -37,13 +37,15 @@ namespace UnitedSets.Classes
 			}
 			return ret;
 		}
-		private static int FirstMatch<T>(this IEnumerable<T> items, Func<T, bool> cond) {
+		private static int FirstMatch<T>(this IEnumerable<T>? items, Func<T, bool> cond) {
+			if (items is null) goto Fail;
 			var i = 0;
 			foreach (var item in items) {
 				if (cond.Invoke(item))
 					return i;
 				i++;
 			}
+		Fail:
 			return -1;
 		}
 

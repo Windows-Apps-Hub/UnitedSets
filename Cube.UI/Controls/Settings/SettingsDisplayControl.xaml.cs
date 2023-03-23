@@ -22,7 +22,7 @@ namespace Cube.UI.Controls.Settings
     [ContentProperty(Name = nameof(SettingsActionableElement))]
     public sealed partial class SettingsDisplayControl : UserControl
     {
-        public FrameworkElement SettingsActionableElement { get; set; }
+        public FrameworkElement? SettingsActionableElement { get; set; }
 
         public static readonly DependencyProperty AdditionalDescriptionContentProperty = DependencyProperty.Register(
           "AdditionalDescriptionContent",

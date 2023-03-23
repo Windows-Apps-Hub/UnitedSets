@@ -23,14 +23,15 @@ public sealed partial class CellVisualizer
 
     partial void OnCellChanged(Cell? oldValue, Cell? newValue)
     {
-        if (oldValue != null) oldValue.PropertyChanged -= OnCellPropertyChanged!;
-        if (newValue != null) newValue.PropertyChanged += OnCellPropertyChanged!;
+        if (oldValue != null) oldValue.PropertyChanged -= OnCellPropertyChanged;
+        if (newValue != null) newValue.PropertyChanged += OnCellPropertyChanged;
         UpdateTemplate();
     }
     
     [Event(typeof(PropertyChangedEventHandler))]
-    void OnCellPropertyChanged(PropertyChangedEventArgs e)
+    void OnCellPropertyChanged(PropertyChangedEventArgs? e)
     {
+        if (e is null) return;
         if (e.PropertyName is not (nameof(Cell.CellAddCountAsString) or nameof(Cell.CellAddCount)))
             DispatcherQueue.TryEnqueue(() => UpdateTemplate());
     }

@@ -1,3 +1,4 @@
+using EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -8,18 +9,21 @@ namespace UnitedSets.Classes.Tabs;
 
 public abstract partial class TabBase : INotifyPropertyChanged
 {
+	public const bool DefaultIsSwitcherVisible = true;
+    [OptionalParameter(nameof(IsSwitcherVisible), DefaultIsSwitcherVisible)]
     public TabBase(bool IsSwitcherVisible)
     {
 		AllTabs.Add(this);
         this.IsSwitcherVisible = IsSwitcherVisible;
         InitSwitcher();
     }
-	public event EventHandler RemoveTab;
-	public event EventHandler ShowTab;
+	public event EventHandler? RemoveTab;
+	public event EventHandler? ShowTab;
+    public event EventHandler<ShowFlyoutEventArgs>? ShowFlyout;
+    
 	protected virtual void DoShowTab() {
 		this.ShowTab?.Invoke(this, EventArgs.Empty);
 	}
-	public event EventHandler<ShowFlyoutEventArgs> ShowFlyout;
 	public class ShowFlyoutEventArgs : EventArgs {
 		public ShowFlyoutEventArgs(UIElement element) {
 			this.element = element;

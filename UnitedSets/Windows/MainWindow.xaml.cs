@@ -105,7 +105,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 	//	var lambdaExpression = Expression.Call(Expression.Constant(this), info!, args);
 	//	return Expression.Lambda<Func<TabBase?>>(lambdaExpression, args).Compile();//compiled expressions have a one time setup cost but should be near equivalent of bare metal code for each call
 	//}
-	TransparentWindowManager trans_mgr;
+	TransparentWindowManager? trans_mgr;
 	    public MainWindow()
     {
        
@@ -150,12 +150,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 			Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
 		
 	}
-    private bool firstActivation;
-	private void TransparentSetup()
+    private void TransparentSetup()
     {
         WindowBorderOnTransparent.Visibility = Visibility.Visible;
         MainAreaBorder.Margin = new(8, 0, 8, 8);
-		RootGrid.Children.Insert(0, border);
+		//RootGrid.Children.Insert(0, border);
 		trans_mgr = new(this, swapChainPanel, FeatureFlags.ENTIRE_WINDOW_DRAGGABLE);
 		trans_mgr.AfterInitialize();
 	}

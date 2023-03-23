@@ -22,7 +22,8 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-		<LangVersion>preview</LangVersion>				
+		<LangVersion>preview</LangVersion>
+		<NoWarn>WMC1500</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="AppPackages\**" />

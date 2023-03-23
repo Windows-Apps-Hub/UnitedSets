@@ -82,13 +82,11 @@ namespace UnitedSets.Windows.Flyout.OutOfBoundsFlyout
             Flyout.Closed += closedEv;
             Point lastPos = new(-1, -1);
             var ourProcId = Window.ThreadProcessId;
-            bool weVisible = true;
             while (Opening)
             {
                 var pos = Cursor.Position;
                 
                 //Window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_TRANSPARENT, false);
-                weVisible = true;
                 var under = Window.FromLocation(pos);
                 Debug.WriteLine(under.Root);
                 if (under.Root == Window)
@@ -97,7 +95,6 @@ namespace UnitedSets.Windows.Flyout.OutOfBoundsFlyout
                 } else
                 {
                     //Window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_TRANSPARENT, true);
-                    weVisible = false;
                     //Debug.WriteLine("Transparent");
                 }
                 await Task.Delay(100);

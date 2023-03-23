@@ -97,12 +97,12 @@ namespace UnitedSets.Classes {
 		}
 		private bool _closed;
 		private bool _clean_close;
-		public event EventHandler Closed;
-		public event EventHandler Detached;
+		public event EventHandler? Closed;
+		public event EventHandler? Detached;
 		public void SetBorderless(bool borderless) => BorderlessWindow = borderless;
 
 
-		private object CurFix;
+		private object? CurFix;
 		private async void DelaySizeFix() {
 			var us = CurFix = new();
 			await Task.Delay(700);

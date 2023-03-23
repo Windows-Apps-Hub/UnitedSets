@@ -5,6 +5,7 @@ using System.Threading;
 using Windows.Storage;
 using UnitedSets.Windows;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnitedSets.Services;
 
@@ -36,7 +37,7 @@ private static readonly ApplicationDataContainer Settings = ApplicationData.Curr
 	[Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", OnChanged = nameof(ExitOnCloseChanged))]
     private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
     private void ExitOnCloseChanged() => Settings.Values["ExitOnClose"] = exitOnClose;
-    SettingsWindow s_window;
+    SettingsWindow? s_window;
     [RelayCommand]
     public void LaunchSettings()
     {
@@ -48,8 +49,8 @@ private static readonly ApplicationDataContainer Settings = ApplicationData.Curr
 		}
 
 	}
-	
 
+    [MemberNotNull(nameof(s_window))]
 	private void CreateWindow() {
 		s_window = new(this);
 		s_window.Closed += (_, _) => s_window = new(this);

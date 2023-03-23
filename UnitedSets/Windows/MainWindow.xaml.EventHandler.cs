@@ -65,8 +65,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (Keyboard.IsShiftDown)
             WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
 		Cell.ValidDrop += Cell_ValidDrop;
-		if (FeatureFlags.USE_TRANSPARENT_WINDOW)
-			TransparentFinalize();
+		//if (FeatureFlags.USE_TRANSPARENT_WINDOW)
+		//	TransparentFinalize();
 
 	}
 

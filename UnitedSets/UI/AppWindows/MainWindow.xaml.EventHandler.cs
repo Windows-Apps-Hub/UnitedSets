@@ -1,43 +1,30 @@
 using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
 using System.Linq;
-using WinRT.Interop;
-using WinUIEx;
 using Microsoft.UI.Xaml;
 using Windows.ApplicationModel.DataTransfer;
 using System;
-using WindowRelative = WinWrapper.WindowRelative;
 using WindowEx = WinWrapper.Window;
-using Cursor = WinWrapper.Cursor;
 using Keyboard = WinWrapper.Keyboard;
 using UnitedSets.Classes;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
-using UnitedSets.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
-using System.Threading;
-using System.IO;
-using WinWrapper;
-using System.Text.RegularExpressions;
 using Windows.Foundation;
-using System.Diagnostics.CodeAnalysis;
-using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes.Tabs;
-using UnitedSets.Windows.Flyout.Modules;
 using CommunityToolkit.WinUI;
 using OutOfBoundsFlyout;
 using Microsoft.UI.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using UnitedSets.UI.Popups;
+using UnitedSets.UI.FlyoutModules;
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
@@ -120,7 +107,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         }
     }
 
-    readonly AddTabFlyout AddTabFlyout = new();
+    readonly AddTabPopup AddTabPopup = new();
 
     [Event(typeof(RoutedEventHandler))]
     async void OnAddTabButtonClick()
@@ -132,9 +119,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         else
         {
             WindowEx.Minimize();
-            await AddTabFlyout.ShowAsync();
+            await AddTabPopup.ShowAsync();
             WindowEx.Restore();
-            var result = AddTabFlyout.Result;
+            var result = AddTabPopup.Result;
             AddTab(result);
         }
     }

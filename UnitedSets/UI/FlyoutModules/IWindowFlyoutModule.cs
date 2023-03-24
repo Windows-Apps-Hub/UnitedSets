@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnitedSets.Windows.Flyout;
+namespace UnitedSets.UI.FlyoutModules;
 
 interface IWindowFlyoutModule
 {

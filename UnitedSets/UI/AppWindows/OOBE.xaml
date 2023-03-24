@@ -1,11 +1,12 @@
-﻿<winex:WindowEx 
+﻿<window:MicaWindow
     xmlns:winex="using:WinUIEx" 
-    x:Class="UnitedSets.Windows.OOBEWindow"
+    x:Class="UnitedSets.UI.AppWindows.OOBEWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Run"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:window="using:UnitedSets.UI.AppWindows"
     MinHeight="800"
     MinWidth="900"
     mc:Ignorable="d">
@@ -41,4 +42,4 @@
         </Border>
         <Frame x:Name="OOBE" Background="Transparent"/>
     </Grid>
-</winex:WindowEx>
+</window:MicaWindow>

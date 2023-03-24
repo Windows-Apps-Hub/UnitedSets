@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -11,28 +12,28 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnitedSets.Helpers;
+using UnitedSets.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using UnitedSets.Windows.Pages;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class OOBEWindow : WindowEx
+public sealed partial class SettingsWindow : MicaWindow
 {
-    public OOBEWindow()
+    public SettingsService Settings;
+
+    public SettingsWindow(SettingsService Settings) : base(IsMicaInfinite: false)
     {
+        this.Settings = Settings;
         this.InitializeComponent();
         ExtendsContentIntoTitleBar = true;
-        MicaHelper Mica = new();
-        Mica.TrySetMicaBackdrop(this);
         SetTitleBar(AppTitleBar);
-        OOBE.Navigate(typeof(OOBEPage));
     }
 }

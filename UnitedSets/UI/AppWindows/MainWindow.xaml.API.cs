@@ -1,40 +1,14 @@
-using EasyCSharp;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
-using System.Collections.ObjectModel;
 using System.Linq;
-using WinRT.Interop;
 using WinUIEx;
-using Microsoft.UI.Xaml;
-using Windows.ApplicationModel.DataTransfer;
 using System;
-using WindowRelative = WinWrapper.WindowRelative;
 using WindowEx = WinWrapper.Window;
-using Cursor = WinWrapper.Cursor;
-using Keyboard = WinWrapper.Keyboard;
 using UnitedSets.Classes;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
-using UnitedSets.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
-using System.Diagnostics;
-using WinUIEx.Messaging;
-using Microsoft.UI.Dispatching;
-using System.Threading;
-using System.IO;
-using WinWrapper;
-using System.Text.RegularExpressions;
-using Windows.Foundation;
 using WinUI3HwndHostPlus;
 using UnitedSets.Classes.Tabs;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using UnitedSets.Windows.Flyout.Modules;
-using UnitedSets.Windows.Flyout;
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
@@ -54,7 +28,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		newWindow = newWindow.Root;
 		if (newWindow.Handle == IntPtr.Zero)
 			return null;
-		if (newWindow.Handle == AddTabFlyout.GetWindowHandle())
+		if (newWindow.Handle == AddTabPopup.GetWindowHandle())
 			return null;
 		if (newWindow.Handle == WindowEx.Handle)
 			return null;

@@ -1,11 +1,11 @@
-﻿using UnitedSets.Windows.Pages;
+﻿using UnitedSets.UI.AppWindows.Pages;
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 
 public sealed partial class OOBEWindow : MicaWindow
 {
-    public OOBEWindow()
+    public OOBEWindow() : base(IsMicaInfinite: false)
     {
         this.InitializeComponent();
         ExtendsContentIntoTitleBar = true;

@@ -32,7 +32,7 @@ using UnitedSets.Classes.Tabs;
 using Windows.UI.Core;
 using CommunityToolkit.WinUI;
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.

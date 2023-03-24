@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Windows;
+using UnitedSets.UI.AppWindows;
 using EasyCSharp;
 namespace UnitedSets.Classes.Tabs;
 

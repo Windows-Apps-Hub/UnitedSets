@@ -1,17 +1,12 @@
 using Microsoft.UI.Xaml.Media.Imaging;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Window = WinWrapper.Window;
-using WinUIEx;
-using WinUI3HwndHostPlus;
-using UnitedSets.Windows;
-using UnitedSets.Windows.Flyout;
-using UnitedSets.Windows.Flyout.Modules;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using UnitedSets.UI.FlyoutModules;
 
 namespace UnitedSets.Classes.Tabs;
 

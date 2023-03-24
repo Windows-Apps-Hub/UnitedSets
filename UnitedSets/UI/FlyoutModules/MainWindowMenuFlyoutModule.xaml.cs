@@ -11,15 +11,15 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
 using Window = WinWrapper.Window;
 using UnitedSets.Classes.Tabs;
-using UnitedSets.Windows;
+using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 
-namespace UnitedSets.FlyoutModules;
+namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyChanged
 {
     [AutoNotifyProperty]
-    MainWindow _MainWindow;
+    MainWindow? _MainWindow;
 #pragma warning disable CS0067
     public event PropertyChangedEventHandler? PropertyChanged;
 #pragma warning restore CS0067

@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
-using UnitedSets.Windows;
+using UnitedSets.UI.AppWindows;
 
 namespace UnitedSets.Classes;
 partial class Cell

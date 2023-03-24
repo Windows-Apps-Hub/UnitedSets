@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Text;
 
-namespace UnitedSets.Windows.Flyout.Modules.Tab_Settings {
+namespace UnitedSets.UI.FlyoutModules.TabSettings {
 	public sealed class SettingsItem : ContentControl
     {
         public SettingsItem()

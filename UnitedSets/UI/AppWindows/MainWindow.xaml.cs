@@ -12,15 +12,13 @@ using System.ComponentModel;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Classes.Tabs;
-using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes;
 using System.Linq;
 using System.Collections.Generic;
 using TransparentWinUIWindowLib;
 using OutOfBoundsFlyout;
-using Microsoft.UI.Xaml.Controls;
 
-namespace UnitedSets.Windows;
+namespace UnitedSets.UI.AppWindows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
@@ -105,7 +103,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     //	return Expression.Lambda<Func<TabBase?>>(lambdaExpression, args).Compile();//compiled expressions have a one time setup cost but should be near equivalent of bare metal code for each call
     //}
     TransparentWindowManager? trans_mgr;
-    public MainWindow()
+    public MainWindow() : base(IsMicaInfinite: true)
     {
 
         Title = "UnitedSets";
@@ -138,7 +136,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         // --add-window-by-exe
         var toAdd = CLI.GetArrVal("add-window-by-exe");
         var editLastAddedWindow = CLI.GetFlag("edit-last-added");
-        LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+        //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
         foreach (var itm in toAdd)
         {
             var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();

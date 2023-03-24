@@ -14,15 +14,15 @@ using UnitedSets.Helpers;
 using EasyCSharp;
 using System;
 
-namespace UnitedSets.Windows.Flyout;
+namespace UnitedSets.UI.Popups;
 
-public sealed partial class AddTabFlyout
+public sealed partial class AddTabPopup
 {
     public WindowEx Result;
     readonly KeyboardHelper KeyboardHook = new();
     const uint VK_TAB = 0x09;
 
-    public AddTabFlyout()
+    public AddTabPopup() : base(IsMicaInfinite: true)
     {
         InitializeComponent();
         KeyboardHook.KeyboardPressed += OnKeyPressed;

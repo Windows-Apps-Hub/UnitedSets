@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes.Tabs;
 using EasyCSharp;
-namespace UnitedSets.FlyoutModules;
+namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class BasicTabFlyoutModule
 {

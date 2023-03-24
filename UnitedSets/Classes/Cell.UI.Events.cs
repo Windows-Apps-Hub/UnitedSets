@@ -6,7 +6,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
 using Window = WinWrapper.Window;
 using EasyCSharp;
-using UnitedSets.Windows;
+using UnitedSets.UI.AppWindows;
 namespace UnitedSets.Classes;
 partial class Cell
 {

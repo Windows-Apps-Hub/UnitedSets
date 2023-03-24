@@ -5,7 +5,7 @@ using System;
 using Window = WinWrapper.Window;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
-using UnitedSets.Windows;
+using UnitedSets.UI.AppWindows;
 namespace UnitedSets.Classes;
 public partial class Cell : INotifyPropertyChanged
 {

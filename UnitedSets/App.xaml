@@ -2,11 +2,26 @@
     x:Class="UnitedSets.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UnitedSets">
+    xmlns:local="using:UnitedSets"
+    xmlns:settings="using:UnitedSets.UI.FlyoutModules.TabSettings">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary>
+                    <Style TargetType="settings:SettingsItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="settings:SettingsItem">
+                                    <Grid>
+                                        <TextBlock Text="{Binding Label, RelativeSource={RelativeSource TemplatedParent}}" FontSize="{Binding LabelSize, RelativeSource={RelativeSource TemplatedParent}}" FontWeight="{Binding LabelWeight, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" />
+                                        <ContentPresenter HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/GlowGradientUI.xaml" />
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Tabs/GlowTabs.xaml" />
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/WindowChrome.xaml" />

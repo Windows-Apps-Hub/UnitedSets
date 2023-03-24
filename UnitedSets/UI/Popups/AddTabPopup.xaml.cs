@@ -13,7 +13,6 @@ using Windows.Graphics;
 using UnitedSets.Helpers;
 using EasyCSharp;
 using System;
-
 namespace UnitedSets.UI.Popups;
 
 public sealed partial class AddTabPopup

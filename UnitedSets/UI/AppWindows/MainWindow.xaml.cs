@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 using System;
 using WindowEx = WinWrapper.Window;
 using Windows.Win32;
-using UnitedSets.Services;
+using UnitedSets.Mvvm.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using WinUIEx.Messaging;

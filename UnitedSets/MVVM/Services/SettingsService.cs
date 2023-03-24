@@ -7,7 +7,7 @@ using UnitedSets.UI.AppWindows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnitedSets.Services;
+namespace UnitedSets.Mvvm.Services;
 
 public partial class SettingsService : ObservableObject
 {

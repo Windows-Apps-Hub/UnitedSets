@@ -8,7 +8,7 @@ using System.IO;
 using System.Net.WebSockets;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using UnitedSets.Services;
+using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.AppWindows;
 using Windows.Foundation.Metadata;
 using Windows.Management.Core;

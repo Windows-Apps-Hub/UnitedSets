@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using UnitedSets.Services;
+using UnitedSets.Mvvm.Services;
 using WinWrapper;
 
 namespace UnitedSets.Classes.Tabs;

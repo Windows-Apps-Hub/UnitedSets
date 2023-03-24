@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnitedSets.Helpers;
-using UnitedSets.Services;
+using UnitedSets.Mvvm.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUIEx;

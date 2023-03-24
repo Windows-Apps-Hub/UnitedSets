@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
-using UnitedSets.Services;
+using UnitedSets.Mvvm.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Diagnostics;

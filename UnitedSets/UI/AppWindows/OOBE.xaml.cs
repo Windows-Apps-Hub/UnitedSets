@@ -1,4 +1,4 @@
-﻿using UnitedSets.UI.AppWindows.Pages;
+﻿using UnitedSets.UI.Pages;
 
 namespace UnitedSets.UI.AppWindows;
 

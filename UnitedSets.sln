@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitedSets.WinForms", "Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransparentWinUIWindowLib", "TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj", "{C3D27BE4-C5D0-44CF-9008-EC3789CA566F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfBoundsFlyout", "OutOfBoundsFlyout\OutOfBoundsFlyout.csproj", "{AFC01A65-D132-4200-A49C-39190FF37CEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -347,6 +349,30 @@ Global
 		{C3D27BE4-C5D0-44CF-9008-EC3789CA566F}.Release|x64.Build.0 = Release|Any CPU
 		{C3D27BE4-C5D0-44CF-9008-EC3789CA566F}.Release|x86.ActiveCfg = Release|Any CPU
 		{C3D27BE4-C5D0-44CF-9008-EC3789CA566F}.Release|x86.Build.0 = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|arm64.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|x64.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|Any CPU.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|arm64.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|arm64.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|x64.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|x64.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|x86.ActiveCfg = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.DebugUnpackaged|x86.Build.0 = Debug|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|arm64.ActiveCfg = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|arm64.Build.0 = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x64.Build.0 = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

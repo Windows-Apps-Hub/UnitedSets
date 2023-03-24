@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>OutOfBoundsFlyout</RootNamespace>
+		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+		<UseWinUI>true</UseWinUI>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Interop.UIAutomationClient" Version="10.19041.0" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+		<PackageReference Include="WinUIEx" Version="1.8.0" />
+		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools.Generator\EasyXAMLTools.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj" />
+		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
+	</ItemGroup>
+</Project>

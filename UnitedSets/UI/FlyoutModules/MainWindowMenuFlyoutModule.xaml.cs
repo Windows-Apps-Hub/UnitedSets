@@ -9,24 +9,18 @@ using Windows.Foundation;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
-using WinWrapper;
 using Window = WinWrapper.Window;
-using System.Collections;
-using System.Collections.Generic;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows;
-using UnitedSets.Windows.Flyout;
-using CommunityToolkit.WinUI;
 using System.ComponentModel;
 
-namespace UnitedSets.Windows.Flyout.Modules;
+namespace UnitedSets.FlyoutModules;
 
-public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModule, INotifyPropertyChanged
+public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyChanged
 {
     [AutoNotifyProperty]
     MainWindow _MainWindow;
 #pragma warning disable CS0067
-    public event Action? RequestClose;
     public event PropertyChangedEventHandler? PropertyChanged;
 #pragma warning restore CS0067
     public MainWindowMenuFlyoutModule()
@@ -34,10 +28,6 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, IWindowFlyoutModu
         InitializeComponent();
     }
 
-    public void OnActivated()
-    {
-
-    }
 
     [Event(typeof(RoutedEventHandler))]
     void SetTabsAside()

@@ -10,10 +10,11 @@ using Process = System.Diagnostics.Process;
 using WinUI3HwndHostPlus;
 using System;
 using UnitedSets.Windows.Flyout;
+using OutOfBoundsFlyout;
 
-namespace UnitedSets.Windows.Flyout.Modules;
+namespace UnitedSets.FlyoutModules.Modules;
 
-public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
+public sealed partial class ModifyWindowFlyoutModule
 {
     public ModifyWindowFlyoutModule(OurHwndHost hwndHost)
     {
@@ -32,8 +33,6 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
         BorderlessWindowSettings.Visibility = hwndHost.NoMoving ? Visibility.Collapsed : Visibility.Visible;
     }
     readonly OurHwndHost HwndHost;
-
-    public event Action? RequestClose;
 
     [Event(typeof(RoutedEventHandler))]
     void TopMarginShortcutClick(object sender)
@@ -85,17 +84,12 @@ public sealed partial class ModifyWindowFlyoutModule : IWindowFlyoutModule
     async void CloseWindow()
     {
         await HwndHost.Close();
-        RequestClose?.Invoke();
+        OutOfBoundsFlyoutSystem.CloseFlyout();
     }
     [Event(typeof(RoutedEventHandler))]
     void DetachWindow()
     {
         _ = HwndHost.DetachAndDispose();
-        RequestClose?.Invoke();
-    }
-
-    public void OnActivated()
-    {
-        
+        OutOfBoundsFlyoutSystem.CloseFlyout();
     }
 }

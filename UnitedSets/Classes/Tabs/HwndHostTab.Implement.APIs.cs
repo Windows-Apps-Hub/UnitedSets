@@ -16,6 +16,8 @@ using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
 using Windows.Win32.Graphics.Gdi;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -38,8 +40,8 @@ partial class HwndHostTab
     {
 		HwndHost.SetVisible(true);
     }
-    protected override void OnDoubleClick()
+    protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
     {
-		DoShowFlyout(new ModifyWindowFlyoutModule(HwndHost));
+		DoShowFlyout(new ModifyWindowFlyoutModule(HwndHost), args.GetPosition(sender), sender, args.PointerDeviceType);
     }
 }

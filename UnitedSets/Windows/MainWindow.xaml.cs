@@ -17,7 +17,7 @@ using UnitedSets.Classes;
 using System.Linq;
 using System.Collections.Generic;
 using TransparentWinUIWindowLib;
-using UnitedSets.OutOfBoundsFlyout;
+using OutOfBoundsFlyout;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UnitedSets.Windows;
@@ -112,7 +112,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         AttachedOutOfBoundsFlyout.RegisterWindow(this);
 
         InitializeComponent();
-        UnitedSets.Windows.Flyout.OutOfBoundsFlyout.OutOfBoundsFlyoutSystem.Initialize(true);
+        
         if (FeatureFlags.USE_TRANSPARENT_WINDOW)
             TransparentSetup();
 

@@ -1,4 +1,4 @@
-﻿<winex:WindowEx 
+﻿<window:MicaWindow
     xmlns:winex="using:WinUIEx" 
     x:Class="UnitedSets.Windows.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
+    xmlns:window="using:UnitedSets.Windows"
     MinWidth="890"
     mc:Ignorable="d">
     <Grid>

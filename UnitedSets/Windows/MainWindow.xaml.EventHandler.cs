@@ -33,6 +33,9 @@ using UnitedSets.Windows.Flyout;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Windows.Flyout.Modules;
 using CommunityToolkit.WinUI;
+using OutOfBoundsFlyout;
+using Microsoft.UI.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.Windows;
 
@@ -141,32 +144,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		AddTab(newTab);
 		TabView.SelectedItem = newTab;
 	}
-
-    LeftFlyout? MenuFlyout;
-    // Use With OpenMenu
-    [MemberNotNull(nameof(MenuFlyout))]
-    void CreateMeufFlyout()
-    {
-        MenuFlyout = LeftFlyout.CreateSingletonMode(WindowEx, new MainWindowMenuFlyoutModule() { MainWindow = this });
-        MenuFlyout.HeaderText = "";
-        MenuFlyout.ExtendToTop = true;
-    }
-    [Event(typeof(RoutedEventHandler))]
-    async void OpenMenu()
-    {
-        if (MenuFlyout is null or { IsDisposed : true })
-        {
-            CreateMeufFlyout();
-        }
-        try
-        {
-            await MenuFlyout.ShowAsync();
-        } catch
-        {
-            CreateMeufFlyout();
-            OpenMenu();
-        }
-    }
 
 #pragma warning disable CA1822 // Mark members as static
 
@@ -335,7 +312,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
 	public async Task Suicide() {
 		trans_mgr?.Cleanup();
-        Flyout.OutOfBoundsFlyout.OutOfBoundsFlyoutSystem.Dispose();
+        OutOfBoundsFlyoutSystem.Dispose();
 		await Task.Delay(300);
 		Debug.WriteLine("Cleanish exit");
 		Environment.Exit(0);
@@ -354,16 +331,35 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		UnwireTabEvents(tab);
 	}
 	private async void TabShowFlyoutRequest(object? sender, TabBase.ShowFlyoutEventArgs e) {
-		var tab = sender as TabBase;
-		if (tab == null)
-			throw new ArgumentException();
-		var flyout = new LeftFlyout(
-		WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this)),
-			new BasicTabFlyoutModule(tab),
-				e.element
-		);
-		await flyout.ShowAsync();
-		flyout.Close();
+        var tab = sender as TabBase;
+        if (tab is null)
+            throw new ArgumentException();
+        //var flyout = new LeftFlyout(
+        //WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this)),
+        //	new BasicTabFlyoutModule(tab),
+        //		e.Element
+        //);
+        //await flyout.ShowAsync();
+        //flyout.Close();
+        await Task.Delay(300);
+        AttachedOutOfBoundsFlyout.ShowFlyout(
+            e.RelativeTo,
+            new Microsoft.UI.Xaml.Controls.Flyout
+            {
+                Content = new StackPanel
+                {
+                    Width = 350,
+                    Spacing = 8,
+                    Children =
+                    {
+                        new BasicTabFlyoutModule(tab),
+                        e.Element
+                    }
+                }
+            },
+            e.CursorPosition,
+            e.PointerDeviceType is not (PointerDeviceType.Touchpad or PointerDeviceType.Mouse)
+        );
 
 	}
 	private void TabShowRequest(object? sender, EventArgs e) {

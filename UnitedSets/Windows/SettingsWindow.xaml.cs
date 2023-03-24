@@ -25,7 +25,7 @@ namespace UnitedSets.Windows;
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class SettingsWindow : WindowEx
+public sealed partial class SettingsWindow : MicaWindow
 {
     public SettingsService Settings;
 
@@ -34,8 +34,6 @@ public sealed partial class SettingsWindow : WindowEx
         this.Settings = Settings;
         this.InitializeComponent();
         ExtendsContentIntoTitleBar = true;
-        MicaHelper Mica = new();
-        Mica.TrySetMicaBackdrop(this);
         SetTitleBar(AppTitleBar);
     }
 }

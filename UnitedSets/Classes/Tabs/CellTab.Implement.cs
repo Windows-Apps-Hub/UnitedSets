@@ -10,6 +10,8 @@ using WinUI3HwndHostPlus;
 using UnitedSets.Windows;
 using UnitedSets.Windows.Flyout;
 using UnitedSets.Windows.Flyout.Modules;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -55,15 +57,19 @@ partial class CellTab
     }
 
     // UI
-    protected override void OnDoubleClick()
+    protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
     {
-		DoShowFlyout(new MultiWindowModifyFlyoutModule(
-				(
-					from x in MainCell.AllSubCells
-					where x.HasWindow
-					select x.CurrentCell
-				).ToArray()
-			)
-		);
+		DoShowFlyout(
+                new MultiWindowModifyFlyoutModule(
+				    (
+					    from x in MainCell.AllSubCells
+					    where x.HasWindow
+					    select x.CurrentCell
+				    ).ToArray()
+                ),
+                args.GetPosition(sender),
+                sender,
+                args.PointerDeviceType
+        );
     }
 }

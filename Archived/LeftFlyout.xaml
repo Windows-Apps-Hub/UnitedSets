@@ -1,0 +1,33 @@
+<windows:MicaWindow
+    x:Class="UnitedSets.Windows.Flyout.LeftFlyout"
+    xmlns:WinUIEx="using:WinUIEx"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:icons="using:Cube.UI.Icons"
+    xmlns:windows="using:UnitedSets.Windows"
+    IsResizable="False"
+    IsMaximizable="False"
+    IsMinimizable="False"
+    IsTitleBarVisible="False"
+    IsAlwaysOnTop="True"
+    xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
+    mc:Ignorable="d" Width="450" Height="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Canvas.ZIndex="99">
+            <TextBlock Margin="16, 16,0, 0" Text="{x:Bind HeaderText, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" IsHitTestVisible="False"/>
+            <Button Style="{ThemeResource CloseButton}" Click="CloseClick" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        </Grid>
+        <ScrollViewer x:Name="ScrollViewer" VerticalScrollMode="Enabled" HorizontalScrollMode="Disabled" Grid.Row="1" Margin="16" Canvas.ZIndex="0">
+            <StackPanel x:Name="ModuleContainer" Spacing="8">
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</windows:MicaWindow>

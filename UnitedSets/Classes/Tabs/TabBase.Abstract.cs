@@ -6,6 +6,8 @@ using WinWrapper;
 using Windows.Win32.Graphics.Gdi;
 using Microsoft.UI.Xaml.Input;
 using EasyCSharp;
+using Microsoft.UI.Xaml;
+using Window = WinWrapper.Window;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -28,5 +30,5 @@ partial class TabBase
     public virtual void UpdateStatusLoop() { }
 
     [Event(typeof(DoubleTappedEventHandler), Name = "TabDoubleTapped", Visibility = GeneratorVisibility.Public)]
-    protected virtual void OnDoubleClick() { }
+    protected virtual void OnDoubleClick([CastFrom(typeof(object))] UIElement sender, DoubleTappedRoutedEventArgs args) { }
 }

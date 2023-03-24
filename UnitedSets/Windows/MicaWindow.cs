@@ -14,13 +14,14 @@ namespace UnitedSets.Windows;
 
 public partial class MicaWindow : WindowEx
 {
-    readonly static bool IsMicaInfinite = true;
+    readonly bool IsMicaInfinite;
     WindowsSystemDispatcherQueueHelper? m_wsdqHelper;
     MicaController? m_micaController;
     SystemBackdropConfiguration? m_configurationSource;
 
-    public MicaWindow()
+    public MicaWindow(bool IsMicaInfinite)
     {
+        this.IsMicaInfinite = IsMicaInfinite;
         TrySetMicaBackdrop();
     }
     bool TrySetMicaBackdrop()

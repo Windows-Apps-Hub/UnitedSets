@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Markup;
 using OutOfBoundsFlyout.ScreenHelper;
+using WinUIEx;
 
 namespace OutOfBoundsFlyout;
 
@@ -59,6 +60,11 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
                 var bounds = element.GetBoundsRelativeToScreen(window);
                 var scale = window.GetScale();
                 var cursorPos = e.GetPosition(element);
+
+                bounds.X += 8;
+                bounds.Y += WinWrapper.Window
+                        .FromWindowHandle(window.GetWindowHandle()).IsMaximized ? 8 : 0;
+
                 await OutOfBoundsFlyoutSystem.ShowAsync(
                     flyout.Flyout!,
                     new((int)(bounds.X + cursorPos._x * scale), (int)(bounds.Y + cursorPos._y * scale)),
@@ -80,6 +86,11 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             var bounds = element.GetBoundsRelativeToScreen(window);
             var scale = window.GetScale();
             var cursorPos = e.GetPosition(element);
+
+            bounds.X += 8;
+            bounds.Y += WinWrapper.Window
+                    .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
+
             _ = OutOfBoundsFlyoutSystem.ShowAsync(
                 flyout.Flyout!,
                 new((int)(bounds.X + cursorPos._x * scale), (int)(bounds.Y + cursorPos._y * scale)),
@@ -102,6 +113,11 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             var bounds = element.GetBoundsRelativeToScreen(window);
             var scale = window.GetScale();
             var cursorPos = e.GetPosition(element);
+
+            bounds.X += 8;
+            bounds.Y += WinWrapper.Window
+                    .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
+
             _ = OutOfBoundsFlyoutSystem.ShowAsync(
                 flyout.Flyout!,
                 new((int)(bounds.X + cursorPos._x * scale), (int)(bounds.Y + cursorPos._y * scale)),
@@ -120,6 +136,11 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             if (window.Content?.XamlRoot != element.XamlRoot) continue;
             var bounds = element.GetBoundsRelativeToScreen(window);
             var scale = window.GetScale();
+
+            bounds.X += 8;
+            bounds.Y += WinWrapper.Window
+                    .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
+
             _ = OutOfBoundsFlyoutSystem.ShowAsync(
                 flyout,
                 new((int)(bounds.X + bounds.Width / 2), (int)(bounds.Y + bounds.Height / 2)),

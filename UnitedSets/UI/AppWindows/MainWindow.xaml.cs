@@ -17,6 +17,7 @@ using System.Linq;
 using System.Collections.Generic;
 using TransparentWinUIWindowLib;
 using OutOfBoundsFlyout;
+using UnitedSets.Helpers;
 
 namespace UnitedSets.UI.AppWindows;
 

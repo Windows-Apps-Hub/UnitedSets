@@ -29,7 +29,7 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
 
         IsResizable = false;
         IsTitleBarVisible = false;
-        IsAlwaysOnTop = true;
+
         WindowContent = swapChainPanel;
         Window = Window.FromWindowHandle(this.GetWindowHandle());
 
@@ -40,6 +40,7 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
 
     public void Dispose()
     {
+        Close();
         trans_mgr.Cleanup();
     }
     FlyoutBase? CurrentFlyout;
@@ -92,6 +93,7 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
             while (Opening) { await Task.Delay(100); }
             goto EndLoop;
         }
+        Window.SetTopMost();
         while (Opening)
         {
             var startTick = Environment.TickCount;

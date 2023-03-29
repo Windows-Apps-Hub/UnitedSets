@@ -32,7 +32,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(RoutedEventHandler))]
     void SetTabsAside()
     {
-        
+        if (MainWindow is null) return;
         var tabgroup = new TabGroup($"Tabs {DateTime.Now:hh:mm:ss}");
 		var tabs = MainWindow.GetTabsAndClear();
 		foreach (var tab in tabs)
@@ -48,6 +48,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(RoutedEventHandler))]
     void ShowOnWindow([CastFrom(typeof(object))] FrameworkElement sender)
     {
+        if (MainWindow is null) return;
         if (sender.Tag is not TabBase tab) return;
         MainWindow.AddTab(tab);
         if (TabGroupListView.SelectedItem is TabGroup TabGroup)
@@ -56,6 +57,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(RoutedEventHandler))]
     void ShowGroupOnWindow([CastFrom(typeof(object))] FrameworkElement sender)
     {
+        if (MainWindow is null) return;
         if (sender.Tag is not TabGroup tabgroup) return;
         MainWindow.HiddenTabs.Remove(tabgroup);
         foreach (var tab in tabgroup.Tabs)
@@ -168,6 +170,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(DragEventHandler))]
     void OnDropItemOverTabListView(DragEventArgs e)
     {
+        if (MainWindow is null) return;
         const string UnitedSetsTabWindowDragProperty = MainWindow.UnitedSetsTabWindowDragProperty;
 
 		if (!e.DataView.Properties.TryGetValue(UnitedSetsTabWindowDragProperty, out var _a) || _a is long a == false)

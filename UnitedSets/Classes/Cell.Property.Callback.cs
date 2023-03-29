@@ -16,8 +16,6 @@ partial class Cell
                 CurrentCell = null;
             };
 			_CurrentCell.SetVisible(IsVisible, false);
-			
-
         }
     }
 

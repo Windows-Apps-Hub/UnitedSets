@@ -252,7 +252,7 @@ namespace TransparentWinUIWindowLib {
 			_apw = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(myWndId);
 
 			_presenter = _apw.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
-			_presenter.IsResizable = true;
+			//_presenter.IsResizable = true;
 			_presenter.SetBorderAndTitleBar(false, false);
 
 			// Update for Windows 11 from michalleptuch comment

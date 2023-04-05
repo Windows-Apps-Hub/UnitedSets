@@ -17,14 +17,24 @@ using UnitedSets.Classes.Tabs;
 namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespace as most things wont need to access these classes
 	public class StartingResults {
 		public class StartItem {
-			public Cell cell;
-			public TabBase tab;
-			public bool NeedNewTab;
+			public Cell? cell;
+			public TabBase? tab;
+			public List<Action<TabBase>> OnTabCreated=new();
+			/// <summary>
+			/// null no tab at all, false = use currenty tab, true = new tab
+			/// </summary>
+			public bool? NeedNewTab;
 			public ProcessStartInfo startInfo;
 			public int? ExtraWaitMS;
 			public SavedCellData loadData;
 			public Process running;
 			public OurHwndHost hwndHost;
+			
+		}
+		public StartItem CurBuildItem=new();
+		public void AddCurBuildItemCreateNext() {
+			items.Add(CurBuildItem);
+			CurBuildItem = new();
 		}
 		public List<StartItem> items = new();
 	}

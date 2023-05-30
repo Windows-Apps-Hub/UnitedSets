@@ -40,7 +40,7 @@ namespace UnitedSets.UI.AppWindows;
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
     TabBase? SelectedTabCache;
-    public System.Drawing.Rectangle CacheMiddleAreaBounds { get; set; }
+    System.Drawing.Rectangle CacheMiddleAreaBounds;
 
     // UI Thread
     [Event(typeof(TypedEventHandler<DispatcherQueueTimer, object>))]
@@ -56,40 +56,39 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (double.IsNaN(TabViewSizer.Width) && TabViewSizer.ActualWidth != 0)
             TabViewSizer.Width = TabViewSizer.ActualWidth - 1;
         else TabViewSizer.Width = double.NaN;
-		
+
     }
 
-	private Task UIRunAsync(Action action) => DispatcherQueue.EnqueueAsync(action);
-	private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(()=>collection.Remove(item));
+    private Task UIRunAsync(Action action) => DispatcherQueue.EnqueueAsync(action);
+    private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(() => collection.Remove(item));
     // Different Thread
-	async void OnLoopCalled()
+    async void OnLoopCalled()
     {
         WindowEx.SetOverlayIconPtr(new(SelectedTabCache?.Windows.FirstOrDefault().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
 
         var HasOwner = this.HasOwner;
-        if (_HasOwner != HasOwner)
+        if (cacheHasOwner != HasOwner)
         {
-            _HasOwner = HasOwner;
+            cacheHasOwner = HasOwner;
             DispatcherQueue.TryEnqueue(delegate
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasOwner)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SettingsButtonVisibility)));
+                _PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasOwner)));
             });
         }
-        foreach (var Tab in Tabs.ToArray())
+        foreach (var Tab in Tabs.ToArray() /* Cache */)
         {
             if (Tab.IsDisposed)
-				await UIRemoveFromCollection(Tabs, Tab);
-            }
+                await UIRemoveFromCollection(Tabs, Tab);
+        }
         foreach (var TabGroup in HiddenTabs.ToArray())
         {
             foreach (var Tab in TabGroup.Tabs.ToArray())
             {
                 if (Tab.IsDisposed)
-					await UIRemoveFromCollection(TabGroup.Tabs, Tab);
+                    await UIRemoveFromCollection(TabGroup.Tabs, Tab);
             }
             if (TabGroup.Tabs.Count == 0)
-				await UIRemoveFromCollection(HiddenTabs, TabGroup);
+                await UIRemoveFromCollection(HiddenTabs, TabGroup);
         }
         {
             static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)
@@ -136,7 +135,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 return false;
             }
-            (CellTab? tab, Cell ? cell) DetectCell()
+            (CellTab? tab, Cell? cell) DetectCell()
             {
                 var cursorPos = Cursor.Position;
                 var windowBounds = WindowEx.Bounds;
@@ -157,13 +156,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         }
                     }
                 }
-                return (null,null);
+                return (null, null);
             }
             if (Cursor.IsLeftButtonDown && Keyboard.IsControlDown)
             {
                 WindowEx OtherWindowDragging = default;
                 Cell? SelectedCell = null;
-				CellTab? SelectedCellTab = null;
+                CellTab? SelectedCellTab = null;
                 do
                 {
                     var foregroundWindow = WindowEx.ForegroundWindow;
@@ -186,7 +185,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                             else if (UpdateHoverToTrue || (SelectedCell is not null && NewCell is null))
                                 DispatcherQueue.TryEnqueue(() => WindowHoveringStoryBoard.Begin());
                             SelectedCell = NewCell;
-							SelectedCellTab = NewTab;
+                            SelectedCellTab = NewTab;
                             OtherWindowDragging = foregroundWindow;
                         }
                         else
@@ -194,7 +193,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                             if (SelectedCell is not null)
                                 SelectedCell.HoverEffect = false;
                             SelectedCell = null;
-							SelectedCellTab = null;
+                            SelectedCellTab = null;
                             if (OtherWindowDragging != default)
                                 DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
                             OtherWindowDragging = default;
@@ -215,7 +214,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                         if (SelectedCell is not null)
                         {
                             SelectedCell.HoverEffect = false;
-                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(new OurHwndHost(SelectedCellTab!,this, window)));
+                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(new OurHwndHost(SelectedCellTab!, this, window)));
                         }
                         else DispatcherQueue.TryEnqueue(() => AddTab(window));
                     }

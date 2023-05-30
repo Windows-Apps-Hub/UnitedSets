@@ -19,14 +19,20 @@
         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
         Padding="8">
-			<StackPanel Spacing="8" Margin="6,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-				<StackPanel.Resources>
+			<StackPanel Margin="6,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Spacing="8" -->
+                <StackPanel.Resources>
 					<Style TargetType="Button">
 						<Setter Property="VerticalAlignment" Value="Center" />
 						<Setter Property="Padding" Value="5" />
 					</Style>
 				</StackPanel.Resources>
-				<Button ToolTipService.ToolTip="App Settings" Click="{x:Bind MainWindow.Settings.LaunchSettings}" Style="{ThemeResource ToolbarButton}">
+				<Button
+                    ToolTipService.ToolTip="App Settings"
+                    Click="{x:Bind Settings.LaunchSettings}"
+                    Style="{ThemeResource ToolbarButton}"
+                    Visibility="{x:Bind InverseBoolVisibility(MainWindow.HasOwner), Mode=OneWay}"
+                >
 					<SymbolIcon Symbol="Setting" />
 				</Button>
 				<!--<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.LayoutManagerToggle}" Style="{ThemeResource ToolbarButton}">

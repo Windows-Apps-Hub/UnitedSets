@@ -4,6 +4,7 @@ using WindowEx = WinWrapper.Window;
 using UnitedSets.Helpers;
 using WinWrapper;
 using Microsoft.UI.Dispatching;
+using UnitedSets.UI.Popups;
 
 namespace UnitedSets.Classes.Tabs;
 

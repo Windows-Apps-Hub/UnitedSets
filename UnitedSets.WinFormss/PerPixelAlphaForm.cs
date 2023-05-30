@@ -22,13 +22,13 @@ public class PerPixelAlphaForm : Form {
 
     public unsafe void SetBitmap(Bitmap bitmap, byte opacity = 255) {
         HDC screenDc = PInvoke.GetDC(default);
-        CreatedHDC memDc = PInvoke.CreateCompatibleDC(screenDc);
+        HDC memDc = PInvoke.CreateCompatibleDC(screenDc);
         HBITMAP hBitmap = default;
         HBITMAP oldBitmap = default;
 
         try {
             hBitmap = (HBITMAP)bitmap.GetHbitmap(Color.FromArgb(0));  // grab a GDI handle from this GDI+ bitmap
-            oldBitmap = (HBITMAP)PInvoke.SelectObject((HDC)memDc.Value, (HGDIOBJ)hBitmap.Value).Value;
+            oldBitmap = (HBITMAP)PInvoke.SelectObject(memDc, (HGDIOBJ)hBitmap.Value).Value;
 
             SIZE size = new(Width, Height);
             Point pointSource = new(0, 0);
@@ -45,7 +45,7 @@ public class PerPixelAlphaForm : Form {
                 screenDc,
                 &topPos,
                 &size,
-                (HDC)memDc.Value,
+                memDc,
                 &pointSource,
                 new(0),
                 &blend,
@@ -65,12 +65,12 @@ public class PerPixelAlphaForm : Form {
     public unsafe void SetBitmap(HBITMAP hBitmap, byte opacity = 255)
     {
         HDC screenDc = PInvoke.GetDC(default);
-        CreatedHDC memDc = PInvoke.CreateCompatibleDC(screenDc);
+        HDC memDc = PInvoke.CreateCompatibleDC(screenDc);
         HBITMAP oldBitmap = default;
 
         try
         {
-            oldBitmap = (HBITMAP)PInvoke.SelectObject((HDC)memDc.Value, (HGDIOBJ)hBitmap.Value).Value;
+            oldBitmap = (HBITMAP)PInvoke.SelectObject(memDc, (HGDIOBJ)hBitmap.Value).Value;
 
             SIZE size = new(Width, Height);
             Point pointSource = new(0, 0);
@@ -88,7 +88,7 @@ public class PerPixelAlphaForm : Form {
                 screenDc,
                 &topPos,
                 &size,
-                (HDC)memDc.Value,
+                memDc,
                 &pointSource,
                 new(0),
                 &blend,
@@ -100,7 +100,7 @@ public class PerPixelAlphaForm : Form {
             PInvoke.ReleaseDC(default, screenDc);
             if (hBitmap != IntPtr.Zero)
             {
-                PInvoke.SelectObject((HDC)memDc.Value, (HGDIOBJ)oldBitmap.Value);
+                PInvoke.SelectObject(memDc, (HGDIOBJ)oldBitmap.Value);
                 //Windows.DeleteObject(hBitmap); // The documentation says that we have to use the Windows.DeleteObject... but since there is no such method I use the normal DeleteObject from Win32 GDI and it's working fine without any resource leak.
                 PInvoke.DeleteObject((HGDIOBJ)hBitmap.Value);
             }

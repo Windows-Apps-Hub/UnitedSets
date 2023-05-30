@@ -13,11 +13,17 @@ using Window = WinWrapper.Window;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
+using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyChanged
 {
+    // Singleton
+    readonly SettingsService Settings =
+        App.Current.Services.GetService<SettingsService>() ??
+        throw new InvalidOperationException();
     [AutoNotifyProperty]
     MainWindow? _MainWindow;
 #pragma warning disable CS0067
@@ -194,7 +200,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
         TabBase? tabValue;
 		if (window.Owner != MainWindow.WindowEx) {
 			var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
-			tabValue = MainWindow.JustCreateTab(window);
+			tabValue = MainWindow.CreateHwndHostTab(window);
 		} else {
 			tabValue = MainWindow.FindTabByWindow(window);
 			if (tabValue != null)
@@ -211,4 +217,9 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
 			tabgroup.Tabs.Insert(finalIdx.Value, tabValue);
 		else tabgroup.Tabs.Add(tabValue);
 	}
+
+
+    // UI Function
+    Visibility InverseBoolVisibility(bool boolean)
+        => boolean ? Visibility.Collapsed : Visibility.Visible;
 }

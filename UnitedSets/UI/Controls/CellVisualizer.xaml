@@ -47,7 +47,7 @@
                                 <SymbolIcon Symbol="Add"/>
                             </Button>
                             <TextBlock Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" Text="{x:Bind CellAddCountAsString, Mode=OneWay}"/>
-                            <Button Grid.Column="3" Padding="5" Click="{x:Bind SubtractCellAddCountCommand}">
+                            <Button Grid.Column="3" Padding="5" Command="{x:Bind SubtractCellAddCountCommand}">
                                 <SymbolIcon Symbol="Remove"/>
                             </Button>
                         </Grid>

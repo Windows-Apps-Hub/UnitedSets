@@ -18,6 +18,7 @@ using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
+using System.Runtime.CompilerServices;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -32,22 +33,24 @@ partial class MainWindow
         if (FeatureFlags.UseTransparentWindow)
             SetupTransparent(out trans_mgr);
 
-        SetupNative(out WindowEx, out WindowMessageMonitor);
+        SetupNative(out Win32Window, out WindowMessageMonitor);
 
         RegisterWindow();
 
-        SetupEvent(out timer);
+        SetupEvent();
+
+        SetupUIThreadLoopTimer(out timer);
 
         ApplyFlags();
 
         // Implementation
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void RegisterWindow()
         {
             AttachedOutOfBoundsFlyout.RegisterWindow(this);
-            TabBase.MainWindows.Add(WindowEx);
+            TabBase.MainWindows.Add(Win32Window);
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupBasicWindow()
         {
             Title = "UnitedSets";
@@ -55,7 +58,7 @@ partial class MainWindow
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(CustomDragRegion);
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupTransparent(out TransparentWindowManager trans_mgr)
         {
             WindowBorderOnTransparent.Visibility = Visibility.Visible;
@@ -64,29 +67,24 @@ partial class MainWindow
             trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
             trans_mgr.AfterInitialize();
         }
-
-        void SetupEvent(out DispatcherQueueTimer timer)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void SetupEvent()
         {
             AppWindow.Closing += OnWindowClosing;
             // Activated += FirstRun;
             SizeChanged += OnMainWindowResize;
             CustomDragRegionUpdator.EffectiveViewportChanged += OnCustomDragRegionUpdatorCalled;
             WindowMessageMonitor.WindowMessageReceived += OnWindowMessageReceived;
-            TabBase.OnUpdateStatusLoopComplete += OnLoopCalled;
-            Cell.ValidDrop += Cell_ValidDrop;
-
-            timer = DispatcherQueue.CreateTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(500);
-            timer.Tick += OnTimerLoopTick;
-            timer.Start();
+            TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
+            Cell.ValidDrop += CellWindowDropped;
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupNative(out Window WindowEx, out WindowMessageMonitor WindowMessageMonitor)
         {
             WindowEx = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
             WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void ApplyFlags()
         {
             static bool IsProcessNotExited(System.Diagnostics.Process proc)
@@ -138,10 +136,18 @@ partial class MainWindow
         );
         bool success = false;
         icon.DangerousAddRef(ref success);
-        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
-        PInvoke.SendMessage(WindowEx.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+        PInvoke.SendMessage(Win32Window.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
+        PInvoke.SendMessage(Win32Window.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
 
         if (Keyboard.IsShiftDown)
-            WindowEx.SetAppId($"UnitedSets {WindowEx.Handle}");
+            Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private partial void SetupUIThreadLoopTimer(out DispatcherQueueTimer timer)
+    {
+        timer = DispatcherQueue.CreateTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(500);
+        timer.Tick += OnUIThreadTimerLoop;
+        timer.Start();
     }
 }

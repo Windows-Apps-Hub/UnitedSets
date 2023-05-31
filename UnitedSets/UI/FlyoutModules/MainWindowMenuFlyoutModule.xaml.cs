@@ -157,14 +157,14 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (args.Items.Count is not 0) return;
         if (args.Items[0] is HwndHostTab item)
-            args.Data.Properties.Add(MainWindow.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
     }
 
 
     [Event(typeof(DragEventHandler))]
     void OnDragItemOverTabListView(DragEventArgs e)
     {
-        if (e.DataView.Properties.ContainsKey(MainWindow.UnitedSetsTabWindowDragProperty))
+        if (e.DataView.Properties.ContainsKey(Constants.UnitedSetsTabWindowDragProperty))
             e.AcceptedOperation = DataPackageOperation.Move;
     }
 #pragma warning restore CA1822 // Mark members as static
@@ -177,7 +177,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     void OnDropItemOverTabListView(DragEventArgs e)
     {
         if (MainWindow is null) return;
-        const string UnitedSetsTabWindowDragProperty = MainWindow.UnitedSetsTabWindowDragProperty;
+        const string UnitedSetsTabWindowDragProperty = Constants.UnitedSetsTabWindowDragProperty;
 
 		if (!e.DataView.Properties.TryGetValue(UnitedSetsTabWindowDragProperty, out var _a) || _a is long a == false)
 			return;
@@ -198,8 +198,8 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
             select (int?)index
         ).FirstOrDefault();
         TabBase? tabValue;
-		if (window.Owner != MainWindow.WindowEx) {
-			var ret = PInvoke.SendMessage(window.Owner, MainWindow.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+		if (window.Owner != MainWindow.Win32Window) {
+			var ret = PInvoke.SendMessage(window.Owner, Constants.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
 			tabValue = MainWindow.CreateHwndHostTab(window);
 		} else {
 			tabValue = MainWindow.FindTabByWindow(window);

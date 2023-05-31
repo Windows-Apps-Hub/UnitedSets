@@ -7,14 +7,26 @@ using Windows.Win32;
 using Window = WinWrapper.Window;
 using EasyCSharp;
 using UnitedSets.UI.AppWindows;
+using CommunityToolkit.Mvvm.Input;
+
 namespace UnitedSets.Classes;
 partial class Cell
 {
+    [RelayCommand]
+    public partial void AddCellAddCount();
+    [RelayCommand]
+    public partial void SubtractCellAddCount();
+    [Event(typeof(RoutedEventHandler), Name = "SplitVerticallyClickEv", Visibility = GeneratorVisibility.Public)]
+    private partial void SplitVerticallyCellAddCount();
+    [Event(typeof(RoutedEventHandler), Name = "SplitHorizontallyClickEv", Visibility = GeneratorVisibility.Public)]
+    private partial void SplitHorizontallyCellAddCount();
+
+
     [Event(typeof(DragEventHandler), Name = "DragOverEv")]
     public void OnDragOver(DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty || !e.DataView.Properties.ContainsKey(MainWindow.UnitedSetsTabWindowDragProperty)) return;
+        if (!Empty || !e.DataView.Properties.ContainsKey(Constants.UnitedSetsTabWindowDragProperty)) return;
         e.AcceptedOperation = DataPackageOperation.Move;
     }
 
@@ -22,7 +34,7 @@ partial class Cell
     public void OnItemDrop(DragEventArgs e)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty || !e.DataView.Properties.TryGetValue(MainWindow.UnitedSetsTabWindowDragProperty, out var _a) || _a is long hwnd == false)
+        if (!Empty || !e.DataView.Properties.TryGetValue(Constants.UnitedSetsTabWindowDragProperty, out var _a) || _a is long hwnd == false)
 			return;
 		ValidDrop?.Invoke(this, new ValidItemDropArgs(hwnd));
 
@@ -33,16 +45,14 @@ partial class Cell
 	}
 	public static event EventHandler<ValidItemDropArgs>? ValidDrop;
 
-	[Event(typeof(RoutedEventHandler), Name = "AddCellAddCountClickEv")]
-    public void AddCellAddCount()
+	public partial void AddCellAddCount()
     {
         CellAddCount += 1;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCount)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
     }
 
-    [Event(typeof(RoutedEventHandler), Name = "SubtractCellAddCountClickEv")]
-    public void SubtractCellAddCount()
+    public partial void SubtractCellAddCount()
     {
         if (CellAddCount <= 2) return;
         CellAddCount -= 1;
@@ -50,15 +60,9 @@ partial class Cell
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CellAddCountAsString)));
     }
 
-    [Event(typeof(RoutedEventHandler), Name = "SplitVerticallyClickEv", Visibility = GeneratorVisibility.Public)]
-    void SplitVerticallyCellAddCount()
-    {
-        SplitVertically(CellAddCount);
-    }
+    private partial void SplitVerticallyCellAddCount()
+        => SplitVertically(CellAddCount);
 
-    [Event(typeof(RoutedEventHandler), Name = "SplitHorizontallyClickEv", Visibility = GeneratorVisibility.Public)]
-    void SplitHorizontallyCellAddCount()
-    {
-        SplitHorizontally(CellAddCount);
-    }
+    private partial void SplitHorizontallyCellAddCount()
+        => SplitHorizontally(CellAddCount);
 }

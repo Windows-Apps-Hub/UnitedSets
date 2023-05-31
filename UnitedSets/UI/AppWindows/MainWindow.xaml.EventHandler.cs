@@ -78,5 +78,5 @@ public sealed partial class MainWindow
     #endregion
 
     [Event(typeof(TypedEventHandler<object?, Cell.ValidItemDropArgs>))]
-    private partial void Cell_ValidDrop([Cast] Cell cell, Cell.ValidItemDropArgs e);
+    private partial void CellWindowDropped([Cast] Cell cell, Cell.ValidItemDropArgs e);
 }

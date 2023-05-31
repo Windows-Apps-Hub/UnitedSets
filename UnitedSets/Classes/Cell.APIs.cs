@@ -1,79 +1,45 @@
 using Microsoft.UI.Xaml.Controls;
-using System.ComponentModel;
 using System.Linq;
 using System;
-using Window = WinWrapper.Window;
 using EasyCSharp;
-using WinUI3HwndHostPlus;
 using UnitedSets.UI.AppWindows;
+
 namespace UnitedSets.Classes;
 partial class Cell
 {
-    public void RegisterWindow(OurHwndHost host)
-    {
-        // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) throw new InvalidOperationException();
-        CurrentCell = host;
-    }
+    /// <summary>
+    /// Registers the HwndHost as the current cell
+    /// </summary>
+    /// <param name="host">The HwndHost to register</param>
+    /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
+    public partial void RegisterHwndHost(OurHwndHost host);
 
-    public void SplitHorizontally(int Amount)
-    {
-        if (!Empty) throw new InvalidOperationException();
-        Orientation = Orientation.Vertical;
-        SubCells = CraeteNCells(Amount);
-    }
-    
-    public void SplitVertically(int Amount)
-    {
-        // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) throw new InvalidOperationException();
-        Orientation = Orientation.Horizontal;
-        SubCells = CraeteNCells(Amount);
-    }
-    
-    Cell[] CraeteNCells(int Amount)
-    {
-        return (from _ in 0..Amount select new Cell(null, null, default)).ToArray();
-    }
+    /// <summary>
+    /// Splits the cell horizontally
+    /// </summary>
+    /// <param name="Amount">The amount of children cells</param>
+    /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
+    public partial void SplitHorizontally(int Amount);
 
-    //public Cell DeepClone(MainWindow NewWindow)
-    //{
-    //    Cell[]? newSubCells =
-    //        SubCells is null ? null :
-    //        (from x in SubCells select x.DeepClone(NewWindow)).ToArray();
-    //    HwndHost? hwndHost =
-    //        CurrentCell is null ? null
-    //        : new HwndHost(NewWindow, CurrentCell.HostedWindow);
-    //    Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
-    //    return cell;
-    //}
+    /// <summary>
+    /// Splits the cell vertically
+    /// </summary>
+    /// <param name="Amount">The amount of children cells</param>
+    /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
+    public partial void SplitVertically(int Amount);
 
-    public (Cell?, double renamining) GetChildFromPosition(double normalizedPosition)
-    {
-        if (SubCells is null) return (null, 0);
-        var RSes = SubCells.Select(x => (x, x.RelativeSize)).ToArray();
-        var RStotal = RSes.Sum(x => x.RelativeSize);
-        var posInRSScale = normalizedPosition * RStotal;
-        foreach (var (cell, rs) in RSes)
-        {
-            if (posInRSScale < rs) return (cell, posInRSScale / RStotal);
-            posInRSScale -= rs;
-        }
-        return (null, 0);
-    }
+    public partial (Cell?, double renamining) GetChildFromPosition(double normalizedPosition);
 
-    public (double In1, double In2) TranslatePositionFromChild((double In1, double In2) a, Cell childCell)
-    {
-        if (SubCells is null) return a;
-        var RSes = SubCells.Select(x => (x, x.RelativeSize)).ToArray();
-        var RStotal = RSes.Sum(x => x.RelativeSize);
-        var front = 0d;
-        foreach (var (cell, rs) in RSes)
-        {
-            if (cell == childCell) return (front / RStotal + a.In1, front / RStotal + a.In2);
-            front += rs;
-        }
-        return a;
-    }
+    public partial (double In1, double In2) TranslatePositionFromChild((double In1, double In2) a, Cell childCell);
 
+    /// <summary>
+    /// Clones the current cell for the specified window
+    /// </summary>
+    /// <param name="NewWindow">The window new cell is refering to</param>
+    /// <returns>The cloned cells</returns>
+    /// <exception cref="NotImplementedException">Always throw</exception>
+    [Obsolete("Not implemented", error:  true)]
+    public partial Cell DeepClone(MainWindow NewWindow);
+
+    private static partial Cell[] CraeteNCells(int Amount);
 }

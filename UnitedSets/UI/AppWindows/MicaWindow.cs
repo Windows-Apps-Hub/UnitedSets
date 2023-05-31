@@ -8,17 +8,16 @@ using WinUIEx;
 using UnitedSets.Helpers;
 using Windows.Foundation;
 using EasyCSharp;
-
+using Microsoft.UI.Xaml.Media;
 
 namespace UnitedSets.UI.AppWindows;
 
 public partial class MicaWindow : WindowEx
 {
     readonly bool IsMicaInfinite;
-    WindowsSystemDispatcherQueueHelper? m_wsdqHelper;
     MicaController? m_micaController;
     SystemBackdropConfiguration? m_configurationSource;
-
+    
     public MicaWindow(bool IsMicaInfinite)
     {
         this.IsMicaInfinite = IsMicaInfinite;
@@ -28,8 +27,7 @@ public partial class MicaWindow : WindowEx
     {
         if (MicaController.IsSupported())
         {
-            m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
-            m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
+            WindowsSystemDispatcherQueueHelper.EnsureWindowsSystemDispatcherQueueController();
 
             // Hooking up the policy object
             m_configurationSource = new SystemBackdropConfiguration();

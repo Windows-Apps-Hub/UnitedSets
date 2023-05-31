@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace UnitedSets.Helpers;
 
-static class ImageHelper
+static class ImageExtension
 {
-    public async static ValueTask<BitmapImage> ImageFromBitmap(Bitmap bmp)
+    public async static ValueTask<BitmapImage> ToXAMLBitmapImageAsync(this Bitmap bmp)
     {
         using var ms = new MemoryStream();
         bmp.MakeTransparent(Color.Black);
         bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-        return await ImageFromStream(ms);
+        return await ms.ToXAMLBitmapImageAsync();
     }
-    public async static ValueTask<BitmapImage> ImageFromStream(Stream Stream)
+    public async static ValueTask<BitmapImage> ToXAMLBitmapImageAsync(this Stream Stream)
     {
         var image = new BitmapImage();
 

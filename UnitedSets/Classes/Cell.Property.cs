@@ -10,7 +10,7 @@ partial class Cell
 
     [AutoNotifyProperty(OnChanged = nameof(OnCurrentCellChanged))]
     OurHwndHost? _CurrentCell;
-
+    
     [AutoNotifyProperty(OnChanged = nameof(OnSubCellsUpdate))]
     Cell[]? _SubCells;
 

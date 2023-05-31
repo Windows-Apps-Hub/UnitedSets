@@ -68,22 +68,22 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 			return null;
 		if (newWindow.Handle == AddTabPopup.GetWindowHandle())
 			return null;
-		if (newWindow.Handle == WindowEx.Handle)
+		if (newWindow.Handle == Win32Window.Handle)
 			return null;
 		if (HwndHost.ShouldBeBlacklisted(newWindow))
 			return null;
 		// Check if United Sets has owner (United Sets in United Sets)
-		if (WindowEx.Root.Children.Any(x => x == newWindow))
+		if (Win32Window.Root.Children.Any(x => x == newWindow))
 			return null;
 		if (Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
 			return null;
-		return new HwndHostTab((IHwndHostParent tab) => new OurHwndHost(tab, this, newWindow),DispatcherQueue, newWindow, IsAltTabVisible);
+		return new HwndHostTab((IHwndHostParent tab) => new OurHwndHost(tab, this, newWindow),DispatcherQueue, newWindow, Constants.IsAltTabVisible);
 	}
 
     private partial async Task TimerStop()
     {
         timer.Stop();
-        OnTimerLoopTick();
+        OnUIThreadTimerLoop();
         await Task.Delay(100);
     }
 

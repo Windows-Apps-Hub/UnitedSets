@@ -39,6 +39,7 @@
 		<None Remove="AddTabFlyout.xaml" />
 		<None Remove="Controls\CellVisualizer.xaml" />
 		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+		<None Remove="UI\Controls\HomeBackground.xaml" />
 		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
@@ -97,6 +98,9 @@
 	<ItemGroup>
 		<Page Update="FlyoutModule\MainWindowMenuFlyoutModule.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="UI\Controls\HomeBackground.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="Window\OOBEWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>

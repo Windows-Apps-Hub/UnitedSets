@@ -1,44 +1,39 @@
-using Windows.System;
-using WinRT.Interop;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Windowing;
-using Microsoft.UI;
 using System.Threading.Tasks;
 using WindowEx = WinWrapper.Window;
 using Windows.Win32;
 using WinUIEx;
 using Windows.Graphics;
-using UnitedSets.Helpers;
+using WinWrapper;
 using EasyCSharp;
-using System;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
+
 namespace UnitedSets.UI.Popups;
 
 public sealed partial class AddTabPopup
 {
     public WindowEx Result;
-    readonly KeyboardHelper KeyboardHook = new();
-    const uint VK_TAB = 0x09;
 
     public AddTabPopup() : base(IsMicaInfinite: true)
     {
         InitializeComponent();
-        KeyboardHook.KeyboardPressed += OnKeyPressed;
+        LowLevelKeyboard.KeyPressed += OnKeyPressed;
         this.SetForegroundWindow();
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
+        AppWindow.Closing += (_, _) => LowLevelKeyboard.KeyPressed -= OnKeyPressed;
         this.Hide();
     }
 
-    [Event(typeof(EventHandler<KeyboardHelperEventArgs>))]
-    private void OnKeyPressed(KeyboardHelperEventArgs e)
+    private void OnKeyPressed(KBDLLHOOKSTRUCT eventDetails, KeyboardState state, ref bool Handled)
     {
-        if (e.KeyboardState == KeyboardHelper.KeyboardState.KeyDown)
+        if (state == KeyboardState.KeyDown)
         {
-            if (e.KeyboardData.VirtualCode == VK_TAB && AppWindow.IsVisible)
+            if (eventDetails.vkCode is (uint)VIRTUAL_KEY.VK_TAB && AppWindow.IsVisible)
             {
-				e.Handled = true;//don't pass the tab through
+				Handled = true; //don't pass the tab through
                 PInvoke.GetCursorPos(out var pt);
                 Result = WindowEx.GetWindowFromPoint(pt);
                 this.Hide();

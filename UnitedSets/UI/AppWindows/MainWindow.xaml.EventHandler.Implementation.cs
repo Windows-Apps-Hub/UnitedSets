@@ -57,9 +57,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		}
         else
         {
-            WindowEx.Minimize();
+            Win32Window.Minimize();
             await AddTabPopup.ShowAsync();
-            WindowEx.Restore();
+            Win32Window.Restore();
             var result = AddTabPopup.Result;
             AddTab(result);
         }
@@ -67,7 +67,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     private partial void AddSplitableTab()
     {
-        var newTab = new CellTab(IsAltTabVisible);
+        var newTab = new CellTab(Constants.IsAltTabVisible);
         AddTab(newTab);
         TabView.SelectedItem = newTab;
     }
@@ -75,12 +75,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {
         if (args.Item is HwndHostTab item)
-            args.Data.Properties.Add(UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
     }
 
     private partial void OnDragItemOverTabView(DragEventArgs e)
     {
-        if (e.DataView.Properties?.ContainsKey(UnitedSetsTabWindowDragProperty) == true)
+        if (e.DataView.Properties?.ContainsKey(Constants.UnitedSetsTabWindowDragProperty) == true)
             e.AcceptedOperation = DataPackageOperation.Move;
     }
 
@@ -92,11 +92,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     private partial void OnDropOverTabView(DragEventArgs e)
     {
-        if (e.DataView.Properties.TryGetValue(UnitedSetsTabWindowDragProperty, out var _a) && _a is long a)
+        if (e.DataView.Properties.TryGetValue(Constants.UnitedSetsTabWindowDragProperty, out var _a) && _a is long a)
         {
 
             var window = WindowEx.FromWindowHandle((nint)a);
-            var ret = PInvoke.SendMessage(window.Owner, UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+            var ret = PInvoke.SendMessage(window.Owner, Constants.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
             var pt = e.GetPosition(TabView);
             var finalIdx = (
                 from index in Enumerable.Range(0, Tabs.Count)
@@ -189,7 +189,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         var item = TabView.SelectedItem;
         TabView.SelectedIndex = -1;
         TabView.Visibility = Visibility.Collapsed;
-        WindowEx.Focus();
+        Win32Window.Focus();
         ContentDialogResult result = ContentDialogResult.Primary;
         if (Tabs.Count > 0)
         {
@@ -262,14 +262,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
         }
     }
-    private partial void Cell_ValidDrop(Cell cell, Cell.ValidItemDropArgs e)
+    private partial void CellWindowDropped(Cell cell, Cell.ValidItemDropArgs e)
     {
         if (cell == null)
             throw new Exception("Only cells should be generating this event");
         var window = WindowEx.FromWindowHandle((nint)e.HwndId);
         var ret = PInvoke.SendMessage(
             window.Owner,
-            UnitedSetCommunicationChangeWindowOwnership,
+            Constants.UnitedSetCommunicationChangeWindowOwnership,
             new(),
             new(window)
         );
@@ -277,12 +277,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             Tabs.ToArray().OfType<CellTab>()
             .First(tab => tab._MainCell.AllSubCells.Any(c => c == cell));
 
-        cell.RegisterWindow(new OurHwndHost(tab, this, window));
+        cell.RegisterHwndHost(new OurHwndHost(tab, this, window));
     }
 
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {
-        if (e.Message.MessageId == UnitedSetCommunicationChangeWindowOwnership)
+        if (e.Message.MessageId == Constants.UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
             if (Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)

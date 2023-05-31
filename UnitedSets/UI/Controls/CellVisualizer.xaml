@@ -43,11 +43,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Margin="0,0,8,0"  Text="Number of Cells to Split:" VerticalAlignment="Center"/>
-                            <Button Grid.Column="1" Padding="5" Click="{x:Bind AddCellAddCountClickEv}">
+                            <Button Grid.Column="1" Padding="5" Command="{x:Bind AddCellAddCountCommand}">
                                 <SymbolIcon Symbol="Add"/>
                             </Button>
                             <TextBlock Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" Text="{x:Bind CellAddCountAsString, Mode=OneWay}"/>
-                            <Button Grid.Column="3" Padding="5" Click="{x:Bind SubtractCellAddCountClickEv}">
+                            <Button Grid.Column="3" Padding="5" Click="{x:Bind SubtractCellAddCountCommand}">
                                 <SymbolIcon Symbol="Remove"/>
                             </Button>
                         </Grid>

@@ -35,7 +35,7 @@ public partial class HwndHostTab : TabBase, IHwndHostParent
         if (icon is not null)
         {
             var oldIcon = _BitmapIcon;
-            _IconBmpImg = await ImageHelper.ImageFromBitmap(icon);
+            _IconBmpImg = await icon.ToXAMLBitmapImageAsync();
             _BitmapIcon = icon;
             OnIconChanged();
             oldIcon?.Dispose();

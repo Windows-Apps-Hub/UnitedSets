@@ -79,9 +79,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
     static ((double X1, double Y1, double X2, double Y2), Cell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)
     {
-        if (MainCell.HasWindow)
+        if (MainCell.ContainsWindow)
             return null;
-        if (MainCell.Empty)
+        if (MainCell.IsEmpty)
             return ((0, 0, 1, 1), MainCell);
         static (int Index, double RemainingScaled) ComputeScale(int count, double pos)
         {
@@ -98,7 +98,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         {
             return (scaledRect.In1 / totalCount + idx / totalCount, scaledRect.In2 / totalCount + idx / totalCount);
         }
-        if (MainCell.HasHorizontalSubCells)
+        if (MainCell.ContainsSubCells && MainCell.Orientation is Orientation.Horizontal)
         {
             var count = MainCell.SubCells!.Length;
             var (idx, remaining) = ComputeScale(count, CursorPos.X);
@@ -108,7 +108,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             (Rect.X1, Rect.X2) = ComputeScaleReversed((Rect.X1, Rect.X2), idx, count);
             return (Rect, cell);
         }
-        if (MainCell.HasVerticalSubCells)
+        if (MainCell.ContainsSubCells && MainCell.Orientation is Orientation.Vertical)
         {
             var count = MainCell.SubCells!.Length;
             var (idx, remaining) = ComputeScale(count, CursorPos.Y);

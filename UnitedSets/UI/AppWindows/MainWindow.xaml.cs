@@ -1,19 +1,11 @@
-using EasyCSharp;
-using Microsoft.UI.Windowing;
 using System.Collections.ObjectModel;
-using WinRT.Interop;
-using Microsoft.UI.Xaml;
 using System;
 using WindowEx = WinWrapper.Window;
-using Windows.Win32;
 using UnitedSets.Mvvm.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Classes.Tabs;
-using System.Linq;
-using System.Collections.Generic;
 using TransparentWinUIWindowLib;
 
 namespace UnitedSets.UI.AppWindows;

@@ -1,0 +1,19 @@
+﻿<ContentControl
+    x:Class="UnitedSets.UI.Controls.SettingController"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:settings="using:UnitedSets.Classes.Settings"
+    Content="{x:Bind Setting}"
+>
+    <ContentControl.Resources>
+        <DataTemplate x:Name="OnOffSettingTemplate" x:DataType="settings:OnOffSetting">
+            <ToggleSwitch
+                IsOn="{x:Bind Value, Mode=TwoWay}"
+                Style="{ThemeResource GlowSwitch}"
+                OnContent="On"
+                HorizontalAlignment="Right"
+                OffContent="Off"
+            />
+        </DataTemplate>
+    </ContentControl.Resources>
+</ContentControl>

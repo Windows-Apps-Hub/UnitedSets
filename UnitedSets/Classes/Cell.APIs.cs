@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using EasyCSharp;
 using UnitedSets.UI.AppWindows;
+using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.Classes;
 partial class Cell
@@ -19,6 +20,7 @@ partial class Cell
     /// </summary>
     /// <param name="Amount">The amount of children cells</param>
     /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
+    [RelayCommand]
     public partial void SplitHorizontally(int Amount);
 
     /// <summary>
@@ -26,6 +28,7 @@ partial class Cell
     /// </summary>
     /// <param name="Amount">The amount of children cells</param>
     /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
+    [RelayCommand]
     public partial void SplitVertically(int Amount);
 
     public partial (Cell?, double renamining) GetChildFromPosition(double normalizedPosition);
@@ -42,4 +45,9 @@ partial class Cell
     public partial Cell DeepClone(MainWindow NewWindow);
 
     private static partial Cell[] CraeteNCells(int Amount);
+    /// <summary>
+    /// Invokes PropertyChanged Event with specific property name
+    /// </summary>
+    /// <param name="PropertyName">Property name</param>
+    protected partial void NotifyPropertyChanged(string PropertyName);
 }

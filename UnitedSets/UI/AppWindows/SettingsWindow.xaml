@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
+    xmlns:USsettings="using:UnitedSets.Classes.Settings"
+    xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
     MinWidth="890"
     mc:Ignorable="d">
@@ -42,18 +44,39 @@
         </Border>
         <ScrollViewer x:Name="SettingsPanel">
             <Grid>
-                <StackPanel x:Name="SettingsGrid" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="100, 50, 300, 100">
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="100, 50, 300, 100">
                     <StackPanel Margin="4, 4, 4, 24" Orientation="Horizontal">
                         <TextBlock FontSize="24" FontWeight="SemiBold">United Sets</TextBlock>
                         <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7">Preview</TextBlock>
                     </StackPanel>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 24, 4, 4">Options</TextBlock>
-                    <settings:SettingsBlockControl Title="Exit window" Margin="2" Description="Exits the window when closing a tab">
-                        <settings:SettingsBlockControl.Icon>
-                            <icons:FluentIconElement VerticalAlignment="Center" Symbol="Delete24"/>
-                        </settings:SettingsBlockControl.Icon>
-                        <ToggleSwitch IsOn="{x:Bind Settings.ExitOnClose, Mode=TwoWay}" Style="{ThemeResource GlowSwitch}" OnContent="On" HorizontalAlignment="Right" OffContent="Off"/>
-                    </settings:SettingsBlockControl>
+                    <ItemsControl ItemsSource="{x:Bind Settings.AllSettings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="USsettings:Setting">
+                                <settings:SettingsBlockControl
+                                xmlns:helpers="using:UnitedSets.Helpers"
+                                Title="{x:Bind
+                                    helpers:XAMLFuncs.ConcatWithSpaceIf(RequiresRestart, Title, '(Restart Required)')
+                                }"
+                                Margin="2"
+                                Description="{x:Bind Description}"
+                            >
+                                    <settings:SettingsBlockControl.Icon>
+                                        <icons:FluentIconElement
+                                        VerticalAlignment="Center"
+                                        Symbol="{x:Bind Icon}"
+                                    />
+                                    </settings:SettingsBlockControl.Icon>
+                                    <controls:SettingController Setting="{x:Bind}" />
+                                </settings:SettingsBlockControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                     <settings:SettingsBlockControl Title="About" Margin="2" Description="Credits, links and information">
                         <settings:SettingsBlockControl.Icon>
                             <icons:FluentIconElement VerticalAlignment="Center" Symbol="Info24"/>

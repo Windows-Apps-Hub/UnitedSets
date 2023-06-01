@@ -5,12 +5,9 @@ namespace UnitedSets.Classes;
 
 partial class Cell
 {
-    public bool HasWindow => CurrentCell is not null;
-    public bool HasSubCells => SubCells is not null;
-    public bool HasVerticalSubCells => HasSubCells && Orientation == Orientation.Vertical;
-    public bool HasHorizontalSubCells => HasSubCells && Orientation == Orientation.Horizontal;
-
-    public bool Empty => !(HasWindow || HasSubCells);
+    public bool ContainsWindow => CurrentCell is not null;
+    public bool ContainsSubCells => SubCells is not null;
+    public bool IsEmpty => !(ContainsWindow || ContainsSubCells);
 
     public IEnumerable<Cell> AllSubCells
     {

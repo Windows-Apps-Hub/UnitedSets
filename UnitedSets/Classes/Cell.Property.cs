@@ -3,6 +3,7 @@ using System.ComponentModel;
 using EasyCSharp;
 using WinUI3HwndHostPlus;
 using UnitedSets.UI.AppWindows;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace UnitedSets.Classes;
 partial class Cell

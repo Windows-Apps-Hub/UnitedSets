@@ -10,7 +10,7 @@ partial class TabBase
     void TabCloseRequested(TabViewItem sender)
     {
 		DoShowTab();
-        if (Settings.ExitOnClose)
+        if (Settings.CloseWindowOnCloseTab)
             _ = TryCloseAsync();
         else
             DetachAndDispose(JumpToCursor: true);

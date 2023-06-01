@@ -27,10 +27,10 @@ partial class CellTab
             var allcells = MainCell.AllSubCells.ToArray();
             await Task.WhenAll(
                 from cell in allcells
-                where cell.HasWindow
+                where cell.ContainsWindow
                 select cell.CurrentCell!.Close()
             );
-            while (MainCell.AllSubCells.Any(x => x.HasWindow && x.CurrentCell!.IsWindowStillValid()))
+            while (MainCell.AllSubCells.Any(x => x.ContainsWindow && x.CurrentCell!.IsWindowStillValid()))
             {
                 await Task.Delay(500);
             }
@@ -58,7 +58,7 @@ partial class CellTab
                 new MultiWindowModifyFlyoutModule(
 				    (
 					    from x in MainCell.AllSubCells
-					    where x.HasWindow
+					    where x.ContainsWindow
 					    select x.CurrentCell
 				    ).ToArray()
                 ),

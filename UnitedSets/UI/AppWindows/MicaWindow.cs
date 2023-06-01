@@ -1,9 +1,7 @@
 ﻿// Reference: winui3gallery://item/SystemBackdrops
-using System.Runtime.InteropServices;
 using WinRT;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Windows.UI.ViewManagement;
 using WinUIEx;
 using UnitedSets.Helpers;
 using Windows.Foundation;

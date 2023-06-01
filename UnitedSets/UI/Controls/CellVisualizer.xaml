@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:UnitedSets.Controls"
+    xmlns:helpers="using:UnitedSets.Helpers"
     xmlns:ezxaml="using:EasyXAMLTools"
     mc:Ignorable="d"
     Background="Transparent"
@@ -21,14 +22,14 @@
                     <ezxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                         <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Hold CTRL and Drag Window Here"/>
                         <TextBlock HorizontalAlignment="Center" FontSize="16" Text="or"/>
-                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitHorizontallyClickEv}">
+                        <Button HorizontalAlignment="Center" Command="{x:Bind SplitHorizontallyCommand}" CommandParameter="{x:Bind CellAddCount}">
                             <StackPanel Orientation="Horizontal">
                                 <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
                                 <TextBlock Margin="4,0,4,0" Text="Split Horizontally"/>
                                 <SymbolIcon Symbol="{ThemeResource HorizontalSymbol}"/>
                             </StackPanel>
                         </Button>
-                        <Button HorizontalAlignment="Center" Click="{x:Bind SplitVerticallyClickEv}">
+                        <Button HorizontalAlignment="Center" Command="{x:Bind SplitVerticallyCommand}" CommandParameter="{x:Bind CellAddCount}">
                             <StackPanel Orientation="Horizontal">
                                 <SymbolIcon Symbol="{ThemeResource VerticalSymbol}"/>
                                 <TextBlock Margin="4,0,4,0" Text="Split Vertically"/>
@@ -46,7 +47,7 @@
                             <Button Grid.Column="1" Padding="5" Command="{x:Bind AddCellAddCountCommand}">
                                 <SymbolIcon Symbol="Add"/>
                             </Button>
-                            <TextBlock Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" Text="{x:Bind CellAddCountAsString, Mode=OneWay}"/>
+                            <TextBlock Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" Text="{x:Bind CellAddCount.ToString(), Mode=OneWay}"/>
                             <Button Grid.Column="3" Padding="5" Command="{x:Bind SubtractCellAddCountCommand}">
                                 <SymbolIcon Symbol="Remove"/>
                             </Button>

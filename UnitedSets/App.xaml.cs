@@ -1,18 +1,13 @@
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net.WebSockets;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.AppWindows;
-using Windows.Foundation.Metadata;
-using Windows.Management.Core;
-using Windows.Storage;
 
 namespace UnitedSets;
 
@@ -29,7 +24,7 @@ public partial class App : Application
     /// <summary>
     /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
     /// </summary>
-    public IServiceProvider Services { get; }
+    public IServiceProvider Services { get; } = ConfigureServices();
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -37,14 +32,13 @@ public partial class App : Application
     /// </summary>
     public App()
     {
-        Services = ConfigureServices();
-        this.InitializeComponent();
+        InitializeComponent();
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
     }
 
-    private static IServiceProvider ConfigureServices()
+    static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
@@ -53,42 +47,28 @@ public partial class App : Application
         return services.BuildServiceProvider();
     }
 
-    /// <summary>
-    /// Invoked when the application is launched normally by the end user.  Other entry points
-    /// will be used such as when the application is launched to open a specific file.
-    /// </summary>
-    /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         DebugRedir.Listen();
 
-		var isFirstRun = false;
-#if !UNPKG
-		try {
-			isFirstRun = SystemInformation.Instance.IsFirstRun;
-		} catch { }
-#endif
-
-		if (isFirstRun)
-			LaunchNewOOBE();
-		else
-			LaunchNewMain();
+		if (Constants.IsFirstRun)
+        	LaunchNewOOBE();
+        else
+            LaunchNewMain();
     }
 
-    private Window? m_window;
-    public Window? o_window;
+    private Window? window;
 
-    // temporary
-    public void LaunchNewOOBE()
+    void LaunchNewOOBE()
     {
-        o_window = new OOBEWindow();
-        o_window.Activate();
+        var oobeWindow = new OOBEWindow();
+        oobeWindow.Activate();
     }
 
     public void LaunchNewMain()
     {
-        m_window = new MainWindow();
-        m_window.Activate();
+        window = new MainWindow();
+        window.Activate();
     }
 
     private static void OnUnobservedException(object? sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();

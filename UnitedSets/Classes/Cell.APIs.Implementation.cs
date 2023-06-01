@@ -11,13 +11,13 @@ partial class Cell
     public partial void RegisterHwndHost(OurHwndHost host)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) throw new InvalidOperationException();
+        if (!IsEmpty) throw new InvalidOperationException();
         CurrentCell = host;
     }
 
     public partial void SplitHorizontally(int Amount)
     {
-        if (!Empty) throw new InvalidOperationException();
+        if (!IsEmpty) throw new InvalidOperationException();
         Orientation = Orientation.Vertical;
         SubCells = CraeteNCells(Amount);
     }
@@ -25,7 +25,7 @@ partial class Cell
     public partial void SplitVertically(int Amount)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
-        if (!Empty) throw new InvalidOperationException();
+        if (!IsEmpty) throw new InvalidOperationException();
         Orientation = Orientation.Horizontal;
         SubCells = CraeteNCells(Amount);
     }

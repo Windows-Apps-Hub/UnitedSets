@@ -262,11 +262,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 break;
         }
     }
-    private partial void CellWindowDropped(Cell cell, Cell.ValidItemDropArgs e)
+    private partial void CellWindowDropped(Cell cell, nint HwndId)
     {
         if (cell == null)
             throw new Exception("Only cells should be generating this event");
-        var window = WindowEx.FromWindowHandle((nint)e.HwndId);
+        var window = WindowEx.FromWindowHandle(HwndId);
         var ret = PInvoke.SendMessage(
             window.Owner,
             Constants.UnitedSetCommunicationChangeWindowOwnership,

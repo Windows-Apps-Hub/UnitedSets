@@ -32,19 +32,19 @@ public sealed partial class CellVisualizer
     void OnCellPropertyChanged(PropertyChangedEventArgs? e)
     {
         if (e is null) return;
-        if (e.PropertyName is not (nameof(Cell.CellAddCountAsString) or nameof(Cell.CellAddCount)))
+        if (e.PropertyName is not nameof(Cell.CellAddCount))
             DispatcherQueue.TryEnqueue(() => UpdateTemplate());
     }
     void UpdateTemplate()
     {
         ContentTemplate = Cell switch
         {
-            { Empty: true, IsVisible: false } => InvisibleCellDataTemplate,
-            { HasWindow: true } => WindowCellDataTemplate,
-            { Empty: true, HoverEffect: false } => EmptyCellDataTemplate,
-            { Empty: true, HoverEffect: true } => EmptyCellDataTemplateWindowHover,
-            { HasSubCells: true, Orientation: Orientation.Vertical } => VerticalCellDataTemplate,
-            { HasSubCells: true, Orientation: Orientation.Horizontal } => HorizontalCellDataTemplate,
+            { IsEmpty: true, IsVisible: false } => InvisibleCellDataTemplate,
+            { ContainsWindow: true } => WindowCellDataTemplate,
+            { IsEmpty: true, HoverEffect: false } => EmptyCellDataTemplate,
+            { IsEmpty: true, HoverEffect: true } => EmptyCellDataTemplateWindowHover,
+            { ContainsSubCells: true, Orientation: Orientation.Vertical } => VerticalCellDataTemplate,
+            { ContainsSubCells: true, Orientation: Orientation.Horizontal } => HorizontalCellDataTemplate,
             _ => null
         };
     }

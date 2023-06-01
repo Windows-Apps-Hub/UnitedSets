@@ -1,42 +1,42 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using EasyCSharp;
-using System.Threading;
-using Windows.Storage;
 using UnitedSets.UI.AppWindows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
+using UnitedSets.Classes.Settings;
+using Cube.UI.Icons;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace UnitedSets.Mvvm.Services;
 
-public partial class SettingsService : ObservableObject
+public partial class SettingsService
 {
     public SettingsService()
     {
-        new Thread(() =>
-        {
-            while (true)
-            {
-                if (exitOnClose != ExitOnClose)
-                    SetProperty(ref exitOnClose, ExitOnClose);
-                Thread.Sleep(2000);
-            }
-        })
-        {
-            Name = "United Sets Settings Update Loop"
-        }.Start();
-		CreateWindow();
+        CreateWindow();
+        AllSettings = new Setting[] {
+            CloseWindowOnCloseTab,
+            TransparentWindowMode
+        };
     }
-#if !UNPKG
-private static readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
-#else
-	internal static Classes.FauxSettings Settings = new();
+    public IReadOnlyList<Setting> AllSettings { get; }
 
-#endif
+    public OnOffSetting CloseWindowOnCloseTab { get; } = new(nameof(CloseWindowOnCloseTab))
+    {
+        Title = "Closing tab closes window",
+        Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
+        Icon = FluentSymbol.Delete24,
+        DefaultValue = true
+    };
 
-	[Property(CustomGetExpression = "(bool)(Settings.Values[\"ExitOnClose\"] ?? true)", OnChanged = nameof(ExitOnCloseChanged))]
-    private bool exitOnClose = (bool)(Settings.Values["ExitOnClose"] ?? true);
-    private void ExitOnCloseChanged() => Settings.Values["ExitOnClose"] = exitOnClose;
+    public OnOffSetting TransparentWindowMode { get; } = new(nameof(TransparentWindowMode))
+    {
+        Title = "Transparent Window Mode",
+        Description = "Make the window transparent",
+        RequiresRestart = true,
+        Icon = FluentSymbol.Window20
+    };
+
     SettingsWindow? s_window;
     [RelayCommand]
     public void LaunchSettings()

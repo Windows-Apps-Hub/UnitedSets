@@ -9,6 +9,9 @@ using WinUI3HwndHostPlus;
 using WindowEx = WinWrapper.Window;
 
 using EasyCSharp;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace UnitedSets.Classes {
 	public interface IHwndHostParent {
@@ -31,7 +34,7 @@ namespace UnitedSets.Classes {
 		public string? GetOwnerProcessModuleFilename() {
 			var FileName = host.HostedWindow.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
 			if (FileName == @"C:\WINDOWS\system32\ApplicationFrameHost.exe") {
-				var child = host.HostedWindow.Children.FirstOrDefault(x =>
+				var child = host.HostedWindow.Children.AsEnumerable().FirstOrDefault(x =>
 					x.ClassName is "Windows.UI.Core.CoreWindow", host.HostedWindow);
 				FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
 			}

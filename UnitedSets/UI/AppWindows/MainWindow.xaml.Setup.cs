@@ -19,19 +19,32 @@ using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
+using System.Drawing;
+using UnitedSets.Classes.Settings;
+using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.UI.AppWindows;
 
 partial class MainWindow
 {
-    public MainWindow() : base(IsMicaInfinite: true)
+    public MainWindow() //: base(IsMicaInfinite: true)
     {
         InitializeComponent();
 
         SetupBasicWindow();
+        
+        //TransparentMode = FeatureFlags.UseTransparentWindow;
+        //if (TransparentMode)
+        //    SetupTransparent(out trans_mgr);
 
-        if (FeatureFlags.UseTransparentWindow)
-            SetupTransparent(out trans_mgr);
+        void UpdateBackdrop(USBackdrop x)
+        {
+            TransparentMode = x is USBackdrop.Transparent;
+            SystemBackdrop = x.GetSystemBackdrop();
+        }
+        Settings.BackdropMode.Updated += UpdateBackdrop;
+        UpdateBackdrop(Settings.BackdropMode.Value);
+        ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
         SetupNative(out Win32Window, out WindowMessageMonitor);
 
@@ -63,9 +76,11 @@ partial class MainWindow
         {
             WindowBorderOnTransparent.Visibility = Visibility.Visible;
             MainAreaBorder.Margin = new(8, 0, 8, 8);
+            var presenter = (OverlappedPresenter)AppWindow.Presenter;
             //RootGrid.Children.Insert(0, border);
-            trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
-            trans_mgr.AfterInitialize();
+            //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
+            //trans_mgr.AfterInitialize();
+            trans_mgr = null!;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
@@ -89,13 +104,14 @@ partial class MainWindow
         {
             static bool IsProcessNotExited(System.Diagnostics.Process proc)
             {
-                try
-                {
-                    return !proc.HasExited;
-                } catch
-                {
-                    return false;
-                }
+                //try
+                //{
+                //    return !proc.HasExited;
+                //} catch
+                //{
+                //    return false;
+                //}
+                return false;
             }
             // --add-window-by-exe
             var toAdd = CLI.GetArrVal("add-window-by-exe");

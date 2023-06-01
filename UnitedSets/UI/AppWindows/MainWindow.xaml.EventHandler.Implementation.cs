@@ -23,6 +23,8 @@ using OutOfBoundsFlyout;
 using Microsoft.UI.Input;
 using UnitedSets.UI.Popups;
 using UnitedSets.UI.FlyoutModules;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -279,10 +281,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
         cell.RegisterHwndHost(new OurHwndHost(tab, this, window));
     }
-
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {
-        if (e.Message.MessageId == Constants.UnitedSetCommunicationChangeWindowOwnership)
+        var id = e.Message.MessageId;
+        if (id == Constants.UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
             if (Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)

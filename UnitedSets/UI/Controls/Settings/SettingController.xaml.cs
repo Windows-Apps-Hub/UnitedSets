@@ -21,6 +21,7 @@ public partial class SettingController
         ContentTemplate = newValue switch
         {
             OnOffSetting => OnOffSettingTemplate,
+            ISelectSetting => SelectSettingTemplate,
             _ => null
         };
     }

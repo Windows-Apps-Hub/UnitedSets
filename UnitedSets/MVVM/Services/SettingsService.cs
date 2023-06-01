@@ -6,6 +6,11 @@ using UnitedSets.Classes.Settings;
 using Cube.UI.Icons;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Composition;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -16,7 +21,7 @@ public partial class SettingsService
         CreateWindow();
         AllSettings = new Setting[] {
             CloseWindowOnCloseTab,
-            TransparentWindowMode
+            BackdropMode
         };
     }
     public IReadOnlyList<Setting> AllSettings { get; }
@@ -29,12 +34,12 @@ public partial class SettingsService
         DefaultValue = true
     };
 
-    public OnOffSetting TransparentWindowMode { get; } = new(nameof(TransparentWindowMode))
+    public SelectSetting<USBackdrop> BackdropMode { get; } = new(nameof(BackdropMode), Enum.GetValues<USBackdrop>())
     {
-        Title = "Transparent Window Mode",
-        Description = "Make the window transparent",
-        RequiresRestart = true,
-        Icon = FluentSymbol.Window20
+        Title = "Window Background",
+        Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
+        Icon = FluentSymbol.Window20,
+        DefaultValue = USBackdrop.Mica
     };
 
     SettingsWindow? s_window;
@@ -55,4 +60,110 @@ public partial class SettingsService
 		s_window = new(this);
 		s_window.Closed += (_, _) => s_window = new(this);
 	}
+}
+public enum USBackdrop
+{
+    Acrylic,
+    Mica,
+    Tabbed,
+    Transparent
+}
+static class BackdropHelper
+{
+    public static SystemBackdrop GetSystemBackdrop(this USBackdrop backdrop)
+        => backdrop switch
+        {
+            USBackdrop.Acrylic => new InfiniteSystemBackdrop<DesktopAcrylicController>(),
+            USBackdrop.Mica => new InfiniteSystemBackdrop<MicaController>(),
+            USBackdrop.Tabbed => new InfiniteSystemBackdrop<MicaController>(x => x.Kind = MicaKind.BaseAlt),
+            USBackdrop.Transparent => new TransparentBackdrop(),
+            _ => throw new ArgumentOutOfRangeException(nameof(backdrop))
+        };
+}
+public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdropControllerWithTargets, new()
+{
+    public InfiniteSystemBackdrop() { }
+    public InfiniteSystemBackdrop(Action<T> act) { action = act; }
+    Action<T>? action;
+    public bool IsInfinite { get; set; } = true;
+    T? controller;
+
+    protected override void OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)
+    {
+        // Call the base method to initialize the default configuration object.
+        base.OnTargetConnected(connectedTarget, xamlRoot);
+
+        // This example does not support sharing MicaSystemBackdrop instances.
+        if (controller is not null)
+        {
+            throw new Exception("This controller cannot be shared");
+        }
+
+        controller = new T();
+        action?.Invoke(controller);
+        // Set configuration.
+        SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(connectedTarget, xamlRoot);
+        
+        controller.SetSystemBackdropConfiguration(defaultConfig);
+        // Add target.
+        controller.AddSystemBackdropTarget(connectedTarget);
+    }
+
+    protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)
+    {
+        base.OnTargetDisconnected(disconnectedTarget);
+
+        controller?.RemoveSystemBackdropTarget(disconnectedTarget);
+        controller = default;
+    }
+    protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
+    {
+        try
+        {
+            SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);
+            if (IsInfinite)
+                defaultConfig.IsInputActive = true;
+            controller?.SetSystemBackdropConfiguration(defaultConfig);
+        } catch { }
+    }
+}
+public class AcrylicSystemBackdrop : SystemBackdrop
+{
+    public bool IsMicaInfinite { get; set; }
+    DesktopAcrylicController? micaController;
+
+    protected override void OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)
+    {
+        // Call the base method to initialize the default configuration object.
+        base.OnTargetConnected(connectedTarget, xamlRoot);
+
+        // This example does not support sharing MicaSystemBackdrop instances.
+        if (micaController is not null)
+        {
+            throw new Exception("This controller cannot be shared");
+        }
+
+        micaController = new DesktopAcrylicController();
+        // Set configuration.
+        SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(connectedTarget, xamlRoot);
+
+        micaController.SetSystemBackdropConfiguration(defaultConfig);
+        // Add target.
+        micaController.AddSystemBackdropTarget(connectedTarget);
+    }
+
+    protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)
+    {
+        base.OnTargetDisconnected(disconnectedTarget);
+
+        micaController?.RemoveSystemBackdropTarget(disconnectedTarget);
+        micaController = null;
+    }
+    protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
+    {
+        SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);
+        if (IsMicaInfinite)
+            defaultConfig.IsInputActive = true;
+        micaController?.SetSystemBackdropConfiguration(defaultConfig);
+    }
 }

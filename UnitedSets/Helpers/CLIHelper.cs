@@ -26,7 +26,7 @@ static class CLI
 		args ??= Environment.GetCommandLineArgs();
 		foreach (var arg in args) {
 			if (arg.StartsWith("--")) {
-				including = arg.Substring(2).Equals(name, StringComparison.CurrentCultureIgnoreCase);
+				including = arg[2..].Equals(name, StringComparison.CurrentCultureIgnoreCase);
 				continue;
 			}
 			if (including)

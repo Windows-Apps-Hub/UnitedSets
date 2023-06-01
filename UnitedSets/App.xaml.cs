@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.AppWindows;
 
@@ -51,8 +52,17 @@ public partial class App : Application
     {
         DebugRedir.Listen();
 
+        //WindowsCompositionHelper.EnsureCompositor();
+
+        //new TransparentWindow()
+        //{
+        //    Content = new Microsoft.UI.Xaml.Controls.Button
+        //    {
+        //        Content = "Hello World!"
+        //    }
+        //}.Activate();
 		if (Constants.IsFirstRun)
-        	LaunchNewOOBE();
+            LaunchNewOOBE();
         else
             LaunchNewMain();
     }

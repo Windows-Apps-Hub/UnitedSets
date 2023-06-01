@@ -73,7 +73,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		if (HwndHost.ShouldBeBlacklisted(newWindow))
 			return null;
 		// Check if United Sets has owner (United Sets in United Sets)
-		if (Win32Window.Root.Children.Any(x => x == newWindow))
+		if (Win32Window.Root.Children.AsEnumerable().Any(x => x == newWindow))
 			return null;
 		if (Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
 			return null;

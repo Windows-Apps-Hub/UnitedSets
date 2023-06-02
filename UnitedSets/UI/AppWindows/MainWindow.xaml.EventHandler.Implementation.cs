@@ -25,6 +25,7 @@ using UnitedSets.UI.Popups;
 using UnitedSets.UI.FlyoutModules;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -86,9 +87,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             e.AcceptedOperation = DataPackageOperation.Move;
     }
 
-    private partial void OnDragOverTabViewItem(object sender)
+    public partial void OnDragOverTabViewItem(object sender)
     {
-        if (sender is TabViewItem tvi && tvi.Tag is TabBase tb)
+        if (sender is FrameworkElement tvi && tvi.Tag is TabBase tb)
             TabView.SelectedIndex = Tabs.IndexOf(tb);
     }
 
@@ -207,6 +208,37 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         switch (result)
         {
             case ContentDialogResult.Primary:
+                await RequestCloseAsync(CloseMode.ReleaseWindow);
+                break;
+            case ContentDialogResult.Secondary:
+                await RequestCloseAsync(CloseMode.CloseWindow);
+                break;
+            default:
+                // Do not close window
+                try
+                {
+                    TabView.SelectedItem = item;
+                }
+                catch
+                {
+                    if (Tabs.Count > 0)
+                        TabView.SelectedIndex = 0;
+                }
+                TabView.Visibility = Visibility.Visible;
+                break;
+        }
+    }
+    public enum CloseMode
+    {
+        ReleaseWindow,
+        CloseWindow
+    }
+    [DoesNotReturn]
+    public async Task RequestCloseAsync(CloseMode closeMode)
+    {
+        switch (closeMode)
+        {
+            case CloseMode.ReleaseWindow:
                 // Release all windows
                 while (Tabs.Count > 0)
                 {
@@ -219,7 +251,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 await Suicide();
 
                 return;
-            case ContentDialogResult.Secondary:
+            case CloseMode.CloseWindow:
                 // Close all windows
                 TabView.Visibility = Visibility.Visible;
                 await Task.Delay(100);
@@ -250,18 +282,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 goto default;
             default:
-                // Do not close window
-                try
-                {
-                    TabView.SelectedItem = item;
-                }
-                catch
-                {
-                    if (Tabs.Count > 0)
-                        TabView.SelectedIndex = 0;
-                }
-                TabView.Visibility = Visibility.Visible;
-                break;
+                throw new ArgumentOutOfRangeException(nameof(closeMode));
         }
     }
     private partial void CellWindowDropped(Cell cell, nint HwndId)

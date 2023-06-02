@@ -18,6 +18,7 @@ namespace UnitedSets.UI.AppWindows;
 public sealed partial class MainWindow
 {
     #region Tabs
+    [RelayCommand]
     [Event(typeof(RoutedEventHandler))]
     private partial void OnAddTabButtonClick();
 
@@ -42,7 +43,7 @@ public sealed partial class MainWindow
     #region Tabs Dragging
 
     [Event(typeof(DragEventHandler))]
-    private partial void OnDragOverTabViewItem(object sender);
+    public partial void OnDragOverTabViewItem(object sender);
 
     [Event(typeof(DragEventHandler))]
     private partial void OnDragItemOverTabView(DragEventArgs e);

@@ -39,6 +39,7 @@
 		<None Remove="AddTabFlyout.xaml" />
 		<None Remove="Controls\CellVisualizer.xaml" />
 		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+		<None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
 		<None Remove="UI\AppWindows\OOBEWindow.Style.xaml" />
 		<None Remove="UI\Controls\HomeBackground.xaml" />
 		<None Remove="UI\Controls\Settings\SettingController.xaml" />
@@ -103,6 +104,10 @@
 		</Page>
 		<Page Update="UI\AppWindows\OOBEWindow.Style.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="UI\AppWindows\FloatingTaskbar.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		  <SubType>Designer</SubType>
 		</Page>
 		<Page Update="UI\Controls\HomeBackground.xaml">
 		  <Generator>MSBuild:Compile</Generator>
@@ -199,6 +204,9 @@
 	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="UI\Controls\SizeChangeDetectorGrid.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
 	  <Compile Update="UI\Controls\Settings\SettingController.xaml.cs">
 	    <SubType>Code</SubType>
 	  </Compile>

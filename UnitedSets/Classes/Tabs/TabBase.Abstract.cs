@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Input;
 using EasyCSharp;
 using Microsoft.UI.Xaml;
 using Window = WinWrapper.Window;
+using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -20,10 +21,10 @@ partial class TabBase
     public abstract IEnumerable<Window> Windows { get; }
     public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }
-
+    
     public abstract void DetachAndDispose(bool JumpToCursor = false);
     public abstract Task TryCloseAsync();
-
+    
     [Event(typeof(PointerEventHandler), Name = "TabClickEv")]
     public abstract void Focus();
 

@@ -14,6 +14,8 @@ using ICompositionSupportsSystemBackdrop = Microsoft.UI.Composition.IComposition
 using DWMWINDOWATTRIBUTE = Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE;
 using System;
 using static TransparentWinUIWindowLib.TransparentWindowManager;
+using Microsoft.UI.Windowing;
+using Windows.Win32.Foundation;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -28,12 +30,24 @@ public class TransparentSupportedWindow : WindowEx
         Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
         Activated += FirstRun;
     }
+    bool _TransparentMode;
     protected bool TransparentMode
     {
         set
         {
-            Win32Window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_LAYERED, value);
-            Win32Window.Redraw();
+            if (_TransparentMode != value)
+            {
+                _TransparentMode = value;
+                Win32Window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_LAYERED, value);
+                //if (AppWindow.Presenter is OverlappedPresenter o) o.SetBorderAndTitleBar(false, false);
+                //Win32Window.Style = WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
+                //Win32Window.Redraw();
+                if (value)
+                {
+                    Win32Window.Hide();
+                    Win32Window.Show();
+                }
+            }
         }
     }
     private void FirstRun(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)

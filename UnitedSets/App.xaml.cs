@@ -1,7 +1,10 @@
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
@@ -9,6 +12,7 @@ using System.Threading.Tasks;
 using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.AppWindows;
+using WinUIEx;
 
 namespace UnitedSets;
 
@@ -61,10 +65,40 @@ public partial class App : Application
         //        Content = "Hello World!"
         //    }
         //}.Activate();
-		if (Constants.IsFirstRun)
+        if (Constants.IsFirstRun)
             LaunchNewOOBE();
         else
             LaunchNewMain();
+        //ObservableCollection<string> strs = new();
+        //int i = 0;
+        //var panel = new UI.Controls.SizeChangedDetectorPanel
+        //{
+        //    Content = new StackPanel
+        //    {
+        //        Children =
+        //        {
+        //            new ItemsControl {
+        //                ItemsSource = strs
+        //            },
+        //            new Button
+        //            {
+        //                Content = "+",
+        //                Command = new RelayCommand(() => strs.Add((++i).ToString()))
+        //            }
+        //        }
+        //    }
+        //};
+        //var window = new Window
+        //{
+        //    Content = panel,
+        //    ExtendsContentIntoTitleBar = true
+        //};
+        //panel.SizeUpdated += x =>
+        //{
+        //    var w = window;
+        //    //.SetWindowSize(x.Width, x.Height+20);
+        //};
+        //window.Show();
     }
 
     private Window? window;

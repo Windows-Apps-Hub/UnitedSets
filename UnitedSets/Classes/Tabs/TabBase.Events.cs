@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
 using EasyCSharp;
 using Windows.Foundation;
+using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.Classes.Tabs;
 

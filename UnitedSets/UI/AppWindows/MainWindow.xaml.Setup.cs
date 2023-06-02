@@ -27,7 +27,7 @@ namespace UnitedSets.UI.AppWindows;
 
 partial class MainWindow
 {
-    public MainWindow() //: base(IsMicaInfinite: true)
+    public MainWindow()
     {
         InitializeComponent();
 
@@ -39,7 +39,9 @@ partial class MainWindow
 
         void UpdateBackdrop(USBackdrop x)
         {
-            TransparentMode = x is USBackdrop.Transparent;
+            var IsTransparent = x is USBackdrop.Transparent;
+            WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
+            TransparentMode = IsTransparent;
             SystemBackdrop = x.GetSystemBackdrop();
         }
         Settings.BackdropMode.Updated += UpdateBackdrop;
@@ -55,6 +57,8 @@ partial class MainWindow
         SetupUIThreadLoopTimer(out timer);
 
         ApplyFlags();
+
+        SetupTaskbarMode();
 
         // Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

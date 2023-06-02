@@ -22,7 +22,7 @@ public sealed partial class MainWindow
         throw new InvalidOperationException();
 
     // Readonly
-    readonly ObservableCollection<TabBase> Tabs = new();
+    public readonly ObservableCollection<TabBase> Tabs = new();
     public readonly ObservableCollection<TabGroup> HiddenTabs = new();
     readonly DispatcherQueueTimer timer;
     readonly WindowMessageMonitor WindowMessageMonitor;

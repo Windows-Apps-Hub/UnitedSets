@@ -104,11 +104,18 @@ public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdro
         // Set configuration.
         SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(connectedTarget, xamlRoot);
         
-        controller.SetSystemBackdropConfiguration(defaultConfig);
+        controller.SetSystemBackdropConfiguration(GetConfig(defaultConfig));
         // Add target.
         controller.AddSystemBackdropTarget(connectedTarget);
     }
-
+    SystemBackdropConfiguration GetConfig(SystemBackdropConfiguration a)
+        => IsInfinite ? new()
+        {
+            IsInputActive = IsInfinite,
+            IsHighContrast = a.IsHighContrast,
+            HighContrastBackgroundColor = a.HighContrastBackgroundColor,
+            Theme = a.Theme
+        } : a;
     protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)
     {
         base.OnTargetDisconnected(disconnectedTarget);
@@ -121,49 +128,7 @@ public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdro
         try
         {
             SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);
-            if (IsInfinite)
-                defaultConfig.IsInputActive = true;
-            controller?.SetSystemBackdropConfiguration(defaultConfig);
+            controller?.SetSystemBackdropConfiguration(GetConfig(defaultConfig));
         } catch { }
-    }
-}
-public class AcrylicSystemBackdrop : SystemBackdrop
-{
-    public bool IsMicaInfinite { get; set; }
-    DesktopAcrylicController? micaController;
-
-    protected override void OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)
-    {
-        // Call the base method to initialize the default configuration object.
-        base.OnTargetConnected(connectedTarget, xamlRoot);
-
-        // This example does not support sharing MicaSystemBackdrop instances.
-        if (micaController is not null)
-        {
-            throw new Exception("This controller cannot be shared");
-        }
-
-        micaController = new DesktopAcrylicController();
-        // Set configuration.
-        SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(connectedTarget, xamlRoot);
-
-        micaController.SetSystemBackdropConfiguration(defaultConfig);
-        // Add target.
-        micaController.AddSystemBackdropTarget(connectedTarget);
-    }
-
-    protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)
-    {
-        base.OnTargetDisconnected(disconnectedTarget);
-
-        micaController?.RemoveSystemBackdropTarget(disconnectedTarget);
-        micaController = null;
-    }
-    protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
-    {
-        SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);
-        if (IsMicaInfinite)
-            defaultConfig.IsInputActive = true;
-        micaController?.SetSystemBackdropConfiguration(defaultConfig);
     }
 }

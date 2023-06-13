@@ -30,6 +30,10 @@
 		<PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
+		<PackageReference Include="EasyCSharp.Generator" Version="0.0.3" />
+		<PackageReference Include="Get.EasyCsharp" Version="1.0.0" />
+		<PackageReference Include="Get.EasyXAMLTools" Version="1.0.0" />
+		<PackageReference Include="Get.EasyXAMLTools.Generator" Version="1.0.2" />
 		<PackageReference Include="Interop.UIAutomationClient" Version="10.19041.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230502000" />
@@ -46,10 +50,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp\EasyCSharp.csproj"></ProjectReference>
-		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools.Generator\EasyXAMLTools.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools\EasyXAMLTools.csproj"></ProjectReference>
 		<ProjectReference Include="..\OutOfBoundsFlyout\OutOfBoundsFlyout.csproj" />
 		<ProjectReference Include="..\TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj" />
 		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />

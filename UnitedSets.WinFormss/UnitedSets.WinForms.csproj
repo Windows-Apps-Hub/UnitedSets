@@ -12,13 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.2-beta">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WinWrapper\WinWrapper.Windowing\WinWrapper.Windowing.csproj" />
-    <ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
+    <PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

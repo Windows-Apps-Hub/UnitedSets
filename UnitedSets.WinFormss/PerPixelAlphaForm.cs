@@ -1,10 +1,6 @@
 ﻿// This class PerPixelAlphaForm were taken and modified from https://www.codeproject.com/Articles/1822/Per-Pixel-Alpha-Blend-in-C
 
 using WinWrapper.Windowing;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
-using Windows.Win32.Graphics.Gdi;
-using Windows.Win32.Foundation;
 
 namespace UnitedSets.WinForms;
 

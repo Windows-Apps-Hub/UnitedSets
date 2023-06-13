@@ -75,6 +75,8 @@
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
 		<PackageReference Include="WinUIEx" Version="2.2.0" />
+		<PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
+		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -96,8 +98,6 @@
 		<ProjectReference Include="..\TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj" />
 		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
-		<ProjectReference Include="..\WinWrapper\WinWrapper.Taskbar\WinWrapper.Taskbar.csproj" />
-		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="FlyoutModule\MainWindowMenuFlyoutModule.xaml">

@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.2-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
+    <ProjectReference Include="..\ExternalProjectReferences\WinWrapper\WinWrapper.Windowing\WinWrapper.Windowing.csproj" />
   </ItemGroup>
 
 </Project>

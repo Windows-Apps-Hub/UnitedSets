@@ -75,8 +75,8 @@
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
 		<PackageReference Include="WinUIEx" Version="2.2.0" />
-		<PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
-		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
+		<ProjectReference Include="..\ExternalProjectReferences\WinWrapper\WinWrapper.Taskbar\WinWrapper.Taskbar.csproj" />
+		<ProjectReference Include="..\ExternalProjectReferences\WinWrapper\WinWrapper\WinWrapper.csproj" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 

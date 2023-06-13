@@ -150,7 +150,6 @@ partial class MainWindow
 #endif
         Activated -= FirstRun;
         var icon = Icon.Load($@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico");
-        bool success = false;
         Win32Window.SmallIcon = Win32Window.LargeIcon = icon;
 
         if (Keyboard.IsShiftDown)

@@ -8,6 +8,7 @@
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
     xmlns:USsettings="using:UnitedSets.Classes.Settings"
+    xmlns:ui="using:Windows.UI"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
     xmlns:oobf="using:OutOfBoundsFlyout"
@@ -17,8 +18,8 @@
     <window:SizeToContentWindow.SizeToWindowContent>
         <Grid>
             <Grid.Resources>
-                <Color x:Key="ChromeButtonColorHover">#e9c460</Color>
-                <Color x:Key="ChromeButtonColorPressed">Orange</Color>
+                <ui:Color x:Key="ChromeButtonColorHover">#e9c460</ui:Color>
+                <ui:Color x:Key="ChromeButtonColorPressed">Orange</ui:Color>
                 <Symbol x:Key="ChromeButtonSymbol"></Symbol>
                 <Style x:Key="ChromeWindowButton" TargetType="Button">
                     <Setter Property="Foreground" Value="{ThemeResource SplitButtonForeground}" />
@@ -269,8 +270,8 @@
                     MinHeight="32"
                 >
                     <Button.Resources>
-                        <Color x:Key="ChromeButtonColorHover">#e9c460</Color>
-                        <Color x:Key="ChromeButtonColorPressed">Orange</Color>
+                        <ui:Color x:Key="ChromeButtonColorHover">#e9c460</ui:Color>
+                        <ui:Color x:Key="ChromeButtonColorPressed">Orange</ui:Color>
                     </Button.Resources>
                 </Button>
                 <Button
@@ -282,8 +283,8 @@
                     MinHeight="32"
                 >
                     <Button.Resources>
-                        <Color x:Key="ChromeButtonColorHover">#71e960</Color>
-                        <Color x:Key="ChromeButtonColorPressed">DarkGreen</Color>
+                        <ui:Color x:Key="ChromeButtonColorHover">#71e960</ui:Color>
+                        <ui:Color x:Key="ChromeButtonColorPressed">DarkGreen</ui:Color>
                         <!-- Restore16 -->
                     </Button.Resources>
                 </Button>
@@ -296,8 +297,8 @@
                     MinHeight="32"
                 >
                     <Button.Resources>
-                        <Color x:Key="ChromeButtonColorHover">#e96e60</Color>
-                        <Color x:Key="ChromeButtonColorPressed">DarkRed</Color>
+                        <ui:Color x:Key="ChromeButtonColorHover">#e96e60</ui:Color>
+                        <ui:Color x:Key="ChromeButtonColorPressed">DarkRed</ui:Color>
                     </Button.Resources>
                     <oobf:AttachedOutOfBoundsFlyout.Flyout>
                         <oobf:FlyoutContainer>

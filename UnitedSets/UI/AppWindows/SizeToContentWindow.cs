@@ -12,7 +12,7 @@ using Win32Window = WinWrapper.Windowing.Window;
 namespace UnitedSets.UI.AppWindows;
 
 [ContentProperty(Name = nameof(SizeToWindowContent))]
-public partial class SizeToContentWindow : WindowEx, INotifyPropertyChanged
+public partial class SizeToContentWindow : WindowEx
 {
     [Property(OnChanged = nameof(SizeToWindowContentChanged))]
     UIElement? _SizeToWindowContent;
@@ -35,8 +35,6 @@ public partial class SizeToContentWindow : WindowEx, INotifyPropertyChanged
     }
     [Property(OnChanged = nameof(UpdateBounds))]
     Point _AnchorPoint;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     void UpdateBounds()
     {

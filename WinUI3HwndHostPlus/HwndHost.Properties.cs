@@ -1,10 +1,11 @@
 ﻿using System;
-using WindowEx = WinWrapper.Window;
-using Windows.Win32.UI.WindowsAndMessaging;
+using WindowEx = WinWrapper.Windowing.Window;
 using System.Threading.Tasks;
 using Windows.Win32;
-using Windows.Win32.Graphics.Dwm;
 using EasyCSharp;
+using WinWrapper.Windowing;
+using WinWrapper;
+
 namespace WinUI3HwndHostPlus;
 partial class HwndHost
 {
@@ -44,11 +45,11 @@ partial class HwndHost
         var WindowToHost = this._HostedWindow;
         if (SetBackdrop)
         {
-            WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
-            WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT;
+            WindowToHost.DwmAttribute.Set(DwmWindowAttribute.SystemBackdropTypes, DwmSystemBackdropType.None);
+            WindowToHost.ExStyle |= WindowExStyles.Transparent;
         } else
         {
-            WindowToHost.DwmSetWindowAttribute((DWMWINDOWATTRIBUTE)38, InitialBackdropType);
+            WindowToHost.DwmAttribute.Set(DwmWindowAttribute.SystemBackdropTypes, InitialBackdropType);
             WindowToHost.ExStyle = InitialExStyle;
             WindowToHost.Region = null;
         }
@@ -61,7 +62,7 @@ partial class HwndHost
         var WindowToHost = this._HostedWindow;
         if (_BorderlessWindow && !IsDisposed)
         {
-            WindowToHost.Style = WINDOW_STYLE.WS_POPUP;
+            WindowToHost.Style = WindowStyles.Popup;
         }
         else
         {

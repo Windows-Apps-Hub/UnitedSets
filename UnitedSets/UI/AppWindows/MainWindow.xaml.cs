@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using System;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using UnitedSets.Mvvm.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WinUIEx.Messaging;
@@ -26,5 +26,5 @@ public sealed partial class MainWindow
     public readonly ObservableCollection<TabGroup> HiddenTabs = new();
     readonly DispatcherQueueTimer timer;
     readonly WindowMessageMonitor WindowMessageMonitor;
-    readonly TransparentWindowManager? trans_mgr;
+    //readonly TransparentWindowManager? trans_mgr;
 }

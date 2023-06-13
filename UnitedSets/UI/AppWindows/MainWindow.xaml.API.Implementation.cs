@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using WinUIEx;
 using System;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using UnitedSets.Classes;
 using System.ComponentModel;
 using WinUI3HwndHostPlus;
@@ -90,7 +90,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [DoesNotReturn]
     private partial async Task Suicide()
     {
-        trans_mgr?.Cleanup();
+        //trans_mgr?.Cleanup();
         OutOfBoundsFlyoutSystem.Dispose();
         await Task.Delay(300);
         Debug.WriteLine("Cleanish exit");

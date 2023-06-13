@@ -1,4 +1,4 @@
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using EasyCSharp;
 namespace UnitedSets.Classes.Tabs;
 

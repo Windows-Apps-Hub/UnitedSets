@@ -62,7 +62,7 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
                 var cursorPos = e.GetPosition(element);
 
                 bounds.X += 8;
-                bounds.Y += WinWrapper.Window
+                bounds.Y += WinWrapper.Windowing.Window
                         .FromWindowHandle(window.GetWindowHandle()).IsMaximized ? 8 : 0;
 
                 await OutOfBoundsFlyoutSystem.ShowAsync(
@@ -88,7 +88,7 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             var cursorPos = e.GetPosition(element);
 
             bounds.X += 8;
-            bounds.Y += WinWrapper.Window
+            bounds.Y += WinWrapper.Windowing.Window
                     .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
 
             _ = OutOfBoundsFlyoutSystem.ShowAsync(
@@ -115,7 +115,7 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             var cursorPos = e.GetPosition(element);
 
             bounds.X += 8;
-            bounds.Y += WinWrapper.Window
+            bounds.Y += WinWrapper.Windowing.Window
                     .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
 
             _ = OutOfBoundsFlyoutSystem.ShowAsync(
@@ -138,7 +138,7 @@ public sealed partial class AttachedOutOfBoundsFlyout : DependencyObject
             var scale = window.GetScale();
 
             bounds.X += 8;
-            bounds.Y += WinWrapper.Window
+            bounds.Y += WinWrapper.Windowing.Window
                     .FromWindowHandle(window.GetWindowHandle()).IsResizable ? 8 : 0;
 
             _ = OutOfBoundsFlyoutSystem.ShowAsync(

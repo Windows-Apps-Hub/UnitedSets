@@ -9,7 +9,7 @@ using Windows.Foundation;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
@@ -157,7 +157,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (args.Items.Count is not 0) return;
         if (args.Items[0] is HwndHostTab item)
-            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
     }
 
 
@@ -199,7 +199,11 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
         ).FirstOrDefault();
         TabBase? tabValue;
 		if (window.Owner != MainWindow.Win32Window) {
-			var ret = PInvoke.SendMessage(window.Owner, Constants.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+			var ret = window.Owner.SendMessage(
+                Constants.UnitedSetCommunicationChangeWindowOwnership,
+                default,
+                window
+            );
 			tabValue = MainWindow.CreateHwndHostTab(window);
 		} else {
 			tabValue = MainWindow.FindTabByWindow(window);

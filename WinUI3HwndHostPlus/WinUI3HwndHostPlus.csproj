@@ -21,6 +21,7 @@
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp.Generator\EasyCSharp.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\EasyXAMLTools\EasyXAMLTools.Generator\EasyXAMLTools.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\EasyXAMLTools\EasyCSharp\EasyCSharp\EasyCSharp.csproj" />
+		<ProjectReference Include="..\WinWrapper\WinWrapper.Windowing\WinWrapper.Windowing.csproj" />
 		<ProjectReference Include="..\WinWrapper\WinWrapper\WinWrapper.csproj" />
 	</ItemGroup>
 </Project>

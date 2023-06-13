@@ -1,6 +1,6 @@
 using EasyCSharp;
-using Cursor = WinWrapper.Cursor;
-using Keyboard = WinWrapper.Keyboard;
+using Cursor = WinWrapper.Input.Cursor;
+using Keyboard = WinWrapper.Input.Keyboard;
 using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Windows.Foundation;

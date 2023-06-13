@@ -10,10 +10,10 @@ using UnitedSets.Classes.Tabs;
 using UnitedSets.Helpers;
 using WinRT.Interop;
 using WinUIEx.Messaging;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using EasyCSharp;
 using Microsoft.UI.Windowing;
-using Keyboard = WinWrapper.Keyboard;
+using Keyboard = WinWrapper.Input.Keyboard;
 using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -22,6 +22,9 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using UnitedSets.Classes.Settings;
 using UnitedSets.Mvvm.Services;
+using WinWrapper;
+using WinWrapper.Windowing;
+using Icon = WinWrapper.Icon;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -58,7 +61,7 @@ partial class MainWindow
 
         ApplyFlags();
 
-        SetupTaskbarMode();
+        //SetupTaskbarMode();
 
         // Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -146,18 +149,9 @@ partial class MainWindow
 		    var Package = SettingsService.Settings;
 #endif
         Activated -= FirstRun;
-        var icon = PInvoke.LoadImage(
-            hInst: null,
-            name: $@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico",
-            type: GDI_IMAGE_TYPE.IMAGE_ICON,
-        cx: 0,
-        cy: 0,
-            fuLoad: IMAGE_FLAGS.LR_LOADFROMFILE | IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_SHARED
-        );
+        var icon = Icon.Load($@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico");
         bool success = false;
-        icon.DangerousAddRef(ref success);
-        PInvoke.SendMessage(Win32Window.Handle, PInvoke.WM_SETICON, 1, icon.DangerousGetHandle());
-        PInvoke.SendMessage(Win32Window.Handle, PInvoke.WM_SETICON, 0, icon.DangerousGetHandle());
+        Win32Window.SmallIcon = Win32Window.LargeIcon = icon;
 
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");

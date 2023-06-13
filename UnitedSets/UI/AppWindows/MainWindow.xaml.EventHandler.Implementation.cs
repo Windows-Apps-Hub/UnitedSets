@@ -5,8 +5,8 @@ using System.Linq;
 using Microsoft.UI.Xaml;
 using Windows.ApplicationModel.DataTransfer;
 using System;
-using WindowEx = WinWrapper.Window;
-using Keyboard = WinWrapper.Keyboard;
+using WindowEx = WinWrapper.Windowing.Window;
+using Keyboard = WinWrapper.Input.Keyboard;
 using UnitedSets.Classes;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -78,7 +78,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {
         if (args.Item is HwndHostTab item)
-            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle.Value);
+            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
     }
 
     private partial void OnDragItemOverTabView(DragEventArgs e)
@@ -99,7 +99,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         {
 
             var window = WindowEx.FromWindowHandle((nint)a);
-            var ret = PInvoke.SendMessage(window.Owner, Constants.UnitedSetCommunicationChangeWindowOwnership, new(), new(window));
+            var ret = window.Owner.SendMessage(
+                Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
             var pt = e.GetPosition(TabView);
             var finalIdx = (
                 from index in Enumerable.Range(0, Tabs.Count)
@@ -290,11 +291,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (cell == null)
             throw new Exception("Only cells should be generating this event");
         var window = WindowEx.FromWindowHandle(HwndId);
-        var ret = PInvoke.SendMessage(
-            window.Owner,
+        var ret = window.Owner.SendMessage(
             Constants.UnitedSetCommunicationChangeWindowOwnership,
-            new(),
-            new(window)
+            default,
+            window
         );
         var tab =
             Tabs.ToArray().OfType<CellTab>()
@@ -305,7 +305,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {
         var id = e.Message.MessageId;
-        if (id == Constants.UnitedSetCommunicationChangeWindowOwnership)
+        if (id == (uint)Constants.UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
             if (Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.WinUI.Helpers;
 using System;
 using Windows.Win32;
+using WinWrapper.Windowing;
 
 namespace UnitedSets;
 
@@ -9,8 +10,8 @@ static class Constants
     public const string UnitedSetsLifeCycleKey = "UnitedSetsLifeCycle";
     public const string UnitedSetsTabWindowDragProperty = "UnitedSetsTabWindow";
     public static readonly bool IsAltTabVisible = false;
-    public static readonly uint UnitedSetCommunicationChangeWindowOwnership
-        = PInvoke.RegisterWindowMessage(nameof(UnitedSetCommunicationChangeWindowOwnership));
+    public static readonly WindowMessages UnitedSetCommunicationChangeWindowOwnership
+        = WindowMessagesHelper.Register(nameof(UnitedSetCommunicationChangeWindowOwnership));
 
     static Lazy<bool> _IsFirstRun = new(delegate
     {

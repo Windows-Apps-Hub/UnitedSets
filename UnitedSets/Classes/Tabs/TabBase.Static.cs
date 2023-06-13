@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using UnitedSets.Mvvm.Services;
-using WinWrapper;
+using WinWrapper.Windowing;
 
 namespace UnitedSets.Classes.Tabs;
 

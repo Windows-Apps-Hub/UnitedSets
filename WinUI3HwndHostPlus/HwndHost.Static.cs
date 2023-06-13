@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using System.Threading;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using System.Linq;
 using System.Drawing;
 using Microsoft.UI.Xaml;
@@ -93,7 +93,7 @@ partial class HwndHost
 
 
     public static bool ShouldBeBlacklisted(WindowEx Window)
-        => Window.ClassName is
+        => Window.Class.Name is
             "Shell_TrayWnd" // Taskbar
             or "Progman" // Desktop
             or "WindowsDashboard" // I forget

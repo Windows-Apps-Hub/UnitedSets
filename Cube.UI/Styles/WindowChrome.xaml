@@ -300,7 +300,6 @@
                                         <Setter Target="MaxButtonIcon.Symbol" Value="Restore16" />
                                     </VisualState.Setters>
                                 </VisualState>
-
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 

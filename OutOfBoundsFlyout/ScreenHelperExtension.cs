@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using System.Drawing;
 using WinUIEx;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using WinUIPoint = Windows.Foundation.Point;
 
 

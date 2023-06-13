@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using OutOfBoundsFlyout;
 using CommunityToolkit.Mvvm.Input;
-using WinWrapper;
+using WinWrapper.Input;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -35,7 +35,7 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
         Minimize.Click += (_, _) => mainWindow.Minimize();
         Maximize.Resources["ChromeButtonSymbol"] = (Symbol)0xe922; // restore: 0xe923
         Maximize.Click += (_, _) => mainWindow.Maximize();
-        Close.Resources["ChromeButtonSymbol"] = (Symbol)0xe8bb;
+        CloseBtn.Resources["ChromeButtonSymbol"] = (Symbol)0xe8bb;
         MoveSymbol.Symbol = (Symbol)0xe7c2;
         MoveButton.PointerMoved += MoveButton_PointerMoved;
         //Close.Click += async (_, _) => await mainWindow.RequestCloseAsync(MainWindow.CloseMode.ReleaseWindow);

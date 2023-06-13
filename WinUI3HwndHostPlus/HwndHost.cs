@@ -2,14 +2,13 @@ using Microsoft.UI.Xaml;
 using System;
 using Microsoft.UI.Windowing;
 using System.Drawing;
-using WindowEx = WinWrapper.Window;
-using Windows.Win32.UI.WindowsAndMessaging;
-using Windows.Win32;
-using Windows.Win32.Graphics.Dwm;
+using WindowEx = WinWrapper.Windowing.Window;
 using EasyCSharp;
-using Windows.UI.Core;
 using Microsoft.UI.Dispatching;
 using System.ComponentModel;
+using WinWrapper;
+using WinWrapper.Windowing;
+using Window = Microsoft.UI.Xaml.Window;
 
 namespace WinUI3HwndHostPlus;
 
@@ -42,14 +41,16 @@ public partial class HwndHost : FrameworkElement, IDisposable, INotifyPropertyCh
         
         this._HostedWindow = WindowToHost;
 
-        _NoMovingMode = WindowToHost.ClassName is "RAIL_WINDOW";
+        _NoMovingMode = WindowToHost.Class.Name is "RAIL_WINDOW";
 
         InitialIsResizable = WindowToHost.IsResizable;
         
         WindowToHost.Owner = _ParentWindow;
         _IsOwnerSetSuccessful = WindowToHost.Owner == _ParentWindow;
         if (IsDwmBackdropSupported)
-            InitialBackdropType = WindowToHost.DwmGetWindowAttribute<DWM_SYSTEMBACKDROP_TYPE>((DWMWINDOWATTRIBUTE)38);
+            InitialBackdropType = WindowToHost.DwmAttribute.Get<DwmSystemBackdropType>(
+                DwmWindowAttribute.SystemBackdropTypes
+            );
 
         //if (!IsOwnerSetSuccessful) WindowToHost.ExStyle |= WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
         WinUIAppWindow.Changed += WinUIAppWindowChanged;
@@ -60,10 +61,10 @@ public partial class HwndHost : FrameworkElement, IDisposable, INotifyPropertyCh
     }
 
     // Initial State
-    readonly WINDOW_STYLE InitialStyle;
+    readonly WindowStyles InitialStyle;
     readonly Rectangle? InitialRegion;
-    readonly DWM_SYSTEMBACKDROP_TYPE InitialBackdropType;
-    readonly WINDOW_EX_STYLE InitialExStyle;
+    readonly DwmSystemBackdropType InitialBackdropType;
+    readonly WindowExStyles InitialExStyle;
     readonly bool InitialIsResizable;
     // Compatability Mode
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]

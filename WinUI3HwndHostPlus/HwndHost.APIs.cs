@@ -1,6 +1,4 @@
 using System;
-using Microsoft.UI.Dispatching;
-using Microsoft.Toolkit.Uwp;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 

@@ -6,6 +6,7 @@ using Window = Microsoft.UI.Xaml.Window;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using UnitedSets.UI.FlyoutModules;
+using WinWrapper.Input;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -19,7 +20,7 @@ partial class HwndHostTab
         var Window = this.Window;
 		var NoMovingMode = HwndHost.NoMoving;
 		await HwndHost.DetachAndDispose();
-        PInvoke.GetCursorPos(out var CursorPos);
+        var CursorPos= Cursor.Position;
         if (JumpToCursor && !NoMovingMode)
             Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
         _IsDisposed = true;

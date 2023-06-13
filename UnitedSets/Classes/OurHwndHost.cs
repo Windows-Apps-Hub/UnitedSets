@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UnitedSets.Classes.Tabs;
 using WinUI3HwndHostPlus;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 
 using EasyCSharp;
 using System.Collections;
@@ -35,7 +35,7 @@ namespace UnitedSets.Classes {
 			var FileName = host.HostedWindow.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
 			if (FileName == @"C:\WINDOWS\system32\ApplicationFrameHost.exe") {
 				var child = host.HostedWindow.Children.AsEnumerable().FirstOrDefault(x =>
-					x.ClassName is "Windows.UI.Core.CoreWindow", host.HostedWindow);
+					x.Class.Name is "Windows.UI.Core.CoreWindow", host.HostedWindow);
 				FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
 			}
 			return FileName;

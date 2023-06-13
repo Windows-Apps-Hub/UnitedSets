@@ -5,12 +5,13 @@ using System;
 using System.Threading.Tasks;
 using TransparentWinUIWindowLib;
 using WinUIEx;
-using Window = WinWrapper.Window;
-using WinWrapper;
+using Window = WinWrapper.Windowing.Window;
 using WinUIPoint = Windows.Foundation.Point;
-using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
 using Point = System.Drawing.Point;
+using WinWrapper;
+using WinWrapper.Input;
+using WinWrapper.Windowing;
 
 namespace OutOfBoundsFlyout;
 
@@ -101,14 +102,14 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
             try
             {
                 if (!weVisible)
-                    window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_TRANSPARENT, false);
+                    window[WindowExStyles.Transparent] = false;
                 var elem = ElementFromCursor();
                 var bounding = elem.CurrentBoundingRectangle;
                 var width = bounding.right - bounding.left;
                 var notOverMenu = width > 700 && elem.CurrentName == "Close";
                 if (notOverMenu)
                 {
-                    window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_TRANSPARENT, true);
+                    window[WindowExStyles.Transparent] = true;
                     weVisible = false;
                 }
                 else
@@ -116,7 +117,7 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
                     if (!weVisible)
                     {
                         weVisible = true;
-                        window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_TRANSPARENT, false);
+                        window[WindowExStyles.Transparent] = false;
                     }
                 }
             }
@@ -138,7 +139,10 @@ class OutOfBoundsFlyoutHost : WindowEx, IDisposable
         // Convert mouse position from System.Drawing.Point to System.Windows.Point.
         var auto = new Interop.UIAutomationClient.CUIAutomation();
         //var desktop = auto.GetRootElement();
-        var element = auto.ElementFromPoint(new Interop.UIAutomationClient.tagPOINT { x = Cursor.Position.X, y = Cursor.Position.Y });
+        var element = auto.ElementFromPoint(new Interop.UIAutomationClient.tagPOINT {
+            x = Cursor.Position.X,
+            y = Cursor.Position.Y
+        });
 
 
         return element;

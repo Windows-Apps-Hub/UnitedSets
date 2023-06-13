@@ -1,6 +1,6 @@
 using System.Drawing;
-using WindowEx = WinWrapper.Window;
-using WinWrapper;
+using WindowEx = WinWrapper.Windowing.Window;
+using WinWrapper.Windowing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -92,7 +92,7 @@ partial class HwndHost
                 await Task.Delay(500);
                 if (oldBounds == WindowToHost.Bounds && IsWindowVisible)
                 {
-                    WindowToHost.ActivateTopMost();
+                    WindowToHost.Activate(ActivationTechnique.SetWindowPosTopMost);
                     WindowToHost.Focus();
                 }
             }

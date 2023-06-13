@@ -288,7 +288,7 @@
                     </Button.Resources>
                 </Button>
                 <Button
-                    x:Name="Close"
+                    x:Name="CloseBtn"
                     Style="{ThemeResource ChromeWindowButton}"
                     Width="32"
                     Height="32"

@@ -7,7 +7,7 @@ using Windows.Win32.Graphics.Gdi;
 using Microsoft.UI.Xaml.Input;
 using EasyCSharp;
 using Microsoft.UI.Xaml;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.Classes.Tabs;

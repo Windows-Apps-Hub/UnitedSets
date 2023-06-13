@@ -15,8 +15,8 @@ partial class HwndHostTab
             if (!string.IsNullOrWhiteSpace(CustomTitle))
                 UIDispatcher?.EnqueueAsync(() => TitleChanged());
         }
-        var icon = Window.LargeIconPtr;
-        if (icon == IntPtr.Zero) icon = Window.SmallIconPtr;
+        var icon = Window.LargeIcon;
+        if (icon == default) icon = Window.SmallIcon;
         if (_Icon != icon)
         {
             _Icon = icon;

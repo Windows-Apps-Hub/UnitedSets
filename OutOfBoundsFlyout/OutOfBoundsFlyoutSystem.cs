@@ -1,10 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
 using System.Threading.Tasks;
-using WinUIEx;
-using WinWrapper;
-using WinUIPoint = Windows.Foundation.Point;
-using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
 using Point = System.Drawing.Point;
 using System.Collections.Generic;

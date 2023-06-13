@@ -4,18 +4,14 @@ using Windows.Win32;
 using WinRT.Interop;
 using WinUIEx;
 using WinUIEx.Messaging;
-using WinWrapper;
+using WinWrapper.Windowing;
 using Windows.Win32.UI.WindowsAndMessaging;
 using UnitedSets.Helpers;
 using Microsoft.UI.Xaml.Media;
 using SystemBackdrop = Microsoft.UI.Xaml.Media.SystemBackdrop;
 using Windows.UI.Composition;
 using ICompositionSupportsSystemBackdrop = Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop;
-using DWMWINDOWATTRIBUTE = Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE;
 using System;
-using static TransparentWinUIWindowLib.TransparentWindowManager;
-using Microsoft.UI.Windowing;
-using Windows.Win32.Foundation;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -38,10 +34,7 @@ public class TransparentSupportedWindow : WindowEx
             if (_TransparentMode != value)
             {
                 _TransparentMode = value;
-                Win32Window.SetExStyleFlag(WINDOW_EX_STYLE.WS_EX_LAYERED, value);
-                //if (AppWindow.Presenter is OverlappedPresenter o) o.SetBorderAndTitleBar(false, false);
-                //Win32Window.Style = WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
-                //Win32Window.Redraw();
+                Win32Window[WindowExStyles.Layered] = value;
                 if (value)
                 {
                     Win32Window.Hide();
@@ -55,15 +48,17 @@ public class TransparentSupportedWindow : WindowEx
         Activated -= FirstRun;
     }
 
-    SafeHandle TransparentBrush = PInvoke.CreateSolidBrush_SafeHandle(
-        new(
-            (uint)ColorTranslator.ToWin32(Color.FromArgb(0, 0, 0, 0))));
+    //SafeHandle TransparentBrush = PInvoke.CreateSolidBrush_SafeHandle(
+    //    new(
+    //        (uint)ColorTranslator.ToWin32(Color.FromArgb(0, 0, 0, 0))));
     private void WindowMessageReceived(object? sender, WindowMessageEventArgs e)
     {
-        if (e.Message.MessageId == PInvoke.WM_ERASEBKGND)
+        if (e.Message.MessageId is (uint)WindowMessages.EarseBackground)
         {
-            PInvoke.GetClientRect(Win32Window, out var rect);
-            PInvoke.FillRect(new((nint)e.Message.WParam), rect, TransparentBrush);
+            var g = Graphics.FromHdc((nint)e.Message.WParam);
+            g.Clear(Color.Transparent);
+            //PInvoke.GetClientRect(Win32Window, out var rect);
+            //PInvoke.FillRect(new((nint)e.Message.WParam), rect, TransparentBrush);
             
             e.Handled = true;
             e.Result = 1;

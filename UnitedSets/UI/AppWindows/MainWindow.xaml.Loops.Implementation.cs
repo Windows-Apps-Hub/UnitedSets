@@ -2,9 +2,9 @@ using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System;
-using WindowRelative = WinWrapper.WindowRelative;
-using WindowEx = WinWrapper.Window;
-using Cursor = WinWrapper.Cursor;
+using WindowRelative = WinWrapper.Windowing.WindowRelative;
+using WindowEx = WinWrapper.Windowing.Window;
+using Cursor = WinWrapper.Input.Cursor;
 using UnitedSets.Classes;
 using System.Threading.Tasks;
 using System.ComponentModel;
@@ -16,6 +16,7 @@ using UnitedSets.Classes.Tabs;
 using CommunityToolkit.WinUI;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using WinWrapper.Taskbar;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -56,7 +57,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void UpdateWindowIcon()
     {
-        Win32Window.SetOverlayIconPtr(new(SelectedTabCache?.Windows.FirstOrDefault().LargeIconPtr ?? (nint)0), SelectedTabCache?.Title ?? "");
+        Taskbar.SetOverlayIcon(
+            Win32Window,
+            SelectedTabCache?.Windows.FirstOrDefault().LargeIcon ?? default,
+            SelectedTabCache?.Title ?? ""
+        );
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     async Task RemoveDisposedTab()
@@ -148,7 +153,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             var CursorPos = Cursor.Position;
             if (below == Main)
                 return true;
-            if (below.ClassName is
+            if (below.Class.Name is
                 "Qt5152TrayIconMessageWindowClass" or
                 "Qt5152QWindowIcon")
                 continue;

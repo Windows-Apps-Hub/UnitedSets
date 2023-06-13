@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using Window = Microsoft.UI.Xaml.Window;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using WinWrapper;
 using Windows.Win32.UI.WindowsAndMessaging;
 using System.Linq;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;

@@ -11,19 +11,20 @@ using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Storage.Xps;
 using WinWrapper;
+using WinWrapper.Windowing;
 namespace UnitedSets.WinForms
 {
     public class FormWndProc : Form
     {
-        public HBITMAP Bitmap { get; set; }
+        public nint HBitmap { get; set; }
         public Window WindowLink { get; set; }
         protected override unsafe void WndProc(ref Message m)
         {
-            if (m.Msg == PInvoke.WM_DWMSENDICONICLIVEPREVIEWBITMAP)
+            if (m.Msg is (int)WindowMessages.DwmSendIconICLivePreviewBitmap)
             {
                 SetIconicLivePreviewBitmap();
                 m.Result = IntPtr.Zero;
-            } else if (m.Msg == PInvoke.WM_DWMSENDICONICTHUMBNAIL)
+            } else if (m.Msg is (int)WindowMessages.DwmSendIconICThumbnail)
             {
                 SetIconicThumbnail();
                 m.Result = IntPtr.Zero;
@@ -31,13 +32,13 @@ namespace UnitedSets.WinForms
             else
                 base.WndProc(ref m);
         }
-        public unsafe HRESULT SetIconicLivePreviewBitmap()
+        public unsafe void SetIconicLivePreviewBitmap()
         {
-            return PInvoke.DwmSetIconicLivePreviewBitmap(new(Handle), Bitmap, (Point*)0, 0);
+            PInvoke.DwmSetIconicLivePreviewBitmap(new(Handle), new(HBitmap), default(Point*), 0).ThrowOnFailure();
         }
-        public unsafe HRESULT SetIconicThumbnail()
+        public unsafe void SetIconicThumbnail()
         {
-            return PInvoke.DwmSetIconicThumbnail(new(Handle), Bitmap, 0);
+            PInvoke.DwmSetIconicThumbnail(new(Handle), new HBITMAP(HBitmap), 0).ThrowOnFailure();
         }
     }
 }

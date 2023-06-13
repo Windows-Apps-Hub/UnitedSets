@@ -4,7 +4,7 @@ using System.Linq;
 using System;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
-using Window = WinWrapper.Window;
+using Window = WinWrapper.Windowing.Window;
 using EasyCSharp;
 using UnitedSets.UI.AppWindows;
 using CommunityToolkit.Mvvm.Input;

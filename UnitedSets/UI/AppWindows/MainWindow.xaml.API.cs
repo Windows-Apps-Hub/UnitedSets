@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using WinUIEx;
 using System;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using UnitedSets.Classes;
 using System.ComponentModel;
 using WinUI3HwndHostPlus;

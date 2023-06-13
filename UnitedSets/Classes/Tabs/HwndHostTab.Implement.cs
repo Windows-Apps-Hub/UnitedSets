@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing;
 using Window = Microsoft.UI.Xaml.Window;
-using WindowEx = WinWrapper.Window;
+using WindowEx = WinWrapper.Windowing.Window;
 using System.Collections.Generic;
 using System.Linq;
 using EasyCSharp;

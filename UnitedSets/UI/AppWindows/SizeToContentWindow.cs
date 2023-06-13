@@ -7,7 +7,7 @@ using EasyXAMLTools;
 using System.ComponentModel;
 using UnitedSets.UI.Controls;
 using WinWrapper;
-using Win32Window = WinWrapper.Window;
+using Win32Window = WinWrapper.Windowing.Window;
 
 namespace UnitedSets.UI.AppWindows;
 

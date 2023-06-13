@@ -1,14 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing;
 using System.Threading.Tasks;
-using WindowEx = WinWrapper.Window;
-using Windows.Win32;
+using WindowEx = WinWrapper.Windowing.Window;
 using WinUIEx;
 using Windows.Graphics;
 using WinWrapper;
 using EasyCSharp;
-using Windows.Win32.UI.WindowsAndMessaging;
-using Windows.Win32.UI.Input.KeyboardAndMouse;
+using WinWrapper.Input;
 
 namespace UnitedSets.UI.Popups;
 
@@ -27,15 +25,14 @@ public sealed partial class AddTabPopup
         this.Hide();
     }
 
-    private void OnKeyPressed(KBDLLHOOKSTRUCT eventDetails, KeyboardState state, ref bool Handled)
+    private void OnKeyPressed(KeyboardHookInfo eventDetails, KeyboardState state, ref bool Handled)
     {
         if (state == KeyboardState.KeyDown)
         {
-            if (eventDetails.vkCode is (uint)VIRTUAL_KEY.VK_TAB && AppWindow.IsVisible)
+            if (eventDetails.KeyCode is VirtualKey.Tab && AppWindow.IsVisible)
             {
 				Handled = true; //don't pass the tab through
-                PInvoke.GetCursorPos(out var pt);
-                Result = WindowEx.GetWindowFromPoint(pt);
+                Result = WindowEx.GetWindowFromPoint(Cursor.Position);
                 this.Hide();
             }
         }

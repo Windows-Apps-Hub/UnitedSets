@@ -13,7 +13,7 @@
 		<Nullable>Enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-		<AppxPackageDir>AppPackages\</AppxPackageDir>
+		<AppxPackageDir>..\AppPackages\</AppxPackageDir>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
@@ -22,46 +22,8 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-		<LangVersion>preview</LangVersion>
-		<NoWarn>WMC1500</NoWarn>
+		<LangVersion>11</LangVersion>
 	</PropertyGroup>
-	<ItemGroup>
-		<Compile Remove="AppPackages\**" />
-		<Compile Remove="Interfaces\**" />
-		<EmbeddedResource Remove="AppPackages\**" />
-		<EmbeddedResource Remove="Interfaces\**" />
-		<None Remove="AppPackages\**" />
-		<None Remove="Interfaces\**" />
-		<Page Remove="AppPackages\**" />
-		<Page Remove="Interfaces\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Remove="AddTabFlyout.xaml" />
-		<None Remove="Controls\CellVisualizer.xaml" />
-		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-		<None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
-		<None Remove="UI\AppWindows\OOBEWindow.Style.xaml" />
-		<None Remove="UI\Controls\HomeBackground.xaml" />
-		<None Remove="UI\Controls\Settings\SettingController.xaml" />
-		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
-		<None Remove="ModifyWindowFlyoutModule.xaml" />
-		<None Remove="OOBEWindow.xaml" />
-		<None Remove="Windows\OOBE\OOBE.Page.cs.xaml" />
-		<None Remove="SettingsWindow.xaml" />
-		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
-		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
-		<None Remove="TabPropertiesFlyout.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Assets\SplashScreen.scale-200.png" />
-		<Content Include="Assets\LockScreenLogo.scale-200.png" />
-		<Content Include="Assets\Square150x150Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Labs.WinUI.SizerBase" Version="0.0.4" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
@@ -79,12 +41,6 @@
 		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
-
-	<!-- 
-    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-    Tools extension to be activated for this project even if the Windows App SDK Nuget
-    package has not yet been restored.
-  -->
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<ProjectCapability Include="Msix" />
 	</ItemGroup>
@@ -99,128 +55,14 @@
 		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<Page Update="FlyoutModule\MainWindowMenuFlyoutModule.xaml">
-			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-		</Page>
-		<Page Update="UI\AppWindows\OOBEWindow.Style.xaml">
-		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-		</Page>
-		<Page Update="UI\AppWindows\FloatingTaskbar.xaml">
-		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-		  <SubType>Designer</SubType>
-		</Page>
-		<Page Update="UI\Controls\HomeBackground.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="UI\Controls\Settings\SettingController.xaml">
-		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-		</Page>
-		<Page Update="Window\OOBEWindow.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="Window\SettingsWindow.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="Window\Flyout\AddTabFlyout.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="Pages\OOBEPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Assets\OOBE\" />
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml">
-			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Tab Settings\Modules\BasicTabFlyoutModule.xaml">
-			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Tab Settings\TabPropertiesFlyout.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="TabContentTemplate\TabDataTemplate.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="TabContentTemplate\CellVisualizer.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<!-- Add this as a new ItemGroup, replacing paths and names appropriately -->
-
-	<!-- 
-    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
-    Explorer "Package and Publish" context menu entry to be enabled for this project even if 
-    the Windows App SDK Nuget package has not yet been restored.
-  -->
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<ItemGroup>
-		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-		<Resource Remove="ModifyWindowFlyoutModule.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-		<PRIResource Remove="AppPackages\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<PRIResource Remove="Interfaces\**" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Remove="Controls\CellVisualizerUnderConstruction.xaml.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="UI\Controls\SizeChangeDetectorGrid.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
-	  <Compile Update="UI\Controls\Settings\SettingController.xaml.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Update="Controls\CellVisualizer.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
 	<Choose>
 		<When Condition="'$(Configuration)'=='DebugUnpackaged'">
 			<PropertyGroup>
 				<WindowsPackageType>None</WindowsPackageType>
+				<DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
 			</PropertyGroup>
 			<ItemGroup>
 				<None Remove="Package.appxmanifest" />

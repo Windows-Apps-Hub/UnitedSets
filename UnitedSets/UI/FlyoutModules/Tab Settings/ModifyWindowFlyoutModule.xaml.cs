@@ -9,7 +9,7 @@ using WinWrapper;
 using Process = System.Diagnostics.Process;
 using WinUI3HwndHostPlus;
 using System;
-using OutOfBoundsFlyout;
+using Get.OutOfBoundsFlyout;
 
 namespace UnitedSets.UI.FlyoutModules;
 

@@ -11,7 +11,7 @@
     xmlns:ui="using:Windows.UI"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
-    xmlns:oobf="using:OutOfBoundsFlyout"
+    xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
     xmlns:tabs="using:UnitedSets.Classes.Tabs" xmlns:ToolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">

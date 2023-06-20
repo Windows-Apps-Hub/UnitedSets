@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Classes.Tabs;
-using TransparentWinUIWindowLib;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -26,5 +25,4 @@ public sealed partial class MainWindow
     public readonly ObservableCollection<TabGroup> HiddenTabs = new();
     readonly DispatcherQueueTimer timer;
     readonly WindowMessageMonitor WindowMessageMonitor;
-    //readonly TransparentWindowManager? trans_mgr;
 }

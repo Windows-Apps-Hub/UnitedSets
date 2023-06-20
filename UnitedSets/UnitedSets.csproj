@@ -34,6 +34,7 @@
 		<PackageReference Include="Get.EasyCsharp" Version="1.0.0" />
 		<PackageReference Include="Get.EasyXAMLTools" Version="1.0.0" />
 		<PackageReference Include="Get.EasyXAMLTools.Generator" Version="1.0.2" />
+		<PackageReference Include="Get.WinUI.OutOfBoundsFlyout" Version="1.0.3" />
 		<PackageReference Include="Interop.UIAutomationClient" Version="10.19041.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230502000" />
@@ -42,7 +43,7 @@
 		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
 		<PackageReference Include="WinUIEx" Version="2.2.0" />
 		<PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
-		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
+		<PackageReference Include="WinWrapper.Windowing" Version="2.0.2" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
@@ -50,8 +51,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-		<ProjectReference Include="..\OutOfBoundsFlyout\OutOfBoundsFlyout.csproj" />
-		<ProjectReference Include="..\TransparentWinUIWindowLib\TransparentWinUIWindowLib.csproj" />
 		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
 		<ProjectReference Include="..\WinUI3HwndHostPlus\WinUI3HwndHostPlus.csproj" />
 	</ItemGroup>

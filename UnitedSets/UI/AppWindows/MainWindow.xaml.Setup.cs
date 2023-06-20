@@ -1,10 +1,9 @@
 ﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using OutOfBoundsFlyout;
+using Get.OutOfBoundsFlyout;
 using System;
 using System.Linq;
-using TransparentWinUIWindowLib;
 using UnitedSets.Classes;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.Helpers;
@@ -78,17 +77,17 @@ partial class MainWindow
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(CustomDragRegion);
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void SetupTransparent(out TransparentWindowManager trans_mgr)
-        {
-            WindowBorderOnTransparent.Visibility = Visibility.Visible;
-            MainAreaBorder.Margin = new(8, 0, 8, 8);
-            var presenter = (OverlappedPresenter)AppWindow.Presenter;
-            //RootGrid.Children.Insert(0, border);
-            //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
-            //trans_mgr.AfterInitialize();
-            trans_mgr = null!;
-        }
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //void SetupTransparent(out TransparentWindowManager trans_mgr)
+        //{
+        //    WindowBorderOnTransparent.Visibility = Visibility.Visible;
+        //    MainAreaBorder.Margin = new(8, 0, 8, 8);
+        //    var presenter = (OverlappedPresenter)AppWindow.Presenter;
+        //    //RootGrid.Children.Insert(0, border);
+        //    //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
+        //    //trans_mgr.AfterInitialize();
+        //    trans_mgr = null!;
+        //}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
         {

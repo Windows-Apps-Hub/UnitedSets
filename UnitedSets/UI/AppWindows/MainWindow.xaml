@@ -12,7 +12,7 @@
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:ezxaml="using:EasyXAMLTools"
     xmlns:windows="using:UnitedSets.UI.AppWindows"
-    xmlns:oobf="using:OutOfBoundsFlyout"
+    xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
     xmlns:controls="using:UnitedSets.UI.Controls"
     MinHeight="300" MinWidth="800"

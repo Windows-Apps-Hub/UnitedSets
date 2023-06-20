@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.UI.AppWindows;
-using EasyCSharp;
 namespace UnitedSets.Classes.Tabs;
 
 public partial class CellTab : TabBase, IHwndHostParent {

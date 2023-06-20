@@ -17,6 +17,4 @@ partial class TabBase
         InvokePropertyChanged(nameof(CustomTitle));
         TitleChanged();
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

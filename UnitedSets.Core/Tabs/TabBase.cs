@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using EasyCSharp;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -9,7 +10,7 @@ using Windows.Foundation;
 
 namespace UnitedSets.Classes.Tabs;
 
-public abstract partial class TabBase : INotifyPropertyChanged
+public abstract partial class TabBase : ObservableObject
 {
 	public const bool DefaultIsSwitcherVisible = true;
     [OptionalParameter(nameof(IsSwitcherVisible), DefaultIsSwitcherVisible)]

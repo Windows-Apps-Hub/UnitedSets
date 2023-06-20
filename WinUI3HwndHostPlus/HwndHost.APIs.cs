@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Drawing;
 
 namespace WinUI3HwndHostPlus;
 
@@ -12,15 +13,12 @@ partial class HwndHost
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public partial void ForceUpdateWindow();
 
-    public event Action? Closed;
-    public event Action? Updating;
 
-    public void FixSizeBug() => _HostedWindow.Restore();
+    public void FixSizeBug() => HostedWindow.Restore();
     public bool MayBeSizeBug =>
-        _CacheWidth == 0 &&
-        _CacheHeight == 0 &&
         !IsDisposed &&
-        _HostedWindow.IsValid &&
-        _HostedWindow.IsNormalSize &&
+        _CacheWindowRect.Size == SizeF.Empty &&
+        HostedWindow.IsValid &&
+        HostedWindow.IsNormalSize &&
         Visibility == Microsoft.UI.Xaml.Visibility.Visible;
 }

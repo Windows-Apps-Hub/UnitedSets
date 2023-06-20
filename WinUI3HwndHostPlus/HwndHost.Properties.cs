@@ -3,78 +3,94 @@ using WindowEx = WinWrapper.Windowing.Window;
 using System.Threading.Tasks;
 using Windows.Win32;
 using EasyCSharp;
+using EasyXAMLTools;
 using WinWrapper.Windowing;
 using WinWrapper;
+using System.Drawing;
+using WinWrapper.Windowing.Dwm;
 
 namespace WinUI3HwndHostPlus;
+[DependencyProperty(typeof(bool), "ActivateCrop", GenerateLocalOnPropertyChangedMethod = true)]
+[DependencyProperty(typeof(bool), "BorderlessWindow", GenerateLocalOnPropertyChangedMethod = true)]
+[DependencyProperty(typeof(int), "CropTop",
+    GenerateLocalOnPropertyChangedMethod = true,
+    LocalOnPropertyChangedMethodWithParameter = false,
+    LocalOnPropertyChangedMethodName = "CropParamChanged"
+)]
+[DependencyProperty(typeof(int), "CropBottom",
+    GenerateLocalOnPropertyChangedMethod = true,
+    LocalOnPropertyChangedMethodWithParameter = false,
+    LocalOnPropertyChangedMethodName = "CropParamChanged"
+)]
+[DependencyProperty(typeof(int), "CropLeft",
+    GenerateLocalOnPropertyChangedMethod = true,
+    LocalOnPropertyChangedMethodWithParameter = false,
+    LocalOnPropertyChangedMethodName = "CropParamChanged"
+)]
+[DependencyProperty(typeof(int), "CropRight",
+    GenerateLocalOnPropertyChangedMethod = true,
+    LocalOnPropertyChangedMethodWithParameter = false,
+    LocalOnPropertyChangedMethodName = "CropParamChanged"
+)]
 partial class HwndHost
 {
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
-    float _CacheXFromWindow, _CacheYFromWindow, _CacheWidth, _CacheHeight;
+    RectangleF _CacheWindowRect;
 
-    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
-    readonly WindowEx _ParentWindow;
-
-    [Property(SetVisibility = GeneratorVisibility.DoNotGenerate)]
-    readonly WindowEx _HostedWindow;
-
-    [Property(OnChanged = nameof(IsWindowVisibleChanged))]
-    bool _IsWindowVisible;
+    //[Property(OnChanged = nameof(IsWindowVisibleChanged))]
+    bool IsWindowVisible;
     void IsWindowVisibleChanged()
         => Task.Run(ForceUpdateWindow);
 
-    bool ActivateCropAllowed => !_NoMovingMode;
-    [AutoNotifyProperty(OnChanged = nameof(OnActivateCropChanged))]
-    bool _ActivateCrop = false;
-    void OnActivateCropChanged()
+    partial void OnActivateCropChanged(bool oldValue, bool newValue)
     {
-        if (!ActivateCropAllowed && _ActivateCrop) throw new InvalidOperationException($"{nameof(ActivateCropAllowed)} is false");
-        if (_ActivateCrop)
+        if (!CompatabilityMode.CanActivateCrop
+            && newValue
+        ) throw new InvalidOperationException($"Cannot activate crop due to compatability mode");
+        if (newValue)
         {
             if (IsDwmBackdropSupported && !IsDisposed)
                 SetBackdrop = true;
         }
         else
             if (SetBackdrop)
-                SetBackdrop = false;
+            SetBackdrop = false;
     }
     [Property(Visibility = GeneratorVisibility.Private, OnChanged = nameof(OnSetBackdropChange))]
     bool _SetBackdrop = false;
     void OnSetBackdropChange()
     {
-        var WindowToHost = this._HostedWindow;
+        var HostedWindow = WindowInfo.HostedWindow;
         if (SetBackdrop)
         {
-            WindowToHost.DwmAttribute.Set(DwmWindowAttribute.SystemBackdropTypes, DwmSystemBackdropType.None);
-            WindowToHost.ExStyle |= WindowExStyles.Transparent;
+            HostedWindow.DwmAttribute.SystemBackdrop = SystemBackdropTypes.None;
+            HostedWindow.ExStyle |= WindowExStyles.Transparent;
         } else
         {
-            WindowToHost.DwmAttribute.Set(DwmWindowAttribute.SystemBackdropTypes, InitialBackdropType);
-            WindowToHost.ExStyle = InitialExStyle;
-            WindowToHost.Region = null;
+            HostedWindow.DwmAttribute.SystemBackdrop = WindowInitialCondition.SystemBackdrop;
+            HostedWindow.ExStyle = WindowInitialCondition.ExStyle;
+            HostedWindow.Region = null;
         }
     }
 
-    [AutoNotifyProperty(OnChanged = nameof(OnBorderlessWindowChanged))]
-    bool _BorderlessWindow = false;
-    void OnBorderlessWindowChanged()
+    partial void OnBorderlessWindowChanged(bool oldValue, bool newValue)
     {
-        var WindowToHost = this._HostedWindow;
-        if (_BorderlessWindow && !IsDisposed)
+        var HostedWindow = WindowInfo.HostedWindow;
+        if (newValue && !IsDisposed)
         {
-            WindowToHost.Style = WindowStyles.Popup;
+            HostedWindow.Style = WindowStyles.Popup;
         }
         else
         {
-            WindowToHost.Style = InitialStyle;
+            HostedWindow.Style = WindowInitialCondition.Style;
         }
     }
 
-    [Property(Visibility = GeneratorVisibility.Private)]
-    bool _ForceInvalidateCrop = false;
+    void CropParamChanged() => SetForceInvalidateCropToTrue();
 
-    [AutoNotifyProperty(OnChanged = nameof(SetForceInvalidateCropToTrue))]
-    int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
+
+
+    bool ForceInvalidateCrop = false;
 
     void SetForceInvalidateCropToTrue() => ForceInvalidateCrop = true;
 

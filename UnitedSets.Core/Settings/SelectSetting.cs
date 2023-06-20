@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnitedSets.Classes.Settings;
 
 public interface ISelectSetting
 {
-    IEnumerable ValidOptions { get; }
+    IEnumerable<(object obj, string Description)> ValidOptions { get; }
     object Value { get; set; }
 }
 public partial class SelectSetting<TEnum> : Setting<TEnum>, ISelectSetting where TEnum : struct, Enum
 {
-    public IEnumerable<TEnum> ValidOptions { get; }
+    public IEnumerable<(TEnum value, string Description)> ValidOptions { get; }
 
-    IEnumerable ISelectSetting.ValidOptions => ValidOptions;
+    IEnumerable<(object obj, string Description)> ISelectSetting.ValidOptions =>
+        (IEnumerable<(object obj, string Description)>)ValidOptions;
 
     object ISelectSetting.Value { get => Value; set => Value = (TEnum)value; }
 
-    public SelectSetting(string Key, IEnumerable<TEnum> ValidOptions) : base(Key)
+    public SelectSetting(string Key, IEnumerable<TEnum> ValidOptions) : this(Key, ValidOptions.Select(x => (x, x.ToString())))
+    {
+        
+    }
+    public SelectSetting(string Key, IEnumerable<(TEnum Value, string Description)> ValidOptions) : base(Key)
     {
         this.ValidOptions = ValidOptions;
     }

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>UnitedSets.Core</RootNamespace>
+		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+		<UseWinUI>true</UseWinUI>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Tabs\TabBase.Switcher.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+		<PackageReference Include="EasyCSharp.Generator" Version="0.0.3" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230502000" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
+		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Classes\" />
+	</ItemGroup>
+</Project>

@@ -34,7 +34,7 @@ partial class HwndHost
             {
                 foreach (var HwndHost in HwndHosts.ToArray())
                 {
-                    var rect = GetBoundsRelativeToWindow(HwndHost, HwndHost.XAMLWindow, HwndHost._ParentWindow);
+                    var rect = GetBoundsRelativeToWindow(HwndHost, HwndHost.XAMLWindow, HwndHost.ParentWindow);
 
                     HwndHost._CacheXFromWindow = rect.X;
                     HwndHost._CacheYFromWindow = rect.Y;

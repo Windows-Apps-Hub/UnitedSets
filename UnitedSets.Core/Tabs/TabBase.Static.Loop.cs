@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -8,7 +7,7 @@ namespace UnitedSets.Classes.Tabs;
 partial class TabBase
 {
 
-	static void StaticUpdateStatusThreadLoop()
+    private static partial void StaticUpdateStatusThreadLoop()
     {
         while (true)
         {
@@ -18,12 +17,12 @@ partial class TabBase
 
             try
             {
-				foreach (var tab in AllTabs.ToArray())
+                foreach (var tab in AllTabs.ToArray())
                 {
-					if (tab.IsDisposed)
-						AllTabs.Remove(tab);
-					else
-						tab.UpdateStatusLoop();
+                    if (tab.IsDisposed)
+                        AllTabs.Remove(tab);
+                    else
+                        tab.UpdateStatusLoop();
                 }
                 OnUpdateStatusLoopComplete?.Invoke();
             }

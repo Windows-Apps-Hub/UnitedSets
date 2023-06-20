@@ -21,15 +21,4 @@ partial class TabBase
     public abstract IEnumerable<Window> Windows { get; }
     public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }
-    
-    public abstract void DetachAndDispose(bool JumpToCursor = false);
-    public abstract Task TryCloseAsync();
-    
-    [Event(typeof(PointerEventHandler), Name = "TabClickEv")]
-    public abstract void Focus();
-
-    public virtual void UpdateStatusLoop() { }
-
-    [Event(typeof(DoubleTappedEventHandler), Name = "TabDoubleTapped", Visibility = GeneratorVisibility.Public)]
-    protected virtual void OnDoubleClick([CastFrom(typeof(object))] UIElement sender, DoubleTappedRoutedEventArgs args) { }
 }

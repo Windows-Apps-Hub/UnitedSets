@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransparentWinUIWindowLib",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutOfBoundsFlyout", "OutOfBoundsFlyout\OutOfBoundsFlyout.csproj", "{AFC01A65-D132-4200-A49C-39190FF37CEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitedSets.Core", "UnitedSets.Core\UnitedSets.Core.csproj", "{AE8034ED-8443-4FA8-B702-5C69173F99DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,30 @@ Global
 		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x64.Build.0 = Release|Any CPU
 		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x86.ActiveCfg = Release|Any CPU
 		{AFC01A65-D132-4200-A49C-39190FF37CEA}.Release|x86.Build.0 = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|arm64.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|x64.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|Any CPU.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|arm64.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|arm64.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|x64.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|x64.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|x86.ActiveCfg = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.DebugUnpackaged|x86.Build.0 = Debug|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|arm64.ActiveCfg = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|arm64.Build.0 = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|x64.Build.0 = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE8034ED-8443-4FA8-B702-5C69173F99DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

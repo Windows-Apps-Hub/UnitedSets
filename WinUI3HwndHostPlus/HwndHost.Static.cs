@@ -95,7 +95,7 @@ partial class HwndHost
     public static bool ShouldBeBlacklisted(WindowEx Window)
         => Window.Class.Name is
             "Shell_TrayWnd" // Taskbar
-            or "Progman" // Desktop
+            or "Progman" or "WorkerW" // Desktop
             or "WindowsDashboard" // I forget
             or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
         ;

@@ -2,11 +2,12 @@
     x:Class="UnitedSets.UI.Controls.SettingController"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:settings="using:UnitedSets.Classes.Settings"
+    xmlns:settings="using:Get.XAMLTools.Classes.Settings"
+    xmlns:bsettings="using:Get.XAMLTools.Classes.Settings.Boolean"
     Content="{x:Bind Setting}"
 >
     <ContentControl.Resources>
-        <DataTemplate x:Name="OnOffSettingTemplate" x:DataType="settings:OnOffSetting">
+        <DataTemplate x:Name="OnOffSettingTemplate" x:DataType="bsettings:OnOffSetting">
             <ToggleSwitch
                 IsOn="{x:Bind Value, Mode=TwoWay}"
                 Style="{ThemeResource GlowSwitch}"

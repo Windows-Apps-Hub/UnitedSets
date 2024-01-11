@@ -1,4 +1,7 @@
-﻿namespace UnitedSets.Helpers;
+﻿using Get.XAMLTools.UI;
+using Microsoft.UI.Xaml.Controls;
+
+namespace UnitedSets.Helpers;
 
 static class XAMLFuncs
 {
@@ -8,4 +11,6 @@ static class XAMLFuncs
             return $"{A} {B}";
         else return A;
     }
+    public static Symbol ToSymbol(SymbolEx symbolEx)
+        => (Symbol)(int)symbolEx;
 }

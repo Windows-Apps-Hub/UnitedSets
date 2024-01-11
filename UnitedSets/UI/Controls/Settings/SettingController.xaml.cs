@@ -1,6 +1,7 @@
 ﻿using EasyXAMLTools;
 using UnitedSets.Classes;
-using UnitedSets.Classes.Settings;
+using Get.XAMLTools.Classes.Settings;
+using Get.XAMLTools.Classes.Settings.Boolean;
 
 namespace UnitedSets.UI.Controls;
 [DependencyProperty(

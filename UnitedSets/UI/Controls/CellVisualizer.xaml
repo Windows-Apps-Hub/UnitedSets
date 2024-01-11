@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:UnitedSets.Controls"
     xmlns:helpers="using:UnitedSets.Helpers"
-    xmlns:ezxaml="using:EasyXAMLTools"
+    xmlns:getxaml="using:Get.XAMLTools"
     mc:Ignorable="d"
     Background="Transparent"
     Content="{x:Bind Cell}">
@@ -19,7 +19,7 @@
         <DataTemplate x:Name="EmptyCellDataTemplate" x:DataType="class:Cell">
             <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" HorizontalScrollMode="Auto" VerticalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled" MaxZoomFactor="1.5" MinZoomFactor="0.1">
-                    <ezxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                    <getxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                         <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Hold CTRL and Drag Window Here"/>
                         <TextBlock HorizontalAlignment="Center" FontSize="16" Text="or"/>
                         <Button HorizontalAlignment="Center" Command="{x:Bind SplitHorizontallyCommand}" CommandParameter="{x:Bind CellAddCount}">
@@ -52,7 +52,7 @@
                                 <SymbolIcon Symbol="Remove"/>
                             </Button>
                         </Grid>
-                    </ezxaml:FluentVerticalStack>
+                    </getxaml:FluentVerticalStack>
                 </ScrollViewer>
                 <Rectangle Margin="8"
                     RadiusX="8" RadiusY="8"
@@ -66,9 +66,9 @@
         <DataTemplate x:Name="EmptyCellDataTemplateWindowHover" x:DataType="class:Cell">
             <Grid AllowDrop="True" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                 <ScrollViewer Canvas.ZIndex="1" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
-                    <ezxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
+                    <getxaml:FluentVerticalStack HorizontalAlignment="Center" DragOver="{x:Bind DragOverEv}" Drop="{x:Bind DropEv}">
                         <TextBlock HorizontalAlignment="Center" FontSize="20" Text="Release Mouse Cursor To Drop Window"/>
-                    </ezxaml:FluentVerticalStack>
+                    </getxaml:FluentVerticalStack>
                 </ScrollViewer>
                 <Rectangle Margin="8"
                     RadiusX="8" RadiusY="8"
@@ -84,16 +84,16 @@
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ezxaml:EzRelativeStackPanel Orientation="Vertical"/>
+                            <getxaml:EzRelativeStackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="class:Cell">
-                            <Grid ezxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
+                            <Grid getxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
                                 <controls:CellVisualizer Cell="{x:Bind}"/>
-                                <ezxaml:EzRelativeStackPanelResizer VerticalAlignment="Bottom" Canvas.ZIndex="100" Background="Transparent" Orientation="Horizontal">
+                                <getxaml:EzRelativeStackPanelResizer VerticalAlignment="Bottom" Canvas.ZIndex="100" Background="Transparent" Orientation="Horizontal">
 
-                                </ezxaml:EzRelativeStackPanelResizer>
+                                </getxaml:EzRelativeStackPanelResizer>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -105,16 +105,16 @@
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ezxaml:EzRelativeStackPanel Orientation="Horizontal"/>
+                            <getxaml:EzRelativeStackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="class:Cell">
-                            <Grid ezxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
+                            <Grid getxaml:EzRelativeStackPanel.RelativeSize="{x:Bind RelativeSize,Mode=TwoWay}">
                                 <controls:CellVisualizer Cell="{x:Bind}"/>
-                                <ezxaml:EzRelativeStackPanelResizer HorizontalAlignment="Right" Canvas.ZIndex="100" Background="Transparent" Orientation="Vertical">
+                                <getxaml:EzRelativeStackPanelResizer HorizontalAlignment="Right" Canvas.ZIndex="100" Background="Transparent" Orientation="Vertical">
                                     
-                                </ezxaml:EzRelativeStackPanelResizer>
+                                </getxaml:EzRelativeStackPanelResizer>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

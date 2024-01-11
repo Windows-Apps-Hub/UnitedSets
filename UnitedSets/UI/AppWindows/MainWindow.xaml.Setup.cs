@@ -19,7 +19,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using UnitedSets.Classes.Settings;
 using UnitedSets.Mvvm.Services;
 using WinWrapper;
 using WinWrapper.Windowing;

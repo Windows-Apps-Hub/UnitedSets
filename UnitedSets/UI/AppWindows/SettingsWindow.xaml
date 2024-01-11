@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
-    xmlns:USsettings="using:UnitedSets.Classes.Settings"
+    xmlns:USsettings="using:Get.XAMLTools.Classes.Settings"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
+    xmlns:helpers="using:UnitedSets.Helpers"
     MinWidth="890"
     mc:Ignorable="d">
     <Grid>
@@ -62,10 +63,10 @@
                                 Description="{x:Bind Description}"
                             >
                                     <settings:SettingsBlockControl.Icon>
-                                        <icons:FluentIconElement
-                                        VerticalAlignment="Center"
-                                        Symbol="{x:Bind Icon}"
-                                    />
+                                        <SymbolIcon
+                                            VerticalAlignment="Center"
+                                            Symbol="{x:Bind helpers:XAMLFuncs.ToSymbol(Icon)}"
+                                        />
                                     </settings:SettingsBlockControl.Icon>
                                     <controls:SettingController Setting="{x:Bind}" />
                                 </settings:SettingsBlockControl>

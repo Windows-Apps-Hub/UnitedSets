@@ -9,7 +9,7 @@
     xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:tabs="using:UnitedSets.Classes.Tabs"
     xmlns:class="using:UnitedSets.Classes"
-    xmlns:ezxaml="using:EasyXAMLTools"
+    xmlns:getxaml="using:Get.XAMLTools"
 	xmlns:icons="using:Cube.UI.Icons" 
     MinWidth="400"
     >

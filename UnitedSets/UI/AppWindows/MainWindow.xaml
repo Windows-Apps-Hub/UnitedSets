@@ -10,7 +10,7 @@
     xmlns:winUIEx="using:WinUIEx"
     xmlns:tabs="using:UnitedSets.Classes.Tabs"
     xmlns:icons="using:Cube.UI.Icons"
-    xmlns:ezxaml="using:EasyXAMLTools"
+    xmlns:getxaml="using:Get.XAMLTools"
     xmlns:windows="using:UnitedSets.UI.AppWindows"
     xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
@@ -72,7 +72,7 @@
                 </Border.BorderBrush>
             </Border>
             <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
-            <ezxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1" HorizontalAlignment="Left">
+            <getxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1" HorizontalAlignment="Left">
                 <Border x:Name="TabViewBorder" MinHeight="40">
                     <TabView 
                     Style="{ThemeResource GlowTabView}"
@@ -148,7 +148,7 @@
                     </TabView>
                 </Border>
                 <Grid x:Name="CustomDragRegionUpdator" Background="Transparent" MinHeight="40" HorizontalAlignment="Stretch"/>
-            </ezxaml:FluentHorizontalDynamicSizer>
+            </getxaml:FluentHorizontalDynamicSizer>
             <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
                 <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
                     <ItemsControl.ItemsPanel>

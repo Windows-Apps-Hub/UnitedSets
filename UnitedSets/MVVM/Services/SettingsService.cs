@@ -2,7 +2,8 @@ using CommunityToolkit.Mvvm.Input;
 using UnitedSets.UI.AppWindows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using UnitedSets.Classes.Settings;
+using Get.XAMLTools.Classes.Settings;
+using Get.XAMLTools.Classes.Settings.Boolean;
 using Cube.UI.Icons;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
+using Get.XAMLTools.UI;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -30,7 +32,7 @@ public partial class SettingsService
     {
         Title = "Closing tab closes window",
         Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
-        Icon = FluentSymbol.Delete24,
+        Icon = SymbolEx.Delete,
         DefaultValue = true
     };
 
@@ -38,7 +40,7 @@ public partial class SettingsService
     {
         Title = "Window Background",
         Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
-        Icon = FluentSymbol.Window20,
+        Icon = SymbolEx.PPSOneLandscape,
         DefaultValue = USBackdrop.Mica
     };
 

@@ -12,7 +12,7 @@
     MinHeight="800"
     MinWidth="900"
     mc:Ignorable="d"
-    xmlns:settings="using:UnitedSets.Classes.Settings"
+    xmlns:settings="using:Get.XAMLTools.Classes.Settings"
     xmlns:usControls="using:UnitedSets.UI.Controls"
     >
     <Grid>

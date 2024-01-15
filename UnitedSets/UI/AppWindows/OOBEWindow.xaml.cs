@@ -6,7 +6,7 @@ using System;
 using UnitedSets.Mvvm.Services;
 using Windows.UI;
 using WinUIEx;
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
@@ -17,9 +17,7 @@ namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class OOBEWindow : MicaWindow
 {
-    readonly SettingsService Settings =
-        App.Current.Services.GetService<SettingsService>() ??
-        throw new InvalidOperationException();
+    readonly SettingsService Settings = App.SettingsService;
     readonly bool IsInitialized = false;
     public OOBEWindow() : base(IsMicaInfinite: false)
     {
@@ -92,6 +90,6 @@ public sealed partial class OOBEWindow : MicaWindow
     private void CompleteOOBE()
     {
         AppWindow.Hide();
-        App.Current.LaunchNewMain();
+        (Application.Current as App)!.LaunchNewMain();
     }
 }

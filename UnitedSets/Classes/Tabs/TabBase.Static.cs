@@ -17,7 +17,7 @@ partial class TabBase
     //static readonly WindowClass UnitedSetsSwitcherWindowClass;
 
     static readonly SettingsService Settings
-        = App.Current.Services.GetService<SettingsService>() ?? throw new InvalidOperationException("Settings Init Failed");
+        = App.SettingsService;
 
     static TabBase()
     {

@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
-using EasyCSharp;
+using Get.EasyCSharp;
 
 namespace UnitedSets.Classes.Tabs;
 

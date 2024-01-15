@@ -1,12 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.UI.AppWindows;
-using EasyCSharp;
 namespace UnitedSets.Classes.Tabs;
 
-public partial class CellTab : TabBase, IHwndHostParent {
+public partial class CellTab : TabBase {
 
-	TabBase IHwndHostParent.Tab => this;
-    
 	public CellTab(bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible)
         : this(
               new(null, null, Orientation.Horizontal),

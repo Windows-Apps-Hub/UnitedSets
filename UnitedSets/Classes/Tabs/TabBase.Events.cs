@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using EasyCSharp;
+using Get.EasyCSharp;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
 

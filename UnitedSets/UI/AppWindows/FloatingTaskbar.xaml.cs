@@ -3,14 +3,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using WinUIEx;
-using EasyXAMLTools;
 using UnitedSets.Mvvm.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
-using Get.OutOfBoundsFlyout;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Input;
+using WinUIEx;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -19,7 +18,6 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     MainWindow MainWindow;
     public FloatingTaskbar(MainWindow mainWindow)
     {
-        AttachedOutOfBoundsFlyout.RegisterWindow(this);
         MainWindow = mainWindow;
         InitializeComponent();
         SystemBackdrop = new InfiniteSystemBackdrop<MicaController>();

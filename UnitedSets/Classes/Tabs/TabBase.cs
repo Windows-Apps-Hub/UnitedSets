@@ -1,4 +1,4 @@
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

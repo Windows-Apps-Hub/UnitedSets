@@ -1,0 +1,62 @@
+﻿<ContentControl
+    x:Class="Get.XAMLTools.UI.Controls.SettingController"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Get.XAMLTools.UI.Controls"
+    xmlns:settings="using:Get.XAMLTools.Classes.Settings"
+    xmlns:boolsettings="using:Get.XAMLTools.Classes.Settings.Boolean"
+    Content="{x:Bind Setting, Mode=OneWay}"
+    HorizontalContentAlignment="Stretch"
+    VerticalContentAlignment="Stretch"
+>
+    <ContentControl.Resources>
+        <StaticResource x:Key="SettingCheckBoxStyle" ResourceKey="DefaultCheckBoxStyle"/>
+        <StaticResource x:Key="SettingToggleSwitchStyle" ResourceKey="DefaultToggleSwitchStyle"/>
+        <StaticResource x:Key="SettingComboBoxStyle" ResourceKey="DefaultComboBoxStyle"/>
+        <StaticResource x:Key="OnOffSettingToggleSwitchStyle" ResourceKey="SettingToggleSwitchStyle"/>
+        <DataTemplate x:Name="OnOffSettingTemplate" x:DataType="boolsettings:OnOffSetting">
+            <ToggleSwitch
+                IsOn="{x:Bind Value, Mode=TwoWay}"
+                Style="{ThemeResource OnOffSettingToggleSwitchStyle}"
+                OnContent=""
+                OffContent=""
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                MinWidth="0"
+                MinHeight="0"
+                Margin="0,0,-12,0"
+                Padding="0"
+            >
+            </ToggleSwitch>
+        </DataTemplate>
+        <StaticResource x:Key="CheckBoxSettingCheckBoxStyle" ResourceKey="SettingCheckBoxStyle"/>
+        <DataTemplate x:Name="CheckBoxSettingTemplate" x:DataType="boolsettings:CheckboxSetting">
+            <CheckBox
+                IsChecked="{x:Bind Value, Mode=TwoWay}"
+                Style="{ThemeResource CheckBoxSettingCheckBoxStyle}"
+                MinWidth="0"
+                MinHeight="0"
+                Padding="0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+            />
+        </DataTemplate>
+        <StaticResource x:Key="SelectSettingComboBoxStyle" ResourceKey="SettingComboBoxStyle"/>
+        <DataTemplate x:Name="SelectSettingTemplate" x:DataType="settings:ISelectSetting">
+            <ComboBox
+                ItemsSource="{x:Bind local:SettingController.GetObjectSettings((settings:ISelectSetting))}"
+                SelectedIndex="{x:Bind ValueIndex, Mode=TwoWay}"
+                Style="{ThemeResource SettingComboBoxStyle}"
+            >
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:ObjectSetting">
+                        <TextBlock Text="{x:Bind Setting.GetDisplayName(Object)}" ToolTipService.ToolTip="{x:Bind Setting.GetDescription(Object)}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DataTemplate>
+        <DataTemplate x:Name="NoTemplateSettingTemplate" x:DataType="settings:Setting">
+            <TextBlock Text="Unknown Template" Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"/>
+        </DataTemplate>
+    </ContentControl.Resources>
+</ContentControl>

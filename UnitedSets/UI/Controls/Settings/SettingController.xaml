@@ -17,8 +17,9 @@
             />
         </DataTemplate>
         <DataTemplate x:Name="SelectSettingTemplate" x:DataType="settings:ISelectSetting">
-            <ComboBox ItemsSource="{x:Bind ValidOptions}"
-                      SelectedItem="{x:Bind Value, Mode=TwoWay}"
+            <ComboBox
+                ItemsSource="{Binding ValidOptions}"
+                SelectedItem="{x:Bind Value, Mode=TwoWay}"
                 
             />
         </DataTemplate>

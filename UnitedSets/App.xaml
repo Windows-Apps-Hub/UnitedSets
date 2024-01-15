@@ -3,11 +3,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
-    xmlns:settings="using:UnitedSets.UI.FlyoutModules.TabSettings">
+    xmlns:settings="using:UnitedSets.UI.FlyoutModules.TabSettings"
+    xmlns:gui="using:Get.UI">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <gui:ControlsResources />
                 <ResourceDictionary>
                     <Style TargetType="settings:SettingsItem">
                         <Setter Property="Template">
@@ -24,7 +26,7 @@
                 </ResourceDictionary>
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/GlowGradientUI.xaml" />
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Tabs/GlowTabs.xaml" />
-                <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/WindowChrome.xaml" />
+                <!--<ResourceDictionary Source="ms-appx:///Cube.UI/Styles/WindowChrome.xaml" />-->
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/CubeUI.xaml" />
 				<ResourceDictionary>
 					<!-- Fix annoying right margin isssue -->

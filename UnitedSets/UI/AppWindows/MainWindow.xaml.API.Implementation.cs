@@ -5,13 +5,12 @@ using System;
 using WindowEx = WinWrapper.Windowing.Window;
 using UnitedSets.Classes;
 using System.ComponentModel;
-using WinUI3HwndHostPlus;
 using UnitedSets.Classes.Tabs;
 using System.Collections.Generic;
-using Get.OutOfBoundsFlyout;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -19,7 +18,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 {
     public partial void AddTab(WindowEx newWindow, int? index)
     {
-		var newTab = CreateHwndHostTab(newWindow);
+		var newTab = CreateWindowHostTab(newWindow);
 		if (newTab == null)
 			return;
 		AddTab(newTab, index);
@@ -60,24 +59,27 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
         return (null, null);
     }
-    public partial HwndHostTab? CreateHwndHostTab(WindowEx newWindow) {
+    public partial WindowHostTab? CreateWindowHostTab(WindowEx newWindow) {
 		if (!newWindow.IsValid)
 			return null;
 		newWindow = newWindow.Root;
 		if (newWindow.Handle == IntPtr.Zero)
 			return null;
-		if (newWindow.Handle == AddTabPopup.GetWindowHandle())
+		if (AddTabPopup is not null && newWindow.Handle == AddTabPopup.GetWindowHandle())
 			return null;
 		if (newWindow.Handle == Win32Window.Handle)
 			return null;
-		if (HwndHost.ShouldBeBlacklisted(newWindow))
+		if (Constants.ShouldBeBlacklisted(newWindow))
 			return null;
 		// Check if United Sets has owner (United Sets in United Sets)
 		if (Win32Window.Root.Children.AsEnumerable().Any(x => x == newWindow))
 			return null;
 		if (Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
 			return null;
-		return new HwndHostTab((IHwndHostParent tab) => new OurHwndHost(tab, this, newWindow),DispatcherQueue, newWindow, Constants.IsAltTabVisible);
+        var registeredWindow = RegisteredWindow.Register(newWindow);
+        if (registeredWindow is null)
+            return null;
+        return new WindowHostTab(registeredWindow, DispatcherQueue, newWindow, Constants.IsAltTabVisible);
 	}
 
     private partial async Task TimerStop()
@@ -91,7 +93,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial async Task Suicide()
     {
         //trans_mgr?.Cleanup();
-        OutOfBoundsFlyoutSystem.Dispose();
         await Task.Delay(300);
         Debug.WriteLine("Cleanish exit");
         Environment.Exit(0);

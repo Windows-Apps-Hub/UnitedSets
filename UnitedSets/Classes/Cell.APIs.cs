@@ -4,16 +4,17 @@ using System;
 using EasyCSharp;
 using UnitedSets.UI.AppWindows;
 using CommunityToolkit.Mvvm.Input;
+using WindowHoster;
 
 namespace UnitedSets.Classes;
 partial class Cell
 {
     /// <summary>
-    /// Registers the HwndHost as the current cell
+    /// Registers the <see cref="RegisteredWindow"/> as the current cell
     /// </summary>
-    /// <param name="host">The HwndHost to register</param>
+    /// <param name="host">The <see cref="RegisteredWindow"/> to register</param>
     /// <exception cref="InvalidOperationException">Throws if the cell is not empty</exception>
-    public partial void RegisterHwndHost(OurHwndHost host);
+    public partial void RegisterWindow(RegisteredWindow host);
 
     /// <summary>
     /// Splits the cell horizontally

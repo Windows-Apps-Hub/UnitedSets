@@ -5,18 +5,23 @@ using WinWrapper.Windowing;
 namespace UnitedSets.WinForms;
 
 
-public class PerPixelAlphaForm : Form {
+public class PerPixelAlphaForm : Form
+{
     readonly Window NativeWindow;
-    public PerPixelAlphaForm() {
-        FormBorderStyle = FormBorderStyle.None;
+    public PerPixelAlphaForm(bool setFormBorderStyle = true)
+    {
+        if (setFormBorderStyle)
+            FormBorderStyle = FormBorderStyle.None;
         Load += new EventHandler(PerPixelAlphaFormLoad);
         NativeWindow = Window.FromWindowHandle(Handle);
     }
-    public void PerPixelAlphaFormLoad(object? sender, EventArgs e) {
+    public void PerPixelAlphaFormLoad(object? sender, EventArgs e)
+    {
         NativeWindow.ExStyle = WindowExStyles.Layered | WindowExStyles.Transparent;
     }
 
-    public unsafe void SetBitmap(Bitmap bitmap, byte opacity = 255) {
+    public unsafe void SetBitmap(Bitmap bitmap, byte opacity = 255)
+    {
         NativeWindow.SetLayeredWindowBitmap(bitmap.GetHbitmap(), opacity);
     }
 
@@ -26,8 +31,10 @@ public class PerPixelAlphaForm : Form {
     }
 
 
-    protected override CreateParams CreateParams {
-        get {
+    protected override CreateParams CreateParams
+    {
+        get
+        {
             CreateParams cp = base.CreateParams;
             cp.ExStyle |= (int)WindowExStyles.Layered;
             return cp;

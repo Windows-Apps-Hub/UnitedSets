@@ -20,7 +20,6 @@ public partial class SettingsService
 {
     public SettingsService()
     {
-        CreateWindow();
         AllSettings = new Setting[] {
             CloseWindowOnCloseTab,
             BackdropMode
@@ -78,7 +77,7 @@ static class BackdropHelper
             USBackdrop.Acrylic => new InfiniteSystemBackdrop<DesktopAcrylicController>(),
             USBackdrop.Mica => new InfiniteSystemBackdrop<MicaController>(),
             USBackdrop.Tabbed => new InfiniteSystemBackdrop<MicaController>(x => x.Kind = MicaKind.BaseAlt),
-            USBackdrop.Transparent => new TransparentBackdrop(),
+            //USBackdrop.Transparent => new TransparentBackdrop(),
             _ => throw new ArgumentOutOfRangeException(nameof(backdrop))
         };
 }

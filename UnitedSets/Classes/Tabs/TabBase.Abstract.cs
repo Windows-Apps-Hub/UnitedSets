@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using WinWrapper;
-using Windows.Win32.Graphics.Gdi;
 using Microsoft.UI.Xaml.Input;
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using Window = WinWrapper.Windowing.Window;
-using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -19,7 +16,7 @@ partial class TabBase
     public abstract string DefaultTitle { get; }
 
     public abstract IEnumerable<Window> Windows { get; }
-    public abstract bool Selected { get; set; }
+    //public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }
     
     public abstract void DetachAndDispose(bool JumpToCursor = false);

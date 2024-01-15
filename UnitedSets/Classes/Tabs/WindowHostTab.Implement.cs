@@ -4,11 +4,11 @@ using Window = Microsoft.UI.Xaml.Window;
 using WindowEx = WinWrapper.Windowing.Window;
 using System.Collections.Generic;
 using System.Linq;
-using EasyCSharp;
+using Get.EasyCSharp;
 
 namespace UnitedSets.Classes.Tabs;
 
-partial class HwndHostTab
+partial class WindowHostTab
 {
     public override IEnumerable<WindowEx> Windows => Enumerable.Repeat(Window, 1);
     public override string DefaultTitle => Window.TitleText;

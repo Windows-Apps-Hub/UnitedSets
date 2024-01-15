@@ -4,5 +4,4 @@ namespace UnitedSets.Classes.Tabs;
 
 partial class CellTab
 {
-    Visibility Visibility => Selected ? Visibility.Visible : Visibility.Collapsed;
 }

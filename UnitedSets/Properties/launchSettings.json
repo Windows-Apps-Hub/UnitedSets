@@ -8,7 +8,7 @@
       "commandName": "MsixPackage",
       "commandLineArgs": "--add-window-by-exe notepad --edit-last-added --edit-no-autoclose",
       "nativeDebugging": false
-    },    
+    },
     "UnitedSets (Unpackaged) Must Use DebugUnpackaged Config": {
       "commandName": "Project",
       "nativeDebugging": false
@@ -17,6 +17,6 @@
       "commandName": "Project",
       "commandLineArgs": "--add-window-by-exe notepad --edit-last-added --edit-no-autoclose",
       "nativeDebugging": false
-    },  
+    }
   }
 }

@@ -1,4 +1,4 @@
-using EasyCSharp;
+using Get.EasyCSharp;
 using Cursor = WinWrapper.Input.Cursor;
 using Keyboard = WinWrapper.Input.Keyboard;
 using System.ComponentModel;
@@ -18,7 +18,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private void OnUIThreadTimerLoop()
     {
         CacheValue();
-        UpdateTabViewSizerWidth();
     }
     private async void OnDifferentThreadLoop()
     {

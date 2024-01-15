@@ -1,29 +1,27 @@
-using EasyCSharp;
-using Microsoft.UI.Xaml;
+using Get.EasyCSharp;
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Classes;
-using WinUI3HwndHostPlus;
+using WindowHoster;
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class MultiWindowModifyFlyoutModule
 {
-    public MultiWindowModifyFlyoutModule(OurHwndHost[] HwndHosts)
+    public MultiWindowModifyFlyoutModule(RegisteredWindow[] Windows)
     {
-        this.HwndHosts = HwndHosts;
+        this.RegisteredWindows = Windows;
         InitializeComponent();
-        foreach (var hwndhost in HwndHosts)
+        foreach (var registeredWindow in Windows)
         {
-            HwndHostSelector.Items.Add(hwndhost.GetTitle());
+            RegisteredWindowSelector.Items.Add(registeredWindow.Window.TitleText);
         }
     }
-    readonly OurHwndHost[] HwndHosts;
+    readonly RegisteredWindow[] RegisteredWindows;
 
     [Event(typeof(SelectionChangedEventHandler))]
-    void HwndHostSelector_SelectionChanged()
+    void RegisteredWindowSelector_SelectionChanged()
     {
-        if (HwndHostSelector.SelectedIndex != -1)
+        if (RegisteredWindowSelector.SelectedIndex != -1)
             ModifyWindowFlyoutModulePlace.Child = new ModifyWindowFlyoutModule(
-                HwndHosts[HwndHostSelector.SelectedIndex]
+                RegisteredWindows[RegisteredWindowSelector.SelectedIndex]
             );
         else
             ModifyWindowFlyoutModulePlace.Child = null;

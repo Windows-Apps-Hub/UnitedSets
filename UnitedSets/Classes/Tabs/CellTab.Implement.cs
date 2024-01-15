@@ -28,9 +28,9 @@ partial class CellTab
             await Task.WhenAll(
                 from cell in allcells
                 where cell.ContainsWindow
-                select cell.CurrentCell!.Close()
+                select cell.CurrentCell!.Window.TryCloseAsync()
             );
-            while (MainCell.AllSubCells.Any(x => x.ContainsWindow && x.CurrentCell!.IsWindowStillValid()))
+            while (MainCell.AllSubCells.Any(x => x.ContainsWindow && x.CurrentCell!.IsValid))
             {
                 await Task.Delay(500);
             }
@@ -45,7 +45,7 @@ partial class CellTab
         //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
         foreach (var cell in MainCell.AllSubCells.ToArray())
         {
-			cell.CurrentCell?.DetachAndDispose();
+			cell.CurrentCell?.Detach();
         }
         _IsDisposed = true;
         //window.Activate();

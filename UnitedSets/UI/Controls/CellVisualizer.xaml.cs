@@ -1,9 +1,8 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using UnitedSets.Classes;
-using EasyCSharp;
-using EasyXAMLTools;
-
+using Get.EasyCSharp;
+using Get.XAMLTools;
 namespace UnitedSets.Controls;
 
 [DependencyProperty(
@@ -39,7 +38,6 @@ public sealed partial class CellVisualizer
     {
         ContentTemplate = Cell switch
         {
-            { IsEmpty: true, IsVisible: false } => InvisibleCellDataTemplate,
             { ContainsWindow: true } => WindowCellDataTemplate,
             { IsEmpty: true, HoverEffect: false } => EmptyCellDataTemplate,
             { IsEmpty: true, HoverEffect: true } => EmptyCellDataTemplateWindowHover,

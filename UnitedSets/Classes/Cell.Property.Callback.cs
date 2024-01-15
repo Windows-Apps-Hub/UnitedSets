@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using EasyCSharp;
-using WinUI3HwndHostPlus;
 using UnitedSets.UI.AppWindows;
 
 namespace UnitedSets.Classes;
@@ -11,30 +10,18 @@ partial class Cell
     {
         if (_CurrentCell is not null)
         {
-            _CurrentCell.Closed += delegate
+            _CurrentCell.BecomesInvalid += delegate
             {
                 CurrentCell = null;
             };
-			_CurrentCell.SetVisible(IsVisible, false);
+			//_CurrentCell.SetVisible(IsVisible, false);
         }
     }
 
     void OnSubCellsUpdate()
     {
-        if (_SubCells is not null)
-            foreach (var cell in _SubCells)
-                cell.IsVisible = IsVisible;
+        //if (_SubCells is not null)
+        //    foreach (var cell in _SubCells)
+        //        cell.IsVisible = IsVisible;
     }
-
-    void OnVisibleChanged()
-    {
-        if (_SubCells is not null)
-            foreach (var cell in _SubCells)
-                cell.IsParentVisible = IsVisible;
-		if (CurrentCell != null)
-			CurrentCell.SetVisible(IsVisible); 
-		else
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
-
-	}
 }

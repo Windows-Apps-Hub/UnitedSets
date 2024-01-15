@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.AppWindows;
+using WinRT;
 using WinUIEx;
 
 namespace UnitedSets;
@@ -21,15 +22,7 @@ namespace UnitedSets;
 /// </summary>
 public partial class App : Application
 {
-    /// <summary>
-    /// Gets the current <see cref="App"/> instance in use
-    /// </summary>
-    public new static App Current => (App)Application.Current;
-
-    /// <summary>
-    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-    /// </summary>
-    public IServiceProvider Services { get; } = ConfigureServices();
+    public static SettingsService SettingsService { get; } = new();
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -41,67 +34,26 @@ public partial class App : Application
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+#if DEBUG
+        RequestAttachDebugger();
+#endif
     }
-
-    static IServiceProvider ConfigureServices()
+    async static void RequestAttachDebugger()
     {
-        var services = new ServiceCollection();
-
-        services.AddSingleton<SettingsService>();
-
-        return services.BuildServiceProvider();
+        await Task.Delay(2000);
+        if (!Debugger.IsAttached)
+            Debugger.Launch();
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        DebugRedir.Listen();
-
-        //WindowsCompositionHelper.EnsureCompositor();
-
-        //new TransparentWindow()
-        //{
-        //    Content = new Microsoft.UI.Xaml.Controls.Button
-        //    {
-        //        Content = "Hello World!"
-        //    }
-        //}.Activate();
-        if (Constants.IsFirstRun)
-            LaunchNewOOBE();
-        else
-            LaunchNewMain();
-        //ObservableCollection<string> strs = new();
-        //int i = 0;
-        //var panel = new UI.Controls.SizeChangedDetectorPanel
-        //{
-        //    Content = new StackPanel
-        //    {
-        //        Children =
-        //        {
-        //            new ItemsControl {
-        //                ItemsSource = strs
-        //            },
-        //            new Button
-        //            {
-        //                Content = "+",
-        //                Command = new RelayCommand(() => strs.Add((++i).ToString()))
-        //            }
-        //        }
-        //    }
-        //};
-        //var window = new Window
-        //{
-        //    Content = panel,
-        //    ExtendsContentIntoTitleBar = true
-        //};
-        //panel.SizeUpdated += x =>
-        //{
-        //    var w = window;
-        //    //.SetWindowSize(x.Width, x.Height+20);
-        //};
-        //window.Show();
+        //DebugRedir.Listen();
+        //if (Constants.IsFirstRun)
+        //LaunchNewOOBE();
+        //else
+        LaunchNewMain();
     }
 
-    private Window? window;
 
     void LaunchNewOOBE()
     {
@@ -111,7 +63,7 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        window = new MainWindow();
+        var window = new MainWindow();
         window.Activate();
     }
 

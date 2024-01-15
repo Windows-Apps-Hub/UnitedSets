@@ -12,90 +12,89 @@
         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
         Padding="16">
-		<Border.Resources>
-			<ResourceDictionary>
-				<Style TargetType="StackPanel">
-					<Setter Property="Spacing" Value="12" />
-				</Style>
-				<Style TargetType="ToggleSwitch">
-					<Setter Property="OnContent" Value="On" />
-					<Setter Property="OffContent" Value="Off" />
-				</Style>
-				<x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
-			</ResourceDictionary>
-		</Border.Resources>
-        <StackPanel>	
+        <Border.Resources>
+            <ResourceDictionary>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Spacing" Value="12" />
+                </Style>
+                <Style TargetType="ToggleSwitch">
+                    <Setter Property="OnContent" Value="On" />
+                    <Setter Property="OffContent" Value="Off" />
+                </Style>
+                <x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
+            </ResourceDictionary>
+        </Border.Resources>
+        <StackPanel>
             <StackPanel.Resources>
                 <communitytoolkitconverters:BoolToVisibilityConverter x:Name="BoolToVisibilityConvertor"/>
             </StackPanel.Resources>
-			
+
             <TextBlock Text="Window Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
-			<settings:SettingsItem Label="Compatability Mode">
-				<TextBlock x:Name="CompatabilityModeTB" />
-			</settings:SettingsItem>
-			<settings:SettingsItem Label="Borderless Window" LabelSize="15" LabelWeight="Bold" Visibility="{Binding ElementName=BorderlessWindowSettings, Path=Visibility}">
-				<ToggleSwitch x:Name="BorderlessToggleSwitch"  IsOn="{x:Bind HwndHost.BorderlessWindow, Mode=TwoWay}" Toggled="OnBorderlessToggleSwitchToggled" />
-			</settings:SettingsItem>
-			<Grid x:Name="BorderlessWindowSettings">
+            <settings:SettingsItem Label="Compatability Mode">
+                <TextBlock x:Name="CompatabilityModeTB" />
+            </settings:SettingsItem>
+            <settings:SettingsItem Label="Borderless Window" LabelSize="15" LabelWeight="Bold" Visibility="{Binding ElementName=BorderlessWindowSettings, Path=Visibility}">
+                <ToggleSwitch x:Name="BorderlessToggleSwitch" IsOn="{x:Bind RegisteredWindow.Properties.BorderlessWindow, Mode=TwoWay}" Toggled="OnBorderlessToggleSwitchToggled" />
+            </settings:SettingsItem>
+            <Grid x:Name="BorderlessWindowSettings">
                 <StackPanel x:Name="BorderlessSettingsStackPanel" Visibility="Collapsed">
-					<settings:SettingsItem Label="Window Crop Margin" LabelSize="15" LabelWeight="Bold">
-						<ToggleSwitch x:Name="WindowCropMarginToggleSwitch" IsOn="{x:Bind HwndHost.ActivateCrop, Mode=TwoWay}" Toggled="OnWindowCropMarginToggleSwitchToggled" />
-					</settings:SettingsItem>
+                    <settings:SettingsItem Label="Window Crop Margin" LabelSize="15" LabelWeight="Bold">
+                        <ToggleSwitch x:Name="WindowCropMarginToggleSwitch" IsOn="{x:Bind RegisteredWindow.Properties.ActivateCrop, Mode=TwoWay}" Toggled="OnWindowCropMarginToggleSwitchToggled" />
+                    </settings:SettingsItem>
 
-					<StackPanel x:Name="WindowCropMarginSettingsStackPanel" Visibility="Collapsed" HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="12">
+                    <StackPanel x:Name="WindowCropMarginSettingsStackPanel" Visibility="Collapsed" HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="12">
 
-						<StackPanel.Resources>
-							<Style TargetType="StackPanel">
-								<Setter Property="Spacing" Value="8" />
-								<Setter Property="Orientation" Value="Horizontal" />
-							</Style>
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Spacing" Value="8" />
+                                <Setter Property="Orientation" Value="Horizontal" />
+                            </Style>
                             <Style TargetType="NumberBox">
-								<Setter Property="SpinButtonPlacementMode" Value="Compact" />
-								<Setter Property="Minimum" Value="0" />
-								<Setter Property="MinWidth" Value="100" />
-							</Style>
+                                <Setter Property="SpinButtonPlacementMode" Value="Compact" />
+                                <Setter Property="Minimum" Value="0" />
+                                <Setter Property="MinWidth" Value="100" />
+                            </Style>
 
-							<Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-								<Setter Property="Padding" Value="5" />
-							</Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                <Setter Property="Padding" Value="5" />
+                            </Style>
 
-						</StackPanel.Resources>
-							<settings:SettingsItem Label="Top:">
-								<StackPanel>
-									<Button Click="TopMarginShortcutClick">32</Button>
-									<Button Click="TopMarginShortcutClick">40</Button>
-									<Button Click="TopMarginShortcutClick">41</Button>
-									<NumberBox x:Name="TopCropMargin" Value="{x:Bind HwndHost.CropTop, Mode=TwoWay}"/>
-									<Button Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
-										<SymbolIcon Symbol="Undo"/>
-									</Button>
-								</StackPanel>
-							</settings:SettingsItem>
-							<settings:SettingsItem Label="Left:">
-								<StackPanel>
-									<NumberBox x:Name="LeftCropMargin" Value="{x:Bind HwndHost.CropLeft, Mode=TwoWay}" />
-									<Button Tag="{x:Bind LeftCropMargin}" Click="OnResetClick">
-										<SymbolIcon Symbol="Undo"/>
-									</Button>
-								</StackPanel>
-							</settings:SettingsItem>
-						<settings:SettingsItem Label="Right:">
-							<StackPanel>
-								<NumberBox x:Name="RightCropMargin" Value="{x:Bind HwndHost.CropRight, Mode=TwoWay}" />
-								<Button Tag="{x:Bind RightCropMargin}" Click="OnResetClick">
-									<SymbolIcon Symbol="Undo"/>
-								</Button>
-							</StackPanel>
-						</settings:SettingsItem>
-						<settings:SettingsItem Label="Bottom:">
-							<StackPanel>
-								<NumberBox x:Name="BottomCropMargin" Value="{x:Bind HwndHost.CropBottom, Mode=TwoWay}" />
-								<Button Tag="{x:Bind BottomCropMargin}" Click="OnResetClick">
-									<SymbolIcon Symbol="Undo"/>
-								</Button>
-							</StackPanel>
-						</settings:SettingsItem>
-
+                        </StackPanel.Resources>
+                        <settings:SettingsItem Label="Top:">
+                            <StackPanel>
+                                <Button Click="TopMarginShortcutClick">32</Button>
+                                <Button Click="TopMarginShortcutClick">40</Button>
+                                <Button Click="TopMarginShortcutClick">41</Button>
+                                <NumberBox x:Name="TopCropMargin" Value="{x:Bind ToDouble(RegisteredWindow.Properties.CropRegion.Top), Mode=TwoWay, BindBack=CropTopBindBack}" />
+                                <Button Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </settings:SettingsItem>
+                        <settings:SettingsItem Label="Left:">
+                            <StackPanel>
+                                <NumberBox x:Name="LeftCropMargin"  Value="{x:Bind ToDouble(RegisteredWindow.Properties.CropRegion.Left), Mode=TwoWay, BindBack=CropLeftBindBack}" />
+                                <Button Tag="{x:Bind LeftCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </settings:SettingsItem>
+                        <settings:SettingsItem Label="Right:">
+                            <StackPanel>
+                                <NumberBox x:Name="RightCropMargin"  Value="{x:Bind ToDouble(RegisteredWindow.Properties.CropRegion.Right), Mode=TwoWay, BindBack=CropRightBindBack}"/>
+                                <Button Tag="{x:Bind RightCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </settings:SettingsItem>
+                        <settings:SettingsItem Label="Bottom:">
+                            <StackPanel>
+                                <NumberBox x:Name="BottomCropMargin"  Value="{x:Bind ToDouble(RegisteredWindow.Properties.CropRegion.Bottom), Mode=TwoWay, BindBack=CropBottomBindBack}" />
+                                <Button Tag="{x:Bind BottomCropMargin}" Click="OnResetClick">
+                                    <SymbolIcon Symbol="Undo"/>
+                                </Button>
+                            </StackPanel>
+                        </settings:SettingsItem>
                     </StackPanel>
                 </StackPanel>
             </Grid>

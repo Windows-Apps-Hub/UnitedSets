@@ -1,4 +1,4 @@
-﻿using EasyXAMLTools;
+﻿using Get.XAMLTools;
 using UnitedSets.Classes;
 using Get.XAMLTools.Classes.Settings;
 using Get.XAMLTools.Classes.Settings.Boolean;

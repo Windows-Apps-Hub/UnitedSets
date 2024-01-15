@@ -4,11 +4,12 @@ using System;
 using EasyCSharp;
 using UnitedSets.UI.AppWindows;
 using System.Diagnostics.CodeAnalysis;
+using WindowHoster;
 
 namespace UnitedSets.Classes;
 partial class Cell
 {
-    public partial void RegisterHwndHost(OurHwndHost host)
+    public partial void RegisterWindow(RegisteredWindow host)
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!IsEmpty) throw new InvalidOperationException();
@@ -67,10 +68,10 @@ partial class Cell
         //Cell[]? newSubCells =
         //    SubCells is null ? null :
         //    (from x in SubCells select x.DeepClone(NewWindow)).ToArray();
-        //HwndHost? hwndHost =
+        //RegisteredWindow? regWin =
         //    CurrentCell is null ? null
-        //    : new HwndHost(NewWindow, CurrentCell.HostedWindow);
-        //Cell cell = new(NewWindow, hwndHost, newSubCells, Orientation);
+        //    : new RegisteredWindow(NewWindow, CurrentCell.HostedWindow);
+        //Cell cell = new(NewWindow, regWin, newSubCells, Orientation);
         //return cell;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using EasyCSharp;
+using Get.EasyCSharp;
 
 namespace UnitedSets.Classes.Tabs;
 
@@ -18,7 +18,7 @@ partial class CellTab
                 var t = CP.ContentTemplateSelector;
                 CP.ContentTemplateSelector = null;
                 CP.ContentTemplateSelector = t;
-                CP.Visibility = Visibility;
+                //CP.Visibility = Visibility;
             }
         };
     }

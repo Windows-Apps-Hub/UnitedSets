@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using Get.OutOfBoundsFlyout;
 using System;
 using System.Linq;
 using UnitedSets.Classes;
@@ -10,18 +9,13 @@ using UnitedSets.Helpers;
 using WinRT.Interop;
 using WinUIEx.Messaging;
 using Window = WinWrapper.Windowing.Window;
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Keyboard = WinWrapper.Input.Keyboard;
 using Windows.ApplicationModel;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
-using System.Drawing;
 using UnitedSets.Mvvm.Services;
-using WinWrapper;
-using WinWrapper.Windowing;
 using Icon = WinWrapper.Icon;
 
 namespace UnitedSets.UI.AppWindows;
@@ -31,7 +25,6 @@ partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-
         SetupBasicWindow();
         
         //TransparentMode = FeatureFlags.UseTransparentWindow;
@@ -40,9 +33,9 @@ partial class MainWindow
 
         void UpdateBackdrop(USBackdrop x)
         {
-            var IsTransparent = x is USBackdrop.Transparent;
-            WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
-            TransparentMode = IsTransparent;
+            //var IsTransparent = x is USBackdrop.Transparent;
+            //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
+            //TransparentMode = IsTransparent;
             SystemBackdrop = x.GetSystemBackdrop();
         }
         Settings.BackdropMode.Updated += UpdateBackdrop;
@@ -65,7 +58,6 @@ partial class MainWindow
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void RegisterWindow()
         {
-            AttachedOutOfBoundsFlyout.RegisterWindow(this);
             TabBase.MainWindows.Add(Win32Window);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,8 +84,6 @@ partial class MainWindow
         {
             AppWindow.Closing += OnWindowClosing;
             // Activated += FirstRun;
-            SizeChanged += OnMainWindowResize;
-            CustomDragRegionUpdator.EffectiveViewportChanged += OnCustomDragRegionUpdatorCalled;
             WindowMessageMonitor.WindowMessageReceived += OnWindowMessageReceived;
             TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
             Cell.ValidDrop += CellWindowDropped;

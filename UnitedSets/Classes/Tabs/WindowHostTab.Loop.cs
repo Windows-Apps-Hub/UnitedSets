@@ -4,23 +4,23 @@ using CommunityToolkit.WinUI;
 
 namespace UnitedSets.Classes.Tabs;
 
-partial class HwndHostTab
+partial class WindowHostTab
 {
     public override void UpdateStatusLoop()
     {
         if (_Title != DefaultTitle)
         {
             _Title = DefaultTitle;
-            UIDispatcher?.EnqueueAsync(() => InvokePropertyChanged(nameof(DefaultTitle)));
+            UIDispatcher?.TryEnqueue(() => InvokePropertyChanged(nameof(DefaultTitle)));
             if (!string.IsNullOrWhiteSpace(CustomTitle))
-                UIDispatcher?.EnqueueAsync(() => TitleChanged());
+                UIDispatcher?.TryEnqueue(() => TitleChanged());
         }
         var icon = Window.LargeIcon;
         if (icon == default) icon = Window.SmallIcon;
         if (_Icon != icon)
         {
             _Icon = icon;
-            UIDispatcher?.EnqueueAsync(UpdateAppIcon);
+            UIDispatcher?.TryEnqueue(UpdateAppIcon);
         }
     }
 }

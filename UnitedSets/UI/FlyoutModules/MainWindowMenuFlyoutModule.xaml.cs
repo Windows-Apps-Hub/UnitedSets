@@ -1,19 +1,15 @@
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitedSets.Classes;
-using Windows.Foundation;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Win32;
 using Window = WinWrapper.Windowing.Window;
 using UnitedSets.Classes.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.UI.FlyoutModules;
@@ -21,9 +17,7 @@ namespace UnitedSets.UI.FlyoutModules;
 public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyChanged
 {
     // Singleton
-    readonly SettingsService Settings =
-        App.Current.Services.GetService<SettingsService>() ??
-        throw new InvalidOperationException();
+    readonly SettingsService Settings = App.SettingsService;
     [AutoNotifyProperty]
     MainWindow? _MainWindow;
 #pragma warning disable CS0067
@@ -156,7 +150,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     void TabDragStarting(DragItemsStartingEventArgs args)
     {
         if (args.Items.Count is not 0) return;
-        if (args.Items[0] is HwndHostTab item)
+        if (args.Items[0] is WindowHostTab item)
             args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
     }
 
@@ -204,7 +198,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
                 default,
                 window
             );
-			tabValue = MainWindow.CreateHwndHostTab(window);
+			tabValue = MainWindow.CreateWindowHostTab(window);
 		} else {
 			tabValue = MainWindow.FindTabByWindow(window);
 			if (tabValue != null)

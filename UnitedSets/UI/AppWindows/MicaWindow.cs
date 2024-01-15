@@ -5,8 +5,7 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using WinUIEx;
 using UnitedSets.Helpers;
 using Windows.Foundation;
-using EasyCSharp;
-using Microsoft.UI.Xaml.Media;
+using Get.EasyCSharp;
 
 namespace UnitedSets.UI.AppWindows;
 

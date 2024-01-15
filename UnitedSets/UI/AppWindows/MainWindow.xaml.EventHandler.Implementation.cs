@@ -19,13 +19,13 @@ using Microsoft.UI.Dispatching;
 using Windows.Foundation;
 using UnitedSets.Classes.Tabs;
 using CommunityToolkit.WinUI;
-using Get.OutOfBoundsFlyout;
 using Microsoft.UI.Input;
 using UnitedSets.UI.Popups;
 using UnitedSets.UI.FlyoutModules;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
+using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -34,24 +34,7 @@ namespace UnitedSets.UI.AppWindows;
 /// </summary>
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-	private partial void OnCustomDragRegionUpdatorCalled()
-    {
-        CustomDragRegion.Width = CustomDragRegionUpdator.ActualWidth - 10;
-        CustomDragRegion.Height = CustomDragRegionUpdator.ActualHeight;
-    }
-
-    private partial void OnMainWindowResize()
-    {
-#if !UNPKG
-		if (RootGrid.ActualWidth > 140)
-			TabView.MaxWidth = RootGrid.ActualWidth - 140;
-#else
-		if (RootGrid.ActualWidth != 0)
-			TabView.MaxWidth = RootGrid.ActualWidth;
-#endif
-	}
-
-    readonly AddTabPopup AddTabPopup = new();
+    AddTabPopup? AddTabPopup;
     private async partial void OnAddTabButtonClick()
     {
         if (Keyboard.IsShiftDown)
@@ -60,6 +43,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 		}
         else
         {
+            AddTabPopup ??= new();
             Win32Window.Minimize();
             await AddTabPopup.ShowAsync();
             Win32Window.Restore();
@@ -77,7 +61,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
 
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {
-        if (args.Item is HwndHostTab item)
+        if (args.Item is WindowHostTab item)
             args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
     }
 
@@ -138,42 +122,41 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             Title = "United Sets";
         }
     }
-
-    private partial void TabView_SizeChanged()
+    private partial void TabRemoveRequest(TabBase tab)
     {
-        DispatcherQueue.TryEnqueue(() => TabViewSizer.InvalidateArrange());
-    }
-    
-    private async partial void TabRemoveRequest(TabBase tab)
-    {
-        await DispatcherQueue.EnqueueAsync(() => RemoveTab(tab));
+        DispatcherQueue.TryEnqueue(() => RemoveTab(tab));
         UnwireTabEvents(tab);
     }
 
     private async partial void TabShowFlyoutRequest(TabBase tab, TabBase.ShowFlyoutEventArgs e)
     {
         await Task.Delay(300);
-        AttachedOutOfBoundsFlyout.ShowFlyout(
-            e.RelativeTo,
-            new Flyout
+
+        var flyout = new Flyout
+        {
+            Content = new StackPanel
             {
-                Content = new StackPanel
+                Width = 350,
+                Spacing = 8,
+                Children =
                 {
-                    Width = 350,
-                    Spacing = 8,
-                    Children =
-                    {
-                        new BasicTabFlyoutModule(tab),
-                        e.Element
-                    }
+                    new BasicTabFlyoutModule(tab),
+                    e.Element
                 }
             },
-            e.CursorPosition,
-            e.PointerDeviceType is not (PointerDeviceType.Touchpad or PointerDeviceType.Mouse)
-        );
+            ShouldConstrainToRootBounds = false,
+            Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+        };
+        flyout.ShowAt((FrameworkElement)e.RelativeTo);
+        //AttachedOutOfBoundsFlyout.ShowFlyout(
+        //    e.RelativeTo,
+        //    flyout,
+        //    e.CursorPosition,
+        //    e.PointerDeviceType is not (PointerDeviceType.Touchpad or PointerDeviceType.Mouse)
+        //);
 
     }
-    
+
     private partial void TabShowRequest(TabBase tab, EventArgs e)
         => TabView.SelectedItem = tab;
 
@@ -300,7 +283,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             Tabs.ToArray().OfType<CellTab>()
             .First(tab => tab._MainCell.AllSubCells.Any(c => c == cell));
 
-        cell.RegisterHwndHost(new OurHwndHost(tab, this, window));
+        var registeredWindow = RegisteredWindow.Register(window);
+        if (registeredWindow is null) throw new Exception();
+        cell.RegisterWindow(registeredWindow);
     }
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {

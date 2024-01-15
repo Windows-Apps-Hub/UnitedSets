@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>WindowHoster</RootNamespace>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+  <LangVersion>12</LangVersion>
+  <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" PrivateAssets="all" />
+      <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" PrivateAssets="all" />
+      <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230913002" />
+      <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+      <PackageReference Include="WinWrapper.Windowing" Version="2.0.2" />
+  </ItemGroup>
+</Project>

@@ -9,6 +9,7 @@
     xmlns:controls="using:UnitedSets.Controls"
     xmlns:helpers="using:UnitedSets.Helpers"
     xmlns:getxaml="using:Get.XAMLTools"
+    xmlns:wh="using:WindowHoster"
     mc:Ignorable="d"
     Background="Transparent"
     Content="{x:Bind Cell}">
@@ -122,7 +123,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Name="WindowCellDataTemplate" x:DataType="class:Cell">
-            <ContentPresenter Content="{x:Bind CurrentCell.HwndHostForRenderBinding}" Margin="10"/>
+            <wh:WindowHost AssociatedWindow="{x:Bind CurrentCell}" Margin="10"/>
         </DataTemplate>
     </ContentPresenter.Resources>
 </ContentPresenter>

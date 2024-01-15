@@ -18,7 +18,7 @@ public class TabBaseContentTemplateSelector : DataTemplateSelector
     {
         return item switch
         {
-            HwndHostTab => DataTemplates.SingleTabDataTemplate,
+            WindowHostTab => DataTemplates.SingleTabDataTemplate,
             CellTab => DataTemplates.CellTabDataTemplate,
             _ => base.SelectTemplateCore(item)
         };

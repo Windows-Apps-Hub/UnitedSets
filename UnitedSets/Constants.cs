@@ -13,7 +13,7 @@ static class Constants
     public static readonly WindowMessages UnitedSetCommunicationChangeWindowOwnership
         = WindowMessagesHelper.Register(nameof(UnitedSetCommunicationChangeWindowOwnership));
 
-    static Lazy<bool> _IsFirstRun = new(delegate
+    static readonly Lazy<bool> _IsFirstRun = new(delegate
     {
         var isFirstRun = false;
 #if !UNPKG
@@ -26,4 +26,11 @@ static class Constants
         return isFirstRun;
     });
     public static bool IsFirstRun => _IsFirstRun.Value;
+    public static bool ShouldBeBlacklisted(Window Window)
+        => Window.Class.Name is
+            "Shell_TrayWnd" // Taskbar
+            or "Progman" or "WorkerW" // Desktop
+            or "WindowsDashboard" // I forget
+            or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
+        ;
 }

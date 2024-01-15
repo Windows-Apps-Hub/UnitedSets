@@ -5,7 +5,7 @@ using WindowEx = WinWrapper.Windowing.Window;
 using WinUIEx;
 using Windows.Graphics;
 using WinWrapper;
-using EasyCSharp;
+using Get.EasyCSharp;
 using WinWrapper.Input;
 
 namespace UnitedSets.UI.Popups;

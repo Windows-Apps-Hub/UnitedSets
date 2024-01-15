@@ -207,19 +207,17 @@
                     Height="32"
                 >
                     <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
-                    <oobf:AttachedOutOfBoundsFlyout.Flyout>
-                        <oobf:FlyoutContainer>
-                            <Flyout>
-                                <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind MainWindow}"/>
-                            </Flyout>
-                        </oobf:FlyoutContainer>
-                    </oobf:AttachedOutOfBoundsFlyout.Flyout>
+                    <Button.Flyout>
+                        <Flyout ShouldConstrainToRootBounds="False">
+                            <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind MainWindow}"/>
+                        </Flyout>
+                    </Button.Flyout>
                 </Button>
                 <RadioButtons MaxColumns="10000" ItemsSource="{x:Bind MainWindow.Tabs}" Padding="0" VerticalAlignment="Center" x:Name="RadioButtons">
                     <RadioButtons.ItemTemplate>
                         <DataTemplate x:DataType="tabs:TabBase">
                             <RadioButton Style="{StaticResource DefaultToggleButtonStyle}"
-                                IsChecked="{x:Bind Selected, Mode=TwoWay}"
+                                
                                 DoubleTapped="{x:Bind TabDoubleTapped}"
                                 Tag="{x:Bind}"
                                 PointerPressed="{x:Bind TabClickEv}"
@@ -234,32 +232,28 @@
                                 <Image
                                     Source="{x:Bind Icon, Mode=OneWay}"
                                 />
-                                <oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
-                                    <oobf:FlyoutContainer>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem Command="{x:Bind TryCloseNoWaitCommand}">
-                                                Close Tab
-                                            </MenuFlyoutItem>
-                                            <MenuFlyoutItem Command="{x:Bind DetachWindowCommand}">
-                                                Detach Tab
-                                            </MenuFlyoutItem>
-                                        </MenuFlyout>
-                                    </oobf:FlyoutContainer>
-                                </oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
+                                <RadioButton.ContextFlyout>
+                                    <MenuFlyout ShouldConstrainToRootBounds="False">
+                                        <MenuFlyoutItem Command="{x:Bind TryCloseNoWaitCommand}">
+                                            Close Tab
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem Command="{x:Bind DetachWindowCommand}">
+                                            Detach Tab
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </RadioButton.ContextFlyout>
                             </RadioButton>
                         </DataTemplate>
                     </RadioButtons.ItemTemplate>
                 </RadioButtons>
                 <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Command="{x:Bind MainWindow.AddTabButtonClickCommand}" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                    <oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
-                        <oobf:FlyoutContainer>
-                            <MenuFlyout>
-                                <MenuFlyoutItem Command="{x:Bind MainWindow.AddTabButtonClickCommand}">Add Window</MenuFlyoutItem>
-                                <MenuFlyoutItem Command="{x:Bind MainWindow.AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
-                            </MenuFlyout>
-                        </oobf:FlyoutContainer>
-                    </oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
+                    <Button.ContextFlyout>
+                        <MenuFlyout ShouldConstrainToRootBounds="False">
+                            <MenuFlyoutItem Command="{x:Bind MainWindow.AddTabButtonClickCommand}">Add Window</MenuFlyoutItem>
+                            <MenuFlyoutItem Command="{x:Bind MainWindow.AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.ContextFlyout>
                 </Button>
                 <Button
                     x:Name="Minimize"
@@ -300,20 +294,18 @@
                         <ui:Color x:Key="ChromeButtonColorHover">#e96e60</ui:Color>
                         <ui:Color x:Key="ChromeButtonColorPressed">DarkRed</ui:Color>
                     </Button.Resources>
-                    <oobf:AttachedOutOfBoundsFlyout.Flyout>
-                        <oobf:FlyoutContainer>
-                            <Flyout x:Name="CloseWindowFlyout">
-                                <StackPanel>
-                                    <TextBlock HorizontalAlignment="Center" Text="How would you like to close the window?" Margin="0,0,0,12" />
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Button Command="{x:Bind ExitCloseAllWindowsCommand}" TabIndex="1" Content="Close All Windows" />
-                                        <Button Command="{x:Bind ExitRelaseAllWindowsCommand}" TabIndex="2" Content="Release All Windows" />
-                                        <Button Command="{x:Bind CloseFlyoutCommand}" TabIndex="0" Content="Cancel" />
-                                    </StackPanel>
+                    <Button.Flyout>
+                        <Flyout x:Name="CloseWindowFlyout" ShouldConstrainToRootBounds="False">
+                            <StackPanel>
+                                <TextBlock HorizontalAlignment="Center" Text="How would you like to close the window?" Margin="0,0,0,12" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Command="{x:Bind ExitCloseAllWindowsCommand}" TabIndex="1" Content="Close All Windows" />
+                                    <Button Command="{x:Bind ExitRelaseAllWindowsCommand}" TabIndex="2" Content="Release All Windows" />
+                                    <Button Command="{x:Bind CloseFlyoutCommand}" TabIndex="0" Content="Cancel" />
                                 </StackPanel>
-                            </Flyout>
-                        </oobf:FlyoutContainer>
-                    </oobf:AttachedOutOfBoundsFlyout.Flyout>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
                 </Button>
             </StackPanel>
         </Grid>

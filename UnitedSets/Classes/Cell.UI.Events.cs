@@ -5,7 +5,7 @@ using System;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Win32;
 using Window = WinWrapper.Windowing.Window;
-using EasyCSharp;
+using Get.EasyCSharp;
 using UnitedSets.UI.AppWindows;
 using CommunityToolkit.Mvvm.Input;
 

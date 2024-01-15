@@ -1,9 +1,8 @@
-﻿using EasyCSharp;
+﻿using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using WinUIEx;
-using EasyXAMLTools;
 using System.ComponentModel;
 using UnitedSets.UI.Controls;
 using WinWrapper;

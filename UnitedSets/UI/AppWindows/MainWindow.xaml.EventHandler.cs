@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using EasyCSharp;
+using Get.EasyCSharp;
 using System;
 using Microsoft.UI.Xaml;
 using UnitedSets.Classes;
@@ -20,9 +20,6 @@ public sealed partial class MainWindow
 
     [RelayCommand]
     private partial void AddSplitableTab();
-
-    [Event(typeof(SizeChangedEventHandler))]
-    private partial void TabView_SizeChanged();
 
     [Event(typeof(SelectionChangedEventHandler))]
     private partial void TabSelectionChanged();
@@ -60,11 +57,6 @@ public sealed partial class MainWindow
     
     #region Window
 
-    [Event(typeof(TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs>))]
-    private partial void OnCustomDragRegionUpdatorCalled();
-    
-    [Event(typeof(TypedEventHandler<object, WindowSizeChangedEventArgs>))]
-    private partial void OnMainWindowResize();
     
     [Event(typeof(EventHandler<WindowMessageEventArgs>))]
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e);

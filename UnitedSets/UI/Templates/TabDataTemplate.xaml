@@ -5,12 +5,13 @@
     xmlns:local="using:UnitedSets"
     xmlns:class="using:UnitedSets.Classes"
     xmlns:tabs="using:UnitedSets.Classes.Tabs"
-    xmlns:controls="using:UnitedSets.Controls">
-    <DataTemplate x:Name="SingleTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:HwndHostTab">
-		<Border Child="{x:Bind HwndHost.HwndHostForRenderBinding}"/>
-        <!--Recreating HwndHost is expensive-->
+    xmlns:controls="using:UnitedSets.Controls"
+    xmlns:wh="using:WindowHoster"
+>
+    <DataTemplate x:Name="SingleTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:WindowHostTab">
+        <wh:WindowHost AssociatedWindow="{x:Bind RegisteredWindow}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </DataTemplate>
     <DataTemplate x:Name="CellTabDataTemplate" x:FieldModifier="Public" x:DataType="tabs:CellTab">
-        <controls:CellVisualizer Cell="{x:Bind MainCell}" IsHitTestVisible="{x:Bind Selected,Mode=OneWay}"/>
+        <controls:CellVisualizer Cell="{x:Bind MainCell}" IsHitTestVisible="True"/>
     </DataTemplate>
 </ResourceDictionary>

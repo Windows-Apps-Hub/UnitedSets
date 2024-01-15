@@ -1,37 +1,31 @@
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System.Diagnostics;
 using System.Linq;
-using UnitedSets.Classes;
-using Windows.Foundation;
-using WinWrapper;
 using Process = System.Diagnostics.Process;
-using WinUI3HwndHostPlus;
-using System;
-using Get.OutOfBoundsFlyout;
+using WindowHoster;
 
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class ModifyWindowFlyoutModule
 {
-    public ModifyWindowFlyoutModule(OurHwndHost hwndHost)
+    public ModifyWindowFlyoutModule(RegisteredWindow window)
     {
-        HwndHost = hwndHost;
+        RegisteredWindow = window;
         InitializeComponent();
         string CompatablityString = string.Join(", ",
             new string?[]
             {
-                hwndHost.IsOwnerSetSuccessful ? null : "No Owner",
-                hwndHost.NoMoving ? "No Move" : null
+                window.CompatablityMode.NoOwner ? "No Owner" : null,
+                window.CompatablityMode.NoMoving ? "No Move" : null
             }.Where(x => x is not null)
         );
         if (string.IsNullOrEmpty(CompatablityString)) CompatablityString = "None";
         CompatabilityModeTB.Text = CompatablityString;
         
-        BorderlessWindowSettings.Visibility = hwndHost.NoMoving ? Visibility.Collapsed : Visibility.Visible;
+        BorderlessWindowSettings.Visibility = window.CompatablityMode.NoMoving ? Visibility.Collapsed : Visibility.Visible;
     }
-    readonly OurHwndHost HwndHost;
+    readonly RegisteredWindow RegisteredWindow;
 
     [Event(typeof(RoutedEventHandler))]
     void TopMarginShortcutClick(object sender)
@@ -47,7 +41,7 @@ public sealed partial class ModifyWindowFlyoutModule
     {
         if (!WindowCropMarginToggleSwitch.IsOn)
         {
-			HwndHost.ClearCrop();
+			RegisteredWindow.Properties.CropRegion = default;
         }
         WindowCropMarginSettingsStackPanel.Visibility = WindowCropMarginToggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -74,21 +68,49 @@ public sealed partial class ModifyWindowFlyoutModule
     [Event(typeof(RoutedEventHandler))]
     void OpenWindowLocation()
     {
-        string? FileName = HwndHost.GetOwnerProcessModuleFilename();
+        string? FileName = GetOwnerProcessModuleFilename();
         if (FileName is null) return;
     
         Process.Start("explorer.exe", $"/select,\"{FileName}\"");
     }
+    string? GetOwnerProcessModuleFilename()
+    {
+        var host = RegisteredWindow;
+        var FileName = host.Window.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+        if (FileName == @"C:\WINDOWS\system32\ApplicationFrameHost.exe")
+        {
+            var child = host.Window.Children.AsEnumerable().FirstOrDefault(x =>
+                x.Class.Name is "Windows.UI.Core.CoreWindow", host.Window);
+            FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+        }
+        return FileName;
+    }
+
     [Event(typeof(RoutedEventHandler))]
     async void CloseWindow()
     {
-        await HwndHost.Close();
-        OutOfBoundsFlyoutSystem.CloseFlyout();
+        await RegisteredWindow.Window.TryCloseAsync();
     }
     [Event(typeof(RoutedEventHandler))]
     void DetachWindow()
     {
-        _ = HwndHost.DetachAndDispose();
-        OutOfBoundsFlyoutSystem.CloseFlyout();
+        RegisteredWindow.Detach();
+    }
+    double ToDouble(int x) => x;
+    void CropLeftBindBack(double x)
+    {
+        RegisteredWindow.Properties.CropRegion = RegisteredWindow.Properties.CropRegion with { Left = (int)x };
+    }
+    void CropRightBindBack(double x)
+    {
+        RegisteredWindow.Properties.CropRegion = RegisteredWindow.Properties.CropRegion with { Right = (int)x };
+    }
+    void CropTopBindBack(double x)
+    {
+        RegisteredWindow.Properties.CropRegion = RegisteredWindow.Properties.CropRegion with { Top = (int)x };
+    }
+    void CropBottomBindBack(double x)
+    {
+        RegisteredWindow.Properties.CropRegion = RegisteredWindow.Properties.CropRegion with { Bottom = (int)x };
     }
 }

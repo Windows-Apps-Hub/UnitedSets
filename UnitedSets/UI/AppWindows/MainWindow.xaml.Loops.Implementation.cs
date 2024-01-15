@@ -17,6 +17,7 @@ using CommunityToolkit.WinUI;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using WinWrapper.Taskbar;
+using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -42,16 +43,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    void UpdateTabViewSizerWidth()
-    {
-        if (double.IsNaN(TabViewSizer.Width) && TabViewSizer.ActualWidth != 0)
-            TabViewSizer.Width = TabViewSizer.ActualWidth - 1;
-        else TabViewSizer.Width = double.NaN;
-    }
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void UIRun(DispatcherQueueHandler action) => DispatcherQueue.TryEnqueue(action);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Task UIRunAsync(Action action) => DispatcherQueue.EnqueueAsync(action);
+    private Task UIRunAsync(Action action)
+    {
+        DispatcherQueue.TryEnqueue(() => action());
+        return Task.CompletedTask;
+    }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(() => collection.Remove(item));
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -248,7 +246,9 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 if (SelectedCell is not null)
                 {
                     SelectedCell.HoverEffect = false;
-                    DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterHwndHost(new OurHwndHost(SelectedCellTab!, this, window)));
+                    var registeredWindow = RegisteredWindow.Register(window);
+                    if (registeredWindow is not null)
+                        DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
                 }
                 else DispatcherQueue.TryEnqueue(() => AddTab(window));
             }

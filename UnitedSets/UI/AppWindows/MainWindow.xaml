@@ -1,4 +1,4 @@
-<windows:TransparentSupportedWindow
+<winUIEx:WindowEx
     x:Class="UnitedSets.UI.AppWindows.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,9 +12,9 @@
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:getxaml="using:Get.XAMLTools"
     xmlns:windows="using:UnitedSets.UI.AppWindows"
-    xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
     xmlns:controls="using:UnitedSets.UI.Controls"
+    xmlns:guics="using:Get.UI.Controls"
     MinHeight="300" MinWidth="800"
     mc:Ignorable="d">
     <Grid x:Name="swapChainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="1">
@@ -72,45 +72,45 @@
                 </Border.BorderBrush>
             </Border>
             <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
-            <getxaml:FluentHorizontalDynamicSizer x:Name="TabViewSizer" Canvas.ZIndex="1" HorizontalAlignment="Left">
-                <Border x:Name="TabViewBorder" MinHeight="40">
+            <Border x:Name="TabViewBorder" MinHeight="40" PointerMoved="DragRegion_PointerMoved" Background="Transparent">
+                <guics:DragRegion x:Name="DragRegion" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <TabView 
-                    Style="{ThemeResource GlowTabView}"
-                    x:Name="TabView"
-                    Background="Transparent"
-                    x:FieldModifier="Public"
-                    IsAddTabButtonVisible="False"
-                    TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
-                    VerticalAlignment="Center"
-                    TabDragStarting="TabDragStarting"
-                    TabDroppedOutside="TabDroppedOutside"
-                    CanDragTabs="True"
-                    CanReorderTabs="True"
-                    BorderBrush="Transparent"
-                    AllowDrop="True"
-                    DragOver="OnDragItemOverTabView"
-                    Drop="OnDropOverTabView"
-                    MinHeight="42"
-                    HorizontalAlignment="Left"
-                    SelectionChanged="TabSelectionChanged"
-                    SizeChanged="TabView_SizeChanged"
-                >
+                        Style="{ThemeResource GlowTabView}"
+                        x:Name="TabView"
+                        Background="Transparent"
+                        x:FieldModifier="Public"
+                        IsAddTabButtonVisible="False"
+                        TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
+                        VerticalAlignment="Center"
+                        TabDragStarting="TabDragStarting"
+                        TabDroppedOutside="TabDroppedOutside"
+                        CanDragTabs="True"
+                        CanReorderTabs="True"
+                        BorderBrush="Transparent"
+                        AllowDrop="True"
+                        DragOver="OnDragItemOverTabView"
+                        Drop="OnDropOverTabView"
+                        MinHeight="42"
+                        HorizontalAlignment="Left"
+                        SelectionChanged="TabSelectionChanged"
+>
                         <TabView.Resources>
                             <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
                         </TabView.Resources>
                         <TabView.TabItemTemplate>
                             <DataTemplate x:DataType="tabs:TabBase">
                                 <TabViewItem
-                                Margin="2, 0, 2, 2"
-                                Background="{ThemeResource 12Brush}"
-                                Style="{ThemeResource UndockedTabViewItemStyle}"
-                                IsSelected="{x:Bind Selected, Mode=TwoWay}"
-                                CloseRequested="{x:Bind TabCloseRequestedEv}"
-                                DoubleTapped="{x:Bind TabDoubleTapped}"
-                                Tag="{x:Bind}"
-                                PointerPressed="{x:Bind TabClickEv}"
-                                AllowDrop="True"
-                                DragOver="OnDragOverTabViewItem">
+                                    Margin="2, 0, 2, 2"
+                                    Background="{ThemeResource 12Brush}"
+                                    Style="{ThemeResource UndockedTabViewItemStyle}"
+                                    CloseRequested="{x:Bind TabCloseRequestedEv}"
+                                    DoubleTapped="{x:Bind TabDoubleTapped}"
+                                    Tag="{x:Bind}"
+                                    PointerPressed="{x:Bind TabClickEv}"
+                                    AllowDrop="True"
+                                    DragOver="OnDragOverTabViewItem"
+                                    guics:DragRegion.Clickable="True"
+                                >
                                     <TabViewItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
@@ -123,42 +123,37 @@
                         <TabView.TabStripHeader>
                             <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
                                 <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
-                                <oobf:AttachedOutOfBoundsFlyout.Flyout>
-                                    <oobf:FlyoutContainer>
-                                        <Flyout>
-                                            <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
-                                        </Flyout>
-                                    </oobf:FlyoutContainer>
-                                </oobf:AttachedOutOfBoundsFlyout.Flyout>
+                                <Button.Flyout>
+                                    <Flyout ShouldConstrainToRootBounds="False">
+                                        <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
+                                    </Flyout>
+                                </Button.Flyout>
                             </Button>
                         </TabView.TabStripHeader>
                         <TabView.TabStripFooter>
-                            <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0">
+                            <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0"
+                                    guics:DragRegion.Clickable="True">
                                 <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                                <oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
-                                    <oobf:FlyoutContainer>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem Click="OnAddTabButtonClick">Add Window</MenuFlyoutItem>
-                                            <MenuFlyoutItem Command="{x:Bind AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
-                                        </MenuFlyout>
-                                    </oobf:FlyoutContainer>
-                                </oobf:AttachedOutOfBoundsFlyout.ContextFlyout>
+                                <Button.ContextFlyout>
+                                    <MenuFlyout ShouldConstrainToRootBounds="False">
+                                        <MenuFlyoutItem Click="OnAddTabButtonClick">Add Window</MenuFlyoutItem>
+                                        <MenuFlyoutItem Command="{x:Bind AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Button.ContextFlyout>
                             </Button>
                         </TabView.TabStripFooter>
                     </TabView>
-                </Border>
-                <Grid x:Name="CustomDragRegionUpdator" Background="Transparent" MinHeight="40" HorizontalAlignment="Stretch"/>
-            </getxaml:FluentHorizontalDynamicSizer>
+                </guics:DragRegion>
+            </Border>
             <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
-                <ItemsControl ItemsSource="{x:Bind Tabs, Mode=OneWay}" ItemTemplateSelector="{x:Bind TabDataTemplateSelector}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                <ContentControl
+                    Content="{x:Bind TabView.SelectedItem, Mode=OneWay}"
+                    ContentTemplateSelector="{x:Bind TabDataTemplateSelector}"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                />
             </Border>
             <controls:HomeBackground x:Name="UnitedSetsHomeBackground"/>
         </Grid>
     </Grid>
-</windows:TransparentSupportedWindow>
+</winUIEx:WindowEx>

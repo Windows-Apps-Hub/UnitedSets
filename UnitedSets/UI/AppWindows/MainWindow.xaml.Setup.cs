@@ -52,7 +52,7 @@ partial class MainWindow
 
         ApplyFlags();
 
-        //SetupTaskbarMode();
+        // SetupTaskbarMode();
 
         // Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

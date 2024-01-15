@@ -5,16 +5,16 @@ namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
-    PropertyChangedEventHandler? _PropertyChanged;
+    PropertyChangedEventHandler? PropertyChanged;
     event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
     {
-        add => _PropertyChanged += value;
-        remove => _PropertyChanged -= value;
+        add => PropertyChanged += value;
+        remove => PropertyChanged -= value;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void NotifyPropertyChanged(string propertyName)
-        => _PropertyChanged?.Invoke(this, new(propertyName));
+        => PropertyChanged?.Invoke(this, new(propertyName));
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void NotifyPropertyChangedOnUIThread(string propertyName)

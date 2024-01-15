@@ -12,6 +12,8 @@ namespace UnitedSets.Classes.Tabs;
 public abstract partial class TabBase : INotifyPropertyChanged
 {
 	public const bool DefaultIsSwitcherVisible = true;
+	[AutoNotifyProperty]
+	bool _IsSelected;
     [OptionalParameter(nameof(IsSwitcherVisible), DefaultIsSwitcherVisible)]
     public TabBase(bool IsSwitcherVisible)
     {

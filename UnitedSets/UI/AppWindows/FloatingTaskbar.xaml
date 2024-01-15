@@ -217,9 +217,10 @@
                     <RadioButtons.ItemTemplate>
                         <DataTemplate x:DataType="tabs:TabBase">
                             <RadioButton Style="{StaticResource DefaultToggleButtonStyle}"
-                                
+                                IsChecked="{x:Bind IsSelected}"
                                 DoubleTapped="{x:Bind TabDoubleTapped}"
                                 Tag="{x:Bind}"
+                                Checked="RadioButton_Checked"
                                 PointerPressed="{x:Bind TabClickEv}"
                                 AllowDrop="True"
                                 DragOver="RadioButton_DragOver"

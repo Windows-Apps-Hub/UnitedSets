@@ -10,11 +10,13 @@ using Microsoft.UI.Windowing;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Input;
 using WinUIEx;
+using UnitedSets.Classes.Tabs;
 
 namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class FloatingTaskbar : SizeToContentWindow
 {
+    
     MainWindow MainWindow;
     public FloatingTaskbar(MainWindow mainWindow)
     {
@@ -96,5 +98,11 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     private void RadioButton_DragOver(object sender, DragEventArgs e)
     {
         MainWindow.OnDragOverTabViewItem(sender);
+    }
+
+    private void RadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is RadioButton rbtn && rbtn.Tag is TabBase tb)
+            MainWindow.SelectedTab = tb;
     }
 }

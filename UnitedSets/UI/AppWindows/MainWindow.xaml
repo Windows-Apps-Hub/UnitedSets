@@ -81,6 +81,7 @@
                         x:FieldModifier="Public"
                         IsAddTabButtonVisible="False"
                         TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
+                        SelectedItem="{x:Bind SelectedTab, Mode=TwoWay}"
                         VerticalAlignment="Center"
                         TabDragStarting="TabDragStarting"
                         TabDroppedOutside="TabDroppedOutside"
@@ -147,7 +148,7 @@
             </Border>
             <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
                 <ContentControl
-                    Content="{x:Bind TabView.SelectedItem, Mode=OneWay}"
+                    Content="{x:Bind SelectedTab, Mode=OneWay}"
                     ContentTemplateSelector="{x:Bind TabDataTemplateSelector}"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"

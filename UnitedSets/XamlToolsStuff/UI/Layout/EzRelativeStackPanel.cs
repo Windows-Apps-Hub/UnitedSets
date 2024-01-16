@@ -29,6 +29,8 @@ public partial class EzRelativeStackPanel : Panel
             double Used = 0;
             var childrenAndRS = (from x in Children select (UIElement: x, RelativeSize: GetRelativeSize(x))).ToArray();
             var totalRS = childrenAndRS.Sum(x => x.RelativeSize);
+            if (totalRS == 0)
+                return new Size(0,0);            
             var ChildrenCount = Children.Count;
             var finalOrientedSize = ToOrientedSize(finalSize);
             var Multipier = finalOrientedSize.Adaptive / totalRS;

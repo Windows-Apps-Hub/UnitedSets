@@ -35,9 +35,12 @@ public static class WinEvents
             if (newHandler is null)
             {
                 registeredWindow.Remove(type);
-                var disposable = UnhookFuncs[type];
-                UnhookFuncs.Remove(type);
-                disposable.Dispose();
+                if (UnhookFuncs.ContainsKey(type))
+                {
+                    var disposable = UnhookFuncs[type];
+                    UnhookFuncs.Remove(type);
+                    disposable.Dispose();
+                }
             }
             else
                 registeredWindow[type] = newHandler;

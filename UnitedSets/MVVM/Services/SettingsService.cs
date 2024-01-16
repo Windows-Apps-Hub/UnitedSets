@@ -47,12 +47,16 @@ public partial class SettingsService
     [RelayCommand]
     public void LaunchSettings()
     {
-		try {
-			s_window?.Activate();
-		} catch (COMException) {
-			CreateWindow();
-			s_window.Activate();
-		}
+        try
+        {
+            if (s_window != null)
+            {
+                s_window?.Activate();
+                return;
+            }
+        } catch (COMException) {}
+        CreateWindow();
+        s_window.Activate();
 
 	}
 
@@ -126,6 +130,8 @@ public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdro
     }
     protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
     {
+        if (target == null)
+        	return;
         try
         {
             SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);

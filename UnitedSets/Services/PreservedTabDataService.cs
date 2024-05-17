@@ -1,5 +1,5 @@
 using System;
-using EasyCSharp;
+using Get.EasyCSharp;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -20,6 +20,10 @@ using UnitedSets.Classes.PreservedDataClasses;
 using Windows.Win32.System.Com;
 using System.Text.RegularExpressions;
 using Windows.Win32;
+using WindowHoster;
+using UnitedSets.Mvvm.Services;
+using UnitedSets.UI.FlyoutModules;
+using UnitedSets.UI.AppWindows;
 #pragma warning disable CS8625
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -128,18 +132,18 @@ namespace UnitedSets.Services {
 			var hwnd = start_arg.running?.MainWindowHandle;//may need to make sure not yexited
 			if (hwnd == null)
 				hwnd = IntPtr.Zero;
-			WinWrapper.Window? wind = null;
+			WinWrapper.Windowing.Window? wind = null;
 			if (hwnd != IntPtr.Zero)
-				wind = WinWrapper.Window.FromWindowHandle((nint)hwnd);
+				wind = WinWrapper.Windowing.Window.FromWindowHandle((nint)hwnd);
 			if (start_arg?.NeedNewTab != false) {
 				if (isCell == false) {
-					if (wind == null && start_arg.startInfo.FileName.StartsWith(OurHwndHost.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
+					if (wind == null && start_arg.startInfo.FileName.StartsWith(ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
 						var hostProcs = Process.GetProcessesByName("ApplicationFrameHost");
 						foreach (var hostProc in hostProcs) {
 							if (start_arg.running.HasExited)
 								break;
 							try {
-								var testWind = OurHwndHost.GetCoreWindowFromAppHostWindow( WinWrapper.Window.FromWindowHandle(hostProc.MainWindowHandle));
+								var testWind = ModifyWindowFlyoutModule.GetCoreWindowFromAppHostWindow( WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
 								if (testWind.OwnerProcess.Id == start_arg.running.Id) {
 									wind = testWind;
 									break;
@@ -148,8 +152,8 @@ namespace UnitedSets.Services {
 						}
 					}
 					if (wind != null) {
-						start_arg.tab = MainWind.JustCreateTab((WinWrapper.Window)wind);
-						start_arg.hwndHost = (start_arg.tab as HwndHostTab).HwndHost;
+						start_arg.tab = MainWind.AddTab(wind.Value);
+						start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
 					} else {
 						LogCfgError($"Window was not found for cmd {start_arg.startInfo.FileName} may need to wait longer? Running: {!start_arg.running.HasExited} its exit code: {(start_arg.running.HasExited ? start_arg.running.ExitCode.ToString() : "")}");
 						return;
@@ -169,7 +173,7 @@ namespace UnitedSets.Services {
 				}
 				MainWind.AddTab(start_arg.tab);
 				//await Task.Delay(300);
-				MainWind.TabView.SelectedItem = start_arg.tab;
+				MainWind.SelectedTab = start_arg.tab;
 				if (isCell) { //while selected need to do this to fix
 					var cTab = start_arg.tab as CellTab;
 					var subs = cTab._MainCell.SubCells;
@@ -180,7 +184,7 @@ namespace UnitedSets.Services {
 
 			}
 			if (isCell && wind != null) {
-				start_arg.hwndHost = new OurHwndHost((CellTab)start_arg.tab, MainWind, (WinWrapper.Window)wind);
+				start_arg.hwndHost = RegisteredWindow.Register(wind.Value);
 				start_arg.cell.RegisterWindow(start_arg.hwndHost);
 			}
 
@@ -212,8 +216,8 @@ namespace UnitedSets.Services {
 			foreach (var start_arg in starts.items) {
 				if (String.IsNullOrWhiteSpace(start_arg.startInfo?.FileName))
 					continue;
-				if (start_arg.startInfo.FileName.StartsWith($"{OurHwndHost.OUR_WINDOWS_STORE_APP_EXEC_PREFIX}")) {
-					var pkgId = start_arg.startInfo.FileName.Substring(OurHwndHost.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length);
+				if (start_arg.startInfo.FileName.StartsWith($"{ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX}")) {
+					var pkgId = start_arg.startInfo.FileName.Substring(ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length);
 					var manager = new WindowsOG.Management.Deployment.PackageManager();
 					var pkg = manager.FindPackageForUser(null,pkgId);
 					var allEntries = await pkg.GetAppListEntriesAsync();
@@ -258,22 +262,19 @@ namespace UnitedSets.Services {
 		}
 		#region Import Functions
 
-		private void ApplySavedCellData(SavedCellData data, OurHwndHost hwndHost) {
+		private void ApplySavedCellData(SavedCellData data, RegisteredWindow hwndHost) {
 			if (data == null || hwndHost == null)
 				return;
 			OnNotNull.Get(data.CustomTitle)?.Action(val => hwndHost.parent.Tab.CustomTitle = val);
-			OnNotNull.Get(data.Borderless)?.Action(val => hwndHost.BorderlessWindow = val);
-			OnNotNull.Get(data.CropEnabled)?.Action(val => hwndHost.ActivateCrop = val);
-			OnNotNull.Get(data.CropRect?.Top)?.Action(val => hwndHost.CropTop = val);
-			OnNotNull.Get(data.CropRect?.Left)?.Action(val => hwndHost.CropLeft = val);
-			OnNotNull.Get(data.CropRect?.Bottom)?.Action(val => hwndHost.CropBottom = val);
-			OnNotNull.Get(data.CropRect?.Right)?.Action(val => hwndHost.CropRight = val);
+			OnNotNull.Get(data.Borderless)?.Action(val => hwndHost.Properties.BorderlessWindow = val);
+			OnNotNull.Get(data.CropEnabled)?.Action(val => hwndHost.Properties.ActivateCrop = val);
+			OnNotNull.Get(data.CropRect)?.Action(val => hwndHost.Properties.CropRegion = val);
 		}
 
 		private Classes.Cell? FindFreeCell(StartingResults starts, Classes.Cell cur) {
-			if (cur.Empty)
+			if (cur.IsEmpty)
 				return cur;
-			if (!cur.HasSubCells || cur.SubCells.Count() < 1)
+			if (!cur.ContainsSubCells || cur.SubCells.Count() < 1)
 				return null;
 
 			foreach (var sub in cur.SubCells.ToArray()) {
@@ -284,7 +285,7 @@ namespace UnitedSets.Services {
 		}
 		private void ApplySavedTab(StartingResults starts, SavedTabData data) {
 
-			if (MainWind.TabView.SelectedItem != null && MainWind.TabView.SelectedItem is CellTab cTab) {
+			if (MainWind.SelectedTab is CellTab cTab) {
 				starts.CurBuildItem.cell = FindFreeCell(starts, cTab._MainCell);
 				if (starts.CurBuildItem.cell != null)
 					starts.CurBuildItem.tab = cTab;
@@ -391,8 +392,8 @@ namespace UnitedSets.Services {
 					exp.CustomTitle = tab.CustomTitle;
 					exp.TabHeaderForeground = BrushToStr(tab.HeaderForegroundBrush);
 					exp.TabHeaderBackground = BrushToStr(tab.HeaderBackgroundBrush);
-					if (tab is HwndHostTab hTab) {
-						exp.CellOnly = ExportCellDataFromHwndHost(hTab.HwndHost);
+					if (tab is WindowHostTab hTab) {
+						exp.CellOnly = ExportCellDataFromHwndHost(hTab.RegisteredWindow);
 						allDataCells.Add(exp.CellOnly);
 					} else if (tab is CellTab cTab) {
 						exp.Split = ExportSplit(allDataCells, cTab._MainCell);
@@ -429,20 +430,20 @@ namespace UnitedSets.Services {
 				foreach (var child in cell.SubCells)
 					kids.Add(ExportSplit(allDataCells, child));
 				ret.Children = kids.ToArray();
-			} else if (cell.HasWindow && cell.CurrentCell is OurHwndHost host) {
+			} else if (cell.ContainsWindow && cell.CurrentCell is { } host) {
 				ret.Child = ExportCellDataFromHwndHost(host);
 				allDataCells.Add(ret.Child);
-			} else if (!cell.Empty)
+			} else if (!cell.IsEmpty)
 				throw new Exception("Unknown cell type or maybe just no kids");
 			return ret;
 
 		}
 
-		private SavedCellData? ExportCellDataFromHwndHost(OurHwndHost hwndHost) {
+		private SavedCellData? ExportCellDataFromHwndHost(RegisteredWindow hwndHost) {
 			var ret = new SavedCellData();
-			ret.Borderless = hwndHost.BorderlessWindow;
-			ret.CropEnabled = hwndHost.ActivateCrop;
-			ret.CropRect = new(hwndHost.CropLeft, hwndHost.CropTop, hwndHost.CropRight, hwndHost.CropBottom);
+			ret.Borderless = hwndHost.Properties.BorderlessWindow;
+			ret.CropEnabled = hwndHost.Properties.ActivateCrop;
+			ret.CropRect = hwndHost.Properties.CropRegion;
 			ret.CustomTitle = hwndHost.parent.Tab.CustomTitle;
 			ret.process = new();
 			var proc = ret.process;

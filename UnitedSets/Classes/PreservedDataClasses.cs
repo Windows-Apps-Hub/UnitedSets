@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using EasyCSharp;
+using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using UnitedSets.Classes.Tabs;
+using WindowHoster;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -28,7 +29,7 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 			public int? ExtraWaitMS;
 			public SavedCellData loadData;
 			public Process running;
-			public OurHwndHost hwndHost;
+			public RegisteredWindow hwndHost;
 			
 		}
 		public StartItem CurBuildItem=new();
@@ -70,7 +71,7 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		public string? _TitlePrefix;
 
 		[AutoNotifyProperty]
-		public bool _ExitOnClose;
+		public bool _CloseWindowOnCloseTab;
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -97,7 +98,7 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		public decimal? ParentCellPercent { get; set; }
 		public int? Row { get; set; }
 		public int? Column { get; set; }
-		public OurRect? CropRect { get; set; }
+		public CropRegion? CropRect { get; set; }
 		public string? CustomTitle { get; set; }
 		public bool? Borderless { get; set; }
 		public bool? CropEnabled { get; set; }

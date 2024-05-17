@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
+using UnitedSets.Services;
 using UnitedSets.UI.AppWindows;
 using WinRT;
 using WinUIEx;
@@ -42,9 +43,14 @@ public partial class App : Application
 #endif
     }
 	private PreservedTabDataService cfg;
-
+    /// <summary>
+    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+    /// </summary>
+    public IServiceProvider Services { get; }
     private static IServiceProvider ConfigureServices()
     {
+        var services = new ServiceCollection();
+        services.AddSingleton<SettingsService>();
         return services.BuildServiceProvider();
     }
 

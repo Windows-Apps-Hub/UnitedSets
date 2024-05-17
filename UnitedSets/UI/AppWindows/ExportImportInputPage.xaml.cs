@@ -16,6 +16,7 @@ using UnitedSets.Classes;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WindowsOG = Windows;
+using UnitedSets.UI.AppWindows;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,8 +42,8 @@ namespace UnitedSets.Windows {
 		public ExportImportInputViewModel vm => (ExportImportInputViewModel)DataContext;
 
 		public static async Task<ExportImportInputViewModel?> ShowExportImport(bool ForExportNotImport, MainWindow parentWindow) {
-			var origSelected = parentWindow.TabView.SelectedItem;
-			parentWindow.TabView.SelectedItem = null;
+			var origSelected = parentWindow.SelectedTab;
+			parentWindow.SelectedTab = null;
 			var wind = new ExportImportInputPage();
 			wind.vm.SaveNotLoad = ForExportNotImport;
 			wind.vm.hWnd = WinRT.Interop.WindowNative.GetWindowHandle(parentWindow);
@@ -121,7 +122,7 @@ namespace UnitedSets.Windows {
 			wind.vm.RequestClose += (_, _) => dialog.Hide();
 
 			var result = await dialog.ShowAsync();
-			parentWindow.TabView.SelectedItem = origSelected;
+			parentWindow.SelectedTab = origSelected;
 			if ((result == ContentDialogResult.Primary || wind.vm.OverrideAsSuccess) && String.IsNullOrWhiteSpace(wind.vm.FullFilename) == false) {
 				var fileExists = File.Exists(wind.vm.FullFilename);
 				if (!ForExportNotImport && !fileExists)

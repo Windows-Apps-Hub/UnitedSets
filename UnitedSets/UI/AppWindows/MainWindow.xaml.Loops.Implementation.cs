@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using WinWrapper.Taskbar;
 using WindowHoster;
 using WinWrapper;
+using Thread = System.Threading.Thread;
 
 namespace UnitedSets.UI.AppWindows;
 

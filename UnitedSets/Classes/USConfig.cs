@@ -36,7 +36,7 @@ namespace UnitedSets.Classes {
 					WindowSize = new(1000, 800), UseTranslucentWindow = true, Theme = ElementTheme.Default, UseDXBorderTransparency = true,
 				},
 				DragAnywhere = true,
-				DefaultCellData = new() { Borderless = false, CropEnabled = false, CropRect = new(0), CustomTitle = "" },
+				DefaultCellData = new() { Borderless = false, CropEnabled = false, CropRect = default, CustomTitle = "" },
 				DefaultTabData = new() { CustomTitle = "" }
 			};
 		}

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
@@ -35,11 +35,8 @@
 		<None Remove="AddTabFlyout.xaml" />
 		<None Remove="Controls\CellVisualizer.xaml" />
 		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-		<None Remove="Windows\ExportImportInputPage.xaml" />
-		<None Remove="Windows\Flyout\Modules\MainWindowMenuFlyoutModule.xaml" />
 		<None Remove="ModifyWindowFlyoutModule.xaml" />
 		<None Remove="OOBEWindow.xaml" />
-		<None Remove="Windows\OOBE\OOBE.Page.cs.xaml" />
 		<None Remove="SettingsWindow.xaml" />
 		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
 		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
@@ -128,11 +125,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Update="Windows\ExportImportInputPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="Controls\CellVisualizer.xaml">

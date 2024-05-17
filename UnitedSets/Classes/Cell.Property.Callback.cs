@@ -12,7 +12,7 @@ partial class Cell
         {
             _CurrentCell.BecomesInvalid += delegate
             {
-                CurrentCell = null;
+                CurrentCell = null!;
             };
 			//_CurrentCell.SetVisible(IsVisible, false);
         }

@@ -80,7 +80,7 @@
                 </Rectangle>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="VerticalCellDataTemplate" x:DataType="class:Cell">
+		<DataTemplate x:Name="HorizontalCellDataTemplate" x:DataType="class:Cell">
             <Grid>
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>
@@ -101,7 +101,7 @@
                 </ItemsControl>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Name="HorizontalCellDataTemplate" x:DataType="class:Cell">
+		<DataTemplate x:Name="VerticalCellDataTemplate" x:DataType="class:Cell">
             <Grid>
                 <ItemsControl ItemsSource="{x:Bind SubCells}">
                     <ItemsControl.ItemsPanel>

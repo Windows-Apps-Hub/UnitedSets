@@ -13,11 +13,16 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
 using Get.XAMLTools.UI;
+using UnitedSets.Classes;
 
 namespace UnitedSets.Mvvm.Services;
 
 public partial class SettingsService
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public static USConfig Settings;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public USConfig cfg => Settings;
     public SettingsService()
     {
         AllSettings = new Setting[] {
@@ -45,21 +50,24 @@ public partial class SettingsService
 
     SettingsWindow? s_window;
     [RelayCommand]
-    public void LaunchSettings()
+    public void LaunchSettings(MainWindow mainWindow)
     {
 		try {
-			s_window?.Activate();
+			if (s_window is not null)
+            {
+                s_window.Activate();
+                return;
+            }
 		} catch (COMException) {
-			CreateWindow();
-			s_window.Activate();
 		}
-
-	}
+        CreateWindow(mainWindow);
+        s_window.Activate();
+    }
 
     [MemberNotNull(nameof(s_window))]
-	private void CreateWindow() {
-		s_window = new(this);
-		s_window.Closed += (_, _) => s_window = new(this);
+	private void CreateWindow(MainWindow mainWindow) {
+		s_window = new(this, mainWindow);
+		s_window.Closed += (_, _) => s_window = new(this, mainWindow);
 	}
 }
 public enum USBackdrop

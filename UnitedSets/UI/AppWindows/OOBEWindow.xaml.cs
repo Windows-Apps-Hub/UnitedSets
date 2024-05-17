@@ -11,13 +11,14 @@ using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media.Animation;
+using UnitedSets.Classes;
 
 namespace UnitedSets.UI.AppWindows;
 
 
 public sealed partial class OOBEWindow : MicaWindow
 {
-    readonly SettingsService Settings = App.SettingsService;
+    public USConfig cfg => SettingsService.Settings;
     readonly bool IsInitialized = false;
     public OOBEWindow() : base(IsMicaInfinite: false)
     {

@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using WinWrapper.Taskbar;
 using WindowHoster;
+using WinWrapper;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -52,14 +53,21 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Task UIRemoveFromCollection<T>(Collection<T> collection, T item) => UIRunAsync(() => collection.Remove(item));
+    private Icon lastIcon = default;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void UpdateWindowIcon()
     {
-        Taskbar.SetOverlayIcon(
-            Win32Window,
-            SelectedTabCache?.Windows.FirstOrDefault().LargeIcon ?? default,
-            SelectedTabCache?.Title ?? ""
-        );
+        var icon = SelectedTabCache?.Windows.FirstOrDefault().LargeIcon ?? default;
+        if (icon != lastIcon)
+        {
+
+            Taskbar.SetOverlayIcon(
+                Win32Window,
+                SelectedTabCache?.Windows.FirstOrDefault().LargeIcon ?? default,
+                SelectedTabCache?.Title ?? ""
+            );
+            lastIcon = icon;
+        }
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     async Task RemoveDisposedTab()

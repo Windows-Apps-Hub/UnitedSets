@@ -31,6 +31,9 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+		
+		cfg = new();
+		cfg.LoadInitialSettingsAndTheme();
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
@@ -38,13 +41,19 @@ public partial class App : Application
         RequestAttachDebugger();
 #endif
     }
+	private PreservedTabDataService cfg;
+
+    private static IServiceProvider ConfigureServices()
+    {
+        return services.BuildServiceProvider();
+    }
+
     async static void RequestAttachDebugger()
     {
         await Task.Delay(2000);
         if (!Debugger.IsAttached)
             Debugger.Launch();
     }
-
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         //DebugRedir.Listen();
@@ -63,7 +72,7 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        var window = new MainWindow();
+        var window = new MainWindow(cfg);
         window.Activate();
     }
 

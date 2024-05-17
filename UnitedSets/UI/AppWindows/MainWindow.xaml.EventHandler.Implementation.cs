@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using WindowHoster;
+using UnitedSets.Windows;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -58,6 +59,25 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         AddTab(newTab);
         TabView.SelectedItem = newTab;
     }
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    public async Task ExportData()
+    {
+        CloseMainFlyout();
+        var res = await ExportImportInputPage.ShowExportImport(true, this);
+        if (res == null)
+            return;
+        persistantService.ExportSettings(res.FullFilename, res.OnlyExportNonDefault);
+    }
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    public async Task ImportData()
+    {
+        CloseMainFlyout();
+        var res = await ExportImportInputPage.ShowExportImport(false, this);
+        if (res == null)
+            return;
+        persistantService.ImportSettings(res.FullFilename);
+    }
+    private void CloseMainFlyout() => MenuFlyout?.Hide();
 
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {
@@ -112,16 +132,23 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 TabView.SelectedIndex != -1 && Tabs[TabView.SelectedIndex] is CellTab ?
                 Visibility.Collapsed :
                 Visibility.Visible;
-
-        if (TabView.SelectedIndex is not -1)
-        {
-            Title = $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count - 1} Tabs) - United Sets";
-        }
-        else
-        {
-            Title = "United Sets";
-        }
+        UpdateTitle();
     }
+    private async Task SafeClose(TabBase tab)
+    {
+        try
+        {
+            var tsk = tab.TryCloseAsync();
+            await await Task.WhenAny(tsk, Task.Delay(TimeSpan.FromSeconds(3)));//yes double await to get exceptions....
+            if (tsk.IsCompletedSuccessfully)
+                return;
+        }
+        catch (Exception)
+        {
+        }
+        tab.DetachAndDispose();
+    }
+
     private partial void TabRemoveRequest(TabBase tab)
     {
         DispatcherQueue.TryEnqueue(() => RemoveTab(tab));
@@ -239,31 +266,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 // Close all windows
                 TabView.Visibility = Visibility.Visible;
                 await Task.Delay(100);
-                foreach (var Tab in Tabs.ToArray()) // ToArray = Clone Collection
-                {
-                    try
-                    {
-                        _ = Tab.TryCloseAsync();
-                        // Try closing tab in 3 second, otherwise give up
-                        for (int i = 0; i < 30; i++)
-                        {
-                            await Task.Delay(100);
-                            if (!Tab.IsDisposed) continue;
-                        }
-                        if (!Tab.IsDisposed) break;
-                    }
-                    catch
-                    {
-                        Tab.DetachAndDispose(JumpToCursor: false);
-                    }
-                }
-                if (Tabs.Count == 0)
-                {
-                    await TimerStop();
-                    await Suicide();
-
-                    return;
-                }
+                await Task.WhenAll(Tabs.ToArray().Select(SafeClose));
                 goto default;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));

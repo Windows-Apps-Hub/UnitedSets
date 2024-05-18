@@ -19,7 +19,7 @@ public sealed partial class SettingsWindow : MicaWindow
         this.mainWindow = mainWindow;
         cfg = Settings.cfg;
         this.InitializeComponent();
-        themeCntrl.Visibility = USConfig.FLAGS_THEME_CHOICE_ENABLED ? Visibility.Visible : Visibility.Collapsed;
+        //themeCntrl.Visibility = USConfig.FLAGS_THEME_CHOICE_ENABLED ? Visibility.Visible : Visibility.Collapsed;
         gridMain.DataContext = this;//we have to use normal bindings for anything with a converter as winui is broke af https://github.com/microsoft/microsoft-ui-xaml/issues/4966
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);

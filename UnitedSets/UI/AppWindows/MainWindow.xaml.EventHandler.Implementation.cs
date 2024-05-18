@@ -77,7 +77,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             return;
         persistantService.ImportSettings(res.FullFilename);
     }
-    private void CloseMainFlyout() => MenuFlyout?.Hide();
+    private void CloseMainFlyout()
+    { }    //=> MenuFlyout?.Hide();
 
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {

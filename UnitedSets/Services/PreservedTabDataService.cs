@@ -137,13 +137,13 @@ namespace UnitedSets.Services {
 				wind = WinWrapper.Windowing.Window.FromWindowHandle((nint)hwnd);
 			if (start_arg?.NeedNewTab != false) {
 				if (isCell == false) {
-					if (wind == null && start_arg.startInfo.FileName.StartsWith(ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
+					if (wind == null && start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
 						var hostProcs = Process.GetProcessesByName("ApplicationFrameHost");
 						foreach (var hostProc in hostProcs) {
 							if (start_arg.running.HasExited)
 								break;
 							try {
-								var testWind = ModifyWindowFlyoutModule.GetCoreWindowFromAppHostWindow( WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
+								var testWind = Util.GetCoreWindowFromAppHostWindow(WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
 								if (testWind.OwnerProcess.Id == start_arg.running.Id) {
 									wind = testWind;
 									break;
@@ -152,8 +152,9 @@ namespace UnitedSets.Services {
 						}
 					}
 					if (wind != null) {
-						start_arg.tab = MainWind.AddTab(wind.Value);
-						start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
+						start_arg.tab = MainWind.CreateWindowHostTab(wind.Value);
+                        MainWind.AddTab(start_arg.tab);
+                        start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
 					} else {
 						LogCfgError($"Window was not found for cmd {start_arg.startInfo.FileName} may need to wait longer? Running: {!start_arg.running.HasExited} its exit code: {(start_arg.running.HasExited ? start_arg.running.ExitCode.ToString() : "")}");
 						return;
@@ -185,10 +186,10 @@ namespace UnitedSets.Services {
 			}
 			if (isCell && wind != null) {
 				start_arg.hwndHost = RegisteredWindow.Register(wind.Value);
-				start_arg.cell.RegisterWindow(start_arg.hwndHost);
-			}
+                start_arg.cell.RegisterWindow(start_arg.hwndHost);
+            }
 
-			ApplySavedCellData(start_arg.loadData, start_arg.hwndHost);
+			ApplySavedCellData(start_arg.loadData, start_arg.hwndHost, start_arg.tab);
 		}
 		private async Task _ImportSettings(USConfig data) {
 			try {
@@ -216,8 +217,8 @@ namespace UnitedSets.Services {
 			foreach (var start_arg in starts.items) {
 				if (String.IsNullOrWhiteSpace(start_arg.startInfo?.FileName))
 					continue;
-				if (start_arg.startInfo.FileName.StartsWith($"{ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX}")) {
-					var pkgId = start_arg.startInfo.FileName.Substring(ModifyWindowFlyoutModule.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length);
+				if (start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {
+					var pkgId = start_arg.startInfo.FileName[Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length..];
 					var manager = new WindowsOG.Management.Deployment.PackageManager();
 					var pkg = manager.FindPackageForUser(null,pkgId);
 					var allEntries = await pkg.GetAppListEntriesAsync();
@@ -262,10 +263,10 @@ namespace UnitedSets.Services {
 		}
 		#region Import Functions
 
-		private void ApplySavedCellData(SavedCellData data, RegisteredWindow hwndHost) {
-			if (data == null || hwndHost == null)
+		private void ApplySavedCellData(SavedCellData data, RegisteredWindow hwndHost, TabBase tab) {
+			if (data == null || hwndHost == null || tab == null)
 				return;
-			OnNotNull.Get(data.CustomTitle)?.Action(val => hwndHost.parent.Tab.CustomTitle = val);
+			OnNotNull.Get(data.CustomTitle)?.Action(val => tab.CustomTitle = val);
 			OnNotNull.Get(data.Borderless)?.Action(val => hwndHost.Properties.BorderlessWindow = val);
 			OnNotNull.Get(data.CropEnabled)?.Action(val => hwndHost.Properties.ActivateCrop = val);
 			OnNotNull.Get(data.CropRect)?.Action(val => hwndHost.Properties.CropRegion = val);
@@ -393,10 +394,10 @@ namespace UnitedSets.Services {
 					exp.TabHeaderForeground = BrushToStr(tab.HeaderForegroundBrush);
 					exp.TabHeaderBackground = BrushToStr(tab.HeaderBackgroundBrush);
 					if (tab is WindowHostTab hTab) {
-						exp.CellOnly = ExportCellDataFromHwndHost(hTab.RegisteredWindow);
+						exp.CellOnly = ExportCellDataFromHwndHost(hTab.RegisteredWindow, hTab.CustomTitle);
 						allDataCells.Add(exp.CellOnly);
 					} else if (tab is CellTab cTab) {
-						exp.Split = ExportSplit(allDataCells, cTab._MainCell);
+						exp.Split = ExportSplit(allDataCells, cTab._MainCell, cTab.CustomTitle);
 					}
 					if (OnlyNonDefault)
 						PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(def_config.DefaultTabData, exp, true);
@@ -421,17 +422,17 @@ namespace UnitedSets.Services {
 
 		}
 		#region Export Functions
-		private SavedTabData.SavedSplitData ExportSplit(List<SavedCellData> allDataCells, Cell cell) {
+		private SavedTabData.SavedSplitData ExportSplit(List<SavedCellData> allDataCells, Cell cell, string? customTitle) {
 			var ret = new SavedTabData.SavedSplitData();
 			var kids = new List<SavedTabData.SavedSplitData>();
 			if (cell.SubCells?.Length > 0) {
 				ret.Direction = cell.Orientation == Orientation.Horizontal ? SavedTabData.SavedSplitData.SplitDirection.Horizontal : SavedTabData.SavedSplitData.SplitDirection.Vertical;
 				ret.Count = cell.SubCells.Count();
 				foreach (var child in cell.SubCells)
-					kids.Add(ExportSplit(allDataCells, child));
+					kids.Add(ExportSplit(allDataCells, child, customTitle));
 				ret.Children = kids.ToArray();
 			} else if (cell.ContainsWindow && cell.CurrentCell is { } host) {
-				ret.Child = ExportCellDataFromHwndHost(host);
+				ret.Child = ExportCellDataFromHwndHost(host, customTitle);
 				allDataCells.Add(ret.Child);
 			} else if (!cell.IsEmpty)
 				throw new Exception("Unknown cell type or maybe just no kids");
@@ -439,15 +440,15 @@ namespace UnitedSets.Services {
 
 		}
 
-		private SavedCellData? ExportCellDataFromHwndHost(RegisteredWindow hwndHost) {
+		private SavedCellData? ExportCellDataFromHwndHost(RegisteredWindow hwndHost, string? customTitle) {
 			var ret = new SavedCellData();
 			ret.Borderless = hwndHost.Properties.BorderlessWindow;
 			ret.CropEnabled = hwndHost.Properties.ActivateCrop;
 			ret.CropRect = hwndHost.Properties.CropRegion;
-			ret.CustomTitle = hwndHost.parent.Tab.CustomTitle;
+			ret.CustomTitle = customTitle;
 			ret.process = new();
 			var proc = ret.process;
-			var info = hwndHost.GetOwnerProcessInfo();
+			var info = Util.GetOwnerProcessInfo(hwndHost.Window);
 			proc.ExecutableArgString = info.args;
 			proc.Executable = info.cmd;
 			proc.WorkingDirectory = "";

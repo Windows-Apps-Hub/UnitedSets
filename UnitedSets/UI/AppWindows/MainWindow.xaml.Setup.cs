@@ -42,11 +42,11 @@ partial class MainWindow
             //MainAreaBorder.RequestedTheme = this.RootGrid.RequestedTheme = swapChainPanel.RequestedTheme = cfg.Design.Theme.Value;
         }
 
-        ui_configs = new() { TitleUpdate = UpdateTitle, swapChain = this.swapChainPanel };
+        ui_configs = new() { TitleUpdate = UpdateTitle }; //, swapChain = this.swapChainPanel
         persistantService.init(this, ui_configs);
 
-        if (cfg.Design.UseDXBorderTransparency == true)
-            TransparentSetup();
+        //if (cfg.Design.UseDXBorderTransparency == true)
+        //    TransparentSetup();
 
         InitializeComponent();
         SetupBasicWindow();
@@ -90,28 +90,28 @@ partial class MainWindow
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(CustomDragRegion);
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void SetupTransparent(out TransparentWindowManager trans_mgr)
-        {
-            WindowBorderOnTransparent.Visibility = Visibility.Visible;
-            MainAreaBorder.Margin = new(8, 0, 8, 8);
-            var presenter = (OverlappedPresenter)AppWindow.Presenter;
-            //RootGrid.Children.Insert(0, border);
-            //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
-            //trans_mgr.AfterInitialize();
-            trans_mgr = null!;
-            ui_configs.WindowBorder = new Border() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-            ui_configs.WindowBorder.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Offset = 1 }, new GradientStop { Offset = 0 } }, 45);
-            //ui_configs.WindowBorder.RequestedTheme = MainAreaBorder.RequestedTheme;
-            Grid.SetColumnSpan(ui_configs.WindowBorder, 50);
-            Grid.SetRowSpan(ui_configs.WindowBorder, 50);
-            Canvas.SetZIndex(ui_configs.WindowBorder, -5);
-            ui_configs.MainAreaBorder = MainAreaBorder;
-            RootGrid.Children.Insert(0, ui_configs.WindowBorder);
-            persistantService.SetPrimaryDesignProperties();
-            trans_mgr = new(this, swapChainPanel, cfg.DragAnywhere == true);
-            trans_mgr.AfterInitialize();
-        }
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //void SetupTransparent(out TransparentWindowManager trans_mgr)
+        //{
+        //    WindowBorderOnTransparent.Visibility = Visibility.Visible;
+        //    MainAreaBorder.Margin = new(8, 0, 8, 8);
+        //    var presenter = (OverlappedPresenter)AppWindow.Presenter;
+        //    //RootGrid.Children.Insert(0, border);
+        //    //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
+        //    //trans_mgr.AfterInitialize();
+        //    trans_mgr = null!;
+        //    ui_configs.WindowBorder = new Border() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+        //    ui_configs.WindowBorder.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Offset = 1 }, new GradientStop { Offset = 0 } }, 45);
+        //    //ui_configs.WindowBorder.RequestedTheme = MainAreaBorder.RequestedTheme;
+        //    Grid.SetColumnSpan(ui_configs.WindowBorder, 50);
+        //    Grid.SetRowSpan(ui_configs.WindowBorder, 50);
+        //    Canvas.SetZIndex(ui_configs.WindowBorder, -5);
+        //    ui_configs.MainAreaBorder = MainAreaBorder;
+        //    RootGrid.Children.Insert(0, ui_configs.WindowBorder);
+        //    persistantService.SetPrimaryDesignProperties();
+        //    trans_mgr = new(this, swapChainPanel, cfg.DragAnywhere == true);
+        //    trans_mgr.AfterInitialize();
+        //}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
         {
@@ -171,7 +171,7 @@ partial class MainWindow
     {
         var toAdd = CLI.GetArrVal("add-window-by-exe");
         var editLastAddedWindow = CLI.GetFlag("edit-last-added");
-        LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+        //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
         var profile = CLI.GetVal("profile");
         if (!String.IsNullOrWhiteSpace(profile))
         {

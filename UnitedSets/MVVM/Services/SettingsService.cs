@@ -50,7 +50,8 @@ public partial class SettingsService
             {
                 Title = "Window Title Prefix",
                 Description = "Prefix that shows up before the normal UnitedSets title",
-                Icon = SymbolEx.AlignLeft
+                Icon = SymbolEx.AlignLeft,
+                PlaceholderText = "None - Normal Title Mode"
             },
             ThemeOverride = new(
                 () => cfg.Design.Theme ?? ElementTheme.Default, x => cfg.Design.Theme = x,

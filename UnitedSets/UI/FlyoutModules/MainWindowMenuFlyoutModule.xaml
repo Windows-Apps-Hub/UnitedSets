@@ -29,16 +29,16 @@
 				</StackPanel.Resources>
 				<Button
                     ToolTipService.ToolTip="App Settings"
-                    Command="{x:Bind MainWindow.LaunchSettingsCommand}"
+                    Command="{x:Bind Settings.LaunchSettingsCommand}"
                     Style="{ThemeResource ToolbarButton}"
                     Visibility="{x:Bind InverseBoolVisibility(MainWindow.HasOwner), Mode=OneWay}"
                 >
 					<SymbolIcon Symbol="Setting" />
 				</Button>
-				<Button ToolTipService.ToolTip="Modify Panel Layout" Click="{x:Bind MainWindow.StartNewCellTab}" Style="{ThemeResource ToolbarButton}">
-					<SymbolIcon Symbol="SelectAll" />
-				</Button>-->
-				<Button ToolTipService.ToolTip="Export Window Data" Command="{x:Bind MainWindow.ExportDataCommand}" Style="{ThemeResource ToolbarButton}">
+                <Button ToolTipService.ToolTip="Modify Panel Layout" Command="{x:Bind MainWindow.AddSplitableTabCommand}" Style="{ThemeResource ToolbarButton}">
+                    <SymbolIcon Symbol="SelectAll" />
+                </Button>
+                <Button ToolTipService.ToolTip="Export Window Data" Command="{x:Bind MainWindow.ExportDataCommand}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="Save" />
 				</Button>
 

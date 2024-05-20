@@ -18,7 +18,7 @@ namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class OOBEWindow : MicaWindow
 {
-    public USConfig cfg => SettingsService.Settings;
+    public SettingsService Settings => SettingsService.Settings;
     readonly bool IsInitialized = false;
     public OOBEWindow() : base(IsMicaInfinite: false)
     {

@@ -55,15 +55,15 @@ partial class MainWindow
         //if (TransparentMode)
         //    SetupTransparent(out trans_mgr);
 
-        void UpdateBackdrop(USBackdrop x)
-        {
-            //var IsTransparent = x is USBackdrop.Transparent;
-            //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
-            //TransparentMode = IsTransparent;
-            SystemBackdrop = x.GetSystemBackdrop();
-        }
-        Settings.BackdropMode.Updated += UpdateBackdrop;
-        UpdateBackdrop(Settings.BackdropMode.Value);
+        //void UpdateBackdrop(USBackdrop x)
+        //{
+        //    //var IsTransparent = x is USBackdrop.Transparent;
+        //    //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
+        //    //TransparentMode = IsTransparent;
+        //    SystemBackdrop = x.GetSystemBackdrop();
+        //}
+        //Settings.BackdropMode.Updated += UpdateBackdrop;
+        //UpdateBackdrop(Settings.BackdropMode.Value);
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
         SetupNative(out Win32Window, out WindowMessageMonitor);

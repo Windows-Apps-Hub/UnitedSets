@@ -23,7 +23,7 @@ namespace UnitedSets;
 /// </summary>
 public partial class App : Application
 {
-    public static SettingsService SettingsService { get; } = new();
+    public static SettingsService SettingsService { get; } = SettingsService.Settings;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code

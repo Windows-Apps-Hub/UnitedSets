@@ -8,7 +8,7 @@
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
 	xmlns:local="using:UnitedSets.Controls"
-    xmlns:USsettings="using:Get.XAMLTools.Classes.Settings"
+    xmlns:USsettings="using:UnitedSets.Settings"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
     xmlns:helpers="using:UnitedSets.Helpers"
@@ -90,7 +90,7 @@
                                     <TextBlock FontSize="14" Margin="4, 0, 4, 0">United Sets</TextBlock>
                                     <StackPanel Margin="4, 4, 4, 0">
                                         <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Developed by</TextBlock>
-                                        <HyperlinkButton NavigateUri="https://github.com/Get0457">Get 0457</HyperlinkButton>
+                                        <HyperlinkButton NavigateUri="https://github.com/GetGet99">Get</HyperlinkButton>
                                         <HyperlinkButton NavigateUri="https://twitter.com/FireCubeStudios">FireCubeStudios</HyperlinkButton>
                                     </StackPanel>
                                     <Grid>
@@ -100,7 +100,7 @@
                                         </StackPanel>
                                         <StackPanel HorizontalAlignment="Right" Margin="4, 0, 12, 0">
                                             <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Links:</TextBlock>
-                                            <HyperlinkButton NavigateUri="https://github.com/Get0457">Get0457 GitHub</HyperlinkButton>
+                                            <HyperlinkButton NavigateUri="https://github.com/GetGet99">Get's GitHub</HyperlinkButton>
                                             <HyperlinkButton NavigateUri="https://github.com/FireCubeStudios/UnitedSets">GitHub repository</HyperlinkButton>
                                         </StackPanel>
                                     </Grid>
@@ -109,6 +109,7 @@
                             </Grid>
                         </settings:SettingsBlockControl.ExpandableContent>
                     </settings:SettingsBlockControl>
+                    <Button Content="Make Default Settings" Command="{x:Bind SaveDefaultSettingsCommand}" />
                 </StackPanel>
 
                 <StackPanel Margin="100, 100, 50, 80" Width="220" x:Name="AboutPanel" HorizontalAlignment="Right" VerticalAlignment="Top">

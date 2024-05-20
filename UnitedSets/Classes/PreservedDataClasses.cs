@@ -127,7 +127,7 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		public string CustomTitle;
 		public bool Borderless;
 		public bool CropEnabled;
-		public OurRect CropRect;
+		public CropRegion CropRect;
 
 	}
 	public struct OurRect {

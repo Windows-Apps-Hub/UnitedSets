@@ -87,7 +87,7 @@ namespace UnitedSets.Services {
 			}
 
 			var cfg = def_config.CloneWithoutTabs();
-			SettingsService.Settings = cfg;
+			SettingsService.Settings.cfg = cfg;
 			cfg.PropertyChanged += Cfg_PropertyChanged;
 			if (cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
 				Application.Current.RequestedTheme = cfg.Design.Theme == ElementTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
@@ -372,7 +372,7 @@ namespace UnitedSets.Services {
 		}
 
 		#endregion
-		private USConfig cfg => SettingsService.Settings;
+		private USConfig cfg => SettingsService.Settings.cfg;
 		public async Task ResetSettings() {
 			await _ImportSettings(def_config.CloneWithoutTabs());
 			//def_config

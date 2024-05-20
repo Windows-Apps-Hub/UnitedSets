@@ -1,5 +1,4 @@
-﻿using Get.XAMLTools.Classes.Settings;
-using Get.XAMLTools.Classes.Settings.Boolean;
+﻿using UnitedSets.Settings;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;

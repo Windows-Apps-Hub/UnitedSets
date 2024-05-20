@@ -22,7 +22,7 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-		<LangVersion>11</LangVersion>
+		<LangVersion>12</LangVersion>
 		<UseRidGraph>True</UseRidGraph>
 	</PropertyGroup>
 	<ItemGroup>

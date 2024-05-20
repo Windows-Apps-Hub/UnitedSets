@@ -2,8 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using UnitedSets.UI.AppWindows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using Get.XAMLTools.Classes.Settings;
-using Get.XAMLTools.Classes.Settings.Boolean;
+using UnitedSets.Settings;
 using Cube.UI.Icons;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,39 +13,65 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
 using Get.XAMLTools.UI;
 using UnitedSets.Classes;
+using EnumsNET;
 
 namespace UnitedSets.Mvvm.Services;
 
 public partial class SettingsService
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public static USConfig Settings;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public USConfig cfg => Settings;
-    public SettingsService()
+    public static SettingsService Settings { get; } = new();
+//#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+//    public static USConfig Settings;
+//#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public USConfig cfg { get; set; }
+    private SettingsService()
     {
-        AllSettings = new Setting[] {
-            CloseWindowOnCloseTab,
-            BackdropMode
-        };
+        AllSettings = [
+            CloseWindowOnCloseTab = new(
+                () => cfg.CloseWindowOnCloseTab, x => cfg.CloseWindowOnCloseTab = x
+            )
+            {
+                Title = "Closing tab closes window",
+                Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
+                Icon = SymbolEx.Delete
+            },
+            TransculentWindow = new(
+                () => cfg.Design.UseTranslucentWindow ?? false, x => cfg.Design.UseTranslucentWindow = x
+            )
+            {
+                Title = "Use Translucent Bordering/Background",
+                Description = "Allow the opacity of our background/borders (not the pinned apps) to be translucent",
+                Icon = SymbolEx.PPSOneLandscape,
+                RequiresRestart = true
+            },
+            WindowTitlePrefix = new(
+                () => cfg.TitlePrefix ?? "", x => cfg.TitlePrefix = x
+            )
+            {
+                Title = "Window Title Prefix",
+                Description = "Prefix that shows up before the normal UnitedSets title",
+                Icon = SymbolEx.AlignLeft
+            },
+            ThemeOverride = new(
+                () => cfg.Design.Theme ?? ElementTheme.Default, x => cfg.Design.Theme = x,
+                Enums.GetValues<ElementTheme>()
+            )
+            {
+                Title = "Theme Override",
+                Description = "Override the windows theme",
+                Icon = SymbolEx.Light,
+                RequiresRestart = true
+            }
+        ];
     }
     public IReadOnlyList<Setting> AllSettings { get; }
 
-    public OnOffSetting CloseWindowOnCloseTab { get; } = new(nameof(CloseWindowOnCloseTab))
-    {
-        Title = "Closing tab closes window",
-        Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
-        Icon = SymbolEx.Delete,
-        DefaultValue = true
-    };
+    public OnOffSetting CloseWindowOnCloseTab { get; }
+    public OnOffSetting TransculentWindow { get; }
+    public TextSetting WindowTitlePrefix { get; }
+    public SelectSetting<ElementTheme> ThemeOverride { get; }
 
-    public SelectSetting<USBackdrop> BackdropMode { get; } = new(nameof(BackdropMode), Enum.GetValues<USBackdrop>())
-    {
-        Title = "Window Background",
-        Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
-        Icon = SymbolEx.PPSOneLandscape,
-        DefaultValue = USBackdrop.Mica
-    };
+    //public SelectSetting<USBackdrop> BackdropMode { get; }
 
     SettingsWindow? s_window;
     [RelayCommand]

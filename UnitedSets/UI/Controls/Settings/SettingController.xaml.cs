@@ -1,7 +1,5 @@
 ﻿using Get.XAMLTools;
-using UnitedSets.Classes;
-using Get.XAMLTools.Classes.Settings;
-using Get.XAMLTools.Classes.Settings.Boolean;
+using UnitedSets.Settings;
 
 namespace UnitedSets.UI.Controls;
 [DependencyProperty(
@@ -22,6 +20,7 @@ public partial class SettingController
         ContentTemplate = newValue switch
         {
             OnOffSetting => OnOffSettingTemplate,
+            TextSetting => TextSettingTemplate,
             ISelectSetting => SelectSettingTemplate,
             _ => null
         };

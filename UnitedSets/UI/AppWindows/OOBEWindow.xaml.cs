@@ -1,11 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using System;
 using UnitedSets.Mvvm.Services;
-using Windows.UI;
-using WinUIEx;
 using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
@@ -17,7 +13,7 @@ namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class OOBEWindow : MicaWindow
 {
-    readonly SettingsService Settings = App.SettingsService;
+    public SettingsService Settings => SettingsService.Settings;
     readonly bool IsInitialized = false;
     public OOBEWindow() : base(IsMicaInfinite: false)
     {

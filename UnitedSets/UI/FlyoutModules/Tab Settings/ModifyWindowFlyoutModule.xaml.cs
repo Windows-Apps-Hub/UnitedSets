@@ -4,7 +4,12 @@ using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Process = System.Diagnostics.Process;
 using WindowHoster;
-
+using System;
+using WinUIEx;
+using Microsoft.Win32;
+using System.IO;
+using UnitedSets.Helpers;
+using WindowEx = WinWrapper.Windowing.Window;
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class ModifyWindowFlyoutModule
@@ -68,31 +73,19 @@ public sealed partial class ModifyWindowFlyoutModule
     [Event(typeof(RoutedEventHandler))]
     void OpenWindowLocation()
     {
-        string? FileName = GetOwnerProcessModuleFilename();
+        string? FileName = Util.GetOwnerProcessModuleFilename(RegisteredWindow.Window);
         if (FileName is null) return;
     
         Process.Start("explorer.exe", $"/select,\"{FileName}\"");
     }
-    string? GetOwnerProcessModuleFilename()
-    {
-        var host = RegisteredWindow;
-        var FileName = host.Window.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
-        if (FileName == @"C:\WINDOWS\system32\ApplicationFrameHost.exe")
-        {
-            var child = host.Window.Children.AsEnumerable().FirstOrDefault(x =>
-                x.Class.Name is "Windows.UI.Core.CoreWindow", host.Window);
-            FileName = child.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
-        }
-        return FileName;
-    }
-
+    
     [Event(typeof(RoutedEventHandler))]
     async void CloseWindow()
     {
         await RegisteredWindow.Window.TryCloseAsync();
     }
     [Event(typeof(RoutedEventHandler))]
-    void DetachWindow()
+    async void DetachWindow()
     {
         RegisteredWindow.Detach();
     }

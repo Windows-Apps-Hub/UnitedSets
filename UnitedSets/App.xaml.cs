@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
+using UnitedSets.Services;
 using UnitedSets.UI.AppWindows;
 using WinRT;
 using WinUIEx;
@@ -22,7 +23,7 @@ namespace UnitedSets;
 /// </summary>
 public partial class App : Application
 {
-    public static SettingsService SettingsService { get; } = new();
+    public static SettingsService SettingsService { get; } = SettingsService.Settings;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -31,6 +32,9 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+		
+		cfg = new();
+		cfg.LoadInitialSettingsAndTheme();
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
@@ -38,13 +42,24 @@ public partial class App : Application
         RequestAttachDebugger();
 #endif
     }
+	private PreservedTabDataService cfg;
+    /// <summary>
+    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+    /// </summary>
+    public IServiceProvider Services { get; }
+    private static IServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<SettingsService>();
+        return services.BuildServiceProvider();
+    }
+
     async static void RequestAttachDebugger()
     {
         await Task.Delay(2000);
         if (!Debugger.IsAttached)
             Debugger.Launch();
     }
-
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         //DebugRedir.Listen();
@@ -63,7 +78,7 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        var window = new MainWindow();
+        var window = new MainWindow(cfg);
         window.Activate();
     }
 

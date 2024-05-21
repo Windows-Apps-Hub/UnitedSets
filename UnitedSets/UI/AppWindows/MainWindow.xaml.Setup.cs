@@ -17,13 +17,37 @@ using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using UnitedSets.Mvvm.Services;
 using Icon = WinWrapper.Icon;
+using UnitedSets.Services;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using System.IO;
+using System.Threading.Tasks;
+using WinUIEx;
 
 namespace UnitedSets.UI.AppWindows;
 
 partial class MainWindow
 {
-    public MainWindow()
+    // To Merge:
+
+    public MainWindow(PreservedTabDataService persistantService)
     {
+        // To Merge:
+        this.persistantService = persistantService;
+
+        if (cfg.Design.Theme != null && cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
+        {
+            (this.Content as FrameworkElement).RequestedTheme = cfg.Design.Theme.Value;
+            ///not sure why settng the requested theme doesnt seem to work
+            //MainAreaBorder.RequestedTheme = this.RootGrid.RequestedTheme = swapChainPanel.RequestedTheme = cfg.Design.Theme.Value;
+        }
+
+        ui_configs = new() { TitleUpdate = UpdateTitle }; //, swapChain = this.swapChainPanel
+        persistantService.init(this, ui_configs);
+
+        //if (cfg.Design.UseDXBorderTransparency == true)
+        //    TransparentSetup();
+
         InitializeComponent();
         SetupBasicWindow();
         
@@ -31,15 +55,15 @@ partial class MainWindow
         //if (TransparentMode)
         //    SetupTransparent(out trans_mgr);
 
-        void UpdateBackdrop(USBackdrop x)
-        {
-            //var IsTransparent = x is USBackdrop.Transparent;
-            //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
-            //TransparentMode = IsTransparent;
-            SystemBackdrop = x.GetSystemBackdrop();
-        }
-        Settings.BackdropMode.Updated += UpdateBackdrop;
-        UpdateBackdrop(Settings.BackdropMode.Value);
+        //void UpdateBackdrop(USBackdrop x)
+        //{
+        //    //var IsTransparent = x is USBackdrop.Transparent;
+        //    //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
+        //    //TransparentMode = IsTransparent;
+        //    SystemBackdrop = x.GetSystemBackdrop();
+        //}
+        //Settings.BackdropMode.Updated += UpdateBackdrop;
+        //UpdateBackdrop(Settings.BackdropMode.Value);
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
         SetupNative(out Win32Window, out WindowMessageMonitor);
@@ -49,8 +73,6 @@ partial class MainWindow
         SetupEvent();
 
         SetupUIThreadLoopTimer(out timer);
-
-        ApplyFlags();
 
         // SetupTaskbarMode();
 
@@ -78,6 +100,17 @@ partial class MainWindow
         //    //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
         //    //trans_mgr.AfterInitialize();
         //    trans_mgr = null!;
+        //    ui_configs.WindowBorder = new Border() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+        //    ui_configs.WindowBorder.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Offset = 1 }, new GradientStop { Offset = 0 } }, 45);
+        //    //ui_configs.WindowBorder.RequestedTheme = MainAreaBorder.RequestedTheme;
+        //    Grid.SetColumnSpan(ui_configs.WindowBorder, 50);
+        //    Grid.SetRowSpan(ui_configs.WindowBorder, 50);
+        //    Canvas.SetZIndex(ui_configs.WindowBorder, -5);
+        //    ui_configs.MainAreaBorder = MainAreaBorder;
+        //    RootGrid.Children.Insert(0, ui_configs.WindowBorder);
+        //    persistantService.SetPrimaryDesignProperties();
+        //    trans_mgr = new(this, swapChainPanel, cfg.DragAnywhere == true);
+        //    trans_mgr.AfterInitialize();
         //}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
@@ -94,54 +127,80 @@ partial class MainWindow
             WindowEx = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
             WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void ApplyFlags()
-        {
-            static bool IsProcessNotExited(System.Diagnostics.Process proc)
-            {
-                //try
-                //{
-                //    return !proc.HasExited;
-                //} catch
-                //{
-                //    return false;
-                //}
-                return false;
-            }
-            // --add-window-by-exe
-            var toAdd = CLI.GetArrVal("add-window-by-exe");
-            var editLastAddedWindow = CLI.GetFlag("edit-last-added");
-            //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
-            foreach (var window in
-                from proc in System.Diagnostics.Process.GetProcesses()
-                where IsProcessNotExited(proc)
-                from itm in toAdd
-                where proc.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)
-                select Window.FromWindowHandle(proc.MainWindowHandle)
-            )
-                AddTab(window);
-
-            if (editLastAddedWindow && Tabs.Count > 0)
-                Tabs[^1].TabDoubleTapped(
-                    this,
-                    new DoubleTappedRoutedEventArgs()
-                );
-        }
-
         
     }
+
+    public class CfgElements
+    {
+        public Border? WindowBorder;
+        public Border? MainAreaBorder;
+        public SwapChainPanel swapChain;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public Action TitleUpdate { init; get; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    }
+
+    private CfgElements ui_configs;
+
+    private void UpdateTitle()
+    {
+        var prefix = cfg.TitlePrefix + " ";
+        if (TabView.SelectedIndex != -1)
+            prefix += $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count - 1} Tabs) - ";
+
+        Title = $"{prefix.TrimStart()}United Sets";
+
+    }
+
+    public USConfig cfg => Settings.cfg;
+
+    private PreservedTabDataService persistantService;
     [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
     void FirstRun()
     {
-#if UNPKG
-		    var Package = SettingsService.Settings;
-#endif
         Activated -= FirstRun;
-        var icon = Icon.Load($@"{Package.Current.InstalledLocation.Path}\Assets\UnitedSets.ico");
+        var icoFile = Path.IsPathRooted(cfg.TaskbarIco) ? cfg.TaskbarIco : Path.Combine(USConfig.RootLocation, cfg.TaskbarIco!);
+        var icon = Icon.Load(icoFile);
         Win32Window.SmallIcon = Win32Window.LargeIcon = icon;
 
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
+        HandleCLICmds();
+    }
+    async void HandleCLICmds()
+    {
+        var toAdd = CLI.GetArrVal("add-window-by-exe");
+        var editLastAddedWindow = CLI.GetFlag("edit-last-added");
+        //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+        var profile = CLI.GetVal("profile");
+        if (!String.IsNullOrWhiteSpace(profile))
+        {
+            if (Path.HasExtension(profile) == false)
+                profile += ".json";
+            if (!File.Exists(profile) && !Path.IsPathRooted(profile))
+                profile = Path.Combine(USConfig.BaseProfileFolder, profile);
+            if (File.Exists(profile))
+            {
+                await Task.Delay(1500);
+                await persistantService.ImportSettings(profile);
+            }
+
+
+        }
+
+        foreach (var itm in toAdd)
+        {
+            var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
+            foreach (var proc in procs)
+            {
+                if (!proc.HasExited)
+                    AddTab(WinWrapper.Windowing.Window.FromWindowHandle(proc.MainWindowHandle));
+            }
+        }
+        if (editLastAddedWindow && Tabs.Count > 0)
+            Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+
+
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private partial void SetupUIThreadLoopTimer(out DispatcherQueueTimer timer)

@@ -22,7 +22,7 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
 		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-		<LangVersion>11</LangVersion>
+		<LangVersion>12</LangVersion>
 		<UseRidGraph>True</UseRidGraph>
 	</PropertyGroup>
 	<ItemGroup>
@@ -32,6 +32,15 @@
 	  <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
 	  <None Remove="UI\AppWindows\MainWindow.xaml" />
 	  <None Remove="UI\AppWindows\NewWindow.xaml" />
+		<None Remove="AddTabFlyout.xaml" />
+		<None Remove="Controls\CellVisualizer.xaml" />
+		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+		<None Remove="ModifyWindowFlyoutModule.xaml" />
+		<None Remove="OOBEWindow.xaml" />
+		<None Remove="SettingsWindow.xaml" />
+		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
+		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
+		<None Remove="TabPropertiesFlyout.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Remove="UI\AppWindows\NewWindow.xaml" />
@@ -48,7 +57,6 @@
 		<PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
 		<PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
 		<PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -60,6 +68,10 @@
 		<PackageReference Include="WinUIEx" Version="2.3.3" />
 		<PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
 		<PackageReference Include="WinWrapper.Windowing" Version="2.0.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
+
+		<PackageReference Include="System.Management" Version="8.0.0-preview.1.23110.8" />
+
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
@@ -81,6 +93,44 @@
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
+	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Remove="ModifyWindowFlyoutModule.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<PRIResource Remove="AppPackages\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<PRIResource Remove="Interfaces\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Controls\CellVisualizerUnderConstruction.xaml.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="Controls\CellVisualizer.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
 	<Choose>
 		<When Condition="'$(Configuration)'=='DebugUnpackaged'">
 			<PropertyGroup>

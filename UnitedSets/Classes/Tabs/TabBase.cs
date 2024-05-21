@@ -28,9 +28,7 @@ public abstract partial class TabBase : INotifyPropertyChanged
 	protected virtual void DoShowTab() {
 		this.ShowTab?.Invoke(this, EventArgs.Empty);
 	}
-	public record class ShowFlyoutEventArgs(UIElement Element, Point CursorPosition, UIElement RelativeTo, PointerDeviceType PointerDeviceType) {
-		
-	}
+	public record class ShowFlyoutEventArgs(UIElement Element, Point CursorPosition, UIElement RelativeTo, PointerDeviceType PointerDeviceType);
 	protected virtual void DoShowFlyout(UIElement Element, Point CursorPosition, UIElement RelativeTo, PointerDeviceType PointerDeviceType) {
 		var args = new ShowFlyoutEventArgs(Element, CursorPosition, RelativeTo, PointerDeviceType);
 		ShowFlyout?.Invoke(this, args);

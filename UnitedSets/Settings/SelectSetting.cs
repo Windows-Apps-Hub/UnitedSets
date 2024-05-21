@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Get.XAMLTools.Classes.Settings;
+namespace UnitedSets.Settings;
 
 public interface IEnumSelectSetting : ISelectSetting
 {
@@ -15,40 +15,49 @@ public interface IEnumSelectSetting : ISelectSetting
 }
 public interface ISelectSetting
 {
+    IReadOnlyList<string> ValidOptionsAsString { get; }
     IReadOnlyList<object> ValidOptions { get; }
     object Value { get; set; }
     int ValueIndex { get; set; }
     string? GetDisplayName(object value);
     string? GetDescription(object value);
 }
-public partial class SelectSetting<TEnum> : Setting<TEnum>, IEnumSelectSetting where TEnum : struct, Enum
+public class SelectSetting<TEnum>(Func<TEnum> Getter, Action<TEnum> Setter, IReadOnlyList<TEnum> ValidOptions) : Setting<TEnum>(Getter, Setter), IEnumSelectSetting where TEnum : struct, Enum
 {
-    public IReadOnlyList<TEnum> ValidOptions { get; }
+    public IReadOnlyList<TEnum> ValidOptions { get; } = ValidOptions;
 
+#pragma warning disable CA2021 // Do not call Enumerable.Cast<T> or Enumerable.OfType<T> with incompatible types
     IReadOnlyList<Enum> IEnumSelectSetting.ValidOptions => ValidOptions.Cast<Enum>().ToArray();
+#pragma warning restore CA2021 // Do not call Enumerable.Cast<T> or Enumerable.OfType<T> with incompatible types
     IReadOnlyList<object> ISelectSetting.ValidOptions => ValidOptions.Cast<object>().ToArray();
 
     Enum IEnumSelectSetting.Value { get => Value; set => Value = (TEnum)value; }
-    object ISelectSetting.Value { get => Value; set => Value = (TEnum)(value ?? DefaultValue); }
+    object ISelectSetting.Value { get => Value; set => Value = (TEnum)value; }
     public int ValueIndex
     {
         get => ValidOptions.IndexOf(Value);
-        set => Value = ValidOptions[value];
+        set
+        {
+            if (value >= 0)
+                Value = ValidOptions[value];
+        }
     }
 
-    public SelectSetting(string Key, TEnum[] ValidOptions) : base(Key)
-    {
-        this.ValidOptions = ValidOptions;
-    }
+    public IReadOnlyList<string> ValidOptionsAsString => new StrWrapper(this);
 
-    protected override TEnum TransformValue(object? savedObj)
+    readonly struct StrWrapper(SelectSetting<TEnum> self) : IReadOnlyList<string>
     {
-        if (savedObj is string s && Enum.TryParse<TEnum>(s, true, out var @enum))
-            return @enum;
-        return DefaultValue;
+        public string this[int index] => self.GetDisplayName(self.ValidOptions[index]) ?? "";
+
+        public int Count => self.ValidOptions.Count;
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            for (int i = 0; i < Count; i++) yield return this[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
-    protected override object TransformValue(TEnum input)
-        => Enum.GetName(input) ?? "";
 
     string? IEnumSelectSetting.GetDisplayName(Enum value) => GetDisplayName((TEnum)value);
     string? ISelectSetting.GetDisplayName(object value) => GetDisplayName((TEnum)value);

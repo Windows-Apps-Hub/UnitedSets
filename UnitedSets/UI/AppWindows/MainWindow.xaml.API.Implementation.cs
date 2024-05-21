@@ -111,4 +111,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         tab.ShowFlyout -= TabShowFlyoutRequest;
         tab.ShowTab -= TabShowRequest;
     }
+    public void SaveCurSettingsAsDefault() => persistantService.ExportSettings(USConfig.DefaultConfigFile, true, true);//don't give user any choice as to what for now so will exclude current tabs
+    public async Task ResetSettingsToDefault()
+    {
+        await persistantService.ResetSettings();
+        SaveCurSettingsAsDefault();
+    }
 }

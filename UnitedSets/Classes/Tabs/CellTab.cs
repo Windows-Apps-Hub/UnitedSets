@@ -11,7 +11,7 @@ public partial class CellTab : TabBase {
     {
     }
     
-    protected CellTab(Cell Cell, bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible) : base(IsTabSwitcherVisibile)
+    public CellTab(Cell Cell, bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible) : base(IsTabSwitcherVisibile)
     {
         _MainCell = Cell;
     }

@@ -122,8 +122,8 @@
                             </DataTemplate>
                         </TabView.TabItemTemplate>
                         <TabView.TabStripHeader>
-                            <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="6,0,0,0" Width="32" Height="32">
-                                <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="LightGray"/>
+                            <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="12,10,0,0" Width="32" Height="32">
+                                <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                                 <Button.Flyout>
                                     <Flyout ShouldConstrainToRootBounds="False">
                                         <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
@@ -146,7 +146,7 @@
                     </TabView>
                 </guics:DragRegion>
             </Border>
-            <Border Grid.Row="1" x:Name="MainAreaBorder" Canvas.ZIndex="0">
+            <Border Grid.Row="1" x:Name="MainAreaBorder">
                 <ContentControl
                     Content="{x:Bind SelectedTab, Mode=OneWay}"
                     ContentTemplateSelector="{x:Bind TabDataTemplateSelector}"

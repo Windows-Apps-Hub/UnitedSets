@@ -29,7 +29,7 @@ public sealed partial class AddTabPopup
     {
         if (state == KeyboardState.KeyDown)
         {
-            if (eventDetails.KeyCode is VirtualKey.Tab && AppWindow.IsVisible)
+            if (eventDetails.KeyCode is VirtualKey.Tab or VirtualKey.ESCAPE && AppWindow.IsVisible)
             {
 				Handled = true; //don't pass the tab through
                 Result = WindowEx.GetWindowFromPoint(Cursor.Position);

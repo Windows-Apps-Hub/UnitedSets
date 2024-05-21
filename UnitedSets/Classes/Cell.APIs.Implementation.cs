@@ -19,7 +19,7 @@ partial class Cell
     public partial void SplitHorizontally(int Amount)
     {
         if (!IsEmpty) throw new InvalidOperationException();
-        Orientation = Orientation.Vertical;
+        Orientation = Orientation.Horizontal;
         SubCells = CraeteNCells(Amount);
     }
 
@@ -27,7 +27,7 @@ partial class Cell
     {
         // There MUST BE NO SUBCELL AND CURRNETCELL
         if (!IsEmpty) throw new InvalidOperationException();
-        Orientation = Orientation.Horizontal;
+        Orientation = Orientation.Vertical;
         SubCells = CraeteNCells(Amount);
     }
 

@@ -41,13 +41,14 @@ partial class MainWindow
             //MainAreaBorder.RequestedTheme = this.RootGrid.RequestedTheme = swapChainPanel.RequestedTheme = cfg.Design.Theme.Value;
         }
 
-        ui_configs = new() { TitleUpdate = UpdateTitle }; //, swapChain = this.swapChainPanel
+        InitializeComponent();
+
+        ui_configs = new() { TitleUpdate = UpdateTitle, WindowBorder = WindowBorderOnTransparent, MainAreaBorder = MainAreaBorder }; //, swapChain = this.swapChainPanel
         persistantService.init(this, ui_configs);
 
         //if (cfg.Design.UseDXBorderTransparency == true)
         //    TransparentSetup();
 
-        InitializeComponent();
         SetupBasicWindow();
         
         //TransparentMode = FeatureFlags.UseTransparentWindow;
@@ -115,7 +116,7 @@ partial class MainWindow
         void SetupEvent()
         {
             AppWindow.Closing += OnWindowClosing;
-            // Activated += FirstRun;
+            Activated += FirstRun;
             WindowMessageMonitor.WindowMessageReceived += OnWindowMessageReceived;
             TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
             Cell.ValidDrop += CellWindowDropped;
@@ -161,6 +162,7 @@ partial class MainWindow
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
         HandleCLICmds();
+        _ = persistantService.FinalizeLoadAsync();
     }
     async void HandleCLICmds()
     {

@@ -19,7 +19,16 @@ namespace UnitedSets.Classes {
 		public static bool FLAGS_THEME_CHOICE_ENABLED = true;// ughz https://github.com/microsoft/WindowsAppSDK/issues/3487 https://github.com/microsoft/microsoft-ui-xaml/issues/8249 although even setting it at the app level doesnt work
 		public static string BaseProfileFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UnitedSets");
 		public static string DefaultConfigFile => Path.Combine(BaseProfileFolder, "default.json");
-		public static string RootLocation =>
+        public static string AppDataPath => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "UnitedSets"
+        );
+        public static string SessionSaveConfigFile => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+			"UnitedSets",
+			"prevSession.json"
+		);
+        public static string RootLocation =>
 #if UNPKG
 			System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
 #else

@@ -28,6 +28,7 @@ using System.Diagnostics.CodeAnalysis;
 using WindowHoster;
 using UnitedSets.Windows;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using CommunityToolkit.Mvvm.Input;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -157,66 +158,28 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         tab.DetachAndDispose();
     }
 
-    readonly ContentDialog ClosingWindowDialog = new()
-    {
-        Title = "Closing UnitedSets",
-        Content = "How do you want to close the app?",
-        PrimaryButtonText = "Release all Windows",
-        SecondaryButtonText = "Close all Windows",
-        CloseButtonText = "Cancel"
-    };
-    
-    private async partial void OnWindowClosing(AppWindowClosingEventArgs e)
+    private partial void OnWindowClosing(AppWindowClosingEventArgs e)
     {
         e.Cancel = true;//as we will just exit if we want to actually close
-        ClosingWindowDialog.XamlRoot = Content.XamlRoot;
-        var item = TabView.SelectedItem;
-        TabView.SelectedIndex = -1;
-        TabView.Visibility = Visibility.Collapsed;
         Win32Window.Focus();
-        ContentDialogResult result = ContentDialogResult.Primary;
-        if (UnitedSetsApp.Current.Tabs.Count > 0)
-        {
-            try
-            {
-                result = await ClosingWindowDialog.ShowAsync();
-            }
-            catch
-            {
-                result = ContentDialogResult.None;
-            }
-        }
-        switch (result)
-        {
-            case ContentDialogResult.Primary:
-                await RequestCloseAsync(CloseMode.ReleaseWindow);
-                break;
-            case ContentDialogResult.Secondary:
-                await RequestCloseAsync(CloseMode.CloseWindow);
-                break;
-            default:
-                // Do not close window
-                try
-                {
-                    TabView.SelectedItem = item;
-                }
-                catch
-                {
-                    if (UnitedSetsApp.Current.Tabs.Count > 0)
-                        TabView.SelectedIndex = 0;
-                }
-                TabView.Visibility = Visibility.Visible;
-                break;
-        }
+        ClosingFlyout.XamlRoot = Content.XamlRoot;
+        ClosingFlyout.ShowAt((FrameworkElement)Content);
     }
     public enum CloseMode
     {
         ReleaseWindow,
-        CloseWindow
+        CloseWindow,
+        SaveCloseWindow
     }
+    // for XAML Bindings
+    readonly CloseMode ReleaseWindowCloseMode = CloseMode.ReleaseWindow;
+    readonly CloseMode CloseWindowCloseMode = CloseMode.CloseWindow;
+    readonly CloseMode SaveCloseWindowCloseMode = CloseMode.SaveCloseWindow;
+    [RelayCommand]
     [DoesNotReturn]
     public async Task RequestCloseAsync(CloseMode closeMode)
     {
+        ClosingFlyout.Hide();
         switch (closeMode)
         {
             case CloseMode.ReleaseWindow:
@@ -234,10 +197,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 return;
             case CloseMode.CloseWindow:
                 // Close all windows
-                TabView.Visibility = Visibility.Visible;
                 await Task.Delay(100);
                 await Task.WhenAll(UnitedSetsApp.Current.Tabs.ToArray().Select(SafeClose));
-                goto default;
+                await UnitedSetsApp.Current.Suicide();
+                return;
+            case CloseMode.SaveCloseWindow:
+                persistantService.ExportSettings(USConfig.SessionSaveConfigFile, true, ExcludeTabs: false);
+                goto case CloseMode.CloseWindow;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));
         }

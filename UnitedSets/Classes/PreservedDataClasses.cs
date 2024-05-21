@@ -29,7 +29,7 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 			public ProcessStartInfo startInfo;
 			public int? ExtraWaitMS;
 			public SavedCellData loadData;
-			public Process running;
+			public Process? running;
 			public RegisteredWindow hwndHost;
 			
 		}

@@ -44,6 +44,14 @@
                     </ColorAnimation>
                 </Storyboard>
                 <templates:TabBaseContentTemplateSelector x:Name="TabDataTemplateSelector"/>
+                <Flyout x:Name="ClosingFlyout" Placement="RightEdgeAlignedTop" ShouldConstrainToRootBounds="False">
+                    <StackPanel Spacing="16">
+                        <TextBlock>How would you like to close the app?</TextBlock>
+                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind ReleaseWindowCloseMode}">Release windows</Button>
+                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind CloseWindowCloseMode}">Close windows</Button>
+                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind SaveCloseWindowCloseMode}">Save and close windows</Button>
+                    </StackPanel>
+                </Flyout>
             </Grid.Resources>
             <Grid.Background>
                 <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>

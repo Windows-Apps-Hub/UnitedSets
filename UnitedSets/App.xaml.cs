@@ -9,10 +9,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using UnitedSets.Classes;
 using UnitedSets.Helpers;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Services;
 using UnitedSets.UI.AppWindows;
+using Windows.Storage;
 using WinRT;
 using WinUIEx;
 
@@ -31,10 +33,12 @@ public partial class App : Application
     /// </summary>
     public App()
     {
+        Directory.CreateDirectory(USConfig.AppDataPath);
         InitializeComponent();
 		
 		cfg = new();
-        cfg.LoadInitialSettingsAndTheme();
+        if (!cfg.LoadPreviousSessionData())
+            cfg.LoadInitialSettingsAndTheme();
 #if DEBUG
         RequestAttachDebugger();
 #else
@@ -45,16 +49,6 @@ public partial class App : Application
 #endif
     }
 	private PreservedTabDataService cfg;
-    /// <summary>
-    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-    /// </summary>
-    public IServiceProvider Services { get; }
-    private static IServiceProvider ConfigureServices()
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<SettingsService>();
-        return services.BuildServiceProvider();
-    }
 
     async static void RequestAttachDebugger()
     {

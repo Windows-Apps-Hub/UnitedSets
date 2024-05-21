@@ -69,6 +69,34 @@ namespace UnitedSets.Services {
 		} //Right now almost all settings are applied in real time as changed.  This function is called at startup (for initial settings) and in theory might be called after something major like a theme change.
 
 		private USConfig def_config => USConfig.def_config;
+		public bool LoadPreviousSessionData()
+		{
+            if (File.Exists(USConfig.SessionSaveConfigFile))
+            {
+                USConfig.LoadDefaultConfig();
+				LoadInitialSettingsAndTheme();
+                var text = File.ReadAllText(USConfig.SessionSaveConfigFile);
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    try
+                    {
+                        var loaded = Deserialize<SavedInstanceData>(text);
+                        PropHelper.CopyNotNullPropertiesTo(loaded, SettingsService.Settings.cfg, true);
+						//File.Delete(USConfig.SessionSaveConfigFile);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Should have better error handling for config load failtures err was: {e}");
+                    }
+                }
+				return true;
+            }
+			return false;
+        }
+		public Task FinalizeLoadAsync()
+		{
+			return _ImportSettings(SettingsService.Settings.cfg);
+		}
 		public void LoadInitialSettingsAndTheme() {
 			USConfig.LoadDefaultConfig();
 
@@ -82,7 +110,7 @@ namespace UnitedSets.Services {
 						loaded.Tabs = null;
 						PropHelper.CopyNotNullPropertiesTo(loaded, def_config, true);
 					} catch (Exception e) {
-						Debug.WriteLine($"Should have better error handling for config load failtures err was: {e.ToString()}");
+						Debug.WriteLine($"Should have better error handling for config load failtures err was: {e}");
 					}
 				}
 			}
@@ -141,7 +169,7 @@ namespace UnitedSets.Services {
 					if (wind == null && start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
 						var hostProcs = Process.GetProcessesByName("ApplicationFrameHost");
 						foreach (var hostProc in hostProcs) {
-							if (start_arg.running.HasExited)
+							if (start_arg.running?.HasExited ?? true)
 								break;
 							try {
 								var testWind = Util.GetCoreWindowFromAppHostWindow(WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
@@ -154,10 +182,9 @@ namespace UnitedSets.Services {
 					}
 					if (wind != null) {
 						start_arg.tab = WindowHostTab.Create(wind.Value);
-                        UnitedSetsApp.Current.Tabs.Add(start_arg.tab);
                         start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
 					} else {
-						LogCfgError($"Window was not found for cmd {start_arg.startInfo.FileName} may need to wait longer? Running: {!start_arg.running.HasExited} its exit code: {(start_arg.running.HasExited ? start_arg.running.ExitCode.ToString() : "")}");
+						LogCfgError($"Window was not found for cmd {start_arg.startInfo.FileName} may need to wait longer? Exited: {(start_arg.running?.HasExited)?.ToString() ?? "<unable to lunch>"} its exit code: {(start_arg.running?.HasExited ?? false ? start_arg.running.ExitCode.ToString() : "")}");
 						return;
 					}
 				} else {
@@ -186,7 +213,9 @@ namespace UnitedSets.Services {
 
 			}
 			if (isCell && wind != null) {
-				start_arg.hwndHost = RegisteredWindow.Register(wind.Value);
+				var win = wind.Value;
+                start_arg.hwndHost = RegisteredWindow.Register(win);
+                win.IsVisible = false;
                 start_arg.cell.RegisterWindow(start_arg.hwndHost);
             }
 
@@ -221,7 +250,10 @@ namespace UnitedSets.Services {
 				if (start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX)) {
 					var pkgId = start_arg.startInfo.FileName[Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length..];
 					var manager = new WindowsOG.Management.Deployment.PackageManager();
-					var pkg = manager.FindPackageForUser(null,pkgId);
+                    var pkg = manager.FindPackageForUser(string.Empty,pkgId);
+					if (pkg is null)
+						// To do
+						continue;
 					var allEntries = await pkg.GetAppListEntriesAsync();
 					var entry = allEntries.First();
 					//allEntries.First().LaunchForUserAsync(
@@ -248,7 +280,13 @@ namespace UnitedSets.Services {
 			data.Tabs = tabs;
 			starts = new();
 			OnNotNull.Get(data.TitlePrefix)?.Action((_) => main_ui_elems.TitleUpdate());
-			OnNotNull.Get(data.TaskbarIco)?.IfFailException((msg) => new FileNotFoundException(msg + ": " + data.TaskbarIco))?.MustBeTrue(File.Exists)?.Convert(Icon.FromFile)?.Action((res) => MainWind.SetTaskBarIcon(res.result));
+			if (data.TaskbarIco is not null)
+			{
+                var x = Path.IsPathRooted(data.TaskbarIco) ? cfg.TaskbarIco : Path.Combine(USConfig.RootLocation, data.TaskbarIco);
+                OnNotNull.Get(x)?
+                    .IfFailException((msg) => new FileNotFoundException(msg + ": " + data.TaskbarIco))?
+                    .MustBeTrue(File.Exists)?.Convert(Icon.FromFile)?.Action((res) => MainWind.SetTaskBarIcon(res.result));
+            }
 
 			if (data.Design != null) {
 				var desdata = data.Design;

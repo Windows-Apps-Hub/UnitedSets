@@ -42,8 +42,8 @@ namespace UnitedSets.Windows {
 		public ExportImportInputViewModel vm => (ExportImportInputViewModel)DataContext;
 
 		public static async Task<ExportImportInputViewModel?> ShowExportImport(bool ForExportNotImport, MainWindow parentWindow) {
-			var origSelected = parentWindow.SelectedTab;
-			parentWindow.SelectedTab = null;
+			var origSelected = UnitedSetsApp.Current.SelectedTab;
+            UnitedSetsApp.Current.SelectedTab = null;
 			var wind = new ExportImportInputPage();
 			wind.vm.SaveNotLoad = ForExportNotImport;
 			wind.vm.hWnd = WinRT.Interop.WindowNative.GetWindowHandle(parentWindow);
@@ -122,7 +122,7 @@ namespace UnitedSets.Windows {
 			wind.vm.RequestClose += (_, _) => dialog.Hide();
 
 			var result = await dialog.ShowAsync();
-			parentWindow.SelectedTab = origSelected;
+            UnitedSetsApp.Current.SelectedTab = origSelected;
 			if ((result == ContentDialogResult.Primary || wind.vm.OverrideAsSuccess) && String.IsNullOrWhiteSpace(wind.vm.FullFilename) == false) {
 				var fileExists = File.Exists(wind.vm.FullFilename);
 				if (!ForExportNotImport && !fileExists)

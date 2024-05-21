@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

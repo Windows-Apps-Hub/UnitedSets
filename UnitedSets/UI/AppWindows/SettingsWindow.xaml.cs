@@ -1,34 +1,28 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
-using System.Collections.Generic;
-using System;
-using UnitedSets.Classes;
+using Microsoft.UI.Xaml.Media;
 using UnitedSets.Mvvm.Services;
-using System.Linq;
+using WinUIEx;
 
 namespace UnitedSets.UI.AppWindows;
 
 
-public sealed partial class SettingsWindow : MicaWindow
+public sealed partial class SettingsWindow : WindowEx
 {
     public SettingsService Settings;
 
-    public SettingsWindow(SettingsService Settings, MainWindow mainWindow) : base(IsMicaInfinite: false)
+    public SettingsWindow(SettingsService Settings, MainWindow mainWindow)
     {
         this.Settings = Settings;
         this.mainWindow = mainWindow;
-        cfg = Settings.cfg;
         this.InitializeComponent();
         //themeCntrl.Visibility = USConfig.FLAGS_THEME_CHOICE_ENABLED ? Visibility.Visible : Visibility.Collapsed;
         gridMain.DataContext = this;//we have to use normal bindings for anything with a converter as winui is broke af https://github.com/microsoft/microsoft-ui-xaml/issues/4966
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
+        SystemBackdrop = new MicaBackdrop();
     }
-    public USConfig cfg { get; set; }
     private MainWindow mainWindow;
-    public Type ThemeOptionEnumType => typeof(ElementTheme);
-
-    public List<string> theme_options { get; set; } = Enum.GetValues<ElementTheme>().Select(a => a.ToString()).ToList();
     [RelayCommand]
     public void SaveDefaultSettings()
     {

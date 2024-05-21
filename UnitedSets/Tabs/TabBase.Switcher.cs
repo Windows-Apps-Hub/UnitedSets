@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Reflection.Metadata;
 using Windows.Win32.Storage.Xps;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

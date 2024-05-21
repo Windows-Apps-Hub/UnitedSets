@@ -20,10 +20,7 @@ namespace UnitedSets.Mvvm.Services;
 public partial class SettingsService
 {
     public static SettingsService Settings { get; } = new();
-//#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-//    public static USConfig Settings;
-//#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public USConfig cfg { get; set; }
+    public USConfig cfg { get; set; } = null!;
     private SettingsService()
     {
         AllSettings = [
@@ -35,14 +32,21 @@ public partial class SettingsService
                 Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
                 Icon = SymbolEx.Delete
             },
-            TransculentWindow = new(
-                () => cfg.Design.UseTranslucentWindow ?? false, x => cfg.Design.UseTranslucentWindow = x
-            )
-            {
-                Title = "Use Translucent Bordering/Background",
-                Description = "Allow the opacity of our background/borders (not the pinned apps) to be translucent",
-                Icon = SymbolEx.PPSOneLandscape,
-                RequiresRestart = true
+            //TransculentWindow = new(
+            //    () => cfg.Design.UseTranslucentWindow ?? false, x => cfg.Design.UseTranslucentWindow = x
+            //)
+            //{
+            //    Title = "Use Translucent Bordering/Background",
+            //    Description = "Allow the opacity of our background/borders (not the pinned apps) to be translucent",
+            //    Icon = SymbolEx.PPSOneLandscape,
+            //    RequiresRestart = true
+            //},
+            BackdropMode = new(
+                () => cfg.Design!.Backdrop, x => cfg.Design!.Backdrop = x, Enums.GetValues<USBackdrop>()
+            ) {
+                Title = "Window Background",
+                Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
+                Icon = SymbolEx.Color
             },
             WindowTitlePrefix = new(
                 () => cfg.TitlePrefix ?? "", x => cfg.TitlePrefix = x
@@ -53,7 +57,7 @@ public partial class SettingsService
                 Icon = SymbolEx.AlignLeft,
                 PlaceholderText = "None - Normal Title Mode"
             },
-            ThemeOverride = new(
+            Theme = new(
                 () => cfg.Design.Theme ?? ElementTheme.Default, x => cfg.Design.Theme = x,
                 Enums.GetValues<ElementTheme>()
             )
@@ -70,9 +74,9 @@ public partial class SettingsService
     public OnOffSetting CloseWindowOnCloseTab { get; }
     public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
-    public SelectSetting<ElementTheme> ThemeOverride { get; }
+    public SelectSetting<ElementTheme> Theme { get; }
 
-    //public SelectSetting<USBackdrop> BackdropMode { get; }
+    public SelectSetting<USBackdrop> BackdropMode { get; }
 
     SettingsWindow? s_window;
     [RelayCommand]
@@ -99,10 +103,10 @@ public partial class SettingsService
 }
 public enum USBackdrop
 {
-    Acrylic,
     Mica,
+    Acrylic,
     Tabbed,
-    Transparent
+    //Transparent
 }
 static class BackdropHelper
 {

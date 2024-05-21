@@ -2,15 +2,11 @@
     x:Class="UnitedSets.UI.FlyoutModules.MainWindowMenuFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
-    xmlns:tabs="using:UnitedSets.Classes.Tabs"
-    xmlns:class="using:UnitedSets.Classes"
-    xmlns:getxaml="using:Get.XAMLTools"
-	xmlns:icons="using:Cube.UI.Icons" 
+    xmlns:tabs="using:UnitedSets.Tabs"
+    xmlns:us="using:UnitedSets"
     MinWidth="400"
     >
     <StackPanel Orientation="Vertical" Spacing="8">
@@ -74,7 +70,7 @@
                               Background="{ThemeResource LayerFillColorDefaultBrush}"
                               BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                               BorderThickness="1" CornerRadius="4" CanReorderItems="True"
-                              SelectionChanged="GroupSelectionChanged" ItemsSource="{x:Bind MainWindow.HiddenTabs}"
+                              SelectionChanged="GroupSelectionChanged" ItemsSource="{x:Bind us:UnitedSetsApp.Current.HiddenTabs}"
                               AllowDrop="True"
                               Drop="OnDropItemOverTabListView">
                         <ListView.ItemTemplate>

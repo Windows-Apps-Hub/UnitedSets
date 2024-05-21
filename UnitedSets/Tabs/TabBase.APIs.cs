@@ -1,7 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

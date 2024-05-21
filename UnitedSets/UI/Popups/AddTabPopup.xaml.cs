@@ -16,6 +16,7 @@ public sealed partial class AddTabPopup
 
     public AddTabPopup() : base(IsMicaInfinite: true)
     {
+        UnitedSetsApp.Current.RegisterUnitedSetsWindow(WindowEx.FromWindowHandle((nint)AppWindow.Id.Value));
         InitializeComponent();
         LowLevelKeyboard.KeyPressed += OnKeyPressed;
         this.SetForegroundWindow();

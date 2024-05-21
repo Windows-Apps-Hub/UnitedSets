@@ -7,7 +7,7 @@ using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
 using Window = WinWrapper.Windowing.Window;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {   

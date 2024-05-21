@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 
 namespace UnitedSets.Templates;
 

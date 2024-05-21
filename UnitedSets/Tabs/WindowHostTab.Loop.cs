@@ -2,7 +2,7 @@
 using Window = Microsoft.UI.Xaml.Window;
 using CommunityToolkit.WinUI;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class WindowHostTab
 {

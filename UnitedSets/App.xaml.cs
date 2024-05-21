@@ -34,12 +34,14 @@ public partial class App : Application
         InitializeComponent();
 		
 		cfg = new();
-		cfg.LoadInitialSettingsAndTheme();
+        cfg.LoadInitialSettingsAndTheme();
+#if DEBUG
+        RequestAttachDebugger();
+#else
+
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-#if DEBUG
-        RequestAttachDebugger();
 #endif
     }
 	private PreservedTabDataService cfg;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Get.EasyCSharp;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class WindowHostTab
 {

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Get.EasyCSharp;
 using Microsoft.UI.Xaml.Media;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

@@ -17,7 +17,7 @@ using System.Diagnostics;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
 using Windows.Foundation;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Input;
 using UnitedSets.UI.Popups;
@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using WindowHoster;
 using UnitedSets.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -41,7 +42,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (Keyboard.IsShiftDown)
         {
             AddSplitableTab();
-		}
+        }
         else
         {
             AddTabPopup ??= new();
@@ -49,16 +50,21 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             await AddTabPopup.ShowAsync();
             Win32Window.Restore();
             var result = AddTabPopup.Result;
-            AddTab(result);
+            if (WindowHostTab.Create(result) is { } tab)
+            {
+                UnitedSetsApp.Current.Tabs.Add(tab);
+                UnitedSetsApp.Current.SelectedTab = tab;
+            }
         }
     }
-
-    private partial void AddSplitableTab()
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    void AddSplitableTab()
     {
         var newTab = new CellTab(Constants.IsAltTabVisible);
-        AddTab(newTab);
+        UnitedSetsApp.Current.Tabs.Add(newTab);
         TabView.SelectedItem = newTab;
     }
+
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     public async Task ExportData()
     {
@@ -95,7 +101,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     public partial void OnDragOverTabViewItem(object sender)
     {
         if (sender is FrameworkElement tvi && tvi.Tag is TabBase tb)
-            TabView.SelectedIndex = Tabs.IndexOf(tb);
+            TabView.SelectedIndex = UnitedSetsApp.Current.Tabs.IndexOf(tb);
     }
 
     private partial void OnDropOverTabView(DragEventArgs e)
@@ -108,16 +114,17 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
             var pt = e.GetPosition(TabView);
             var finalIdx = (
-                from index in Enumerable.Range(0, Tabs.Count)
+                from index in Enumerable.Range(0, UnitedSetsApp.Current.Tabs.Count)
                 let ele = TabView.ContainerFromIndex(index) as UIElement
                 let posele = ele.TransformToVisual(TabView).TransformPoint(default)
                 let size = ele.ActualSize
                 let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
                 let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
                 where IsMoreThanTopLeft && IsLessThanBotRigh
-                select (int?)index
+                select index
             ).FirstOrDefault();
-            AddTab(window, finalIdx);
+            if (WindowHostTab.Create(window) is { } tab)
+                UnitedSetsApp.Current.Tabs.Insert(finalIdx, tab);
         }
     }
 
@@ -130,7 +137,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial void TabSelectionChanged()
     {
         UnitedSetsHomeBackground.Visibility =
-                TabView.SelectedIndex != -1 && Tabs[TabView.SelectedIndex] is CellTab ?
+                TabView.SelectedIndex != -1 && UnitedSetsApp.Current.Tabs[TabView.SelectedIndex] is CellTab ?
                 Visibility.Collapsed :
                 Visibility.Visible;
         UpdateTitle();
@@ -150,44 +157,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         tab.DetachAndDispose();
     }
 
-    private partial void TabRemoveRequest(TabBase tab)
-    {
-        DispatcherQueue.TryEnqueue(() => RemoveTab(tab));
-        UnwireTabEvents(tab);
-    }
-
-    private async partial void TabShowFlyoutRequest(TabBase tab, TabBase.ShowFlyoutEventArgs e)
-    {
-        await Task.Delay(300);
-
-        var flyout = new Flyout
-        {
-            Content = new StackPanel
-            {
-                Width = 350,
-                Spacing = 8,
-                Children =
-                {
-                    new BasicTabFlyoutModule(tab),
-                    e.Element
-                }
-            },
-            ShouldConstrainToRootBounds = false,
-            Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
-        };
-        flyout.ShowAt((FrameworkElement)e.RelativeTo);
-        //AttachedOutOfBoundsFlyout.ShowFlyout(
-        //    e.RelativeTo,
-        //    flyout,
-        //    e.CursorPosition,
-        //    e.PointerDeviceType is not (PointerDeviceType.Touchpad or PointerDeviceType.Mouse)
-        //);
-
-    }
-
-    private partial void TabShowRequest(TabBase tab, EventArgs e)
-        => TabView.SelectedItem = tab;
-
     readonly ContentDialog ClosingWindowDialog = new()
     {
         Title = "Closing UnitedSets",
@@ -206,7 +175,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         TabView.Visibility = Visibility.Collapsed;
         Win32Window.Focus();
         ContentDialogResult result = ContentDialogResult.Primary;
-        if (Tabs.Count > 0)
+        if (UnitedSetsApp.Current.Tabs.Count > 0)
         {
             try
             {
@@ -233,7 +202,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 }
                 catch
                 {
-                    if (Tabs.Count > 0)
+                    if (UnitedSetsApp.Current.Tabs.Count > 0)
                         TabView.SelectedIndex = 0;
                 }
                 TabView.Visibility = Visibility.Visible;
@@ -252,22 +221,22 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         {
             case CloseMode.ReleaseWindow:
                 // Release all windows
-                while (Tabs.Count > 0)
+                while (UnitedSetsApp.Current.Tabs.Count > 0)
                 {
-                    var Tab = Tabs.First();
-                    RemoveTab(Tab);
+                    var Tab = UnitedSetsApp.Current.Tabs.First();
+                    UnitedSetsApp.Current.Tabs.Remove(Tab);
                     Tab.DetachAndDispose(JumpToCursor: false);
                 }
                 await TimerStop();
 
-                await Suicide();
+                await UnitedSetsApp.Current.Suicide();
 
                 return;
             case CloseMode.CloseWindow:
                 // Close all windows
                 TabView.Visibility = Visibility.Visible;
                 await Task.Delay(100);
-                await Task.WhenAll(Tabs.ToArray().Select(SafeClose));
+                await Task.WhenAll(UnitedSetsApp.Current.Tabs.ToArray().Select(SafeClose));
                 goto default;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));
@@ -284,7 +253,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             window
         );
         var tab =
-            Tabs.ToArray().OfType<CellTab>()
+            UnitedSetsApp.Current.Tabs.ToArray().OfType<CellTab>()
             .First(tab => tab._MainCell.AllSubCells.Any(c => c == cell));
 
         var registeredWindow = RegisteredWindow.Register(window);
@@ -297,12 +266,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         if (id == (uint)Constants.UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
-            if (Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
+            if (UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
             {
                 Tab.DetachAndDispose(false);
                 e.Result = 1;
             }
             else e.Result = 0;
+            e.Handled = true;
         }
+        e.Handled = false;
     }
 }

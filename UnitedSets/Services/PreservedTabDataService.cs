@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using UnitedSets.Classes;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using UnitedSets.Helpers;
 using static UnitedSets.Helpers.PreservedHelpers;
 using WinUIEx;
@@ -24,6 +24,7 @@ using WindowHoster;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.FlyoutModules;
 using UnitedSets.UI.AppWindows;
+using System.Reflection;
 #pragma warning disable CS8625
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -152,8 +153,8 @@ namespace UnitedSets.Services {
 						}
 					}
 					if (wind != null) {
-						start_arg.tab = MainWind.CreateWindowHostTab(wind.Value);
-                        MainWind.AddTab(start_arg.tab);
+						start_arg.tab = WindowHostTab.Create(wind.Value);
+                        UnitedSetsApp.Current.Tabs.Add(start_arg.tab);
                         start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
 					} else {
 						LogCfgError($"Window was not found for cmd {start_arg.startInfo.FileName} may need to wait longer? Running: {!start_arg.running.HasExited} its exit code: {(start_arg.running.HasExited ? start_arg.running.ExitCode.ToString() : "")}");
@@ -172,9 +173,9 @@ namespace UnitedSets.Services {
 					foreach (var onCreated in start_arg.OnTabCreated)
 						onCreated(start_arg.tab);
 				}
-				MainWind.AddTab(start_arg.tab);
-				//await Task.Delay(300);
-				MainWind.SelectedTab = start_arg.tab;
+                UnitedSetsApp.Current.Tabs.Add(start_arg.tab);
+                //await Task.Delay(300);
+                UnitedSetsApp.Current.SelectedTab = start_arg.tab;
 				if (isCell) { //while selected need to do this to fix
 					var cTab = start_arg.tab as CellTab;
 					var subs = cTab._MainCell.SubCells;
@@ -286,7 +287,7 @@ namespace UnitedSets.Services {
 		}
 		private void ApplySavedTab(StartingResults starts, SavedTabData data) {
 
-			if (MainWind.SelectedTab is CellTab cTab) {
+			if (UnitedSetsApp.Current.SelectedTab is CellTab cTab) {
 				starts.CurBuildItem.cell = FindFreeCell(starts, cTab._MainCell);
 				if (starts.CurBuildItem.cell != null)
 					starts.CurBuildItem.tab = cTab;
@@ -377,12 +378,12 @@ namespace UnitedSets.Services {
 			await _ImportSettings(def_config.CloneWithoutTabs());
 			//def_config
 		}
-		public void ExportSettings(String filename, bool OnlyNonDefault, bool ExcludeTabs = false) {
+		public void ExportSettings(string filename, bool OnlyNonDefault, bool ExcludeTabs = false) {
 			try {
 				var exported = cfg.CloneWithoutTabs();
-				var allTabs = MainWind.Tabs.ToArray();
+				var allTabs = UnitedSetsApp.Current.Tabs.ToArray();
 				if (ExcludeTabs)
-					allTabs = new TabBase[0];
+					allTabs = [];
 
 				var tabsExported = new List<SavedTabData>();
 				var allDataCells = new List<SavedCellData>();

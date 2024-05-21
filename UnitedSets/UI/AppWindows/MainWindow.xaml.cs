@@ -5,7 +5,7 @@ using UnitedSets.Mvvm.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WinUIEx.Messaging;
 using Microsoft.UI.Dispatching;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -19,8 +19,6 @@ public sealed partial class MainWindow : WinUIEx.WindowEx
     readonly SettingsService Settings = App.SettingsService;
 
     // Readonly
-    public readonly ObservableCollection<TabBase> Tabs = new();
-    public readonly ObservableCollection<TabGroup> HiddenTabs = new();
     readonly DispatcherQueueTimer timer;
     readonly WindowMessageMonitor WindowMessageMonitor;
 

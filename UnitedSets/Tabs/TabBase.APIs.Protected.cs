@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

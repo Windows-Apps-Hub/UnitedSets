@@ -1,6 +1,6 @@
 using WindowEx = WinWrapper.Windowing.Window;
 using WindowHoster;
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class WindowHostTab
 {

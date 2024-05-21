@@ -1,10 +1,9 @@
 ﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using System;
 using System.Linq;
 using UnitedSets.Classes;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using UnitedSets.Helpers;
 using WinRT.Interop;
 using WinUIEx.Messaging;
@@ -12,17 +11,15 @@ using Window = WinWrapper.Windowing.Window;
 using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Keyboard = WinWrapper.Input.Keyboard;
-using Windows.ApplicationModel;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
-using UnitedSets.Mvvm.Services;
 using Icon = WinWrapper.Icon;
 using UnitedSets.Services;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using System.IO;
 using System.Threading.Tasks;
-using WinUIEx;
+using UnitedSets.Mvvm.Services;
+using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -32,6 +29,8 @@ partial class MainWindow
 
     public MainWindow(PreservedTabDataService persistantService)
     {
+        Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
+        UnitedSetsApp.Current.RegisterUnitedSetsWindow(this);
         // To Merge:
         this.persistantService = persistantService;
 
@@ -55,18 +54,18 @@ partial class MainWindow
         //if (TransparentMode)
         //    SetupTransparent(out trans_mgr);
 
-        //void UpdateBackdrop(USBackdrop x)
-        //{
-        //    //var IsTransparent = x is USBackdrop.Transparent;
-        //    //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
-        //    //TransparentMode = IsTransparent;
-        //    SystemBackdrop = x.GetSystemBackdrop();
-        //}
-        //Settings.BackdropMode.Updated += UpdateBackdrop;
-        //UpdateBackdrop(Settings.BackdropMode.Value);
+        void UpdateBackdrop(USBackdrop x)
+        {
+            //var IsTransparent = x is USBackdrop.Transparent;
+            //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
+            //TransparentMode = IsTransparent;
+            SystemBackdrop = x.GetSystemBackdrop();
+        }
+        Settings.BackdropMode.PropertyChanged += (_, _) => UpdateBackdrop(Settings.BackdropMode.Value);
+        UpdateBackdrop(Settings.BackdropMode.Value);
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
-        SetupNative(out Win32Window, out WindowMessageMonitor);
+        SetupNative(out WindowMessageMonitor);
 
         RegisterWindow();
 
@@ -122,10 +121,9 @@ partial class MainWindow
             Cell.ValidDrop += CellWindowDropped;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void SetupNative(out Window WindowEx, out WindowMessageMonitor WindowMessageMonitor)
+        void SetupNative(out WindowMessageMonitor WindowMessageMonitor)
         {
-            WindowEx = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
-            WindowMessageMonitor = new WindowMessageMonitor(WindowEx);
+            WindowMessageMonitor = new WindowMessageMonitor(Win32Window);
         }
         
     }
@@ -134,22 +132,19 @@ partial class MainWindow
     {
         public Border? WindowBorder;
         public Border? MainAreaBorder;
-        public SwapChainPanel swapChain;
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public Action TitleUpdate { init; get; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public SwapChainPanel? swapChain;
+        public required Action TitleUpdate { init; get; }
     }
 
     private CfgElements ui_configs;
 
     private void UpdateTitle()
     {
-        var prefix = cfg.TitlePrefix + " ";
-        if (TabView.SelectedIndex != -1)
-            prefix += $"{Tabs[TabView.SelectedIndex].Title} (+{Tabs.Count - 1} Tabs) - ";
+        var prefix = cfg.TitlePrefix;
+        if (UnitedSetsApp.Current.SelectedTab is { } tab)
+            prefix = $"{prefix} {tab.Title} (+{UnitedSetsApp.Current.Tabs.Count - 1} Tabs) - ";
 
-        Title = $"{prefix.TrimStart()}United Sets";
-
+        Title = $"{prefix}United Sets";
     }
 
     public USConfig cfg => Settings.cfg;
@@ -184,8 +179,6 @@ partial class MainWindow
                 await Task.Delay(1500);
                 await persistantService.ImportSettings(profile);
             }
-
-
         }
 
         foreach (var itm in toAdd)
@@ -193,14 +186,12 @@ partial class MainWindow
             var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
             foreach (var proc in procs)
             {
-                if (!proc.HasExited)
-                    AddTab(WinWrapper.Windowing.Window.FromWindowHandle(proc.MainWindowHandle));
+                if (!proc.HasExited && WindowHostTab.Create(Window.FromWindowHandle(proc.MainWindowHandle)) is { } tab)
+                    UnitedSetsApp.Current.Tabs.Add(tab);
             }
         }
-        if (editLastAddedWindow && Tabs.Count > 0)
-            Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
-
-
+        if (editLastAddedWindow && UnitedSetsApp.Current.Tabs.Count > 0)
+            UnitedSetsApp.Current.Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private partial void SetupUIThreadLoopTimer(out DispatcherQueueTimer timer)

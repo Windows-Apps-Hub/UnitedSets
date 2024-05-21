@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
-namespace UnitedSets.Classes.Tabs;
+using UnitedSets.Classes;
+namespace UnitedSets.Tabs;
 
 public partial class CellTab : TabBase {
 

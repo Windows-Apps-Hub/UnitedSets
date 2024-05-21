@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.Drawing;
 using Get.EasyCSharp;
 using Microsoft.UI.Xaml;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
+using UnitedSets.Mvvm.Services;
 using WindowHoster;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -54,8 +55,10 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		public bool? UseDXBorderTransparency { get; set; }
 		[AutoNotifyProperty]
 		public ElementTheme? _Theme;
+        [AutoNotifyProperty]
+        public USBackdrop _Backdrop;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 	}
 	public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged {
 		protected SavedInstanceData _CloneWithoutTabs() {

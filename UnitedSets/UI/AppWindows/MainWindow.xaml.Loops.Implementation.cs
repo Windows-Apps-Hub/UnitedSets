@@ -12,7 +12,7 @@ using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using System.Threading;
 using Windows.Foundation;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using CommunityToolkit.WinUI;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         var size = MainAreaBorder.ActualSize;
         CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
         var idx = TabView.SelectedIndex;
-        SelectedTabCache = idx < 0 ? null : (idx >= Tabs.Count ? null : Tabs[idx]);
+        SelectedTabCache = idx < 0 ? null : (idx >= UnitedSetsApp.Current.Tabs.Count ? null : UnitedSetsApp.Current.Tabs[idx]);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void UIRun(DispatcherQueueHandler action) => DispatcherQueue.TryEnqueue(action);
@@ -73,12 +73,12 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     async Task RemoveDisposedTab()
     {
-        foreach (var Tab in Tabs.CacheEnumerable())
+        foreach (var Tab in UnitedSetsApp.Current.Tabs.CacheEnumerable())
         {
             if (Tab.IsDisposed)
-                await UIRemoveFromCollection(Tabs, Tab);
+                await UIRemoveFromCollection(UnitedSetsApp.Current.Tabs, Tab);
         }
-        foreach (var TabGroup in HiddenTabs.CacheEnumerable())
+        foreach (var TabGroup in UnitedSetsApp.Current.HiddenTabs.CacheEnumerable())
         {
             foreach (var Tab in TabGroup.Tabs.CacheEnumerable())
             {
@@ -86,7 +86,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                     await UIRemoveFromCollection(TabGroup.Tabs, Tab);
             }
             if (TabGroup.Tabs.Count == 0)
-                await UIRemoveFromCollection(HiddenTabs, TabGroup);
+                await UIRemoveFromCollection(UnitedSetsApp.Current.HiddenTabs, TabGroup);
         }
     }
     static ((double X1, double Y1, double X2, double Y2), Cell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)
@@ -259,7 +259,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                     if (registeredWindow is not null)
                         DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
                 }
-                else DispatcherQueue.TryEnqueue(() => AddTab(window));
+                else DispatcherQueue.TryEnqueue(delegate
+                {
+                    if (WindowHostTab.Create(window) is { } tab)
+                    {
+                        UnitedSetsApp.Current.Tabs.Add(tab);
+                        UnitedSetsApp.Current.SelectedTab = tab;
+                    }
+                });
             }
         }
     }

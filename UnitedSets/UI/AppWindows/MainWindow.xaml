@@ -8,11 +8,12 @@
     xmlns:class="using:UnitedSets.Classes"
     xmlns:templates="using:UnitedSets.Templates"
     xmlns:winUIEx="using:WinUIEx"
-    xmlns:tabs="using:UnitedSets.Classes.Tabs"
+    xmlns:tabs="using:UnitedSets.Tabs"
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:getxaml="using:Get.XAMLTools"
     xmlns:windows="using:UnitedSets.UI.AppWindows"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
+    xmlns:us="using:UnitedSets"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:guics="using:Get.UI.Controls"
     MinHeight="300" MinWidth="800"
@@ -80,8 +81,8 @@
                         Background="Transparent"
                         x:FieldModifier="Public"
                         IsAddTabButtonVisible="False"
-                        TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
-                        SelectedItem="{x:Bind SelectedTab, Mode=TwoWay}"
+                        TabItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
+                        SelectedItem="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=TwoWay}"
                         VerticalAlignment="Center"
                         TabDragStarting="TabDragStarting"
                         TabDroppedOutside="TabDroppedOutside"
@@ -148,7 +149,7 @@
             </Border>
             <Border Grid.Row="1" x:Name="MainAreaBorder">
                 <ContentControl
-                    Content="{x:Bind SelectedTab, Mode=OneWay}"
+                    Content="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=OneWay}"
                     ContentTemplateSelector="{x:Bind TabDataTemplateSelector}"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"

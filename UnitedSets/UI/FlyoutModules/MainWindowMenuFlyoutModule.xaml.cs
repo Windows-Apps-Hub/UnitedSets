@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Window = WinWrapper.Windowing.Window;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.UI.FlyoutModules;
 
@@ -34,10 +35,12 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (MainWindow is null) return;
         var tabgroup = new TabGroup($"Tabs {DateTime.Now:hh:mm:ss}");
-		var tabs = MainWindow.GetTabsAndClear();
-		foreach (var tab in tabs)
+        var tabs = UnitedSetsApp.Current.Tabs.ToArray();
+        UnitedSetsApp.Current.Tabs.Clear();
+
+        foreach (var tab in tabs)
             tabgroup.Tabs.Add(tab);
-        MainWindow.HiddenTabs.Add(tabgroup);
+        UnitedSetsApp.Current.HiddenTabs.Add(tabgroup);
     }
     [Event(typeof(SelectionChangedEventHandler))]
     void GroupSelectionChanged()
@@ -48,21 +51,19 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(RoutedEventHandler))]
     void ShowOnWindow([CastFrom(typeof(object))] FrameworkElement sender)
     {
-        if (MainWindow is null) return;
         if (sender.Tag is not TabBase tab) return;
-        MainWindow.AddTab(tab);
+        UnitedSetsApp.Current.Tabs.Add(tab);
         if (TabGroupListView.SelectedItem is TabGroup TabGroup)
             TabGroup.Tabs.Remove(tab);
     }
     [Event(typeof(RoutedEventHandler))]
     void ShowGroupOnWindow([CastFrom(typeof(object))] FrameworkElement sender)
     {
-        if (MainWindow is null) return;
         if (sender.Tag is not TabGroup tabgroup) return;
-        MainWindow.HiddenTabs.Remove(tabgroup);
+        UnitedSetsApp.Current.HiddenTabs.Remove(tabgroup);
         foreach (var tab in tabgroup.Tabs)
         {
-            MainWindow.AddTab(tab);
+            UnitedSetsApp.Current.Tabs.Add(tab);
         }
     }
     [Event(typeof(RoutedEventHandler))]
@@ -179,7 +180,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
 		var pt = e.GetPosition(TabListView);
         if (TabGroupListView.SelectedIndex is -1)
 			return;
-        var tabgroup = MainWindow.HiddenTabs[TabGroupListView.SelectedIndex];
+        var tabgroup = UnitedSetsApp.Current.HiddenTabs[TabGroupListView.SelectedIndex];
         var window = Window.FromWindowHandle((nint)a);
         var finalIdx = (
             from index in Enumerable.Range(0, tabgroup.Tabs.Count)
@@ -198,17 +199,20 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
                 default,
                 window
             );
-			tabValue = MainWindow.CreateWindowHostTab(window);
+			tabValue = WindowHostTab.Create(window);
 		} else {
-			tabValue = MainWindow.FindTabByWindow(window);
+			tabValue = UnitedSetsApp.Current.FindTabByWindow(window);
 			if (tabValue != null)
-				MainWindow.RemoveTab(tabValue);
-
-			var hiddenResult = MainWindow.FindHiddenTabByWindow(window);
-			if (hiddenResult.tab != null) {
-				tabValue = hiddenResult.tab;
-				hiddenResult.group!.Tabs.Remove(tabValue);
-			}
+                UnitedSetsApp.Current.Tabs.Remove(tabValue);
+            foreach (var tabg in UnitedSetsApp.Current.HiddenTabs.ToArray())
+            {
+                var tab = tabg.Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));
+                if (tab != null)
+                {
+                    tabValue = tab;
+                    tabg.Tabs.Remove(tabValue);
+                }
+            }
 		}
 		if (tabValue is null) return;
 		if (finalIdx.HasValue)

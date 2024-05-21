@@ -10,7 +10,7 @@ using Microsoft.UI.Windowing;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Input;
 using WinUIEx;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -103,6 +103,6 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
         if (sender is RadioButton rbtn && rbtn.Tag is TabBase tb)
-            MainWindow.SelectedTab = tb;
+            UnitedSetsApp.Current.SelectedTab = tb;
     }
 }

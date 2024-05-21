@@ -7,7 +7,7 @@ using System.Threading;
 using UnitedSets.Mvvm.Services;
 using WinWrapper.Windowing;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class TabBase
 {

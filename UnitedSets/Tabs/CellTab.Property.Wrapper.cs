@@ -1,6 +1,6 @@
 ﻿using Visibility = Microsoft.UI.Xaml.Visibility;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class CellTab
 {

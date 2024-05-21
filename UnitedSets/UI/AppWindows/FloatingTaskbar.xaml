@@ -11,9 +11,10 @@
     xmlns:ui="using:Windows.UI"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
+    xmlns:us="using:UnitedSets"
     xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
-    xmlns:tabs="using:UnitedSets.Classes.Tabs" xmlns:ToolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:tabs="using:UnitedSets.Tabs" xmlns:ToolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
     <window:SizeToContentWindow.SizeToWindowContent>
         <Grid>
@@ -213,7 +214,7 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-                <RadioButtons MaxColumns="10000" ItemsSource="{x:Bind MainWindow.Tabs}" Padding="0" VerticalAlignment="Center" x:Name="RadioButtons">
+                <RadioButtons MaxColumns="10000" ItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs}" Padding="0" VerticalAlignment="Center" x:Name="RadioButtons">
                     <RadioButtons.ItemTemplate>
                         <DataTemplate x:DataType="tabs:TabBase">
                             <RadioButton Style="{StaticResource DefaultToggleButtonStyle}"

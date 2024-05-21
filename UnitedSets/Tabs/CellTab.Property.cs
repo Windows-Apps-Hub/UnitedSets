@@ -1,6 +1,7 @@
 ﻿using Get.EasyCSharp;
+using UnitedSets.Classes;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class CellTab
 {

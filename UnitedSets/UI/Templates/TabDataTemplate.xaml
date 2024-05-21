@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:class="using:UnitedSets.Classes"
-    xmlns:tabs="using:UnitedSets.Classes.Tabs"
+    xmlns:tabs="using:UnitedSets.Tabs"
     xmlns:controls="using:UnitedSets.Controls"
     xmlns:wh="using:WindowHoster"
 >

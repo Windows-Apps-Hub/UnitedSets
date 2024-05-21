@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Get.EasyCSharp;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 public partial class TabGroup : INotifyPropertyChanged
 {

@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using UnitedSets.UI.FlyoutModules;
 using WinWrapper.Input;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class WindowHostTab
 {
@@ -32,6 +32,6 @@ partial class WindowHostTab
     }
     protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
     {
-		DoShowFlyout(new ModifyWindowFlyoutModule(RegisteredWindow), args.GetPosition(sender), sender, args.PointerDeviceType);
+		ShowFlyout(new ModifyWindowFlyoutModule(RegisteredWindow), sender);
     }
 }

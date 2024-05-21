@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using Get.EasyCSharp;
 namespace UnitedSets.UI.FlyoutModules;
 

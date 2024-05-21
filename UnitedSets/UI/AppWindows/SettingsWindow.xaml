@@ -1,4 +1,4 @@
-<window:MicaWindow
+<winex:WindowEx
     xmlns:winex="using:WinUIEx" 
     x:Class="UnitedSets.UI.AppWindows.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,12 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
-	xmlns:local="using:UnitedSets.Controls"
-    xmlns:USsettings="using:UnitedSets.Settings"
+	xmlns:USsettings="using:UnitedSets.Settings"
     xmlns:controls="using:UnitedSets.UI.Controls"
-    xmlns:window="using:UnitedSets.UI.AppWindows"
-    xmlns:helpers="using:UnitedSets.Helpers"
     MinWidth="890"
+    Title="United Sets - Settings"
     mc:Ignorable="d">
     <Grid Name="gridMain">
         <Border x:Name="AppTitleBar"
@@ -118,11 +116,11 @@
                         <TextBlock FontSize="14" Margin="0, 4, 4, 0">United Sets</TextBlock>
                         <TextBlock Opacity="0.7" FontSize="14" Margin="2, 4, 4, 0"> - Preview</TextBlock>
                     </StackPanel>
-                    <TextBlock FontSize="14" Margin="4, 0, 4, 0" TextWrapping="WrapWholeWords">Developed by <LineBreak/> • Get0457 <LineBreak/> • FireCubeStudios</TextBlock>
+                    <TextBlock FontSize="14" Margin="4, 0, 4, 0" TextWrapping="WrapWholeWords">Developed by <LineBreak/> • Get <LineBreak/> • FireCubeStudios</TextBlock>
                     <HyperlinkButton Margin="4" NavigateUri="https://discord.gg/3WYcKat">Join Discord</HyperlinkButton>
                     <HyperlinkButton Margin="4" NavigateUri="https://github.com/FireCubeStudios/UnitedSets">GitHub repository</HyperlinkButton>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>
-</window:MicaWindow>
+</winex:WindowEx>

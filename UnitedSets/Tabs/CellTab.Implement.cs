@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;
 
-namespace UnitedSets.Classes.Tabs;
+namespace UnitedSets.Tabs;
 
 partial class CellTab
 {
@@ -54,17 +54,15 @@ partial class CellTab
     // UI
     protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
     {
-		DoShowFlyout(
-                new MultiWindowModifyFlyoutModule(
-				    (
-					    from x in MainCell.AllSubCells
-					    where x.ContainsWindow
-					    select x.CurrentCell
-				    ).ToArray()
-                ),
-                args.GetPosition(sender),
-                sender,
-                args.PointerDeviceType
+		ShowFlyout(
+            new MultiWindowModifyFlyoutModule(
+				(
+					from x in MainCell.AllSubCells
+					where x.ContainsWindow
+					select x.CurrentCell
+				).ToArray()
+            ),
+            sender
         );
     }
 }

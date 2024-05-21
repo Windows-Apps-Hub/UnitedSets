@@ -6,7 +6,7 @@ using UnitedSets.Classes;
 using Windows.Foundation;
 using WinUIEx.Messaging;
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Classes.Tabs;
+using UnitedSets.Tabs;
 using Microsoft.UI.Windowing;
 
 namespace UnitedSets.UI.AppWindows;
@@ -18,20 +18,9 @@ public sealed partial class MainWindow
     [Event(typeof(RoutedEventHandler))]
     private partial void OnAddTabButtonClick();
 
-    [RelayCommand]
-    private partial void AddSplitableTab();
-
     [Event(typeof(SelectionChangedEventHandler))]
     private partial void TabSelectionChanged();
 
-    [Event(typeof(EventHandler))]
-    private partial void TabRemoveRequest([CastFrom(typeof(object))] TabBase tab);
-
-    [Event(typeof(EventHandler<TabBase.ShowFlyoutEventArgs>))]
-    private partial void TabShowFlyoutRequest([CastFrom(typeof(object))] TabBase tab, TabBase.ShowFlyoutEventArgs e);
-
-    [Event(typeof(EventHandler))]
-    private partial void TabShowRequest([CastFrom(typeof(object))] TabBase tab, EventArgs e);
 
     #region Tabs Dragging
 

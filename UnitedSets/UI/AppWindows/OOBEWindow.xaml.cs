@@ -1,17 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using System;
 using UnitedSets.Mvvm.Services;
-using Windows.UI;
-using WinUIEx;
 using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media.Animation;
-using UnitedSets.Classes;
 
 namespace UnitedSets.UI.AppWindows;
 

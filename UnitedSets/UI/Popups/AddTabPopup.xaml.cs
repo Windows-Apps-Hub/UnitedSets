@@ -7,6 +7,9 @@ using Windows.Graphics;
 using WinWrapper;
 using Get.EasyCSharp;
 using WinWrapper.Input;
+using Microsoft.UI.Xaml.Media;
+using UnitedSets.Mvvm.Services;
+using Microsoft.UI.Composition.SystemBackdrops;
 
 namespace UnitedSets.UI.Popups;
 
@@ -14,7 +17,7 @@ public sealed partial class AddTabPopup
 {
     public WindowEx Result;
 
-    public AddTabPopup() : base(IsMicaInfinite: true)
+    public AddTabPopup()
     {
         UnitedSetsApp.Current.RegisterUnitedSetsWindow(WindowEx.FromWindowHandle((nint)AppWindow.Id.Value));
         InitializeComponent();
@@ -23,6 +26,7 @@ public sealed partial class AddTabPopup
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
         AppWindow.Closing += (_, _) => LowLevelKeyboard.KeyPressed -= OnKeyPressed;
+        SystemBackdrop = new InfiniteSystemBackdrop<MicaController>();
         this.Hide();
     }
 

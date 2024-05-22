@@ -25,6 +25,7 @@ using UnitedSets.Mvvm.Services;
 using UnitedSets.UI.FlyoutModules;
 using UnitedSets.UI.AppWindows;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 #pragma warning disable CS8625
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -35,11 +36,9 @@ using System.Reflection;
 namespace UnitedSets.Services {
 
 	public class PreservedTabDataService {
-		public void init(MainWindow wind, MainWindow.CfgElements main_ui_elems) {
-			this.MainWind = wind;
+		public void init(MainWindow.CfgElements main_ui_elems) {
 			this.main_ui_elems = main_ui_elems;
 		}
-		private MainWindow MainWind;
 		private MainWindow.CfgElements main_ui_elems;
 
 
@@ -48,42 +47,42 @@ namespace UnitedSets.Services {
 				return;
 
 
-			var mainBg = cfg.Design.PrimaryBackgroundNonTranslucent;
-			if (cfg.Design.UseTranslucentWindow == true) {
+			var mainBg = MainConfiguration.Design.PrimaryBackgroundNonTranslucent;
+			if (MainConfiguration.Design.UseTranslucentWindow == true) {
 				if (App.Current.RequestedTheme == ApplicationTheme.Dark)
-					mainBg = cfg.Design.PrimaryBackgroundDarkTheme;
+					mainBg = MainConfiguration.Design.PrimaryBackgroundDarkTheme;
 				else
-					mainBg = cfg.Design.PrimaryBackgroundLightTheme;
+					mainBg = MainConfiguration.Design.PrimaryBackgroundLightTheme;
 			}
 			//main_ui_elems.MainAreaBorder.Background = ColorStrToBrush(mainBg);
-			main_ui_elems.WindowBorder.BorderThickness = RectToThick(cfg.Design.BorderThickness);
+			main_ui_elems.WindowBorder.BorderThickness = RectToThick(MainConfiguration.Design.BorderThickness);
 			main_ui_elems.WindowBorder.Background = ColorStrToBrush(mainBg); ;
-			main_ui_elems.WindowBorder.CornerRadius = RectToCornerRadius(cfg.Design.BorderCorner);
+			main_ui_elems.WindowBorder.CornerRadius = RectToCornerRadius(MainConfiguration.Design.BorderCorner);
 			main_ui_elems.WindowBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
 			main_ui_elems.WindowBorder.VerticalAlignment = VerticalAlignment.Stretch;
 			var stops = (main_ui_elems.WindowBorder.BorderBrush as LinearGradientBrush)!.GradientStops;
-			stops.First().Color = ConvertToColor(cfg.Design.BorderGradiant1);
-			stops.Last().Color = ConvertToColor(cfg.Design.BorderGradiant2);
-			main_ui_elems.MainAreaBorder.Margin = RectToThick(cfg.Design.MainMargin);
+			stops.First().Color = ConvertToColor(MainConfiguration.Design.BorderGradiant1);
+			stops.Last().Color = ConvertToColor(MainConfiguration.Design.BorderGradiant2);
+			main_ui_elems.MainAreaBorder.Margin = RectToThick(MainConfiguration.Design.MainMargin);
 			//may want to look into a way to use _ImportSettings here but stop it from doing any tab loads etc just the design data.
 		} //Right now almost all settings are applied in real time as changed.  This function is called at startup (for initial settings) and in theory might be called after something major like a theme change.
 
-		private USConfig def_config => USConfig.def_config;
-		public bool LoadPreviousSessionData()
+		private static USConfig DefaultConfiguration => USConfig.DefaultConfiguration;
+		public bool LoadPreviousSessionData([NotNullWhen(true)] out USConfig? MainConfig)
 		{
             if (File.Exists(USConfig.SessionSaveConfigFile))
             {
                 USConfig.LoadDefaultConfig();
-				LoadInitialSettingsAndTheme();
+				LoadInitialSettingsAndTheme(out MainConfig);
                 var text = File.ReadAllText(USConfig.SessionSaveConfigFile);
                 if (!string.IsNullOrWhiteSpace(text))
                 {
                     try
                     {
                         var loaded = Deserialize<SavedInstanceData>(text);
-                        PropHelper.CopyNotNullPropertiesTo(loaded, SettingsService.Settings.cfg, true);
-						//File.Delete(USConfig.SessionSaveConfigFile);
-                    }
+                        PropHelper.CopyNotNullPropertiesTo(loaded, MainConfig, true);
+						File.Delete(USConfig.SessionSaveConfigFile);
+					}
                     catch (Exception e)
                     {
                         Debug.WriteLine($"Should have better error handling for config load failtures err was: {e}");
@@ -91,13 +90,14 @@ namespace UnitedSets.Services {
                 }
 				return true;
             }
+			MainConfig = null;
 			return false;
         }
 		public Task FinalizeLoadAsync()
 		{
-			return _ImportSettings(SettingsService.Settings.cfg);
+			return _ImportSettings(MainConfiguration);
 		}
-		public void LoadInitialSettingsAndTheme() {
+		public void LoadInitialSettingsAndTheme(out USConfig MainConfig) {
 			USConfig.LoadDefaultConfig();
 
 			if (File.Exists(USConfig.DefaultConfigFile)) {
@@ -108,21 +108,21 @@ namespace UnitedSets.Services {
 						//PropHelper.CopyNotNullPropertiesTo(loaded.Design, def_config.Design);
 						//loaded.Design = null;
 						loaded.Tabs = null;
-						PropHelper.CopyNotNullPropertiesTo(loaded, def_config, true);
+						PropHelper.CopyNotNullPropertiesTo(loaded, DefaultConfiguration, true);
 					} catch (Exception e) {
 						Debug.WriteLine($"Should have better error handling for config load failtures err was: {e}");
 					}
 				}
 			}
 
-			var cfg = def_config.CloneWithoutTabs();
-			SettingsService.Settings.cfg = cfg;
+			var cfg = DefaultConfiguration.CloneWithoutTabs();
+            MainConfig = cfg;
 			cfg.PropertyChanged += Cfg_PropertyChanged;
 			if (cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
 				Application.Current.RequestedTheme = cfg.Design.Theme == ElementTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
 		}
 
-
+		public USConfig MainConfiguration => UnitedSetsApp.Current.Configuration.MainConfiguration;
 		private void Cfg_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
 			if (e.PropertyName == nameof(USConfig.TitlePrefix))
 				main_ui_elems?.TitleUpdate();
@@ -214,8 +214,7 @@ namespace UnitedSets.Services {
 			}
 			if (isCell && wind != null) {
 				var win = wind.Value;
-                start_arg.hwndHost = RegisteredWindow.Register(win);
-                win.IsVisible = false;
+                start_arg.hwndHost = RegisteredWindow.Register(win, shouldBeHidden: true);
                 start_arg.cell.RegisterWindow(start_arg.hwndHost);
             }
 
@@ -237,7 +236,7 @@ namespace UnitedSets.Services {
 				}
 
 			} catch (Exception e) {
-				_ = MainWind.ShowMessageDialogAsync($"Unable to apply config due to exception: {e}");
+				_ = UnitedSetsApp.Current.MainWindow.ShowMessageDialogAsync($"Unable to apply config due to exception: {e}");
 				LogCfgError("Outer exception catch for config load", e);
 			}
 		}
@@ -270,22 +269,22 @@ namespace UnitedSets.Services {
 		}
 
 		private void ApplyGlobalWindowData(USConfig data, out SavedTabData[]? tabs, out StartingResults starts) {
-			PropHelper.CopyNotNullPropertiesTo(data.Design, cfg.Design);
+			PropHelper.CopyNotNullPropertiesTo(data.Design, MainConfiguration.Design);
 			tabs = data.Tabs;
 			var design = data.Design;
 			data.Design = null;
 			data.Tabs = null;
-			PropHelper.CopyNotNullPropertiesTo(data, cfg, true);
+			PropHelper.CopyNotNullPropertiesTo(data, MainConfiguration, true);
 			data.Design = design;
 			data.Tabs = tabs;
 			starts = new();
 			OnNotNull.Get(data.TitlePrefix)?.Action((_) => main_ui_elems.TitleUpdate());
 			if (data.TaskbarIco is not null)
 			{
-                var x = Path.IsPathRooted(data.TaskbarIco) ? cfg.TaskbarIco : Path.Combine(USConfig.RootLocation, data.TaskbarIco);
+                var x = Path.IsPathRooted(data.TaskbarIco) ? MainConfiguration.TaskbarIco : Path.Combine(USConfig.RootLocation, data.TaskbarIco);
                 OnNotNull.Get(x)?
                     .IfFailException((msg) => new FileNotFoundException(msg + ": " + data.TaskbarIco))?
-                    .MustBeTrue(File.Exists)?.Convert(Icon.FromFile)?.Action((res) => MainWind.SetTaskBarIcon(res.result));
+                    .MustBeTrue(File.Exists)?.Convert(Icon.FromFile)?.Action((res) => UnitedSetsApp.Current.MainWindow.SetTaskBarIcon(res.result));
             }
 
 			if (data.Design != null) {
@@ -295,7 +294,7 @@ namespace UnitedSets.Services {
 				OnNotNull.Get(desdata.BorderGradiant1)?.Convert(ConvertToColor)?.Action(res => stops.Last().Color = res.result);
 				OnNotNull.Get(desdata.BorderThickness)?.Convert(RectToThick)?.Action(res => main_ui_elems.WindowBorder.BorderThickness = res.result);
 				OnNotNull.Get(desdata.MainMargin)?.Convert(RectToThick)?.Action(res => main_ui_elems.MainAreaBorder.Margin = res.result);
-				OnNotNull.Get(desdata.WindowSize)?.MustBeTrue((val) => val.Width > 0 && val.Height > 0)?.Action(val => MainWind.SetWindowSize(val.Width, val.Height));
+				OnNotNull.Get(desdata.WindowSize)?.MustBeTrue((val) => val.Width > 0 && val.Height > 0)?.Action(val => UnitedSetsApp.Current.MainWindow.SetWindowSize(val.Width, val.Height));
 
 				//DoOrThrow(desdata.UseTranslucentWindow, (val) => (val ? TranslucentEnable : (Action)TranslucentDisable).Invoke());
 			}
@@ -411,14 +410,13 @@ namespace UnitedSets.Services {
 		}
 
 		#endregion
-		private USConfig cfg => SettingsService.Settings.cfg;
 		public async Task ResetSettings() {
-			await _ImportSettings(def_config.CloneWithoutTabs());
+			await _ImportSettings(DefaultConfiguration.CloneWithoutTabs());
 			//def_config
 		}
 		public void ExportSettings(string filename, bool OnlyNonDefault, bool ExcludeTabs = false) {
 			try {
-				var exported = cfg.CloneWithoutTabs();
+				var exported = MainConfiguration.CloneWithoutTabs();
 				var allTabs = UnitedSetsApp.Current.Tabs.ToArray();
 				if (ExcludeTabs)
 					allTabs = [];
@@ -439,16 +437,16 @@ namespace UnitedSets.Services {
 						exp.Split = ExportSplit(allDataCells, cTab._MainCell, cTab.CustomTitle);
 					}
 					if (OnlyNonDefault)
-						PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(def_config.DefaultTabData, exp, true);
+						PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(DefaultConfiguration.DefaultTabData, exp, true);
 					tabsExported.Add(exp);//should probably check some property is actually set here could have it count and do allDataCells before hand to take care of them as well
 				}
 
 				foreach (var cell in allDataCells)
-					PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(def_config.DefaultCellData, cell, true);
+					PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(DefaultConfiguration.DefaultCellData, cell, true);
 				exported.Tabs = tabsExported.ToArray();
 
 				if (OnlyNonDefault)
-					PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(def_config, exported, true);
+					PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(DefaultConfiguration, exported, true);
 
 
 

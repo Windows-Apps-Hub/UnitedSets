@@ -13,6 +13,9 @@ static class Constants
     public static readonly WindowMessages UnitedSetCommunicationChangeWindowOwnership
         = WindowMessagesHelper.Register(nameof(UnitedSetCommunicationChangeWindowOwnership));
 
+    public const int MinWidth = 600, MinHeight = 500;
+    public const int BypassMinWidth = 100, BypassMinHeight = 100;
+
     static readonly Lazy<bool> _IsFirstRun = new(delegate
     {
         var isFirstRun = false;

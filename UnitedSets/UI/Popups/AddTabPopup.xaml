@@ -1,4 +1,4 @@
-﻿<windows:MicaWindow
+﻿<WinUIEx:WindowEx
     xmlns:WinUIEx="using:WinUIEx"
     x:Class="UnitedSets.UI.Popups.AddTabPopup"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -26,4 +26,4 @@
         </StackPanel>
         <Button Style="{ThemeResource CloseButton}" Click="CancelClick" HorizontalAlignment="Right"/>
     </Grid>
-</windows:MicaWindow>
+</WinUIEx:WindowEx>

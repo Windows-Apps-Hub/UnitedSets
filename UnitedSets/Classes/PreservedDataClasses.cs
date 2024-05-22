@@ -76,7 +76,10 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		[AutoNotifyProperty]
 		public bool _CloseWindowOnCloseTab;
 
-		public event PropertyChangedEventHandler? PropertyChanged;
+        [AutoNotifyProperty]
+        public bool _BypassMinSize;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
 		public SavedTabData[]? Tabs { get; set; }
 		public SavedTabData? DefaultTabData { get; set; }

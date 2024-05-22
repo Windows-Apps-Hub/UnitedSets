@@ -81,6 +81,19 @@ public partial class WindowHost : FrameworkElement
     {
         Controller = null;
         Controller = AssociatedWindow?.GetController(ParentWindow, DispatcherQueue);
+        XamlRoot.Changed += XamlRoot_Changed;
     }
-
+    bool wasVisible;
+    private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
+    {
+        if (XamlRoot.IsHostVisible != wasVisible)
+        {
+            wasVisible = XamlRoot.IsHostVisible;
+            if (AssociatedWindow is { } win && win.IsValid && Controller is not null)
+            {
+                var w = win.Window;
+                w.IsVisible = XamlRoot.IsHostVisible;
+            }
+        }
+    }
 }

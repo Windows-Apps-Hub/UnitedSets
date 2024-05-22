@@ -22,10 +22,10 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         OnUIThreadTimerLoop();
         await Task.Delay(100);
     }
-    public void SaveCurSettingsAsDefault() => persistantService.ExportSettings(USConfig.DefaultConfigFile, true, true);//don't give user any choice as to what for now so will exclude current tabs
+    public void SaveCurSettingsAsDefault() => UnitedSetsApp.Current.Configuration.PersistantService.ExportSettings(USConfig.DefaultConfigFile, true, true);//don't give user any choice as to what for now so will exclude current tabs
     public async Task ResetSettingsToDefault()
     {
-        await persistantService.ResetSettings();
+        await UnitedSetsApp.Current.Configuration.PersistantService.ResetSettings();
         SaveCurSettingsAsDefault();
     }
 }

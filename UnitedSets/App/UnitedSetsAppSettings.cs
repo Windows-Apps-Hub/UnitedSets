@@ -3,9 +3,7 @@ using UnitedSets.UI.AppWindows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using UnitedSets.Settings;
-using Cube.UI.Icons;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Composition.SystemBackdrops;
@@ -17,15 +15,14 @@ using EnumsNET;
 
 namespace UnitedSets.Mvvm.Services;
 
-public partial class SettingsService
+public partial class UnitedSetsAppSettings
 {
-    public static SettingsService Settings { get; } = new();
-    public USConfig cfg { get; set; } = null!;
-    private SettingsService()
+    private static USConfig Configuration => UnitedSetsApp.Current.Configuration.PersistantService.MainConfiguration;
+    public UnitedSetsAppSettings()
     {
         AllSettings = [
             CloseWindowOnCloseTab = new(
-                () => cfg.CloseWindowOnCloseTab, x => cfg.CloseWindowOnCloseTab = x
+                () => Configuration.CloseWindowOnCloseTab, x => Configuration.CloseWindowOnCloseTab = x
             )
             {
                 Title = "Closing tab closes window",
@@ -41,15 +38,23 @@ public partial class SettingsService
             //    Icon = SymbolEx.PPSOneLandscape,
             //    RequiresRestart = true
             //},
+            BypassMinimumSize = new(() => Configuration.BypassMinSize, x => Configuration.BypassMinSize = x) {
+                Title = "Bypass Minimum Size",
+                Description = $"Allows resizing the window down to {
+                    Constants.BypassMinWidth}x{Constants.BypassMinHeight
+                    } (Normal minimum size is {
+                    Constants.MinWidth}x{Constants.MinHeight})",
+                Icon = SymbolEx.ResizeMouseSmall
+            },
             BackdropMode = new(
-                () => cfg.Design!.Backdrop, x => cfg.Design!.Backdrop = x, Enums.GetValues<USBackdrop>()
+                () => Configuration.Design!.Backdrop, x => Configuration.Design!.Backdrop = x, Enums.GetValues<USBackdrop>()
             ) {
                 Title = "Window Background",
                 Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
                 Icon = SymbolEx.Color
             },
             WindowTitlePrefix = new(
-                () => cfg.TitlePrefix ?? "", x => cfg.TitlePrefix = x
+                () => Configuration.TitlePrefix ?? "", x => Configuration.TitlePrefix = x
             )
             {
                 Title = "Window Title Prefix",
@@ -58,7 +63,7 @@ public partial class SettingsService
                 PlaceholderText = "None - Normal Title Mode"
             },
             Theme = new(
-                () => cfg.Design.Theme ?? ElementTheme.Default, x => cfg.Design.Theme = x,
+                () => Configuration.Design!.Theme ?? ElementTheme.Default, x => Configuration.Design!.Theme = x,
                 Enums.GetValues<ElementTheme>()
             )
             {
@@ -72,7 +77,8 @@ public partial class SettingsService
     public IReadOnlyList<Setting> AllSettings { get; }
 
     public OnOffSetting CloseWindowOnCloseTab { get; }
-    public OnOffSetting TransculentWindow { get; }
+    public OnOffSetting BypassMinimumSize { get; }
+    //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
     public SelectSetting<ElementTheme> Theme { get; }
 

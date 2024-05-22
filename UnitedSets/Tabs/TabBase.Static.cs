@@ -11,13 +11,12 @@ namespace UnitedSets.Tabs;
 
 partial class TabBase
 {
-    public readonly static List<Window> MainWindows = new();
     public static event Action? OnUpdateStatusLoopComplete;
-    static readonly SynchronizedCollection<TabBase> AllTabs = new();
+    static readonly SynchronizedCollection<TabBase> AllTabs = [];
     //static readonly WindowClass UnitedSetsSwitcherWindowClass;
 
-    static readonly SettingsService Settings
-        = App.SettingsService;
+    static readonly UnitedSetsAppSettings Settings
+        = UnitedSetsApp.Current.Settings;
 
     static TabBase()
     {

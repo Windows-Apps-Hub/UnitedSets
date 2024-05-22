@@ -11,11 +11,11 @@ using Microsoft.UI.Xaml.Media.Animation;
 namespace UnitedSets.UI.AppWindows;
 
 
-public sealed partial class OOBEWindow : MicaWindow
+public sealed partial class OOBEWindow : WinUIEx.WindowEx
 {
-    public SettingsService Settings => SettingsService.Settings;
+    public UnitedSetsAppSettings Settings => UnitedSetsApp.Current.Settings;
     readonly bool IsInitialized = false;
-    public OOBEWindow() : base(IsMicaInfinite: false)
+    public OOBEWindow()
     {
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
@@ -23,6 +23,7 @@ public sealed partial class OOBEWindow : MicaWindow
         IsInitialized = true;
         AppWindow.Changed += WindowChanged;
         Page.Loaded += OOBEPageSetup;
+        SystemBackdrop = new MicaBackdrop();
     }
 
     Storyboard LoadingAnimation => (Storyboard)Page.Resources[nameof(LoadingAnimation)];

@@ -13,7 +13,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx
     public readonly WindowEx Win32Window;
 
     // Singleton
-    readonly SettingsService Settings = App.SettingsService;
+    readonly UnitedSetsAppSettings Settings = UnitedSetsApp.Current.Settings;
 
     // Readonly
     readonly DispatcherQueueTimer timer;

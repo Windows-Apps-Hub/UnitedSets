@@ -1,54 +1,30 @@
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.WinUI.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using UnitedSets.Classes;
-using UnitedSets.Helpers;
-using UnitedSets.Mvvm.Services;
-using UnitedSets.Services;
 using UnitedSets.UI.AppWindows;
-using Windows.Storage;
-using WinRT;
-using WinUIEx;
 
 namespace UnitedSets;
 
-/// <summary>
-/// Provides application-specific behavior to supplement the default Application class.
-/// </summary>
 public partial class App : Application
 {
-    public static SettingsService SettingsService { get; } = SettingsService.Settings;
-
-    /// <summary>
-    /// Initializes the singleton application object.  This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
-    /// </summary>
     public App()
     {
         Directory.CreateDirectory(USConfig.AppDataPath);
         InitializeComponent();
-		
-		cfg = new();
-        if (!cfg.LoadPreviousSessionData())
-            cfg.LoadInitialSettingsAndTheme();
+        // Ensure initialized
+        UnitedSetsApp app = UnitedSetsApp.Current;
 #if DEBUG
         RequestAttachDebugger();
 #else
-
         UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedException;
         AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
 #endif
     }
-	private PreservedTabDataService cfg;
 
     async static void RequestAttachDebugger()
     {
@@ -60,7 +36,7 @@ public partial class App : Application
     {
         //DebugRedir.Listen();
         //if (Constants.IsFirstRun)
-        //LaunchNewOOBE();
+        //    LaunchNewOOBE();
         //else
         LaunchNewMain();
     }
@@ -74,7 +50,7 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        var window = new MainWindow(cfg);
+        var window = new MainWindow();
         window.Activate();
     }
 

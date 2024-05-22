@@ -29,6 +29,7 @@ using WindowHoster;
 using UnitedSets.Windows;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CommunityToolkit.Mvvm.Input;
+using WinWrapper.Windowing;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -73,7 +74,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         var res = await ExportImportInputPage.ShowExportImport(true, this);
         if (res == null)
             return;
-        persistantService.ExportSettings(res.FullFilename, res.OnlyExportNonDefault);
+        UnitedSetsApp.Current.Configuration.PersistantService.ExportSettings(res.FullFilename, res.OnlyExportNonDefault);
     }
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     public async Task ImportData()
@@ -82,7 +83,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         var res = await ExportImportInputPage.ShowExportImport(false, this);
         if (res == null)
             return;
-        persistantService.ImportSettings(res.FullFilename);
+        UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(res.FullFilename);
     }
     private void CloseMainFlyout()
     { }    //=> MenuFlyout?.Hide();
@@ -202,7 +203,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
                 await UnitedSetsApp.Current.Suicide();
                 return;
             case CloseMode.SaveCloseWindow:
-                persistantService.ExportSettings(USConfig.SessionSaveConfigFile, true, ExcludeTabs: false);
+                UnitedSetsApp.Current.Configuration.SaveCurrentSession();
                 goto case CloseMode.CloseWindow;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));
@@ -228,8 +229,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     }
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {
-        var id = e.Message.MessageId;
-        if (id == (uint)Constants.UnitedSetCommunicationChangeWindowOwnership)
+        var id = (WindowMessages)e.Message.MessageId;
+        if (id == Constants.UnitedSetCommunicationChangeWindowOwnership)
         {
             var winPtr = e.Message.LParam;
             if (UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)

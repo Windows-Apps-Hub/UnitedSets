@@ -16,7 +16,7 @@ namespace UnitedSets.Classes {
 		public USConfig CloneWithoutTabs() {
 			return (USConfig)_CloneWithoutTabs();
 		}
-		public static bool FLAGS_THEME_CHOICE_ENABLED = true;// ughz https://github.com/microsoft/WindowsAppSDK/issues/3487 https://github.com/microsoft/microsoft-ui-xaml/issues/8249 although even setting it at the app level doesnt work
+		public static bool FLAGS_THEME_CHOICE_ENABLED { get; } = true;// ughz https://github.com/microsoft/WindowsAppSDK/issues/3487 https://github.com/microsoft/microsoft-ui-xaml/issues/8249 although even setting it at the app level doesnt work
 		public static string BaseProfileFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UnitedSets");
 		public static string DefaultConfigFile => Path.Combine(BaseProfileFolder, "default.json");
         public static string AppDataPath => Path.Combine(
@@ -35,11 +35,11 @@ namespace UnitedSets.Classes {
             WindowsOG.ApplicationModel.Package.Current.InstalledLocation.Path;
 #endif
 
-		public static USConfig def_config { get; private set; }
+		public static USConfig DefaultConfiguration { get; private set; }
 		internal static void LoadDefaultConfig() {
 			if (!Directory.Exists(BaseProfileFolder))
 				Directory.CreateDirectory(BaseProfileFolder);
-			def_config = new() {
+			DefaultConfiguration = new() {
 				TitlePrefix = "", TaskbarIco = "Assets/UnitedSets.ico", Tabs = [], Design = new() {
 					BorderCorner = new(15, 5, 15, 5), BorderGradiant1 = "#9987C7FF", BorderGradiant2 = "#9900008B", BorderThickness = new(10),
 					MainMargin = new(8, 0, 8, 8), PrimaryBackgroundLightTheme = "#DDFFFFFF", PrimaryBackgroundDarkTheme = "#DD000000", PrimaryBackgroundNonTranslucent = "White",

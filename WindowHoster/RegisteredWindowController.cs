@@ -8,6 +8,7 @@ using Microsoft.UI.Dispatching;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using WinWrapper.Input;
 namespace WindowHoster;
 
 public partial class RegisteredWindowController
@@ -63,8 +64,10 @@ public partial class RegisteredWindowController
         {
             queueSetVisible = false;
             window.IsVisible = true;
+            // do not steal focus if we are doing things with other window
             await Task.Delay(100);
-            window.SetAsForegroundWindow();
+            if (!Cursor.IsLeftButtonDown)
+                window.SetAsForegroundWindow();
         }
     }
     static Rectangle RectToScreen(Windows.Foundation.Rect rect, Point WindowPosOffset, double RasterizationScale)
@@ -122,7 +125,8 @@ public partial class RegisteredWindowController
         var window = self.Window;
         WinEvents.Unregister(Parent.Handle, WinEventTypes.PositionSizeChanged, false, ParentPositionChangedHandler);
         //window.DwmAttribute.Set(DwmWindowAttribute.DWMWA_CLOAK, 1);
-        window.IsVisible = false;
+        if (self.IsValid)
+            window.IsVisible = false;
         if (self.CurrentController == this)
             self.CurrentController = null;
         Parent = default;

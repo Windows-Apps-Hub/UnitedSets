@@ -1,10 +1,11 @@
-﻿<window:MicaWindow
+﻿<winuiex:WindowEx
     x:Class="UnitedSets.UI.AppWindows.OOBEWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:window="using:UnitedSets.UI.AppWindows"
+    xmlns:winuiex="using:WinUIEx"
     xmlns:Materials="using:Cube.UI.Materials"
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media" 
@@ -258,4 +259,4 @@
             </Grid>
         </Page>
     </Grid>
-</window:MicaWindow>
+</winuiex:WindowEx>

@@ -2,7 +2,7 @@
   "profiles": {
     "UnitedSets (Packaged)": {
       "commandName": "MsixPackage",
-      "nativeDebugging": false
+      "nativeDebugging": true
     },
     "AddNotepad (Packaged)": {
       "commandName": "MsixPackage",

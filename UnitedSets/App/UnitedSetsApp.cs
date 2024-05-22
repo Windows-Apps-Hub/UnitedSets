@@ -11,13 +11,21 @@ using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using UnitedSets.Services;
+using UnitedSets.Classes;
+using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets;
 
 partial class UnitedSetsApp : INotifyPropertyChanged
 {
     // singleton setup
-    private UnitedSetsApp() { }
+    private UnitedSetsApp() {
+        Settings = new();
+        Configuration = new();
+    }
+    public UnitedSetsAppSettings Settings { get; } = new();
+    public UnitedSetsAppConfiguration Configuration { get; } = new();
     public static UnitedSetsApp Current { get; } = new();
     readonly List<Window> _allWindows = [];
     
@@ -42,7 +50,6 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     {
         return Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));
     }
-
     [DoesNotReturn]
     public async Task Suicide()
     {

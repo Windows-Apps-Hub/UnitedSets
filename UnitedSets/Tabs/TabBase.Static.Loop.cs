@@ -14,7 +14,7 @@ partial class TabBase
         {
             do
                 Thread.Sleep(500);
-            while (!MainWindows.Any(x => x.IsVisible));
+            while (!(UnitedSetsApp.Current.MainWindow?.Win32Window.IsVisible ?? false));
 
             try
             {

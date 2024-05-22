@@ -14,12 +14,10 @@ using Keyboard = WinWrapper.Input.Keyboard;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using Icon = WinWrapper.Icon;
-using UnitedSets.Services;
 using Microsoft.UI.Xaml.Controls;
 using System.IO;
 using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
-using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -27,48 +25,36 @@ partial class MainWindow
 {
     // To Merge:
 
-    public MainWindow(PreservedTabDataService persistantService)
+    public MainWindow()
     {
         Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
         UnitedSetsApp.Current.RegisterUnitedSetsWindow(this);
-        // To Merge:
-        this.persistantService = persistantService;
-
-        if (cfg.Design.Theme != null && cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
-        {
-            (this.Content as FrameworkElement).RequestedTheme = cfg.Design.Theme.Value;
-            ///not sure why settng the requested theme doesnt seem to work
-            //MainAreaBorder.RequestedTheme = this.RootGrid.RequestedTheme = swapChainPanel.RequestedTheme = cfg.Design.Theme.Value;
-        }
 
         InitializeComponent();
 
         ui_configs = new() { TitleUpdate = UpdateTitle, WindowBorder = WindowBorderOnTransparent, MainAreaBorder = MainAreaBorder }; //, swapChain = this.swapChainPanel
-        persistantService.init(this, ui_configs);
-
-        //if (cfg.Design.UseDXBorderTransparency == true)
-        //    TransparentSetup();
+        UnitedSetsApp.Current.Configuration.PersistantService.init(ui_configs);
 
         SetupBasicWindow();
         
-        //TransparentMode = FeatureFlags.UseTransparentWindow;
-        //if (TransparentMode)
-        //    SetupTransparent(out trans_mgr);
-
         void UpdateBackdrop(USBackdrop x)
         {
-            //var IsTransparent = x is USBackdrop.Transparent;
-            //WindowBorderOnTransparent.Visibility = IsTransparent ? Visibility.Visible : Visibility.Collapsed;
-            //TransparentMode = IsTransparent;
             SystemBackdrop = x.GetSystemBackdrop();
         }
         Settings.BackdropMode.PropertyChanged += (_, _) => UpdateBackdrop(Settings.BackdropMode.Value);
         UpdateBackdrop(Settings.BackdropMode.Value);
+
+        void UpdateMinSize(bool bypass)
+        {
+            MinWidth = bypass ? Constants.BypassMinWidth : Constants.MinWidth;
+            MinHeight = bypass ? Constants.BypassMinHeight : Constants.MinHeight;
+        }
+        Settings.BypassMinimumSize.PropertyChanged += (_, _) => UpdateMinSize(Settings.BypassMinimumSize.Value);
+        UpdateMinSize(Settings.BypassMinimumSize.Value);
+
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
         SetupNative(out WindowMessageMonitor);
-
-        RegisterWindow();
 
         SetupEvent();
 
@@ -78,40 +64,12 @@ partial class MainWindow
 
         // Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void RegisterWindow()
-        {
-            TabBase.MainWindows.Add(Win32Window);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupBasicWindow()
         {
             Title = "UnitedSets";
-            MinWidth = 100;
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(CustomDragRegion);
         }
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //void SetupTransparent(out TransparentWindowManager trans_mgr)
-        //{
-        //    WindowBorderOnTransparent.Visibility = Visibility.Visible;
-        //    MainAreaBorder.Margin = new(8, 0, 8, 8);
-        //    var presenter = (OverlappedPresenter)AppWindow.Presenter;
-        //    //RootGrid.Children.Insert(0, border);
-        //    //trans_mgr = new(this, swapChainPanel, FeatureFlags.EntireWindowDraggable);
-        //    //trans_mgr.AfterInitialize();
-        //    trans_mgr = null!;
-        //    ui_configs.WindowBorder = new Border() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-        //    ui_configs.WindowBorder.BorderBrush = new LinearGradientBrush(new GradientStopCollection { new GradientStop { Offset = 1 }, new GradientStop { Offset = 0 } }, 45);
-        //    //ui_configs.WindowBorder.RequestedTheme = MainAreaBorder.RequestedTheme;
-        //    Grid.SetColumnSpan(ui_configs.WindowBorder, 50);
-        //    Grid.SetRowSpan(ui_configs.WindowBorder, 50);
-        //    Canvas.SetZIndex(ui_configs.WindowBorder, -5);
-        //    ui_configs.MainAreaBorder = MainAreaBorder;
-        //    RootGrid.Children.Insert(0, ui_configs.WindowBorder);
-        //    persistantService.SetPrimaryDesignProperties();
-        //    trans_mgr = new(this, swapChainPanel, cfg.DragAnywhere == true);
-        //    trans_mgr.AfterInitialize();
-        //}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
         {
@@ -126,7 +84,6 @@ partial class MainWindow
         {
             WindowMessageMonitor = new WindowMessageMonitor(Win32Window);
         }
-        
     }
 
     public class CfgElements
@@ -141,28 +98,27 @@ partial class MainWindow
 
     private void UpdateTitle()
     {
-        var prefix = cfg.TitlePrefix;
+        var prefix = Configuration.TitlePrefix;
         if (UnitedSetsApp.Current.SelectedTab is { } tab)
             prefix = $"{prefix} {tab.Title} (+{UnitedSetsApp.Current.Tabs.Count - 1} Tabs) - ";
 
         Title = $"{prefix}United Sets";
     }
 
-    public USConfig cfg => Settings.cfg;
+    public USConfig Configuration => UnitedSetsApp.Current.Configuration.MainConfiguration;
 
-    private PreservedTabDataService persistantService;
     [Event(typeof(TypedEventHandler<object, WindowActivatedEventArgs>))]
     void FirstRun()
     {
         Activated -= FirstRun;
-        var icoFile = Path.IsPathRooted(cfg.TaskbarIco) ? cfg.TaskbarIco : Path.Combine(USConfig.RootLocation, cfg.TaskbarIco!);
+        var icoFile = Path.IsPathRooted(Configuration.TaskbarIco) ? Configuration.TaskbarIco : Path.Combine(USConfig.RootLocation, Configuration.TaskbarIco!);
         var icon = Icon.Load(icoFile);
         Win32Window.SmallIcon = Win32Window.LargeIcon = icon;
 
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
         HandleCLICmds();
-        _ = persistantService.FinalizeLoadAsync();
+        UnitedSetsApp.Current.Configuration.PersistantService.FinalizeLoadAsync();
     }
     async void HandleCLICmds()
     {
@@ -170,7 +126,7 @@ partial class MainWindow
         var editLastAddedWindow = CLI.GetFlag("edit-last-added");
         //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
         var profile = CLI.GetVal("profile");
-        if (!String.IsNullOrWhiteSpace(profile))
+        if (!string.IsNullOrWhiteSpace(profile))
         {
             if (Path.HasExtension(profile) == false)
                 profile += ".json";
@@ -179,7 +135,7 @@ partial class MainWindow
             if (File.Exists(profile))
             {
                 await Task.Delay(1500);
-                await persistantService.ImportSettings(profile);
+                await UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(profile);
             }
         }
 

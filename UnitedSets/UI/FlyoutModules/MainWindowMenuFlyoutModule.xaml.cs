@@ -18,7 +18,7 @@ namespace UnitedSets.UI.FlyoutModules;
 public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyChanged
 {
     // Singleton
-    readonly SettingsService Settings = App.SettingsService;
+    readonly UnitedSetsAppSettings Settings = UnitedSetsApp.Current.Settings;
     [AutoNotifyProperty]
     MainWindow? _MainWindow;
 #pragma warning disable CS0067

@@ -25,7 +25,7 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     [AutoNotifyProperty(SetVisibility = GeneratorVisibility.Private, OnChanged = nameof(CompatablityModeChanged))]
     CompatablityMode _CompatablityMode;
 
-    private RegisteredWindow(Window WindowToHost)
+    private RegisteredWindow(Window WindowToHost, bool shouldBeHidden = false)
     {
         InitalStylingState = WindowStylingState.GetCurrentState(WindowToHost);
 
@@ -73,6 +73,8 @@ public partial class RegisteredWindow : INotifyPropertyChanged
                     }
                 }
             );
+        if (shouldBeHidden && IsValid)
+            WindowToHost.IsVisible = false;
         Closed += delegate { BecomesInvalid?.Invoke(); };
         Detached += delegate { BecomesInvalid?.Invoke(); };
         Properties = new(this);
@@ -96,10 +98,10 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         TimeWhenGettingController = DateTime.UtcNow;
         return CurrentController;
     }
-    public static RegisteredWindow? Register(Window window)
+    public static RegisteredWindow? Register(Window window, bool shouldBeHidden = false)
     {
         if (BlacklistChecker(window)) return null;
-        return new(window);
+        return new(window, shouldBeHidden);
     }
 
     public bool IsValid { get; set; } = true;
@@ -120,11 +122,12 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     public async void Detach() => await DetachAsync();
     public async Task DetachAsync()
     {
+        
         var WindowToHost = Window;
         WindowToHost.Region = InitalStylingState.Region;
         Properties.ActivateCrop = false;
         Properties.BorderlessWindow = false;
-
+        IsValid = false;
         WindowToHost.Owner = default;
         WindowToHost.IsResizable = InitalStylingState.IsResizable;
         WindowToHost.IsVisible = true;
@@ -133,12 +136,17 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         WindowToHost.Focus();
         WindowToHost.Redraw();
         WindowToHost.SetAsForegroundWindow();
-        await Task.Delay(100).ContinueWith(_ => WindowToHost.Redraw());
+        await Task.Delay(100).ContinueWith(_ =>
+        {
+            WindowToHost.Redraw();
+            WindowToHost.IsVisible = true;
+        });
         Detached?.Invoke();
     }
     private void Dispose()
     {
         registeredWindowClosedEvent.Unregister();
         registeredPosSizeChangedEvent.Unregister();
+        IsValid = false;
     }
 }

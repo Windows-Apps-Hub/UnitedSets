@@ -17,5 +17,10 @@ public sealed partial class MainWindow
 
         cacheHasOwner = _new;
         NotifyPropertyChangedOnUIThread(nameof(HasOwner));
+
+        IsResizable = !_new;
+        IsTitleBarVisible = !_new;
+        IsMinimizable = !_new;
+        IsMaximizable = !_new;
     }
 }

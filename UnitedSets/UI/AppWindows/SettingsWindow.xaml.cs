@@ -9,9 +9,9 @@ namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class SettingsWindow : WindowEx
 {
-    public SettingsService Settings;
+    public UnitedSetsAppSettings Settings;
 
-    public SettingsWindow(SettingsService Settings, MainWindow mainWindow)
+    public SettingsWindow(UnitedSetsAppSettings Settings, MainWindow mainWindow)
     {
         this.Settings = Settings;
         this.mainWindow = mainWindow;

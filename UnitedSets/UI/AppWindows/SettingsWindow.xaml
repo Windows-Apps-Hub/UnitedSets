@@ -49,6 +49,7 @@
                         <TextBlock FontSize="24" FontWeight="SemiBold">United Sets</TextBlock>
                         <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7">Preview</TextBlock>
                     </StackPanel>
+                    <TextBlock FontSize="12" FontWeight="SemiBold" Margin="4">Warning options only effect this instance unless you click "Make These Settings the Defaults"</TextBlock>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 24, 4, 4">Options</TextBlock>
                     <ItemsControl ItemsSource="{x:Bind Settings.AllSettings}">
                         <ItemsControl.ItemTemplate>
@@ -107,7 +108,7 @@
                             </Grid>
                         </settings:SettingsBlockControl.ExpandableContent>
                     </settings:SettingsBlockControl>
-                    <Button Content="Make Default Settings" Command="{x:Bind SaveDefaultSettingsCommand}" />
+                    <Button Content="Make These Settings the Defaults" Command="{x:Bind SaveDefaultSettingsCommand}" />
                 </StackPanel>
 
                 <StackPanel Margin="100, 100, 50, 80" Width="220" x:Name="AboutPanel" HorizontalAlignment="Right" VerticalAlignment="Top">

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
@@ -48,9 +48,9 @@
 	  <Page Remove="UI\AppWindows\NewWindow.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Labs.WinUI.SizerBase" Version="0.0.4" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.0.240109" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
 		<PackageReference Include="Get.EasyCsharp" Version="1.0.0" />

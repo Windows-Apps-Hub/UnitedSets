@@ -162,9 +162,13 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     private partial void OnWindowClosing(AppWindowClosingEventArgs e)
     {
         e.Cancel = true;//as we will just exit if we want to actually close
-        Win32Window.Focus();
-        ClosingFlyout.XamlRoot = Content.XamlRoot;
-        ClosingFlyout.ShowAt((FrameworkElement)Content);
+        if (UnitedSetsApp.Current.Tabs.Count > 1)
+        {
+            Win32Window.Focus();
+            ClosingFlyout.XamlRoot = Content.XamlRoot;
+            ClosingFlyout.ShowAt((FrameworkElement)Content);
+        }else
+            RequestCloseAsync(CloseMode.ReleaseWindow);
     }
     public enum CloseMode
     {

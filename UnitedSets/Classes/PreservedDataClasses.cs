@@ -40,8 +40,10 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		}
 		public List<StartItem> items = new();
 	}
-	public partial class SavedWindowDesign : CloneableBase, INotifyPropertyChanged {
-		public OurRect? BorderThickness { get; set; }
+	public partial class SavedWindowDesign : CloneableBase, INotifyPropertyChanged
+    {
+        public bool? ShouldAutoSave { get; set; }
+        public OurRect? BorderThickness { get; set; }
 		public OurRect? BorderCorner { get; set; }
 		public OurRect? MainMargin { get; set; }
 		public string? PrimaryBackgroundLightTheme { get; set; }
@@ -73,7 +75,10 @@ namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespa
 		[AutoNotifyProperty]
 		public string? _TitlePrefix;
 
-		[AutoNotifyProperty]
+        [AutoNotifyProperty]
+        public bool? _Autosave;
+
+        [AutoNotifyProperty]
 		public bool _CloseWindowOnCloseTab;
 
         [AutoNotifyProperty]

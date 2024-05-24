@@ -21,6 +21,13 @@ public partial class UnitedSetsAppSettings
     public UnitedSetsAppSettings()
     {
         AllSettings = [
+            Autosave = new(
+                () => Configuration.Autosave ?? true, x => Configuration.Autosave = x
+            ) {
+                Title = "Autosave Settings",
+                Description = "Automatically saves the settings as you edit them. Turn this off if you only want the current session to have this setting.",
+                Icon = SymbolEx.Save
+            },
             CloseWindowOnCloseTab = new(
                 () => Configuration.CloseWindowOnCloseTab, x => Configuration.CloseWindowOnCloseTab = x
             )
@@ -73,10 +80,19 @@ public partial class UnitedSetsAppSettings
                 RequiresRestart = true
             }
         ];
+        foreach (var setting in AllSettings)
+            setting.PropertyChanged += delegate
+            {
+                if (Autosave.Value)
+                {
+                    UnitedSetsApp.Current.Configuration.SaveCurSettingsAsDefault();
+                }
+            };
     }
     public IReadOnlyList<Setting> AllSettings { get; }
 
     public OnOffSetting CloseWindowOnCloseTab { get; }
+    public OnOffSetting Autosave { get; }
     public OnOffSetting BypassMinimumSize { get; }
     //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }

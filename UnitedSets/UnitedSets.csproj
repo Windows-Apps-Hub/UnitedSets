@@ -1,147 +1,147 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<RootNamespace>UnitedSets</RootNamespace>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<Platforms>x86;x64;arm64</Platforms>
-		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-		<!--<PublishProfile>win10-$(Platform).pubxml</PublishProfile>-->
-		<UseWinUI>true</UseWinUI>
-		<EnableMsixTooling>true</EnableMsixTooling>
-		<Nullable>Enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-		<AppxPackageDir>..\AppPackages\</AppxPackageDir>
-		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
-		<GenerateTestArtifacts>True</GenerateTestArtifacts>
-		<AppxBundle>Never</AppxBundle>
-		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-		<Configurations>Debug;Release;DebugUnpackaged</Configurations>
-		<ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-		<LangVersion>12</LangVersion>
-		<UseRidGraph>True</UseRidGraph>
-		<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
-		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Remove="UI\AppWindows\NewWindow.xaml.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
-	  <None Remove="UI\AppWindows\MainWindow.xaml" />
-	  <None Remove="UI\AppWindows\NewWindow.xaml" />
-		<None Remove="AddTabFlyout.xaml" />
-		<None Remove="Controls\CellVisualizer.xaml" />
-		<None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-		<None Remove="ModifyWindowFlyoutModule.xaml" />
-		<None Remove="OOBEWindow.xaml" />
-		<None Remove="SettingsWindow.xaml" />
-		<None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
-		<None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
-		<None Remove="TabPropertiesFlyout.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Remove="UI\AppWindows\NewWindow.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-		<PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
-		<PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.0.240109" />
-		<PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
-		<PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
-		<PackageReference Include="Get.EasyCsharp" Version="1.0.0" />
-		<!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
-		<PackageReference Include="Enums.NET" Version="4.0.1" />
-		<PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
-		<PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
-		<PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
-		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
-		<PackageReference Include="WinUIEx" Version="2.3.3" />
-		<PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
-		<PackageReference Include="WinWrapper.Windowing" Version="2.0.2" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+        <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+        <RootNamespace>UnitedSets</RootNamespace>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Platforms>x86;x64;arm64</Platforms>
+        <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+        <!--<PublishProfile>win10-$(Platform).pubxml</PublishProfile>-->
+        <UseWinUI>true</UseWinUI>
+        <EnableMsixTooling>true</EnableMsixTooling>
+        <Nullable>Enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+        <AppxPackageDir>..\AppPackages\</AppxPackageDir>
+        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+        <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+        <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+        <GenerateTestArtifacts>True</GenerateTestArtifacts>
+        <AppxBundle>Never</AppxBundle>
+        <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+        <Configurations>Debug;Release;DebugUnpackaged</Configurations>
+        <ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
+        <LangVersion>12</LangVersion>
+        <UseRidGraph>True</UseRidGraph>
+        <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+        <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="UI\AppWindows\NewWindow.xaml.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
+        <None Remove="UI\AppWindows\MainWindow.xaml" />
+        <None Remove="UI\AppWindows\NewWindow.xaml" />
+        <None Remove="AddTabFlyout.xaml" />
+        <None Remove="Controls\CellVisualizer.xaml" />
+        <None Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+        <None Remove="ModifyWindowFlyoutModule.xaml" />
+        <None Remove="OOBEWindow.xaml" />
+        <None Remove="SettingsWindow.xaml" />
+        <None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
+        <None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
+        <None Remove="TabPropertiesFlyout.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Remove="UI\AppWindows\NewWindow.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+        <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.0.240109" />
+        <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
+        <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
+        <PackageReference Include="Get.EasyCsharp" Version="1.0.0" />
+        <!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
+        <PackageReference Include="Enums.NET" Version="4.0.1" />
+        <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
+        <PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
+        <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+        <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
+        <PackageReference Include="WinUIEx" Version="2.3.3" />
+        <PackageReference Include="WinWrapper.Taskbar" Version="2.0.0" />
+        <PackageReference Include="WinWrapper.Windowing" Version="2.0.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
 
-		<PackageReference Include="System.Management" Version="8.0.0-preview.1.23110.8" />
+        <PackageReference Include="System.Management" Version="8.0.0-preview.1.23110.8" />
 
-		<Manifest Include="$(ApplicationManifest)" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-		<ProjectCapability Include="Msix" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
-		<ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
-		<ProjectReference Include="..\WindowHoster\WindowHoster.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Update="UI\AppWindows\FloatingTaskbar.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	  <Page Update="UI\AppWindows\MainWindow.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
-	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
-	  <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-	</PropertyGroup>
-	<ItemGroup>
-		<CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-		<Resource Remove="ModifyWindowFlyoutModule.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-		<PRIResource Remove="AppPackages\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<PRIResource Remove="Interfaces\**" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Remove="Controls\CellVisualizerUnderConstruction.xaml.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Update="Controls\CellVisualizer.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
-	<Choose>
-		<When Condition="'$(Configuration)'=='DebugUnpackaged'">
-			<PropertyGroup>
-				<WindowsPackageType>None</WindowsPackageType>
-				<DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
-			</PropertyGroup>
-			<ItemGroup>
-				<None Remove="Package.appxmanifest" />
-			</ItemGroup>
-		</When>
-	</Choose>
+        <Manifest Include="$(ApplicationManifest)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+        <ProjectCapability Include="Msix" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
+        <ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
+        <ProjectReference Include="..\WindowHoster\WindowHoster.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="UI\AppWindows\FloatingTaskbar.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="UI\AppWindows\MainWindow.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+        <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x86'">
+        <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|x64'">
+        <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUnpackaged|arm64'">
+        <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <CustomAdditionalCompileInputs Remove="ModifyWindowFlyoutModule.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Resource Remove="ModifyWindowFlyoutModule.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <PRIResource Remove="AppPackages\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <PRIResource Remove="Interfaces\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Controls\CellVisualizerUnderConstruction.xaml.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Controls\CellVisualizer.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <Choose>
+        <When Condition="'$(Configuration)'=='DebugUnpackaged'">
+            <PropertyGroup>
+                <WindowsPackageType>None</WindowsPackageType>
+                <DefineConstants>$(DefineConstants);UNPKG;TRACE;DEBUG;NET;NET6_0;NETCOREAPP</DefineConstants>
+            </PropertyGroup>
+            <ItemGroup>
+                <None Remove="Package.appxmanifest" />
+            </ItemGroup>
+        </When>
+    </Choose>
 </Project>

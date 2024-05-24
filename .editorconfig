@@ -12,15 +12,15 @@ tab_width = 4
 [app.config]
 
 [*.yml]
-indent_size = 2
+indent_size = 4
 indent_style = space
 
 [*.{proj,csproj,vbproj,props,targets,resx,vsixmanifest}]
-indent_size = 2
+indent_size = 4
 indent_style = space
 
 [app.manifest]
-indent_size = 2
+indent_size = 4
 indent_style = space
 
 [*.xml]

@@ -27,6 +27,9 @@ public partial class RegisteredWindow : INotifyPropertyChanged
 
     private RegisteredWindow(Window WindowToHost, bool shouldBeHidden = false)
     {
+        if (WindowToHost.IsMaximized)
+            WindowToHost.SendMessage(WindowMessages.SysCommand, /* SC_RESTORE */ 0xF120, 0);
+
         InitalStylingState = WindowStylingState.GetCurrentState(WindowToHost);
 
         //this.XAMLWindow = XAMLWindow;

@@ -18,7 +18,6 @@
         <DataTemplate x:Name="TextSettingTemplate" x:DataType="settings:TextSetting">
             <TextBox
                 Text="{x:Bind Value, Mode=TwoWay}"
-                Style="{ThemeResource GlowTextBoxComboBox}"
                 PlaceholderText="{x:Bind PlaceholderText}"
                 HorizontalAlignment="Right"
             />

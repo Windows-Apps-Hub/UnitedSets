@@ -126,8 +126,8 @@
                             </DataTemplate>
                         </TabView.TabItemTemplate>
                         <TabView.TabStripHeader>
-                            <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="12,10,0,0" Width="32" Height="32">
-                                <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="5,0,0,0" Width="32" Height="32">
+                                <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 <Button.Flyout>
                                     <Flyout ShouldConstrainToRootBounds="False">
                                         <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>

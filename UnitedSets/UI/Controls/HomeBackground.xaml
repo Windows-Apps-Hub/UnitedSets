@@ -11,17 +11,14 @@
         <!--<Image x:Name="AppFontIcon"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Center"
-                Source="Assets/Square44x44Logo.scale-100.png"   
+                Source="Assets\Square150x150Logo.scale-100.png"   
                 Width="48" 
-                Height="48"/>
-            It does not work for some reason...
-                
-            -->
+                Height="48"/>-->
         <TextBlock
                 Text="United Sets"
                 VerticalAlignment="Center"
-                Margin="8, 0, 0, 0"
-                FontSize="28"/>
+                
+                FontSize="28"/> <!--Margin="8, 0, 0, 0"-->
         <TextBlock
                 Text="- Preview Beta"
                 VerticalAlignment="Center"
@@ -40,17 +37,15 @@
     </TextBlock>
     <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
     <TextBlock>
-            • UWP applications are not stable yet<LineBreak/>
-            • Some maximized apps can glitch<LineBreak/>
-            • App Icons are not stable yet<LineBreak/>
-            • [Experimental] Removing title bar is unstable for complex/custom window<LineBreak/>
-            • [Experimental] Double Click Tab options is not avaliable for Splitable Tab<LineBreak/>
-            • [Experimental] Removing title bar makes some app undragable,<LineBreak/>
-            therefore, you might not be able to remove the window in Splitable Tab.<LineBreak/>
-            Use Alt+F4 on the window to close the window or Use Alt+Space and<LineBreak/>
-            click on Maximize to remove the window from UnitedSets<LineBreak/>
-            (Some apps might still not work with this workaround<LineBreak/>
-            Therefore, please avoid removing title bar on splittable tab<LineBreak/>
-            unless you know what you are doing)
+        • UWP applications are not stable yet<LineBreak/>
+        • [Experimental] Save and Close may sometimes fail to add<LineBreak/>
+        windows back to United Sets.<LineBreak/>
+        • [Experimental] Save and Close will NOT work for system<LineBreak/>
+        UWP/Packaged apps such as Calculator/Paint/Notepad/etc.<LineBreak/>
+        (It will still work for user installed ones)<LineBreak/>
+        and will not work for one-process-only app (such as File Explorer)<LineBreak/>
+        such as (Calculator/Paint/Notepad/etc.).<LineBreak/>
+        • [Experimental] Removing title bar makes some app undragable,<LineBreak/>
+        therefore, it is advised not to do that for windows in Splitable Tab.<LineBreak/>
     </TextBlock>
 </StackPanel>

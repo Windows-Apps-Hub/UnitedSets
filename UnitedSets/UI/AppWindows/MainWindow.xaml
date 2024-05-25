@@ -18,24 +18,24 @@
             <Grid.Resources>
                 <Storyboard x:Name="WindowHoveringStoryBoard">
                     <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
-                                Storyboard.TargetProperty="Color"
-                                Duration="0:0:0.5"
-                                From="Transparent"
-                                To="{ThemeResource LayerFillColorDefault}">
-                        <ColorAnimation.EasingFunction>
-                            <CircleEase EasingMode="EaseOut" />
-                        </ColorAnimation.EasingFunction>
+                        Storyboard.TargetProperty="Color"
+                        Duration="0:0:0.5"
+                        From="Transparent"
+                        To="{ThemeResource LayerFillColorDefault}">
+                    <ColorAnimation.EasingFunction>
+                        <CircleEase EasingMode="EaseOut" />
+                    </ColorAnimation.EasingFunction>
                     </ColorAnimation>
                 </Storyboard>
                 <Storyboard x:Name="NoWindowHoveringStoryBoard">
                     <ColorAnimation Storyboard.TargetName="MainBackgroundColor"
-                                Storyboard.TargetProperty="Color"
-                                Duration="0:0:0.5"
-                                From="{ThemeResource LayerFillColorDefault}"
-                                To="Transparent">
-                        <ColorAnimation.EasingFunction>
-                            <CircleEase EasingMode="EaseOut" />
-                        </ColorAnimation.EasingFunction>
+                        Storyboard.TargetProperty="Color"
+                        Duration="0:0:0.5"
+                        From="{ThemeResource LayerFillColorDefault}"
+                        To="Transparent">
+                    <ColorAnimation.EasingFunction>
+                        <CircleEase EasingMode="EaseOut" />
+                    </ColorAnimation.EasingFunction>
                     </ColorAnimation>
                 </Storyboard>
                 <templates:TabBaseContentTemplateSelector x:Name="TabDataTemplateSelector"/>
@@ -78,10 +78,15 @@
             <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
             <Border x:Name="TabViewBorder" MinHeight="40" PointerMoved="DragRegion_PointerMoved" Background="Transparent">
                 <guics:DragRegion x:Name="DragRegion" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <TabView 
+                    <guics:DragRegion.ColumnDefinitions>
+                        <ColumnDefinition Width="{x:Bind GridLengthFromPixelInt(AppWindow.TitleBar.LeftInset), Mode=OneTime}"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="{x:Bind GridLengthFromPixelInt(AppWindow.TitleBar.RightInset), Mode=OneTime}"/>
+                    </guics:DragRegion.ColumnDefinitions>
+                    <TabView
+                        Grid.Column="1"
                         Style="{ThemeResource GlowTabView}"
                         x:Name="TabView"
-                        Background="Transparent"
                         x:FieldModifier="Public"
                         IsAddTabButtonVisible="False"
                         TabItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"

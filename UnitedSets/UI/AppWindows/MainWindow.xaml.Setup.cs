@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using System;
 using System.Linq;
@@ -23,8 +23,6 @@ namespace UnitedSets.UI.AppWindows;
 
 partial class MainWindow
 {
-    // To Merge:
-
     public MainWindow()
     {
         Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
@@ -68,7 +66,7 @@ partial class MainWindow
         {
             Title = "UnitedSets";
             ExtendsContentIntoTitleBar = true;
-            SetTitleBar(CustomDragRegion);
+            //SetTitleBar(CustomDragRegion);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()

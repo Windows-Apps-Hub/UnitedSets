@@ -81,6 +81,7 @@
                     <guics:DragRegion.ColumnDefinitions>
                         <ColumnDefinition Width="{x:Bind GridLengthFromPixelInt(AppWindow.TitleBar.LeftInset), Mode=OneTime}"/>
                         <ColumnDefinition/>
+                        <ColumnDefinition Width="32"/>
                         <ColumnDefinition Width="{x:Bind GridLengthFromPixelInt(AppWindow.TitleBar.RightInset), Mode=OneTime}"/>
                     </guics:DragRegion.ColumnDefinitions>
                     <TabView

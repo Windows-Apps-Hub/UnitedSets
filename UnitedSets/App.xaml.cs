@@ -16,7 +16,7 @@ public partial class App : Application
         Directory.CreateDirectory(USConfig.AppDataPath);
         InitializeComponent();
         // Ensure initialized
-        UnitedSetsApp app = UnitedSetsApp.Current;
+        var app = UnitedSetsApp.Current;
 #if DEBUG
         RequestAttachDebugger();
 #else

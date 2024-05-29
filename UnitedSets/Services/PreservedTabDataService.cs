@@ -36,36 +36,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace UnitedSets.Services {
 
 	public class PreservedTabDataService {
-		public void init(MainWindow.CfgElements main_ui_elems) {
-			this.main_ui_elems = main_ui_elems;
-		}
-		private MainWindow.CfgElements main_ui_elems;
-
-
-		public void SetPrimaryDesignProperties() {
-			if (main_ui_elems.swapChain == null)
-				return;
-
-
-			var mainBg = MainConfiguration.Design.PrimaryBackgroundNonTranslucent;
-			if (MainConfiguration.Design.UseTranslucentWindow == true) {
-				if (App.Current.RequestedTheme == ApplicationTheme.Dark)
-					mainBg = MainConfiguration.Design.PrimaryBackgroundDarkTheme;
-				else
-					mainBg = MainConfiguration.Design.PrimaryBackgroundLightTheme;
-			}
-			//main_ui_elems.MainAreaBorder.Background = ColorStrToBrush(mainBg);
-			main_ui_elems.WindowBorder.BorderThickness = RectToThick(MainConfiguration.Design.BorderThickness);
-			main_ui_elems.WindowBorder.Background = ColorStrToBrush(mainBg); ;
-			main_ui_elems.WindowBorder.CornerRadius = RectToCornerRadius(MainConfiguration.Design.BorderCorner);
-			main_ui_elems.WindowBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-			main_ui_elems.WindowBorder.VerticalAlignment = VerticalAlignment.Stretch;
-			var stops = (main_ui_elems.WindowBorder.BorderBrush as LinearGradientBrush)!.GradientStops;
-			stops.First().Color = ConvertToColor(MainConfiguration.Design.BorderGradiant1);
-			stops.Last().Color = ConvertToColor(MainConfiguration.Design.BorderGradiant2);
-			main_ui_elems.MainAreaBorder.Margin = RectToThick(MainConfiguration.Design.MainMargin);
-			//may want to look into a way to use _ImportSettings here but stop it from doing any tab loads etc just the design data.
-		} //Right now almost all settings are applied in real time as changed.  This function is called at startup (for initial settings) and in theory might be called after something major like a theme change.
+		//public void SetPrimaryDesignProperties() {
+		//	var mainBg = MainConfiguration.Design.PrimaryBackgroundNonTranslucent;
+		//	if (MainConfiguration.Design.UseTranslucentWindow == true) {
+		//		if (App.Current.RequestedTheme == ApplicationTheme.Dark)
+		//			mainBg = MainConfiguration.Design.PrimaryBackgroundDarkTheme;
+		//		else
+		//			mainBg = MainConfiguration.Design.PrimaryBackgroundLightTheme;
+		//	}
+		//}
 
 		private static USConfig DefaultConfiguration => USConfig.DefaultConfiguration;
 		public bool LoadPreviousSessionData([NotNullWhen(true)] out USConfig? MainConfig)
@@ -117,17 +96,11 @@ namespace UnitedSets.Services {
 
 			var cfg = DefaultConfiguration.CloneWithoutTabs();
             MainConfig = cfg;
-			cfg.PropertyChanged += Cfg_PropertyChanged;
 			if (cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
 				Application.Current.RequestedTheme = cfg.Design.Theme == ElementTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
 		}
 
 		public USConfig MainConfiguration => UnitedSetsApp.Current.Configuration.MainConfiguration;
-		private void Cfg_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-			if (e.PropertyName == nameof(USConfig.TitlePrefix))
-				main_ui_elems?.TitleUpdate();
-
-		}
 
 		private void LogCfgError(String? msg, Exception? ex = null, [System.Runtime.CompilerServices.CallerFilePath] string source_file_path = "", [System.Runtime.CompilerServices.CallerMemberName] string member_name = "") {
 			string GetCallerIdent([System.Runtime.CompilerServices.CallerMemberName] string member_name = "", [System.Runtime.CompilerServices.CallerFilePath] string source_file_path = "") {
@@ -278,26 +251,6 @@ namespace UnitedSets.Services {
 			data.Design = design;
 			data.Tabs = tabs;
 			starts = new();
-			OnNotNull.Get(data.TitlePrefix)?.Action((_) => main_ui_elems.TitleUpdate());
-			if (data.TaskbarIco is not null)
-			{
-                var x = Path.IsPathRooted(data.TaskbarIco) ? MainConfiguration.TaskbarIco : Path.Combine(USConfig.RootLocation, data.TaskbarIco);
-                OnNotNull.Get(x)?
-                    .IfFailException((msg) => new FileNotFoundException(msg + ": " + data.TaskbarIco))?
-                    .MustBeTrue(File.Exists)?.Convert(Icon.FromFile)?.Action((res) => UnitedSetsApp.Current.MainWindow.SetTaskBarIcon(res.result));
-            }
-
-			if (data.Design != null) {
-				var desdata = data.Design;
-				var stops = (main_ui_elems.WindowBorder.BorderBrush as LinearGradientBrush)!.GradientStops;
-				OnNotNull.Get(desdata.BorderGradiant1)?.Convert(ConvertToColor)?.Action(res => stops.First().Color = res.result);
-				OnNotNull.Get(desdata.BorderGradiant1)?.Convert(ConvertToColor)?.Action(res => stops.Last().Color = res.result);
-				OnNotNull.Get(desdata.BorderThickness)?.Convert(RectToThick)?.Action(res => main_ui_elems.WindowBorder.BorderThickness = res.result);
-				OnNotNull.Get(desdata.MainMargin)?.Convert(RectToThick)?.Action(res => main_ui_elems.MainAreaBorder.Margin = res.result);
-				OnNotNull.Get(desdata.WindowSize)?.MustBeTrue((val) => val.Width > 0 && val.Height > 0)?.Action(val => UnitedSetsApp.Current.MainWindow.SetWindowSize(val.Width, val.Height));
-
-				//DoOrThrow(desdata.UseTranslucentWindow, (val) => (val ? TranslucentEnable : (Action)TranslucentDisable).Invoke());
-			}
 		}
 		#region Import Functions
 

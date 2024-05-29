@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.IO;
 using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
+using Windows.UI.WindowManagement;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -30,33 +31,18 @@ partial class MainWindow
 
         InitializeComponent();
 
-        ui_configs = new() { TitleUpdate = UpdateTitle, WindowBorder = WindowBorderOnTransparent, MainAreaBorder = MainAreaBorder }; //, swapChain = this.swapChainPanel
-        UnitedSetsApp.Current.Configuration.PersistantService.init(ui_configs);
-
         SetupBasicWindow();
         
-        void UpdateBackdrop(USBackdrop x)
-        {
-            SystemBackdrop = x.GetSystemBackdrop();
-        }
-        Settings.BackdropMode.PropertyChanged += (_, _) => UpdateBackdrop(Settings.BackdropMode.Value);
-        UpdateBackdrop(Settings.BackdropMode.Value);
-
-        void UpdateMinSize(bool bypass)
-        {
-            MinWidth = bypass ? Constants.BypassMinWidth : Constants.MinWidth;
-            MinHeight = bypass ? Constants.BypassMinHeight : Constants.MinHeight;
-        }
-        Settings.BypassMinimumSize.PropertyChanged += (_, _) => UpdateMinSize(Settings.BypassMinimumSize.Value);
-        UpdateMinSize(Settings.BypassMinimumSize.Value);
-
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
         SetupNative(out WindowMessageMonitor);
 
+        SetupCustomization();
+
         SetupEvent();
 
         SetupUIThreadLoopTimer(out timer);
+        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
 
         // SetupTaskbarMode();
 
@@ -84,15 +70,6 @@ partial class MainWindow
         }
     }
 
-    public class CfgElements
-    {
-        public Border? WindowBorder;
-        public Border? MainAreaBorder;
-        public SwapChainPanel? swapChain;
-        public required Action TitleUpdate { init; get; }
-    }
-
-    private CfgElements ui_configs;
 
     private void UpdateTitle()
     {
@@ -116,7 +93,6 @@ partial class MainWindow
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
         HandleCLICmds();
-        UnitedSetsApp.Current.Configuration.PersistantService.FinalizeLoadAsync();
     }
     async void HandleCLICmds()
     {

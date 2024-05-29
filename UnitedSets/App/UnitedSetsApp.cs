@@ -46,10 +46,6 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         RegisterUnitedSetsWindow(Window.FromWindowHandle((nint)window.AppWindow.Id.Value));
     }
     
-    public TabBase? FindTabByWindow(Window window)
-    {
-        return Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));
-    }
     [DoesNotReturn]
     public async Task Suicide()
     {
@@ -58,4 +54,5 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         Debug.WriteLine("Cleanish exit");
         Environment.Exit(0);
     }
+
 }

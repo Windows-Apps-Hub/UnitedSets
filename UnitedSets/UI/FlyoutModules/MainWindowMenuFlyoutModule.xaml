@@ -32,9 +32,6 @@
                 >
 					<SymbolIcon Symbol="Setting" />
 				</Button>
-                <Button ToolTipService.ToolTip="Modify Panel Layout" Command="{x:Bind MainWindow.AddSplitableTabCommand}" Style="{ThemeResource ToolbarButton}">
-                    <SymbolIcon Symbol="SelectAll" />
-                </Button>
                 <Button ToolTipService.ToolTip="Export Window Data" Command="{x:Bind MainWindow.ExportDataCommand}" Style="{ThemeResource ToolbarButton}">
 					<SymbolIcon Symbol="Save" />
 				</Button>

@@ -12,6 +12,9 @@ using Microsoft.UI.Composition;
 using Get.XAMLTools.UI;
 using UnitedSets.Classes;
 using EnumsNET;
+using Windows.UI;
+using Windows.Foundation;
+using UnitedSets.Helpers;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -78,7 +81,79 @@ public partial class UnitedSetsAppSettings
                 Description = "Override the windows theme",
                 Icon = SymbolEx.Light,
                 RequiresRestart = true
-            }
+            },
+            TaskbarIcon = new(
+                () => Configuration.TaskbarIco ?? "", x => Configuration.TaskbarIco = x
+            )
+            {
+                Title = "Taskbar Icon",
+                Description = "Override the taskbar icon",
+                Icon = SymbolEx.Picture
+            },
+            BorderGraident1 = new(
+                () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant1 ?? ""),
+                x => Configuration.Design!.BorderGradiant1 = PreservedHelpers.ColorToStr(x)
+            )
+            {
+                Title = "[Transparent Window] Border Gradient (1)",
+                Description = "Sets the border gradient if the window is transparent",
+                Icon = SymbolEx.DeviceMonitorNoPic
+            },
+            BorderGraident2 = new(
+                () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant2 ?? ""),
+                x => Configuration.Design!.BorderGradiant2 = PreservedHelpers.ColorToStr(x)
+            )
+            {
+                Title = "[Transparent Window] Border Gradient (2)",
+                Description = "Sets the border gradient if the window is transparent",
+                Icon = SymbolEx.DeviceMonitorNoPic
+            },
+            Background = new(
+                () => PreservedHelpers.ConvertToColor(Configuration.Design!.PrimaryBackgroundNonTranslucent ?? ""),
+                x => Configuration.Design!.PrimaryBackgroundNonTranslucent = PreservedHelpers.ColorToStr(x)
+            )
+            {
+                Title = "Background (Non Transculent)",
+                Description = "Sets the background color (transparent/semi transparent will use backdrop)",
+                Icon = SymbolEx.MailFill
+            },
+            CornerRadius = new(
+                () => PreservedHelpers.RectToCornerRadius(Configuration.Design!.BorderCorner),
+                x => Configuration.Design!.BorderCorner = PreservedHelpers.RectToCornerRadius(x)
+            )
+            {
+                Title = "Corner Radius",
+                Description = "Sets the corner radius (only applies in transparent window)",
+                Icon = SymbolEx.Checkbox
+            },
+            BorderThickness = new(
+                () => PreservedHelpers.RectToThick(Configuration.Design!.BorderThickness),
+                x => Configuration.Design!.BorderThickness = PreservedHelpers.ThickToRect(x)
+            )
+            {
+                Title = "Thickness",
+                Description = "Sets the thickness",
+                Icon = SymbolEx.ChromeMaximize
+            },
+            MainMargin = new(
+                () => PreservedHelpers.RectToThick(Configuration.Design!.BorderThickness),
+                x => Configuration.Design!.BorderThickness = PreservedHelpers.ThickToRect(x)
+            )
+            {
+                Title = "Main Margin",
+                Description = "Sets the main margin",
+                Icon = SymbolEx.ChromeMaximize
+            },
+            InitialWindowSize = new(
+                () => Configuration.Design!.WindowSize,
+                x => Configuration.Design!.WindowSize = x
+            )
+            {
+                Title = "Initial Window Size",
+                Description = "Sets the main margin",
+                Icon = SymbolEx.WindowsInsider,
+                RequiresRestart = true
+            },
         ];
         foreach (var setting in AllSettings)
             setting.PropertyChanged += delegate
@@ -96,6 +171,14 @@ public partial class UnitedSetsAppSettings
     public OnOffSetting BypassMinimumSize { get; }
     //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
+    public TempLinkSetting<string> TaskbarIcon { get; }
+    public TempLinkSetting<Color> BorderGraident1 { get; }
+    public TempLinkSetting<Color> BorderGraident2 { get; }
+    public TempLinkSetting<Color> Background { get; }
+    public TempLinkSetting<CornerRadius> CornerRadius { get; }
+    public TempLinkSetting<Thickness> BorderThickness { get; }
+    public TempLinkSetting<Thickness> MainMargin { get; }
+    public TempLinkSetting<System.Drawing.Size?> InitialWindowSize { get; }
     public SelectSetting<ElementTheme> Theme { get; }
 
     public SelectSetting<USBackdrop> BackdropMode { get; }

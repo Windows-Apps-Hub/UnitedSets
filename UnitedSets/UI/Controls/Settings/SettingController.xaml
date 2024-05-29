@@ -29,5 +29,8 @@
                 Style="{ThemeResource GlowComboBox}"
             />
         </DataTemplate>
+        <DataTemplate x:Name="TempLinkSettingTemplate" x:DataType="settings:ITempLinkSetting">
+            <TextBlock Text="{x:Bind Display}"/>
+        </DataTemplate>
     </ContentControl.Resources>
 </ContentControl>

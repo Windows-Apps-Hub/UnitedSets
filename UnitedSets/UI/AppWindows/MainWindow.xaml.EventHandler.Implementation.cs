@@ -64,13 +64,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     {
         var newTab = new CellTab(Constants.IsAltTabVisible);
         UnitedSetsApp.Current.Tabs.Add(newTab);
-        TabView.SelectedItem = newTab;
+        UnitedSetsApp.Current.SelectedTab = newTab;
     }
-
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     public async Task ExportData()
     {
-        CloseMainFlyout();
         var res = await ExportImportInputPage.ShowExportImport(true, this);
         if (res == null)
             return;
@@ -79,14 +77,11 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     public async Task ImportData()
     {
-        CloseMainFlyout();
         var res = await ExportImportInputPage.ShowExportImport(false, this);
         if (res == null)
             return;
         UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(res.FullFilename);
     }
-    private void CloseMainFlyout()
-    { }    //=> MenuFlyout?.Hide();
 
     private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
     {

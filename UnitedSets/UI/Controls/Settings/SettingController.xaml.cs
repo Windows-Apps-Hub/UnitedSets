@@ -22,6 +22,7 @@ public partial class SettingController
             OnOffSetting => OnOffSettingTemplate,
             TextSetting => TextSettingTemplate,
             ISelectSetting => SelectSettingTemplate,
+            ITempLinkSetting => TempLinkSettingTemplate,
             _ => null
         };
     }

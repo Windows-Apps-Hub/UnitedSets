@@ -12,6 +12,7 @@ using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using UnitedSets.Windows;
 
 namespace UnitedSets.UI.FlyoutModules;
 
@@ -201,7 +202,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
             );
 			tabValue = WindowHostTab.Create(window);
 		} else {
-			tabValue = UnitedSetsApp.Current.FindTabByWindow(window);
+			tabValue = UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));
 			if (tabValue != null)
                 UnitedSetsApp.Current.Tabs.Remove(tabValue);
             foreach (var tabg in UnitedSetsApp.Current.HiddenTabs.ToArray())
@@ -224,4 +225,5 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     // UI Function
     Visibility InverseBoolVisibility(bool boolean)
         => boolean ? Visibility.Collapsed : Visibility.Visible;
+
 }

@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using WindowHoster;
 using Thread = System.Threading.Thread;
 using UnitedSets.Cells;
+using UnitedSets.PostProcessing;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -204,7 +205,7 @@ public sealed partial class MainWindow
                     SelectedCell.HoverEffect = false;
                     DispatcherQueue.TryEnqueue(() =>
                     {
-                        var registeredWindow = RegisteredWindow.Register(window);
+                        var registeredWindow = PostProcessingRegisteredWindow.Register(window);
                         if (registeredWindow is not null)
                             DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
                     });

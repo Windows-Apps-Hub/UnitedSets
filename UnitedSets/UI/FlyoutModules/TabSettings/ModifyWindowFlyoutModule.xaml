@@ -102,6 +102,7 @@
                 <Button Click="CloseWindow">Close Window</Button>
                 <Button Click="DetachWindow">Detach Window</Button>
             </StackPanel>
+            <Button HorizontalAlignment="Center" x:Name="ApplyToFuture" Click="ApplyToFutureApp">Apply to all future (code behind)</Button>
             <Button HorizontalAlignment="Center" Click="OpenWindowLocation">Open Window file location</Button>
         </StackPanel>
     </Border>

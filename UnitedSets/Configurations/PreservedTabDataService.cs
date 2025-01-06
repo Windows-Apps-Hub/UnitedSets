@@ -60,6 +60,7 @@ public class PreservedTabDataService
     }
     public Task FinalizeLoadAsync()
     {
+        USConfig.LoadDefaultConfig();
         return _ImportSettings(MainConfiguration);
     }
     public void LoadInitialSettingsAndTheme(out USConfig MainConfig)
@@ -138,7 +139,7 @@ public class PreservedTabDataService
         {
             if (isCell == false)
             {
-                if (wind == null && start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX))
+                if (wind == null && start_arg.startInfo.FileName.StartsWith(Utils.OUR_WINDOWS_STORE_APP_EXEC_PREFIX))
                 {//so two ways we could do this, Main WindowHandle isnt set butthe process sdoes own some windows.  Our options are to get the windows for each thread and hopefully guess the right one in the proc, or we can go through all the ApplicationFrameHost.exe get the coreWIndow from them and find the one matching our pid
                     var hostProcs = Process.GetProcessesByName("ApplicationFrameHost");
                     foreach (var hostProc in hostProcs)
@@ -147,7 +148,7 @@ public class PreservedTabDataService
                             break;
                         try
                         {
-                            var testWind = Util.GetCoreWindowFromAppHostWindow(WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
+                            var testWind = Utils.GetCoreWindowFromAppHostWindow(WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
                             if (testWind.OwnerProcess.Id == start_arg.running.Id)
                             {
                                 wind = testWind;
@@ -245,9 +246,9 @@ public class PreservedTabDataService
         {
             if (String.IsNullOrWhiteSpace(start_arg.startInfo?.FileName))
                 continue;
-            if (start_arg.startInfo.FileName.StartsWith(Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX))
+            if (start_arg.startInfo.FileName.StartsWith(Utils.OUR_WINDOWS_STORE_APP_EXEC_PREFIX))
             {
-                var pkgId = start_arg.startInfo.FileName[Util.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length..];
+                var pkgId = start_arg.startInfo.FileName[Utils.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length..];
                 var manager = new WindowsOG.Management.Deployment.PackageManager();
                 var pkg = manager.FindPackageForUser(string.Empty, pkgId);
                 if (pkg is null)
@@ -502,7 +503,7 @@ public class PreservedTabDataService
         ret.CustomTitle = customTitle;
         ret.process = new();
         var proc = ret.process;
-        var info = Util.GetOwnerProcessInfo(hwndHost.Window);
+        var info = Utils.GetOwnerProcessInfo(hwndHost.Window);
         proc.ExecutableArgString = info.args;
         proc.Executable = info.cmd;
         proc.WorkingDirectory = "";

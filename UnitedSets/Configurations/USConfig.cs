@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.UI.Xaml;
 using UnitedSets.Mvvm.Services;
@@ -31,12 +32,22 @@ public partial class USConfig : SavedInstanceData
         WindowsOG.ApplicationModel.Package.Current.InstalledLocation.Path;
 #endif
 
-    public static USConfig DefaultConfiguration { get; private set; }
+    static USConfig? _DefaultConfiguration;
+    public static USConfig DefaultConfiguration
+    {
+        get
+        {
+            if (_DefaultConfiguration is null)
+                LoadDefaultConfig();
+            return _DefaultConfiguration;
+        }
+    }
+    [MemberNotNull(nameof(_DefaultConfiguration))]
     internal static void LoadDefaultConfig()
     {
         if (!Directory.Exists(BaseProfileFolder))
             Directory.CreateDirectory(BaseProfileFolder);
-        DefaultConfiguration = new()
+        _DefaultConfiguration = new()
         {
             TitlePrefix = "",
             TaskbarIco = "Assets/UnitedSets.ico",

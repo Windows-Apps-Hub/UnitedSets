@@ -17,6 +17,7 @@ using WinWrapper.Windowing;
 
 using WindowHoster;
 using UnitedSets.Cells;
+using UnitedSets.PostProcessing;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -125,7 +126,8 @@ public sealed partial class MainWindow
             _ = window.Owner.SendMessage(
             Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
         }
-        var r = RegisteredWindow.Register(window);
+        // TODO: actually use old tab style
+        var r = PostProcessingRegisteredWindow.Register(window);
         if (r != null)
             cell.RegisterWindow(r);
     }

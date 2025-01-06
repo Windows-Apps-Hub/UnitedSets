@@ -90,7 +90,7 @@ public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public SavedTabData[]? Tabs { get; set; }
-    public SavedDefaultWindowStyleData[]? DefaultWindowStylesData { get; set; } = [];
+    public Dictionary<string, SavedCellData> DefaultWindowStylesData { get; set; } = [];
     public SavedTabData? DefaultTabData { get; set; }
     public SavedCellData? DefaultCellData { get; set; }
 }
@@ -110,11 +110,6 @@ public class SavedTabData : CloneableBase
         public SavedSplitData[]? Children { get; set; }//can only have one of Child cell data or Children
         public SavedCellData? Child { get; set; }//can only have one of Child cell data or Children
     }
-}
-public class SavedDefaultWindowStyleData : CloneableBase
-{
-    public string Executable { get; set; }
-    public SavedCellData Template { get; set; }
 }
 public class SavedCellData : CloneableBase
 {

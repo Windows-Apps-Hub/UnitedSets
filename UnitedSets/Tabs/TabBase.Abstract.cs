@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -20,6 +20,10 @@ partial class TabBase
     public abstract bool IsDisposed { get; }
     
     public abstract void DetachAndDispose(bool JumpToCursor = false);
+    ///// <summary>
+    ///// Release the ownership of the window without detaching or disposing it.
+    ///// </summary>
+    //public abstract void ReleaseOwnership(Window window);
     public abstract Task TryCloseAsync();
     
     [Event(typeof(PointerEventHandler), Name = "TabClickEv")]

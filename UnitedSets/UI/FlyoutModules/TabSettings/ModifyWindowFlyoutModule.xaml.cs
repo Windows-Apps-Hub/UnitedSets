@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System.IO;
 using UnitedSets.Helpers;
 using WindowEx = WinWrapper.Windowing.Window;
+using System.Threading.Tasks;
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class ModifyWindowFlyoutModule
@@ -27,7 +28,14 @@ public sealed partial class ModifyWindowFlyoutModule
         );
         if (string.IsNullOrEmpty(CompatablityString)) CompatablityString = "None";
         CompatabilityModeTB.Text = CompatablityString;
-        
+        var fn = Path.GetFileName(Utils.GetOwnerProcessModuleFilename(window.Window));
+        if (fn is not null)
+            ApplyToFuture.Content = $"Apply to all future {fn}";
+        else
+        {
+            ApplyToFuture.Content = $"Cannot find file name";
+            ApplyToFuture.IsEnabled = false;
+        }
         BorderlessWindowSettings.Visibility = window.CompatablityMode.NoMoving ? Visibility.Collapsed : Visibility.Visible;
     }
     readonly RegisteredWindow RegisteredWindow;
@@ -73,7 +81,7 @@ public sealed partial class ModifyWindowFlyoutModule
     [Event(typeof(RoutedEventHandler))]
     void OpenWindowLocation()
     {
-        string? FileName = Util.GetOwnerProcessModuleFilename(RegisteredWindow.Window);
+        string? FileName = Utils.GetOwnerProcessModuleFilename(RegisteredWindow.Window);
         if (FileName is null) return;
     
         Process.Start("explorer.exe", $"/select,\"{FileName}\"");
@@ -85,7 +93,7 @@ public sealed partial class ModifyWindowFlyoutModule
         await RegisteredWindow.Window.TryCloseAsync();
     }
     [Event(typeof(RoutedEventHandler))]
-    async void DetachWindow()
+    void DetachWindow()
     {
         RegisteredWindow.Detach();
     }
@@ -105,5 +113,27 @@ public sealed partial class ModifyWindowFlyoutModule
     void CropBottomBindBack(double x)
     {
         RegisteredWindow.Properties.CropRegion = RegisteredWindow.Properties.CropRegion with { Bottom = (int)x };
+    }
+
+    private async void ApplyToFutureApp(object sender, RoutedEventArgs e)
+    {
+        string? FileName = Utils.GetOwnerProcessModuleFilename(RegisteredWindow.Window);
+        if (FileName is not null)
+        {
+            UnitedSetsApp.Current.Configuration.MainConfiguration.DefaultWindowStylesData[FileName] = new()
+            {
+                Borderless = RegisteredWindow.Properties.BorderlessWindow,
+                CropEnabled = RegisteredWindow.Properties.ActivateCrop,
+                CropRect = RegisteredWindow.Properties.CropRegion,
+            };
+            if (UnitedSetsApp.Current.Configuration.MainConfiguration.Autosave ?? true)
+            {
+                UnitedSetsApp.Current.Configuration.SaveCurSettingsAsDefault();
+                ApplyToFuture.Content = $"Success: Applied to all future {Path.GetFileName(FileName)}";
+                await Task.Delay(1000);
+                ApplyToFuture.Content = $"Apply to all future {Path.GetFileName(FileName)}";
+
+            }
+        }
     }
 }

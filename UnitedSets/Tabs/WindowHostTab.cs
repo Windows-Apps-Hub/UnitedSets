@@ -7,6 +7,7 @@ using WinWrapper;
 using WindowHoster;
 using System.Linq;
 using System;
+using UnitedSets.PostProcessing;
 
 namespace UnitedSets.Tabs;
 
@@ -22,7 +23,6 @@ public partial class WindowHostTab : TabBase
 		this.Window = WindowEx;
 		RegisteredWindow = Window;
 		//RegisteredWindow.SetVisible(false);
-		RegisteredWindow.Properties.BorderlessWindow = Keyboard.IsAltDown;
 
 
 		RegisteredWindow.BecomesInvalid += DoRemoveTab;
@@ -45,7 +45,7 @@ public partial class WindowHostTab : TabBase
             return null;
         if (UnitedSetsApp.Current.Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
             return null;
-        var registeredWindow = RegisteredWindow.Register(newWindow);
+        var registeredWindow = PostProcessingRegisteredWindow.Register(newWindow);
         if (registeredWindow is null)
             return null;
         return new WindowHostTab(registeredWindow, UnitedSetsApp.Current.DispatcherQueue, newWindow, Constants.IsAltTabVisible);

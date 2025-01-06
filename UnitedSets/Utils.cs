@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace UnitedSets;
 
-static class Util
+static class Utils
 {
     public static string? GetOwnerProcessModuleFilename(Window window) => GetOwnerWindow(window).OwnerProcess.GetDotNetProcess.MainModule?.FileName;
     /// <summary>

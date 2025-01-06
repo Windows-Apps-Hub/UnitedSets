@@ -18,8 +18,6 @@ public partial class RegisteredWindowProperties : INotifyPropertyChanged
     {
         this.self = self;
     }
-    //[AutoNotifyProperty(OnChanged = nameof(SetForceInvalidateCropToTrue))]
-    //int _CropTop = 0, _CropBottom = 0, _CropLeft = 0, _CropRight = 0;
     [AutoNotifyProperty(OnChanged = nameof(CropRegionChanged))]
     CropRegion _CropRegion;
     void CropRegionChanged()

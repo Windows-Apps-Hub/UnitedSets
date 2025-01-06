@@ -1,11 +1,11 @@
-using Get.EasyCSharp;
 using Get.XAMLTools;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using System.ComponentModel;
 using Windows.Foundation;
 using Window = WinWrapper.Windowing.Window;
 namespace WindowHoster;
+/// <summary>
+/// The implementation of a WinUI <see cref="RegisteredWindow"/> host.
+/// </summary>
 [DependencyProperty<RegisteredWindow>("AssociatedWindow", UseNullableReferenceType = true, GenerateLocalOnPropertyChangedMethod = true)]
 public partial class WindowHost : FrameworkElement
 {
@@ -53,10 +53,7 @@ public partial class WindowHost : FrameworkElement
     }
     RegisteredWindowController? Controller
     {
-        get
-        {
-            return _Controller;
-        }
+        get => _Controller;
 
         set
         {

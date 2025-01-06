@@ -1,12 +1,10 @@
-﻿using Get.EasyCSharp;
+using Get.EasyCSharp;
 using WinWrapper.Windowing;
 using Windows.Win32;
-using Windows.Win32.UI.Accessibility;
 using Windows.Win32.Foundation;
 using System.Drawing;
 using Microsoft.UI.Dispatching;
 using System.Threading.Tasks;
-using System;
 using System.Threading;
 using WinWrapper.Input;
 namespace WindowHoster;

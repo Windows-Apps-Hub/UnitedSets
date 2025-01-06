@@ -11,9 +11,16 @@ namespace WindowHoster;
 
 public partial class RegisteredWindow : INotifyPropertyChanged
 {
+    /// <summary>
+    /// Sets the global compatability mode check for No Moving mode
+    /// </summary>
     public static Func<Window, bool>
-        NoMovingModeChecker = (window) => window.Class.Name is "RAIL_WINDOW";
-    public static Func<Window, bool> BlacklistChecker = (window)
+        NoMovingModeChecker
+    { get; set; } = (window) => window.Class.Name is "RAIL_WINDOW";
+    /// <summary>
+    /// Sets the global blacklist checker
+    /// </summary>
+    public static Func<Window, bool> BlacklistChecker { get; set; } = (window)
         => window.Class.Name is
             "Shell_TrayWnd" // Taskbar
             or "Progman" or "WorkerW" // Desktop
@@ -32,29 +39,9 @@ public partial class RegisteredWindow : INotifyPropertyChanged
 
         InitalStylingState = WindowStylingState.GetCurrentState(WindowToHost);
 
-        //this.XAMLWindow = XAMLWindow;
-
-        //this.UIDispatcher = XAMLWindow.DispatcherQueue;//caching incase our window dies
-
-
-        //var WinUIHandle = WinRT.Interop.WindowNative.GetWindowHandle(XAMLWindow);
-        //_ParentWindow = WindowEx.FromWindowHandle(WinUIHandle);
-        //WinUIAppWindow = AppWindow.GetFromWindowId(
-        //    Microsoft.UI.Win32Interop.GetWindowIdFromWindow(
-        //        WinUIHandle
-        //    )
-        //);
-
         Window = WindowToHost;
 
         CompatablityMode = CompatablityMode with { NoMoving = NoMovingModeChecker(WindowToHost) };
-
-
-        //WinUIAppWindow.Changed += WinUIAppWindowChanged;
-        //SizeChanged += WinUIAppWindowChanged;
-
-        //VisiblePropertyChangedToken = RegisterPropertyChangedCallback(VisibilityProperty, OnPropChanged);
-        //AddHwndHost(this);
 
         registeredWindowClosedEvent = WinEvents.Register(
             Window.Handle,
@@ -93,23 +80,6 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     }
     internal RegisteredWindowController? CurrentController;
     DateTime TimeWhenGettingController = default;
-    public RegisteredWindowController? GetController(Window parentWindow, DispatcherQueue dispatcherQueue)
-    {
-        if (CurrentController is not null)
-            throw new InvalidOperationException("You already have a controller. Please unregister that one to get a new controller");
-        CurrentController = new(parentWindow, this, dispatcherQueue);
-        TimeWhenGettingController = DateTime.UtcNow;
-        return CurrentController;
-    }
-    public static RegisteredWindow? Register(Window window, bool shouldBeHidden = false)
-    {
-        if (BlacklistChecker(window)) return null;
-        return new(window, shouldBeHidden);
-    }
-
-    public bool IsValid { get; set; } = true;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
     internal void InternalUpdateParent(Window parent)
     {
         if (parent == default)
@@ -119,13 +89,38 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         window.Owner = parent;
         CompatablityMode = CompatablityMode with { NoOwner = Window.Owner != parent };
     }
+    private void Dispose()
+    {
+        registeredWindowClosedEvent.Unregister();
+        registeredPosSizeChangedEvent.Unregister();
+        IsValid = false;
+    }
+    /// <summary>
+    /// Gets whether <see cref="RegisteredWindow"/> is still valid. <see cref="RegisteredWindow"/> is valid if the window
+    /// is not detached or closed.
+    /// </summary>
+    public bool IsValid { get; internal set; } = true;
+    /// <summary>
+    /// Raises when the window becomes detached. This may cause by <see cref="Detach"/> or <see cref="DetachAsync"/> call.
+    /// It may also caused by the user moving the window out of position or if the host moved too fast.
+    /// </summary>
     public event Action? Detached;
+    /// <summary>
+    /// Raises when the window is closed.
+    /// </summary>
     public event Action? Closed;
+    /// <summary>
+    /// Raises when the window becomes invalid.
+    /// </summary>
     public event Action? BecomesInvalid;
+    /// <inheritdoc cref="DetachAsync"/>
     public async void Detach() => await DetachAsync();
+    /// <summary>
+    /// Release control of the current window and reset all customizations. Do not close the window.
+    /// </summary>
     public async Task DetachAsync()
     {
-        
+
         var WindowToHost = Window;
         WindowToHost.Region = InitalStylingState.Region;
         Properties.ActivateCrop = false;
@@ -146,10 +141,31 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         });
         Detached?.Invoke();
     }
-    private void Dispose()
+
+    /// <summary>
+    /// Creates a new <see cref="RegisteredWindowController"/>. Only one <see cref="RegisteredWindowController"/> may exists at a time per window.
+    /// </summary>
+    /// <param name="parentWindow">The parent window.</param>
+    /// <param name="dispatcherQueue">The dispatcher queue. Used for defining event callback thread.</param>
+    /// <returns>A new registered window controller</returns>
+    /// <exception cref="InvalidOperationException">If <see cref="RegisteredWindowController"/> for the current window already exists and has not been unregistered.</exception>
+    public RegisteredWindowController? GetController(Window parentWindow, DispatcherQueue dispatcherQueue)
     {
-        registeredWindowClosedEvent.Unregister();
-        registeredPosSizeChangedEvent.Unregister();
-        IsValid = false;
+        if (CurrentController is not null)
+            throw new InvalidOperationException("You already have a controller. Please unregister that one to get a new controller");
+        CurrentController = new(parentWindow, this, dispatcherQueue);
+        TimeWhenGettingController = DateTime.UtcNow;
+        return CurrentController;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    /// <summary>
+    /// Registers a new window.
+    /// </summary>
+    /// <returns>A <see cref="RegisteredWindow"/> if the window is not part of the blacklist. Returns <c>null</c> otherwise.</returns>
+    public static RegisteredWindow? Register(Window window, bool shouldBeHidden = false)
+    {
+        if (BlacklistChecker(window)) return null;
+        return new(window, shouldBeHidden);
     }
 }

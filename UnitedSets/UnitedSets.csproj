@@ -137,6 +137,9 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="AutoStyle\" />
+    </ItemGroup>
     <Choose>
         <When Condition="'$(Configuration)'=='DebugUnpackaged'">
             <PropertyGroup>

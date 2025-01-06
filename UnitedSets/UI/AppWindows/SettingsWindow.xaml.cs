@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using UnitedSets.Classes;
+using UnitedSets.Configurations;
 using UnitedSets.Mvvm.Services;
 using WinUIEx;
 

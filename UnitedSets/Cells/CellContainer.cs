@@ -6,7 +6,7 @@ using Get.Data.Collections.Update;
 using Get.Data.Properties;
 using Microsoft.UI.Xaml.Controls;
 using static Get.Data.Properties.AutoTyper;
-namespace UnitedSets.Classes;
+namespace UnitedSets.Cells;
 [AutoProperty]
 public partial class ContainerCell : Cell
 {

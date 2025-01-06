@@ -1,18 +1,14 @@
 using Get.Data.Collections;
-using Get.Data.Helpers;
 using Get.Data.Properties;
 using Get.UI.Data;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Classes;
-using UnitedSets.Controls;
-using UnitedSets.UI.Controls.Cell;
-namespace UnitedSets.UI.Controls.Cell;
+using UnitedSets.Cells;
+namespace UnitedSets.UI.Controls.Cells;
 [AutoProperty]
-public partial class GenericCellVisualizer(UnitedSets.Classes.Cell cell) : TemplateControl<OrientedStack>
+public partial class GenericCellVisualizer(Cell cell) : TemplateControl<OrientedStack>
 {
-    public IProperty<UnitedSets.Classes.Cell> CellProperty { get; } = Auto(cell);
+    public IProperty<Cell> CellProperty { get; } = Auto(cell);
     protected override void Initialize(OrientedStack rootElement)
     {
         rootElement.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -52,7 +48,7 @@ public partial class GenericCellVisualizer(UnitedSets.Classes.Cell cell) : Templ
             visContainer.Child = CreateVisualizer(x);
         });
     }
-    UIElement CreateVisualizer(UnitedSets.Classes.Cell x)
+    UIElement CreateVisualizer(Cell x)
     {
         if (x is EmptyCell ec)
             return new EmptyCellVisualizer(ec);

@@ -2,12 +2,11 @@ using CommunityToolkit.Mvvm.Input;
 using Get.EasyCSharp;
 using System;
 using Microsoft.UI.Xaml;
-using UnitedSets.Classes;
 using Windows.Foundation;
 using WinUIEx.Messaging;
 using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Tabs;
 using Microsoft.UI.Windowing;
+using UnitedSets.Cells;
 
 namespace UnitedSets.UI.AppWindows;
 

@@ -1,4 +1,5 @@
-﻿using Get.XAMLTools.UI;
+using Get.Symbols;
+using Get.XAMLTools.UI;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UnitedSets.Helpers;

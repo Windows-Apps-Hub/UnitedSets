@@ -2,7 +2,6 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using System;
 using System.Linq;
-using UnitedSets.Classes;
 using UnitedSets.Tabs;
 using UnitedSets.Helpers;
 using WinRT.Interop;
@@ -20,6 +19,8 @@ using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
 using Windows.UI.WindowManagement;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using UnitedSets.Configurations;
+using UnitedSets.Cells;
 
 namespace UnitedSets.UI.AppWindows;
 

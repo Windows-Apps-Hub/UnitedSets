@@ -8,7 +8,7 @@ using static Get.Data.Properties.AutoTyper;
 using WindowHoster;
 using Get.Data.Collections;
 
-namespace UnitedSets.Classes;
+namespace UnitedSets.Cells;
 public partial class WindowCell : Cell
 {
     public RegisteredWindow Window { get; }

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.XamlTypeInfo;
-using UnitedSets.Classes;
+using UnitedSets.Configurations;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Settings;
 using WinUIEx;

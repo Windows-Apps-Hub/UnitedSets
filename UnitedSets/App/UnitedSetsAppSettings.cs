@@ -10,11 +10,11 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
 using Get.XAMLTools.UI;
-using UnitedSets.Classes;
 using EnumsNET;
 using Windows.UI;
 using Windows.Foundation;
-using UnitedSets.Helpers;
+using UnitedSets.Configurations;
+using Get.Symbols;
 
 namespace UnitedSets.Mvvm.Services;
 

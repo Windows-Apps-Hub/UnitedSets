@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WindowHoster;
 
-namespace UnitedSets.Classes;
+namespace UnitedSets.Cells;
 public partial class EmptyCell(ContainerCell Parent) : Cell(Parent)
 {
 

@@ -1,4 +1,5 @@
-﻿using Get.XAMLTools.UI;
+using Get.Symbols;
+using Get.XAMLTools.UI;
 using System;
 using System.ComponentModel;
 

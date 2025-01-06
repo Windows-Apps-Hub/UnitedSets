@@ -1,25 +1,13 @@
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System;
-using WindowRelative = WinWrapper.Windowing.WindowRelative;
-using WindowEx = WinWrapper.Windowing.Window;
-using Cursor = WinWrapper.Input.Cursor;
-using UnitedSets.Classes;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Diagnostics;
 using Microsoft.UI.Dispatching;
-using System.Threading;
-using Windows.Foundation;
 using UnitedSets.Tabs;
-using CommunityToolkit.WinUI;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using WinWrapper.Taskbar;
-using WindowHoster;
 using WinWrapper;
-using Thread = System.Threading.Thread;
 
 namespace UnitedSets.UI.AppWindows;
 

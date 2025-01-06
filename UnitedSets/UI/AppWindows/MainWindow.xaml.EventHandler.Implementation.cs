@@ -12,11 +12,11 @@ using WinUIEx.Messaging;
 using UnitedSets.Tabs;
 using UnitedSets.UI.Popups;
 using System.Diagnostics.CodeAnalysis;
-using UnitedSets.Windows;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Windowing;
-using UnitedSets.Classes;
+
 using WindowHoster;
+using UnitedSets.Cells;
 
 namespace UnitedSets.UI.AppWindows;
 

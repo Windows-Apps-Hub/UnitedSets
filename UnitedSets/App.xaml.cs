@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using UnitedSets.Classes;
+using UnitedSets.Configurations;
 using UnitedSets.UI.AppWindows;
 
 namespace UnitedSets;

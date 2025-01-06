@@ -7,7 +7,8 @@ using Window = WinWrapper.Windowing.Window;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;
-using UnitedSets.Classes;
+using UnitedSets.Cells;
+
 
 namespace UnitedSets.Tabs;
 

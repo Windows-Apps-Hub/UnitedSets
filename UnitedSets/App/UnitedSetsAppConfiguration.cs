@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
-using UnitedSets.Classes;
-using UnitedSets.Services;
+using UnitedSets.Configurations;
 
 namespace UnitedSets;
 

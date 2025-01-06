@@ -8,8 +8,9 @@ using Get.EasyCSharp;
 using Windows.Storage.Pickers;
 using WindowsOG = Windows;
 
-namespace UnitedSets.Classes {
-	public partial class ExportImportInputViewModel : INotifyPropertyChanged {
+namespace UnitedSets.Configurations;
+
+public partial class ExportImportInputViewModel : INotifyPropertyChanged {
 		[AutoNotifyProperty]
 		string? _Filename;
 
@@ -85,4 +86,3 @@ namespace UnitedSets.Classes {
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 	}
-}

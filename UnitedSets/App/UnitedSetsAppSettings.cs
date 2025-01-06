@@ -9,10 +9,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
-using Get.XAMLTools.UI;
 using EnumsNET;
 using Windows.UI;
-using Windows.Foundation;
 using UnitedSets.Configurations;
 using Get.Symbols;
 

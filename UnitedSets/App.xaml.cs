@@ -17,7 +17,6 @@ public partial class App : Application
         InitializeComponent();
         // Ensure initialized
         var app = UnitedSetsApp.Current;
-        CommunityToolkit.WinUI.Controls.SizersRns.CommunityToolkit_WinUI_Controls_Sizers_XamlTypeInfo.XamlMetaDataProvider
 #if DEBUG
         RequestAttachDebugger();
 #else

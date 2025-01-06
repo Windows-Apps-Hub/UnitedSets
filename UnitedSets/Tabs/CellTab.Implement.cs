@@ -7,6 +7,7 @@ using Window = WinWrapper.Windowing.Window;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;
+using UnitedSets.Classes;
 
 namespace UnitedSets.Tabs;
 
@@ -27,42 +28,40 @@ partial class CellTab
             var allcells = MainCell.AllSubCells.ToArray();
             await Task.WhenAll(
                 from cell in allcells
-                where cell.ContainsWindow
-                select cell.CurrentCell!.Window.TryCloseAsync()
+                let wc = cell as WindowCell
+                where wc != null
+                select wc.Window.Window.TryCloseAsync()
             );
-            while (MainCell.AllSubCells.Any(x => x.ContainsWindow && x.CurrentCell!.IsValid))
+            while (MainCell.AllSubCells.Any(x => x is WindowCell wc && wc.Window.IsValid))
             {
                 await Task.Delay(500);
             }
             _IsDisposed = true;
         });
-		DoRemoveTab();
+        DoRemoveTab();
     }
 
     public override void DetachAndDispose(bool JumpToCursor = false)
     {
-        //var window = new MainWindow();
-        //window.Tabs.Add(new CellTab(window, MainCell.DeepClone(window)));
         foreach (var cell in MainCell.AllSubCells.ToArray())
         {
-			cell.CurrentCell?.Detach();
+            if (cell is WindowCell wc)
+                wc.Window.Detach();
         }
         _IsDisposed = true;
-        //window.Activate();
     }
 
     // UI
     protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
-    {
-		ShowFlyout(
+        => ShowFlyout(
             new MultiWindowModifyFlyoutModule(
-				(
-					from x in MainCell.AllSubCells
-					where x.ContainsWindow
-					select x.CurrentCell
-				).ToArray()
+                (
+                    from x in MainCell.AllSubCells
+                    let wc = x as WindowCell
+                    where wc is not null
+                    select wc.Window
+                ).ToArray()
             ),
             sender
         );
-    }
 }

@@ -6,7 +6,7 @@
         <RootNamespace>UnitedSets</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <Platforms>x86;x64;arm64</Platforms>
-        <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
         <!--<PublishProfile>win10-$(Platform).pubxml</PublishProfile>-->
         <UseWinUI>true</UseWinUI>
         <EnableMsixTooling>true</EnableMsixTooling>
@@ -26,6 +26,7 @@
         <UseRidGraph>True</UseRidGraph>
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+        <WindowsSdkPackageVersion>10.0.22621.57</WindowsSdkPackageVersion>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="UI\AppWindows\NewWindow.xaml.cs" />
@@ -53,17 +54,20 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.0.240109" />
         <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
         <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
+        <PackageReference Include="Get.Data" Version="1.1.6" />
+        <PackageReference Include="Get.Data.SourceGenerators" Version="1.1.7" />
         <PackageReference Include="Get.EasyCsharp" Version="1.0.0" />
         <!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
         <PackageReference Include="Enums.NET" Version="4.0.1" />
         <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
+        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.7" />
         <PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
         <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
         <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />

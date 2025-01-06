@@ -1,13 +1,9 @@
 using Get.EasyCSharp;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using UnitedSets.UI.FlyoutModules;
-using Windows.Foundation;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.Tabs;
 

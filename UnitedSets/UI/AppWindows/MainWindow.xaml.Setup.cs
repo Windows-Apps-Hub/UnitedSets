@@ -19,14 +19,14 @@ using System.IO;
 using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
 using Windows.UI.WindowManagement;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace UnitedSets.UI.AppWindows;
 
-partial class MainWindow
+partial class MainWindow : NativeHelperWindow
 {
     public MainWindow()
     {
-        Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
         UnitedSetsApp.Current.RegisterUnitedSetsWindow(this);
 
         InitializeComponent();
@@ -35,14 +35,11 @@ partial class MainWindow
         
         ((OverlappedPresenter)AppWindow.Presenter).SetBorderAndTitleBar(true, true);
 
-        SetupNative(out WindowMessageMonitor);
 
         SetupCustomization();
 
         SetupEvent();
-
         SetupUIThreadLoopTimer(out timer);
-        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
 
         // SetupTaskbarMode();
 
@@ -52,6 +49,7 @@ partial class MainWindow
         {
             Title = "UnitedSets";
             ExtendsContentIntoTitleBar = true;
+            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             //SetTitleBar(CustomDragRegion);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,14 +57,8 @@ partial class MainWindow
         {
             AppWindow.Closing += OnWindowClosing;
             Activated += FirstRun;
-            WindowMessageMonitor.WindowMessageReceived += OnWindowMessageReceived;
             TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
-            Cell.ValidDrop += CellWindowDropped;
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void SetupNative(out WindowMessageMonitor WindowMessageMonitor)
-        {
-            WindowMessageMonitor = new WindowMessageMonitor(Win32Window);
+            EmptyCell.ValidDrop += OnDropOverCell;
         }
     }
 
@@ -92,38 +84,7 @@ partial class MainWindow
 
         if (Keyboard.IsShiftDown)
             Win32Window.SetAppId($"UnitedSets {Win32Window.Handle}");
-        HandleCLICmds();
-    }
-    async void HandleCLICmds()
-    {
-        var toAdd = CLI.GetArrVal("add-window-by-exe");
-        var editLastAddedWindow = CLI.GetFlag("edit-last-added");
-        //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
-        var profile = CLI.GetVal("profile");
-        if (!string.IsNullOrWhiteSpace(profile))
-        {
-            if (Path.HasExtension(profile) == false)
-                profile += ".json";
-            if (!File.Exists(profile) && !Path.IsPathRooted(profile))
-                profile = Path.Combine(USConfig.BaseProfileFolder, profile);
-            if (File.Exists(profile))
-            {
-                await Task.Delay(1500);
-                await UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(profile);
-            }
-        }
-
-        foreach (var itm in toAdd)
-        {
-            var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
-            foreach (var proc in procs)
-            {
-                if (!proc.HasExited && WindowHostTab.Create(Window.FromWindowHandle(proc.MainWindowHandle)) is { } tab)
-                    UnitedSetsApp.Current.Tabs.Add(tab);
-            }
-        }
-        if (editLastAddedWindow && UnitedSetsApp.Current.Tabs.Count > 0)
-            UnitedSetsApp.Current.Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+        UnitedSetsApp.Current.HandleCLICmds();
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private partial void SetupUIThreadLoopTimer(out DispatcherQueueTimer timer)

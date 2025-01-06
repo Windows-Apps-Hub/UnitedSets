@@ -5,10 +5,13 @@
     xmlns:local="using:UnitedSets"
     xmlns:settings="using:UnitedSets.UI.FlyoutModules.TabSettings"
     xmlns:gui="using:Get.UI"
-    xmlns:controls="using:UnitedSets.Controls">
+    xmlns:controls="using:UnitedSets.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:communityTookitWinUIControls="CommunityToolkit.WinUI.Controls">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <gui:ControlsResources />
                 <ResourceDictionary>
@@ -29,13 +32,13 @@
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Tabs/GlowTabs.xaml" />
                 <!--<ResourceDictionary Source="ms-appx:///Cube.UI/Styles/WindowChrome.xaml" />-->
                 <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/CubeUI.xaml" />
-				<ResourceDictionary>
-					<!-- Fix annoying right margin isssue -->
-					<x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
-					<controls:NullableBoolConverter x:Key="nullableBoolConverter" />
-					<controls:EnumToStringConverter x:Key="enumToStringConverter" EnumType="ElementTheme"  />
-					
-				</ResourceDictionary>
+                <ResourceDictionary>
+                    <!-- Fix annoying right margin isssue -->
+                    <x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
+                    <controls:NullableBoolConverter x:Key="nullableBoolConverter" />
+                    <controls:EnumToStringConverter x:Key="enumToStringConverter" EnumType="ElementTheme"  />
+
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -18,8 +18,10 @@ using WindowHoster;
 
 namespace UnitedSets.Classes.PreservedDataClasses { //putting in its own namespace as most things wont need to access these classes
 	public class StartingResults {
-		public class StartItem {
-			public Cell? cell;
+		public class StartItem
+        {
+            public ContainerCell? rootContainerCell;
+            public Cell? cell;
 			public TabBase? tab;
 			public List<Action<TabBase>> OnTabCreated=new();
 			/// <summary>

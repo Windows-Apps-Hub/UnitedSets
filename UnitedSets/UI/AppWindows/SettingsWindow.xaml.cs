@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using UnitedSets.Classes;
 using UnitedSets.Mvvm.Services;
 using WinUIEx;
 
@@ -24,8 +26,11 @@ public sealed partial class SettingsWindow : WindowEx
     }
     private MainWindow mainWindow;
     [RelayCommand]
-    public void SaveDefaultSettings()
+    public void SaveDefaultSettings() => SaveCurSettingsAsDefault();
+    public void SaveCurSettingsAsDefault() => UnitedSetsApp.Current.Configuration.PersistantService.ExportSettings(USConfig.DefaultConfigFile, true, true);//don't give user any choice as to what for now so will exclude current tabs
+    public async Task ResetSettingsToDefault()
     {
-        mainWindow.SaveCurSettingsAsDefault();
+        await UnitedSetsApp.Current.Configuration.PersistantService.ResetSettings();
+        SaveCurSettingsAsDefault();
     }
 }

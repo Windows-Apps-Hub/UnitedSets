@@ -11,8 +11,6 @@ using UnitedSets.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using UnitedSets.Windows;
 
 namespace UnitedSets.UI.FlyoutModules;
 
@@ -20,7 +18,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
 {
     // Singleton
     readonly UnitedSetsAppSettings Settings = UnitedSetsApp.Current.Settings;
-    [AutoNotifyProperty]
+    [AutoNotifyProperty(OnChanged = nameof(MainWindowChanged))]
     MainWindow? _MainWindow;
 #pragma warning disable CS0067
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -29,7 +27,14 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         InitializeComponent();
     }
-
+    void MainWindowChanged()
+    {
+        if (MainWindow is { } mw)
+        {
+            SettingsButton.Visibility = !mw.Win32Window.Owner.IsValid ? Visibility.Visible : Visibility.Collapsed;
+            mw.HasOwnerChanged += (_new) => SettingsButton.Visibility = !_new ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
 
     [Event(typeof(RoutedEventHandler))]
     void SetTabsAside()

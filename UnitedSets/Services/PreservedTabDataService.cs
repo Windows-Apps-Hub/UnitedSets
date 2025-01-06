@@ -26,6 +26,7 @@ using UnitedSets.UI.FlyoutModules;
 using UnitedSets.UI.AppWindows;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using Get.Data.Collections.Linq;
 #pragma warning disable CS8625
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -129,7 +130,7 @@ namespace UnitedSets.Services {
 			await _ImportSettings(data);
 		}
 		public async Task ApplyFinalStartData(StartingResults starts, StartingResults.StartItem start_arg) {
-			var isCell = start_arg.cell != null;
+			var isCell = start_arg.cell is not null;
 			start_arg.running?.Refresh();//make sure we have latest
 			var hwnd = start_arg.running?.MainWindowHandle;//may need to make sure not yexited
 			if (hwnd == null)
@@ -161,9 +162,9 @@ namespace UnitedSets.Services {
 						return;
 					}
 				} else {
-					var cTab = new CellTab(start_arg.cell, true);
+					var cTab = new CellTab(start_arg.rootContainerCell, true);
 					start_arg.tab = cTab;
-					var all_kids = start_arg.cell.AllSubCells.ToArray();
+					var all_kids = start_arg.rootContainerCell.AllSubCells.ToArray();
 					foreach (var item in starts.items)
 						if (item.cell != null && item.tab == null && all_kids.Contains(item.cell))
 							item.tab = cTab;
@@ -176,19 +177,25 @@ namespace UnitedSets.Services {
                 UnitedSetsApp.Current.Tabs.Add(start_arg.tab);
                 //await Task.Delay(300);
                 UnitedSetsApp.Current.SelectedTab = start_arg.tab;
-				if (isCell) { //while selected need to do this to fix
-					var cTab = start_arg.tab as CellTab;
-					var subs = cTab._MainCell.SubCells;
-					cTab._MainCell.SubCells = null;
-					await Task.Delay(100);
-					cTab._MainCell.SubCells = subs;
-				}
+				//if (isCell) { //while selected need to do this to fix
+				//	var cTab = start_arg.tab as CellTab;
+				//	var subs = cTab.MainCell.SubCells;
+				//	cTab.MainCell.SubCells = null;
+				//	await Task.Delay(100);
+				//	cTab.MainCell.SubCells = subs;
+				//}
 
 			}
 			if (isCell && wind != null) {
 				var win = wind.Value;
                 start_arg.hwndHost = RegisteredWindow.Register(win, shouldBeHidden: true);
-                start_arg.cell.RegisterWindow(start_arg.hwndHost);
+                if (start_arg.cell is EmptyCell ec)
+                {
+                    ec.RegisterWindow(start_arg.hwndHost);
+                } else
+                {
+                    throw new InvalidCastException("start_arg.cell is not EmptyCell");
+                }
             }
 
 			ApplySavedCellData(start_arg.loadData, start_arg.hwndHost, start_arg.tab);
@@ -263,13 +270,12 @@ namespace UnitedSets.Services {
 			OnNotNull.Get(data.CropRect)?.Action(val => hwndHost.Properties.CropRegion = val);
 		}
 
-		private Classes.Cell? FindFreeCell(StartingResults starts, Classes.Cell cur) {
-			if (cur.IsEmpty)
-				return cur;
-			if (!cur.ContainsSubCells || cur.SubCells.Count() < 1)
-				return null;
-
-			foreach (var sub in cur.SubCells.ToArray()) {
+		private EmptyCell? FindFreeCell(StartingResults starts, Classes.Cell cur) {
+			if (cur is EmptyCell empty)
+				return empty;
+            if (cur is not ContainerCell container)
+                return null;
+			foreach (var sub in container.SubCells.AsEnumerable().ToArray()) {
 				var c = FindFreeCell(starts, sub);
 				if (c != null) return c;
 			}
@@ -278,7 +284,7 @@ namespace UnitedSets.Services {
 		private void ApplySavedTab(StartingResults starts, SavedTabData data) {
 
 			if (UnitedSetsApp.Current.SelectedTab is CellTab cTab) {
-				starts.CurBuildItem.cell = FindFreeCell(starts, cTab._MainCell);
+				starts.CurBuildItem.cell = FindFreeCell(starts, cTab.MainCell);
 				if (starts.CurBuildItem.cell != null)
 					starts.CurBuildItem.tab = cTab;
 			} else
@@ -302,14 +308,14 @@ namespace UnitedSets.Services {
 
 
 		}
-
-
 		private void ApplyNewSplit(StartingResults starts, SavedTabData.SavedSplitData data) {
 
 			if (starts.CurBuildItem.cell == null) {
 				starts.CurBuildItem.NeedNewTab = true;
-				starts.CurBuildItem.cell = new Cell(null, null, default);//ok to create doesnt register anything so safe if we dont use it
-			}
+                //ok to create doesnt register anything so safe if we dont use it
+                starts.CurBuildItem.rootContainerCell = new ContainerCell(null, Orientation.Horizontal);
+                starts.CurBuildItem.cell = new EmptyCell(starts.CurBuildItem.rootContainerCell);
+            }
 
 			if (data.Child != null) {
 				ApplyNewProc(starts, data.Child);
@@ -324,22 +330,27 @@ namespace UnitedSets.Services {
 			if (data.Children.Length > data.Count)
 				data.Count = data.Children.Length;
 			if (data.Direction == SavedTabData.SavedSplitData.SplitDirection.Horizontal)
-				starts.CurBuildItem.cell.SplitHorizontally(data.Count);
+				((EmptyCell)starts.CurBuildItem.cell).Split(data.Count, Orientation.Horizontal);
 			else
-				starts.CurBuildItem.cell.SplitVertically(data.Count);
-			if (data.Children?.Length > 0 == false)
+                ((EmptyCell)starts.CurBuildItem.cell).Split(data.Count, Orientation.Vertical);
+            if (data.Children?.Length > 0 == false)
 				return;
 			starts.CurBuildItem.NeedNewTab ??= false;//not sure this is right
 			var ourCell = starts.CurBuildItem.cell;
 			starts.AddCurBuildItemCreateNext();
 
-			for (var x = 0; x < data.Children.Length; x++) {
-				starts.CurBuildItem.cell = ourCell.SubCells.ElementAt(x);
-				starts.CurBuildItem.NeedNewTab = false;
-				ApplyNewSplit(starts, data.Children[x]);
-			}
-
-
+			if (ourCell is ContainerCell containerCell)
+            {
+                for (var x = 0; x < data.Children.Length; x++)
+                {
+                    starts.CurBuildItem.cell = containerCell.SubCells[x];
+                    starts.CurBuildItem.NeedNewTab = false;
+                    ApplyNewSplit(starts, data.Children[x]);
+                }
+            } else
+            {
+                throw new InvalidCastException("outCell is not ContainerCell");
+            }
 		}
 
 		private void ApplyNewProc(StartingResults starts, SavedCellData data) {
@@ -387,7 +398,7 @@ namespace UnitedSets.Services {
 						exp.CellOnly = ExportCellDataFromHwndHost(hTab.RegisteredWindow, hTab.CustomTitle);
 						allDataCells.Add(exp.CellOnly);
 					} else if (tab is CellTab cTab) {
-						exp.Split = ExportSplit(allDataCells, cTab._MainCell, cTab.CustomTitle);
+						exp.Split = ExportSplit(allDataCells, cTab.MainCell, cTab.CustomTitle);
 					}
 					if (OnlyNonDefault)
 						PropHelper.UnsetDstPropertiesEqualToSrcOrEmptyCollections(DefaultConfiguration.DefaultTabData, exp, true);
@@ -415,16 +426,16 @@ namespace UnitedSets.Services {
 		private SavedTabData.SavedSplitData ExportSplit(List<SavedCellData> allDataCells, Cell cell, string? customTitle) {
 			var ret = new SavedTabData.SavedSplitData();
 			var kids = new List<SavedTabData.SavedSplitData>();
-			if (cell.SubCells?.Length > 0) {
-				ret.Direction = cell.Orientation == Orientation.Horizontal ? SavedTabData.SavedSplitData.SplitDirection.Horizontal : SavedTabData.SavedSplitData.SplitDirection.Vertical;
-				ret.Count = cell.SubCells.Count();
-				foreach (var child in cell.SubCells)
+			if (cell is ContainerCell cc && cc.SubCells.Count > 0) {
+				ret.Direction = cc.Orientation == Orientation.Horizontal ? SavedTabData.SavedSplitData.SplitDirection.Horizontal : SavedTabData.SavedSplitData.SplitDirection.Vertical;
+				ret.Count = cc.SubCells.Count;
+				foreach (var child in cc.SubCells.AsEnumerable())
 					kids.Add(ExportSplit(allDataCells, child, customTitle));
 				ret.Children = kids.ToArray();
-			} else if (cell.ContainsWindow && cell.CurrentCell is { } host) {
-				ret.Child = ExportCellDataFromHwndHost(host, customTitle);
+			} else if (cell is WindowCell wc) {
+				ret.Child = ExportCellDataFromHwndHost(wc.Window, customTitle);
 				allDataCells.Add(ret.Child);
-			} else if (!cell.IsEmpty)
+			} else if (cell is not EmptyCell)
 				throw new Exception("Unknown cell type or maybe just no kids");
 			return ret;
 

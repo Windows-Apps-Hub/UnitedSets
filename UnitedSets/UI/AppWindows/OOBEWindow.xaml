@@ -1,4 +1,4 @@
-﻿<winuiex:WindowEx
+<winuiex:WindowEx
     x:Class="UnitedSets.UI.AppWindows.OOBEWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -142,7 +142,8 @@
                                                     </icons:FluentSymbolIcon.RenderTransform>
                                                 </icons:FluentSymbolIcon>
                                                 <TextBlock Text="Customize Settings" FontSize="32" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
-                                                <ItemsControl Margin="4, 8, 12, 8" ItemsSource="{x:Bind Settings.AllSettings}">
+                                                <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" Height="300">
+                                                    <ItemsControl Margin="4, 8, 12, 8" ItemsSource="{x:Bind Settings.AllSettings}">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate
                                                         x:DataType="settings:Setting">
@@ -165,7 +166,8 @@
                                                             <StackPanel Orientation="Vertical" Spacing="8"/>
                                                         </ItemsPanelTemplate>
                                                     </ItemsControl.ItemsPanel>
-                                                </ItemsControl>
+                                                    </ItemsControl>
+                                                </ScrollViewer>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>

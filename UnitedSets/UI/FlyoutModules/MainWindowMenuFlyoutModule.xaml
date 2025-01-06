@@ -24,11 +24,11 @@
 					</Style>
 				</StackPanel.Resources>
 				<Button
+                    x:Name="SettingsButton"
                     ToolTipService.ToolTip="App Settings"
                     Command="{x:Bind Settings.LaunchSettingsCommand}"
                     CommandParameter="{x:Bind MainWindow}"
                     Style="{ThemeResource ToolbarButton}"
-                    Visibility="{x:Bind InverseBoolVisibility(MainWindow.HasOwner), Mode=OneWay}"
                 >
 					<SymbolIcon Symbol="Setting" />
 				</Button>

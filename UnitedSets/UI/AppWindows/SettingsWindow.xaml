@@ -9,7 +9,6 @@
     xmlns:settings="using:Cube.UI.Controls.Settings"
 	xmlns:USsettings="using:UnitedSets.Settings"
     xmlns:controls="using:UnitedSets.UI.Controls"
-    xmlns:sym="using:Get.XamlTools.UI"
     MinWidth="890"
     Title="United Sets - Settings"
     mc:Ignorable="d">

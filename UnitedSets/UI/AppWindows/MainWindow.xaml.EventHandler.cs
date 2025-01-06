@@ -38,15 +38,15 @@ public sealed partial class MainWindow
     
     [Event(typeof(TypedEventHandler<TabView, TabViewTabDroppedOutsideEventArgs>))]
     private partial void TabDroppedOutside(TabViewTabDroppedOutsideEventArgs args);
-
+    private partial void OnDropOverCell(EmptyCell cell, nint hwnd);
     #endregion
 
     #endregion
 
-    
+
     #region Window
 
-    
+
     [Event(typeof(EventHandler<WindowMessageEventArgs>))]
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e);
 
@@ -54,6 +54,4 @@ public sealed partial class MainWindow
     private partial void OnWindowClosing(AppWindowClosingEventArgs e);
 
     #endregion
-
-    private partial void CellWindowDropped(Cell cell, nint HwndId);
 }

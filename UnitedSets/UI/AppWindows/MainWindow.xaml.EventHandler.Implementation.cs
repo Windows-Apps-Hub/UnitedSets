@@ -7,36 +7,23 @@ using Windows.ApplicationModel.DataTransfer;
 using System;
 using WindowEx = WinWrapper.Windowing.Window;
 using Keyboard = WinWrapper.Input.Keyboard;
-using UnitedSets.Classes;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
-using System.ComponentModel;
-using System.Diagnostics;
 using WinUIEx.Messaging;
-using Microsoft.UI.Dispatching;
-using Windows.Foundation;
 using UnitedSets.Tabs;
-using CommunityToolkit.WinUI;
-using Microsoft.UI.Input;
 using UnitedSets.UI.Popups;
-using UnitedSets.UI.FlyoutModules;
-using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using WindowHoster;
 using UnitedSets.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Windowing;
+using UnitedSets.Classes;
+using WindowHoster;
 
 namespace UnitedSets.UI.AppWindows;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainWindow : INotifyPropertyChanged
+public sealed partial class MainWindow
 {
     AddTabPopup? AddTabPopup;
     private async partial void OnAddTabButtonClick()
@@ -59,14 +46,14 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             }
         }
     }
-    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    [RelayCommand]
     void AddSplitableTab()
     {
         var newTab = new CellTab(Constants.IsAltTabVisible);
         UnitedSetsApp.Current.Tabs.Add(newTab);
         UnitedSetsApp.Current.SelectedTab = newTab;
     }
-    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    [RelayCommand]
     public async Task ExportData()
     {
         var res = await ExportImportInputPage.ShowExportImport(true, this);
@@ -123,6 +110,24 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             if (WindowHostTab.Create(window) is { } tab)
                 UnitedSetsApp.Current.Tabs.Insert(finalIdx, tab);
         }
+    }
+    private partial void OnDropOverCell(EmptyCell cell, nint hwnd)
+    {
+        var window = WindowEx.FromWindowHandle(hwnd);
+        if (window.Owner == Win32Window)
+        {
+            if (UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == hwnd)) is TabBase Tab)
+            {
+                Tab.DetachAndDispose(false);
+            }
+        } else
+        {
+            _ = window.Owner.SendMessage(
+            Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
+        }
+        var r = RegisteredWindow.Register(window);
+        if (r != null)
+            cell.RegisterWindow(r);
     }
 
     private partial void TabDroppedOutside(TabViewTabDroppedOutsideEventArgs args)
@@ -207,24 +212,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));
         }
-    }
-    private partial void CellWindowDropped(Cell cell, nint HwndId)
-    {
-        if (cell == null)
-            throw new Exception("Only cells should be generating this event");
-        var window = WindowEx.FromWindowHandle(HwndId);
-        var ret = window.Owner.SendMessage(
-            Constants.UnitedSetCommunicationChangeWindowOwnership,
-            default,
-            window
-        );
-        var tab =
-            UnitedSetsApp.Current.Tabs.ToArray().OfType<CellTab>()
-            .First(tab => tab._MainCell.AllSubCells.Any(c => c == cell));
-
-        var registeredWindow = RegisteredWindow.Register(window);
-        if (registeredWindow is null) throw new Exception();
-        cell.RegisterWindow(registeredWindow);
     }
     private partial void OnWindowMessageReceived(WindowMessageEventArgs e)
     {

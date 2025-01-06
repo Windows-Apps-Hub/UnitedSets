@@ -1,10 +1,9 @@
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 
 namespace UnitedSets.UI.AppWindows;
 
-public sealed partial class MainWindow : INotifyPropertyChanged
+public sealed partial class MainWindow
 {
 
     // Private APIs

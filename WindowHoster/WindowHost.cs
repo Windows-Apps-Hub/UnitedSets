@@ -1,4 +1,4 @@
-﻿using Get.EasyCSharp;
+using Get.EasyCSharp;
 using Get.XAMLTools;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -21,6 +21,10 @@ public partial class WindowHost : FrameworkElement
     }
     Rect cachedContainerRectangle;
     private void WindowHost_EffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+    {
+        Update();
+    }
+    void Update()
     {
         if (XamlRoot?.Content is not FrameworkElement rootElement) return;
         var margin = rootElement.Margin;

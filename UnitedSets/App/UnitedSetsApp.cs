@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnitedSets.Tabs;
@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using UnitedSets.Services;
 using UnitedSets.Classes;
 using UnitedSets.Mvvm.Services;
+using UnitedSets.Helpers;
+using System.IO;
 
 namespace UnitedSets;
 
@@ -45,7 +47,7 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         DispatcherQueue = window.DispatcherQueue;
         RegisterUnitedSetsWindow(Window.FromWindowHandle((nint)window.AppWindow.Id.Value));
     }
-    
+
     [DoesNotReturn]
     public async Task Suicide()
     {
@@ -55,4 +57,35 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         Environment.Exit(0);
     }
 
+    public async void HandleCLICmds()
+    {
+        var toAdd = CLI.GetArrVal("add-window-by-exe");
+        var editLastAddedWindow = CLI.GetFlag("edit-last-added");
+        //LeftFlyout.NoAutoClose = CLI.GetFlag("edit-no-autoclose");
+        var profile = CLI.GetVal("profile");
+        if (!string.IsNullOrWhiteSpace(profile))
+        {
+            if (Path.HasExtension(profile) == false)
+                profile += ".json";
+            if (!File.Exists(profile) && !Path.IsPathRooted(profile))
+                profile = Path.Combine(USConfig.BaseProfileFolder, profile);
+            if (File.Exists(profile))
+            {
+                await Task.Delay(1500);
+                await UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(profile);
+            }
+        }
+
+        foreach (var itm in toAdd)
+        {
+            var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
+            foreach (var proc in procs)
+            {
+                if (!proc.HasExited && WindowHostTab.Create(Window.FromWindowHandle(proc.MainWindowHandle)) is { } tab)
+                    UnitedSetsApp.Current.Tabs.Add(tab);
+            }
+        }
+        if (editLastAddedWindow && UnitedSetsApp.Current.Tabs.Count > 0)
+            UnitedSetsApp.Current.Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+    }
 }

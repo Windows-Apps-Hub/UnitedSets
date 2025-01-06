@@ -1,19 +1,22 @@
+using Get.Data.Collections;
+using Get.Data.Properties;
 using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Classes;
 namespace UnitedSets.Tabs;
-
-public partial class CellTab : TabBase {
+[AutoProperty]
+public partial class CellTab(ContainerCell Cell, bool IsTabSwitcherVisibile = TabBase.DefaultIsSwitcherVisible) : TabBase(IsTabSwitcherVisibile) {
 
 	public CellTab(bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible)
         : this(
-              new(null, null, Orientation.Horizontal),
+              CreateEmpty(),
               IsTabSwitcherVisibile
         )
     {
     }
-    
-    public CellTab(Cell Cell, bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible) : base(IsTabSwitcherVisibile)
+    static ContainerCell CreateEmpty()
     {
-        _MainCell = Cell;
+        ContainerCell cell = new(null, Orientation.Horizontal);
+        cell.SubCells.Add(new EmptyCell(Parent: cell));
+        return cell;
     }
 }

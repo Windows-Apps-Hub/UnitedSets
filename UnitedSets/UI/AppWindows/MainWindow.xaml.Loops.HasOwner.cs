@@ -1,26 +1,25 @@
-using Get.EasyCSharp;
+using System;
 using System.Runtime.CompilerServices;
-using UnitedSets.Tabs;
+using Microsoft.UI.Xaml;
 
 namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class MainWindow
 {
-    public bool HasOwner => Win32Window.Owner.IsValid;
     bool cacheHasOwner = false;
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    void ThreadLoopDetectAndUpdateHasOwnerChange()
+    void HasOwnerUpdate()
     {
+        var HasOwner = Win32Window.Owner.IsValid;
         var _new = HasOwner;
         if (cacheHasOwner == _new) return;
-
         cacheHasOwner = _new;
-        NotifyPropertyChangedOnUIThread(nameof(HasOwner));
-
+        HasOwnerChanged?.Invoke(_new);
         IsResizable = !_new;
         IsTitleBarVisible = !_new;
         IsMinimizable = !_new;
         IsMaximizable = !_new;
     }
+    public event Action<bool>? HasOwnerChanged;
 }

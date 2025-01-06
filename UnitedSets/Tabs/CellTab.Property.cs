@@ -1,4 +1,5 @@
-﻿using Get.EasyCSharp;
+using Get.Data.Properties;
+using Get.EasyCSharp;
 using UnitedSets.Classes;
 
 namespace UnitedSets.Tabs;
@@ -8,6 +9,5 @@ partial class CellTab
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate, OverrideKeyword = true)]
     bool _IsDisposed;
 
-    [Property(OnChanged = nameof(OnMainCellChanged))]
-    public Cell _MainCell;
+    public IProperty<ContainerCell> MainCellProperty { get; } = Auto(Cell);
 }

@@ -6,20 +6,17 @@ using Windows.Foundation;
 
 namespace UnitedSets.UI.AppWindows;
 
-public sealed partial class MainWindow : INotifyPropertyChanged
+public sealed partial class MainWindow
 {
     private partial void SetupUIThreadLoopTimer(out DispatcherQueueTimer timer);
 
     [Event(typeof(TypedEventHandler<DispatcherQueueTimer, object>))]
-    private void OnUIThreadTimerLoop()
-    {
-        CacheValue();
-    }
+    private void OnUIThreadTimerLoop() => CacheValue();
     private async void OnDifferentThreadLoop()
     {
         UpdateWindowIcon();
 
-        ThreadLoopDetectAndUpdateHasOwnerChange();
+        HasOwnerUpdate();
 
         await RemoveDisposedTab();
 

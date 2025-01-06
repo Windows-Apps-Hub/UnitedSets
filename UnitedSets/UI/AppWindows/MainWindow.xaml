@@ -1,4 +1,4 @@
-<winUIEx:WindowEx
+<aw:NativeHelperWindow
     x:Class="UnitedSets.UI.AppWindows.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,6 +10,7 @@
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
     xmlns:us="using:UnitedSets"
+    xmlns:aw="using:UnitedSets.UI.AppWindows"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:guics="using:Get.UI.Controls"
     mc:Ignorable="d">
@@ -38,7 +39,6 @@
                     </ColorAnimation.EasingFunction>
                     </ColorAnimation>
                 </Storyboard>
-                <templates:TabBaseContentTemplateSelector x:Name="TabDataTemplateSelector"/>
                 <Flyout x:Name="ClosingFlyout" Placement="RightEdgeAlignedTop" ShouldConstrainToRootBounds="False">
                     <StackPanel Spacing="16">
                         <TextBlock>How would you like to close the app?</TextBlock>
@@ -104,7 +104,7 @@
                         MinHeight="42"
                         HorizontalAlignment="Left"
                         SelectionChanged="TabSelectionChanged"
->
+                    >
                         <TabView.Resources>
                             <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
                         </TabView.Resources>
@@ -157,9 +157,8 @@
                 </guics:DragRegion>
             </Border>
             <Border Grid.Row="1" x:Name="MainAreaBorder">
-                <ContentControl
-                    Content="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=OneWay}"
-                    ContentTemplateSelector="{x:Bind TabDataTemplateSelector}"
+                <controls:TabVisualizer
+                    Tab="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=OneWay}"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                 />
@@ -167,4 +166,4 @@
             <controls:HomeBackground x:Name="UnitedSetsHomeBackground"/>
         </Grid>
     </Grid>
-</winUIEx:WindowEx>
+</aw:NativeHelperWindow>

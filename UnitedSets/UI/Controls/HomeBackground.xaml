@@ -1,4 +1,4 @@
-﻿<StackPanel
+<StackPanel
     x:Class="UnitedSets.UI.Controls.HomeBackground"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,44 +8,54 @@
     Canvas.ZIndex="-1"
 >
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <!--<Image x:Name="AppFontIcon"
+        <Image x:Name="AppFontIcon"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Center"
-                Source="Assets\Square150x150Logo.scale-100.png"   
+                Source="ms-appx:///Assets/SmallTile.scale-400.png"   
                 Width="48" 
-                Height="48"/>-->
+                Height="48"/>
         <TextBlock
                 Text="United Sets"
                 VerticalAlignment="Center"
                 
-                FontSize="28"/> <!--Margin="8, 0, 0, 0"-->
+                FontSize="28"/>
+        <!--Margin="8, 0, 0, 0"-->
         <TextBlock
-                Text="- Preview Beta"
+                Text="{StaticResource AppVersion}"
                 VerticalAlignment="Center"
-                Margin="8, 0, 0, 0"
+                Margin="8, 6, 0, 0"
                 Opacity="0.7"
                 FontSize="24"/>
     </StackPanel>
-    <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
-    <TextBlock>
-            • Hold SHIFT while clicking + icon to create Splitable Tab<LineBreak/>
-            • Drag a Tab out to release the Window<LineBreak/>
-            • Hold CTRL while dragging other window into United Sets to add the window<LineBreak/>
-            • Hold SHIFT while opening new United Sets window to separate taskbar icons<LineBreak/>
-            • [Experimental] Hold ALT while adding window to make it borderless<LineBreak/>
-            • [Experimental] Double Click On Tab to open window settings
-    </TextBlock>
-    <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
-    <TextBlock>
-        • UWP applications are not stable yet<LineBreak/>
-        • [Experimental] Save and Close may sometimes fail to add<LineBreak/>
-        windows back to United Sets.<LineBreak/>
-        • [Experimental] Save and Close will NOT work for system<LineBreak/>
-        UWP/Packaged apps such as Calculator/Paint/Notepad/etc.<LineBreak/>
-        (It will still work for user installed ones)<LineBreak/>
-        and will not work for one-process-only app (such as File Explorer)<LineBreak/>
-        such as (Calculator/Paint/Notepad/etc.).<LineBreak/>
-        • [Experimental] Removing title bar makes some app undragable,<LineBreak/>
-        therefore, it is advised not to do that for windows in Splitable Tab.<LineBreak/>
-    </TextBlock>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+        <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
+        <TextBlock>
+        • Drag a Tab out to release the Window
+        <LineBreak/>• Double Click On the Tab for more customization
+        </TextBlock>
+        <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
+        <TextBlock HorizontalAlignment="Center">
+        • May not work well with UWP windows
+        <LineBreak/>• [Experimental] Save and Close may sometimes fail to add
+        <LineBreak/>&#160;&#160;windows back to United Sets.
+        <LineBreak/>• [Experimental] Save and Close will NOT work for system
+        <LineBreak/>&#160;&#160;UWP or Packaged apps (like Calculator/Paint/Notepad/etc)
+        <LineBreak/>&#160;&#160;and one-process-only app (like File Explorer).
+        <LineBreak/>&#160;&#160;(It will still work for user installed ones)
+        <LineBreak/>• [Experimental] Removing title bar makes them undragable
+        <LineBreak/>&#160;&#160;sometimes. Therefore, it is advised not to do that for
+        <LineBreak/>&#160;&#160;windows in the Splitable Tab. If you did, you can detach or
+        <LineBreak/>&#160;&#160;remove it from the tab customization menu.
+        </TextBlock>
+        <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 12, 0, 4">Hotkeys:</TextBlock>
+        <TextBlock>
+        • [SHIFT] + "New Tab + Icon": Create Splitable Tab
+        <LineBreak/>• Hold [CTRL] while dragging window on top of United Sets:
+        <LineBreak/>&#160;&#160;add that window to United Sets
+        <LineBreak/>• Hold [SHIFT] while opening United Sets:
+        <LineBreak/>&#160;&#160;separate app taskbar icons
+        <LineBreak/>• Hold [ALT] while adding a window:
+        <LineBreak/>&#160;&#160;add window in a borderless mode
+        </TextBlock>
+    </StackPanel>
 </StackPanel>

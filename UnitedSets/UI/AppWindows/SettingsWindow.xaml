@@ -25,7 +25,7 @@
                     <Image x:Name="AppFontIcon"
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center"
-                    Source="Assets/Square44x44Logo.scale-100.png"  
+                    Source="ms-appx:///Assets/Square44x44Logo.scale-100.png"  
                     Width="24" 
                     Height="24"/>
                     <TextBlock x:Name="AppTitle"
@@ -47,7 +47,7 @@
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="100, 50, 300, 100">
                     <StackPanel Margin="4, 4, 4, 24" Orientation="Horizontal">
                         <TextBlock FontSize="24" FontWeight="SemiBold">United Sets</TextBlock>
-                        <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7">Preview</TextBlock>
+                        <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7" Text="{StaticResource AppVersion}"/>
                     </StackPanel>
                     <!--<TextBlock FontSize="12" FontWeight="SemiBold" Margin="4">Warning options only effect this instance unless you click "Make These Settings the Defaults"</TextBlock>-->
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 24, 4, 4">Options</TextBlock>
@@ -89,34 +89,34 @@
                         </settings:SettingsBlockControl.Icon>
                         <settings:SettingsBlockControl.ExpandableContent>
                             <Grid x:Name="AboutGrid" Canvas.ZIndex="4" Background="{ThemeResource LayerFillColorDefaultBrush}">
-                                <StackPanel Margin="20, 12, 12, 0">
-                                    <TextBlock FontSize="14" FontWeight="Bold" Margin="4, 0, 4, 4">About this app</TextBlock>
-                                    <TextBlock FontSize="14" Margin="4, 0, 4, 0">United Sets</TextBlock>
-                                    <StackPanel Margin="4, 4, 4, 0">
-                                        <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Developed by</TextBlock>
-                                        <HyperlinkButton NavigateUri="https://github.com/GetGet99">Get</HyperlinkButton>
-                                        <HyperlinkButton NavigateUri="https://twitter.com/FireCubeStudios">FireCubeStudios</HyperlinkButton>
+                                <StackPanel Margin="20, 12, 12, 0" Padding="4,4,4,10" Spacing="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="14">United Sets&#160;</TextBlock>
+                                        <TextBlock FontSize="14" Text="{StaticResource AppVersion}"/>
                                     </StackPanel>
-                                    <Grid>
-                                        <StackPanel HorizontalAlignment="Left" Margin="4, 0, 4, 0">
-                                            <TextBlock Margin="0, 8, 0, 0" FontWeight="SemiBold" Text="Join our server:"/>
-                                            <HyperlinkButton FontWeight="SemiBold" NavigateUri="https://discord.gg/3WYcKat">Developer Sanctuary</HyperlinkButton>
-                                        </StackPanel>
-                                        <StackPanel HorizontalAlignment="Right" Margin="4, 0, 12, 0">
-                                            <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Links:</TextBlock>
-                                            <HyperlinkButton NavigateUri="https://github.com/GetGet99">Get's GitHub</HyperlinkButton>
-                                            <HyperlinkButton NavigateUri="https://github.com/FireCubeStudios/UnitedSets">GitHub repository</HyperlinkButton>
-                                        </StackPanel>
-                                    </Grid>
-                                    <MenuFlyoutSeparator Margin="-30, 0, -30, 0"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="United Sets is open sourced on"/>
+                                        <HyperlinkButton NavigateUri="https://github.com/Developer-Sanctuary/Community-UnitedSets" Padding="3">GitHub</HyperlinkButton>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Developed by</TextBlock>
+                                        <HyperlinkButton Margin="2,0,0,0" Padding="3" NavigateUri="https://github.com/GetGet99">Get,</HyperlinkButton>
+                                        <HyperlinkButton Padding="3" NavigateUri="https://twitter.com/FireCubeStudios">FireCubeStudios,</HyperlinkButton>
+                                        <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">and</TextBlock>
+                                        <HyperlinkButton Padding="3" NavigateUri="https://github.com/Developer-Sanctuary/Community-UnitedSets/graphs/contributors">other contributors</HyperlinkButton>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Join our Discord server:"/>
+                                        <HyperlinkButton FontWeight="SemiBold" Padding="3" NavigateUri="https://discord.gg/3WYcKat">Developer Sanctuary</HyperlinkButton>
+                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
                         </settings:SettingsBlockControl.ExpandableContent>
                     </settings:SettingsBlockControl>
                     <!--<Button Content="Make These Settings the Defaults" Command="{x:Bind SaveDefaultSettingsCommand}" />-->
                 </StackPanel>
-                
-                
+
+
                 <StackPanel Margin="100, 100, 50, 80" Width="220" x:Name="AboutPanel" HorizontalAlignment="Right" VerticalAlignment="Top">
                     <!--<TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 4, 4, 8">Configuration (Above has higher priority)</TextBlock>-->
                     <!--<ListView>
@@ -129,11 +129,11 @@
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 4, 4, 8">About this app</TextBlock>
                     <StackPanel Margin="4, 0, 4, 0" Orientation="Horizontal">
                         <TextBlock FontSize="14" Margin="0, 4, 4, 0">United Sets</TextBlock>
-                        <TextBlock Opacity="0.7" FontSize="14" Margin="2, 4, 4, 0"> - Preview</TextBlock>
+                        <TextBlock Opacity="0.7" FontSize="14" Margin="2, 4, 4, 0" Text="{StaticResource AppVersion}"/>
                     </StackPanel>
-                    <TextBlock FontSize="14" Margin="4, 0, 4, 0" TextWrapping="WrapWholeWords">Developed by <LineBreak/> • Get <LineBreak/> • FireCubeStudios</TextBlock>
-                    <HyperlinkButton Margin="4" NavigateUri="https://discord.gg/3WYcKat">Join Discord</HyperlinkButton>
-                    <HyperlinkButton Margin="4" NavigateUri="https://github.com/FireCubeStudios/UnitedSets">GitHub repository</HyperlinkButton>
+                    <TextBlock FontSize="14" Margin="4, 0, 4, 0" TextWrapping="WrapWholeWords">Developed by <LineBreak/> • Get <LineBreak/> • FireCubeStudios <LineBreak/> • Full contributors list on GitHub</TextBlock>
+                    <HyperlinkButton NavigateUri="https://discord.gg/3WYcKat" Padding="3">Join Discord</HyperlinkButton>
+                    <HyperlinkButton NavigateUri="https://github.com/FireCubeStudios/UnitedSets" Padding="3">GitHub Repository</HyperlinkButton>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

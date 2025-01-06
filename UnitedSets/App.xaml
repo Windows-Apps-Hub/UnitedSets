@@ -37,7 +37,7 @@
                     <x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
                     <controls:NullableBoolConverter x:Key="nullableBoolConverter" />
                     <controls:EnumToStringConverter x:Key="enumToStringConverter" EnumType="ElementTheme"  />
-
+                    <x:String x:Key="AppVersion">- Experimental Indev</x:String>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

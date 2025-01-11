@@ -378,7 +378,7 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="CloseButtonIconBrush" 
         Storyboard.TargetProperty="Color"
-        To="White" From="#e96e60" Duration="0:0:0.5"/>
+        To="{ThemeResource TextFillColorPrimary}" From="#e96e60" Duration="0:0:0.5"/>
                                         <DoubleAnimation Storyboard.TargetName="PillScale" Storyboard.TargetProperty="ScaleX" EnableDependentAnimation="True" Duration="0:0:0.12" To="0"/>
                                     </Storyboard>
                                 </VisualState>
@@ -389,8 +389,7 @@
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundPointerOver}" />
                                         <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundPointerOver}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderPointerOverCloseButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderPointerOverCloseButtonForeground}" />
-                                        <Setter Target="CloseButtonIcon.Foreground" Value="#e96e60" />
+                                        <Setter Target="CloseButtonIconBrush.Color" Value="#e96e60" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="Glowy" Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.5">
@@ -407,7 +406,7 @@
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundPressed}" />
                                         <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundPressed}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderPressedCloseButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderPressedCloseButtonForeground}" />
+                                        <Setter Target="CloseButtonIconBrush.Color" Value="{ThemeResource TextFillColorPrimary}" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="PillScale" Storyboard.TargetProperty="ScaleX" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.25"/>
@@ -421,7 +420,7 @@
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundSelected}" />
                                         <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundSelected}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonForeground}" />
+                                        <Setter Target="CloseButtonIconBrush.Color" Value="{ThemeResource TextFillColorPrimary}" />
                                         <Setter Target="LayoutRoot.Background" Value="Transparent" />
                                         <Setter Target="Pill.CornerRadius" Value="0, 0, 4, 4"/>
                                     </VisualState.Setters>
@@ -437,14 +436,14 @@
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundPointerOver}" />
                                         <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundPointerOver}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonForeground}" />
+                                        <Setter Target="CloseButtonIconBrush.Color" Value="{ThemeResource TextFillColorPrimary}" />
                                         <Setter Target="LayoutRoot.Background" Value="Transparent" />
                                         <Setter Target="Pill.CornerRadius" Value="0, 0, 4, 4"/>
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="CloseButtonIconBrush" 
         Storyboard.TargetProperty="Color"
-        From="White" To="#e96e60" Duration="0:0:0.15"/>
+        From="{ThemeResource TextFillColorPrimary}" To="#e96e60" Duration="0:0:0.15"/>
                                         <DoubleAnimation Storyboard.TargetName="Glowy" Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.12" To="-1">
 
                                         </DoubleAnimation>
@@ -459,7 +458,7 @@
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundPressed}" />
                                         <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundPressed}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonBackground}" />
-                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderSelectedCloseButtonForeground}" />
+                                        <Setter Target="CloseButtonIconBrush.Color" Value="{ThemeResource TextFillColorPrimary}" />
                                         <Setter Target="LayoutRoot.Background" Value="Transparent" />
                                         <Setter Target="Pill.CornerRadius" Value="0"/>
                                     </VisualState.Setters>

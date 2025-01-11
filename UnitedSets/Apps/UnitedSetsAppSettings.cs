@@ -65,6 +65,15 @@ public partial class UnitedSetsAppSettings
             //    Icon = SymbolEx.PPSOneLandscape,
             //    RequiresRestart = true
             //},
+            HomePageBackground = new(
+                () => Configuration.HomePageBackground ?? true, x => Configuration.HomePageBackground = x
+            )
+            {
+                Title = "Home Page Information",
+                Description = "Shows or hide the hotkeys, tips, and other information",
+                Icon = SymbolEx.Home,
+                UserInterfaceVisibility = Visibility.Visible,
+            },
             BypassMinimumSize = new(() => Configuration.BypassMinSize, x => Configuration.BypassMinSize = x) {
                 Title = "Bypass Minimum Size",
                 Description = $"Allows resizing the window down to {
@@ -191,6 +200,7 @@ public partial class UnitedSetsAppSettings
     public OnOffSetting Autosave { get; }
     public SelectSetting<UserMoveWindowBehaviors> UserMoveWindowBehavior { get; }
     public OnOffSetting BypassMinimumSize { get; }
+    public OnOffSetting HomePageBackground { get; }
     //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
     public TempLinkSetting<string> TaskbarIcon { get; }

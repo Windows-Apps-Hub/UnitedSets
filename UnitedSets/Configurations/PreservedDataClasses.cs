@@ -87,6 +87,10 @@ public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged
     [AutoNotifyProperty]
     public UserMoveWindowBehaviors _UserMoveWindowBehavior;
 
+
+    [AutoNotifyProperty]
+    public bool? _HomePageBackground;
+
     [AutoNotifyProperty]
     public bool _BypassMinSize;
 

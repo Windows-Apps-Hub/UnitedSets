@@ -12,7 +12,7 @@
         <Image x:Name="AppFontIcon"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Center"
-                Source="ms-appx:///Assets/SmallTile.scale-400.png"   
+                Source="ms-appx:///Assets/SmallTile.scale-100.png"   
                 Width="48" 
                 Height="48"/>
         <TextBlock
@@ -28,7 +28,7 @@
                 Opacity="0.7"
                 FontSize="24"/>
     </StackPanel>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" x:Name="hintInfo">
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
         <TextBlock>
         • Drag a Tab out to release the Window

@@ -11,7 +11,7 @@ static class Constants
     public const Visibility ExperimentalFeedback = Visibility.Collapsed;
     public const Visibility VisibleOnExperimental = Visibility.Visible;
     public const string AppVersionTag = "- Development";
-#elif true // Experimental Version
+#elif false // Experimental Version
     public const Visibility ExperimentalFeedback = Visibility.Visible;
     public const Visibility VisibleOnExperimental = Visibility.Visible;
     public const string AppVersionTag = "- Experimental";

@@ -1,0 +1,17 @@
+name: Feature Request
+about: Suggest an idea for this project
+title: "[Feature Request] "
+labels: enhancement
+body:
+- type: textarea
+  id: feature-request
+  attributes:
+    label: Feature Request Description
+    description: Describe your feature request
+    value: |
+      Ex. I want a new Settings _____ that does _____.
+      
+      Add screenshots, design sketches, or anything else if you wish to do so.
+      Otherwise, feel free not to.
+  validations:
+    required: true

@@ -1,0 +1,6 @@
+# We already have "Others" issue kind
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://discord.gg/3WYcKat
+    about: Post your questions, join the discussion, or ask about United Sets on Developer Sanctuary Discord Server.

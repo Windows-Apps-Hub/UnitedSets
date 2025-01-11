@@ -27,6 +27,12 @@ public partial class RegisteredWindow : INotifyPropertyChanged
             or "WindowsDashboard" // I forget
             or "Windows.UI.Core.CoreWindow" // Quick Settings and Notification Center (other uwp apps should already be ApplicationFrameHost)
         ;
+    /// <summary>
+    /// Checks if the window should be detach
+    /// </summary>
+    public static Func<Window, bool>
+        ShouldWindowBeDetachOnUserMove
+    { get; set; } = (window) => true;
     internal readonly WindowStylingState InitalStylingState;
     public Window Window { get; }
     [AutoNotifyProperty(SetVisibility = GeneratorVisibility.Private, OnChanged = nameof(CompatablityModeChanged))]
@@ -54,22 +60,52 @@ public partial class RegisteredWindow : INotifyPropertyChanged
                 Window.Handle,
                 WinEventTypes.PositionSizeChanged,
                 Window.OwnerProcess.Id == Process.Current.Id,
-                delegate
+                async delegate
                 {
-                    if (CurrentController is null) return;
-                    if (Window.Bounds != CurrentController.LatestRequestedRect)
-                    {
-                        Detach();
-                    }
+                    if (CurrentController is not { } controller) return;
+                    if (controller.Updating)
+                        // current controller is doing the update
+                        return;
+                    var cachedLatestRequestedRect = controller.LatestRequestedRect;
+                    if (Window.Bounds == cachedLatestRequestedRect)
+                        // same position
+                        return;
+                    if (ShouldWindowBeDetachOnUserMove(Window))
+                        // wait for 200 millisecond, this is basically to ensure that the user
+                        // has actually initiated the action and not some automated program
+                        // that wants to take the window and ended up returning it back to the same positon
+                        await Task.Delay(200).ContinueWith(x =>
+                        {
+                            if (Window.Bounds == cachedLatestRequestedRect)
+                                // same position or current controller is doing the update
+                                return;
+                            if (ShouldWindowBeDetachOnUserMove(Window))
+                                controller.DispatcherQueue.TryEnqueue(delegate
+                                {
+                                    Detach();
+                                });
+                        });
                 }
             );
+        registeredWindowShownEvent = WinEvents.Register(
+            Window.Handle,
+            WinEventTypes.WindowShown,
+            Window.OwnerProcess.Id == Process.Current.Id,
+            delegate
+            {
+                if (CurrentController is null || !CurrentController.Updating)
+                {
+                    ShownByUser?.Invoke();
+                }
+            }
+        );
         if (shouldBeHidden && IsValid)
             WindowToHost.IsVisible = false;
         Closed += delegate { BecomesInvalid?.Invoke(); };
         Detached += delegate { BecomesInvalid?.Invoke(); };
         Properties = new(this);
     }
-    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent;
+    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent, registeredWindowShownEvent;
     void CompatablityModeChanged()
     {
         if (CompatablityMode.NoOwner)
@@ -113,6 +149,11 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     /// Raises when the window becomes invalid.
     /// </summary>
     public event Action? BecomesInvalid;
+    /// <summary>
+    /// Raises when the window becomes visible either by user or programmatic action outside
+    /// RegisteredWindow control.
+    /// </summary>
+    public event Action? ShownByUser;
     /// <inheritdoc cref="DetachAsync"/>
     public async void Detach() => await DetachAsync();
     /// <summary>

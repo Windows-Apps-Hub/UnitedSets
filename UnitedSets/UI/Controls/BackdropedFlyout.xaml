@@ -1,0 +1,15 @@
+<Flyout
+    x:Class="UnitedSets.UI.Controls.BackdropedFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    ShouldConstrainToRootBounds="False"
+>
+    <Flyout.SystemBackdrop>
+        <MicaBackdrop/>
+    </Flyout.SystemBackdrop>
+    <Flyout.FlyoutPresenterStyle>
+        <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Flyout.FlyoutPresenterStyle>
+</Flyout>

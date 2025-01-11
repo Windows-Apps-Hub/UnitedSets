@@ -1,26 +1,21 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using System;
-using System.Linq;
 using UnitedSets.Tabs;
-using UnitedSets.Helpers;
-using WinRT.Interop;
-using WinUIEx.Messaging;
-using Window = WinWrapper.Windowing.Window;
 using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Keyboard = WinWrapper.Input.Keyboard;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using Icon = WinWrapper.Icon;
-using Microsoft.UI.Xaml.Controls;
 using System.IO;
-using System.Threading.Tasks;
-using UnitedSets.Mvvm.Services;
-using Windows.UI.WindowManagement;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using UnitedSets.Configurations;
 using UnitedSets.Cells;
+using Windows.Win32;
+using WinWrapper.Windowing;
+using WindowHoster;
+using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -61,7 +56,12 @@ partial class MainWindow : NativeHelperWindow
             TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
             EmptyCell.ValidDrop += OnDropOverCell;
         }
+        //ShellHookMessage = (WindowMessages)PInvoke.RegisterWindowMessage("SHELLHOOK");
+        //PInvoke.RegisterShellHookWindow(new(Win32Window.Handle));
+        RegisteredWindow.ShouldWindowBeDetachOnUserMove =
+            _ => UnitedSetsApp.Current.Settings.UserMoveWindowBehavior.Value is UserMoveWindowBehaviors.DetachWindow;
     }
+    WindowMessages ShellHookMessage;
 
 
     private void UpdateTitle()

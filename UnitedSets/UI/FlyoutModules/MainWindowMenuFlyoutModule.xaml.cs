@@ -11,6 +11,7 @@ using UnitedSets.Tabs;
 using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
+using UnitedSets.Apps;
 
 namespace UnitedSets.UI.FlyoutModules;
 

@@ -13,6 +13,10 @@ using EnumsNET;
 using Windows.UI;
 using UnitedSets.Configurations;
 using Get.Symbols;
+using WinUIEx;
+using UnitedSets.Apps;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -27,15 +31,30 @@ public partial class UnitedSetsAppSettings
             ) {
                 Title = "Autosave Settings",
                 Description = "Automatically saves the settings as you edit them. Turn this off if you only want the current session to have this setting.",
-                Icon = SymbolEx.Save
+                Icon = SymbolEx.Save,
+                UserInterfaceVisibility = Visibility.Visible
             },
-            CloseWindowOnCloseTab = new(
-                () => Configuration.CloseWindowOnCloseTab, x => Configuration.CloseWindowOnCloseTab = x
+            CloseTabBehavior = new(
+                () => Configuration.CloseTabBehaviors, x => Configuration.CloseTabBehaviors = x,
+                Enum.GetValues<CloseTabBehaviors>()
             )
             {
-                Title = "Closing tab closes window",
-                Description = "If on, close the window when closing a tab. If off, the window will be detach from United Sets.",
-                Icon = SymbolEx.Delete
+                Title = "Closing tab behavior",
+                Description = "What should United Sets do when you close the tab?",
+                Icon = SymbolEx.ChromeClose,
+                UserInterfaceVisibility = Visibility.Visible,
+                OOBEUserInterfaceVisibility = Visibility.Visible
+            },
+            UserMoveWindowBehavior = new(
+                () => Configuration.UserMoveWindowBehavior, x => Configuration.UserMoveWindowBehavior = x,
+                Enum.GetValues<UserMoveWindowBehaviors>()
+            )
+            {
+                Title = "Moving added window behavior",
+                Description = "What should United Sets do when you move the added window?",
+                Icon = SymbolEx.Move,
+                UserInterfaceVisibility = Visibility.Visible,
+                OOBEUserInterfaceVisibility = Visibility.Visible
             },
             //TransculentWindow = new(
             //    () => cfg.Design.UseTranslucentWindow ?? false, x => cfg.Design.UseTranslucentWindow = x
@@ -52,14 +71,16 @@ public partial class UnitedSetsAppSettings
                     Constants.BypassMinWidth}x{Constants.BypassMinHeight
                     } (Normal minimum size is {
                     Constants.MinWidth}x{Constants.MinHeight})",
-                Icon = SymbolEx.ResizeMouseSmall
+                Icon = SymbolEx.ResizeMouseSmall,
+                UserInterfaceVisibility = Visibility.Visible
             },
             BackdropMode = new(
                 () => Configuration.Design!.Backdrop, x => Configuration.Design!.Backdrop = x, Enums.GetValues<USBackdrop>()
             ) {
                 Title = "Window Background",
-                Description = "Select the Window Background (NOTE: Changing to Transparent requires restart)",
-                Icon = SymbolEx.Color
+                Description = "Select the Window Background",
+                Icon = SymbolEx.Color,
+                UserInterfaceVisibility = Visibility.Visible
             },
             WindowTitlePrefix = new(
                 () => Configuration.TitlePrefix ?? "", x => Configuration.TitlePrefix = x
@@ -68,7 +89,8 @@ public partial class UnitedSetsAppSettings
                 Title = "Window Title Prefix",
                 Description = "Prefix that shows up before the normal UnitedSets title",
                 Icon = SymbolEx.AlignLeft,
-                PlaceholderText = "None - Normal Title Mode"
+                PlaceholderText = "None - Normal Title Mode",
+                UserInterfaceVisibility = Visibility.Visible
             },
             Theme = new(
                 () => Configuration.Design!.Theme ?? ElementTheme.Default, x => Configuration.Design!.Theme = x,
@@ -78,7 +100,8 @@ public partial class UnitedSetsAppSettings
                 Title = "Theme Override",
                 Description = "Override the windows theme",
                 Icon = SymbolEx.Light,
-                RequiresRestart = true
+                RequiresRestart = true,
+                UserInterfaceVisibility = Visibility.Visible
             },
             TaskbarIcon = new(
                 () => Configuration.TaskbarIco ?? "", x => Configuration.TaskbarIco = x
@@ -164,8 +187,9 @@ public partial class UnitedSetsAppSettings
     }
     public IReadOnlyList<Setting> AllSettings { get; }
 
-    public OnOffSetting CloseWindowOnCloseTab { get; }
+    public SelectSetting<CloseTabBehaviors> CloseTabBehavior { get; }
     public OnOffSetting Autosave { get; }
+    public SelectSetting<UserMoveWindowBehaviors> UserMoveWindowBehavior { get; }
     public OnOffSetting BypassMinimumSize { get; }
     //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
@@ -187,43 +211,61 @@ public partial class UnitedSetsAppSettings
     {
         try
         {
-			if (s_window is not null)
+            if (s_window is not null)
             {
                 s_window.Activate();
                 return;
             }
-        } catch (COMException) {
-		}
+        }
+        catch (COMException)
+        {
+        }
         CreateWindow(mainWindow);
         s_window.Activate();
-	}
+    }
 
     [MemberNotNull(nameof(s_window))]
-	private void CreateWindow(MainWindow mainWindow) {
-		s_window = new(this, mainWindow);
-		s_window.Closed += (_, _) => s_window = new(this, mainWindow);
-	}
+    private void CreateWindow(MainWindow mainWindow)
+    {
+        s_window = new(this, mainWindow);
+        s_window.Closed += (_, _) => s_window = new(this, mainWindow);
+    }
 }
 public enum USBackdrop
 {
     Mica,
     Acrylic,
     Tabbed,
-    //Transparent
+    Transparent
+}
+public enum CloseTabBehaviors
+{
+    [Display(Name = "Detach Window")]
+    DetachWindow,
+    [Display(Name = "Close Window")]
+    CloseWindow
+}
+public enum UserMoveWindowBehaviors
+{
+    [Display(Name = "Detach Window")]
+    DetachWindow,
+    Ignore
 }
 static class BackdropHelper
 {
-    public static SystemBackdrop GetSystemBackdrop(this USBackdrop backdrop)
+    public static Microsoft.UI.Xaml.Media.SystemBackdrop GetSystemBackdrop(this USBackdrop backdrop)
         => backdrop switch
         {
             USBackdrop.Acrylic => new InfiniteSystemBackdrop<DesktopAcrylicController>(),
             USBackdrop.Mica => new InfiniteSystemBackdrop<MicaController>(),
             USBackdrop.Tabbed => new InfiniteSystemBackdrop<MicaController>(x => x.Kind = MicaKind.BaseAlt),
-            //USBackdrop.Transparent => new TransparentBackdrop(),
+            USBackdrop.Transparent => new WinUIEx.TransparentTintBackdrop(),
             _ => throw new ArgumentOutOfRangeException(nameof(backdrop))
         };
 }
-public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdropControllerWithTargets, new()
+
+
+public class InfiniteSystemBackdrop<T> : Microsoft.UI.Xaml.Media.SystemBackdrop where T : ISystemBackdropControllerWithTargets, new()
 {
     public InfiniteSystemBackdrop() { }
     public InfiniteSystemBackdrop(Action<T> act) { action = act; }
@@ -246,7 +288,7 @@ public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdro
         action?.Invoke(controller);
         // Set configuration.
         SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(connectedTarget, xamlRoot);
-        
+
         controller.SetSystemBackdropConfiguration(GetConfig(defaultConfig));
         // Add target.
         controller.AddSystemBackdropTarget(connectedTarget);
@@ -269,11 +311,12 @@ public class InfiniteSystemBackdrop<T> : SystemBackdrop where T : ISystemBackdro
     protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
     {
         if (target == null)
-        	return;
+            return;
         try
         {
             SystemBackdropConfiguration defaultConfig = GetDefaultSystemBackdropConfiguration(target, xamlRoot);
             controller?.SetSystemBackdropConfiguration(GetConfig(defaultConfig));
-        } catch { }
+        }
+        catch { }
     }
 }

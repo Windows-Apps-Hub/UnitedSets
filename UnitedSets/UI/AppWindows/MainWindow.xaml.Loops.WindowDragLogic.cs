@@ -11,6 +11,7 @@ using WindowHoster;
 using Thread = System.Threading.Thread;
 using UnitedSets.Cells;
 using UnitedSets.PostProcessing;
+using WinWrapper.Input;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -154,6 +155,10 @@ public sealed partial class MainWindow
         CellTab? SelectedCellTab = null;
         do
         {
+            if (!Keyboard.IsControlDown)
+                // let's no longer allow window dragging into
+                // United Sets after control button is released
+                return;
             var foregroundWindow = WindowEx.ForegroundWindow;
             if (foregroundWindow != Win32Window)
             {

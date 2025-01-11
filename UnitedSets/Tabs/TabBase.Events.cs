@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Get.EasyCSharp;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;
+using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.Tabs;
 
@@ -11,7 +12,7 @@ partial class TabBase
     void TabCloseRequested(TabViewItem sender)
     {
 		DoShowTab();
-        if (Settings.CloseWindowOnCloseTab.Value)
+        if (Settings.CloseTabBehavior.Value is CloseTabBehaviors.CloseWindow)
             _ = TryCloseAsync();
         else
             DetachAndDispose(JumpToCursor: true);

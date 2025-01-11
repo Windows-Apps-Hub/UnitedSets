@@ -8,6 +8,7 @@
     xmlns:tabs="using:UnitedSets.Tabs"
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
+    xmlns:helpers="using:UnitedSets.Helpers"
     xmlns:us="using:UnitedSets"
     xmlns:aw="using:UnitedSets.UI.AppWindows"
     xmlns:controls="using:UnitedSets.UI.Controls"
@@ -38,14 +39,24 @@
                     </ColorAnimation.EasingFunction>
                     </ColorAnimation>
                 </Storyboard>
-                <Flyout x:Name="ClosingFlyout" Placement="RightEdgeAlignedTop" ShouldConstrainToRootBounds="False">
+                <controls:BackdropedFlyout x:Name="ClosingFlyout" Placement="BottomEdgeAlignedRight" ShouldConstrainToRootBounds="False">
                     <StackPanel Spacing="16">
-                        <TextBlock>How would you like to close the app?</TextBlock>
-                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind ReleaseWindowCloseMode}">Release windows</Button>
-                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind CloseWindowCloseMode}">Close windows</Button>
-                        <Button Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind SaveCloseWindowCloseMode}">Save and close windows</Button>
+                        <TextBlock HorizontalAlignment="Center">How would you like to close the app?</TextBlock>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <StackPanel.Resources>
+                                <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                    <Style.Setters>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style.Setters>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind ReleaseWindowCloseMode}" Foreground="{ThemeResource SystemAccentColorLight2}" BorderBrush="{ThemeResource SystemAccentColorLight2}">Release</Button>
+                            <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind SaveCloseWindowCloseMode}">Save and close</Button>
+                            <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind CloseWindowCloseMode}" Foreground="#e96e60" BorderBrush="#e96e60">Close</Button>
+                        </StackPanel>
+                        <CheckBox Content="Remember my option" HorizontalAlignment="Center"/>
                     </StackPanel>
-                </Flyout>
+                </controls:BackdropedFlyout>
             </Grid.Resources>
             <Grid.Background>
                 <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>
@@ -110,17 +121,39 @@
                         <TabView.TabItemTemplate>
                             <DataTemplate x:DataType="tabs:TabBase">
                                 <TabViewItem
+                                    x:Name="TabViewItem"
                                     Margin="2, 0, 2, 2"
                                     Background="{ThemeResource 12Brush}"
                                     Style="{ThemeResource UndockedTabViewItemStyle}"
                                     CloseRequested="{x:Bind TabCloseRequestedEv}"
                                     DoubleTapped="{x:Bind TabDoubleTapped}"
+                                    RightTapped="{x:Bind TabRightTapped}"
                                     Tag="{x:Bind}"
                                     PointerPressed="{x:Bind TabClickEv}"
                                     AllowDrop="True"
                                     DragOver="OnDragOverTabViewItem"
                                     guics:DragRegion.Clickable="True"
                                 >
+                                    <!--<VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="FlashingStates">
+                                            <VisualState x:Name="Flashing">
+                                                <VisualState.StateTriggers>
+                                                    <StateTrigger IsActive="{x:Bind IsFlashing}"/>
+                                                </VisualState.StateTriggers>
+                                                <VisualState.Setters>
+                                                    <Setter Target="TabViewItem.Background" Value="Red" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Regular">
+                                                <VisualState.StateTriggers>
+                                                    <StateTrigger IsActive="{x:Bind helpers:XAMLFuncs.Not(IsFlashing)}"/>
+                                                </VisualState.StateTriggers>
+                                                <VisualState.Setters>
+                                                    <Setter Target="TabViewItem.Background" Value="{ThemeResource 12Brush}" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>-->
                                     <TabViewItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
@@ -134,23 +167,23 @@
                             <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="5,0,0,0" Width="32" Height="32">
                                 <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 <Button.Flyout>
-                                    <Flyout ShouldConstrainToRootBounds="False">
+                                    <controls:BackdropedFlyout ShouldConstrainToRootBounds="False">
                                         <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
-                                    </Flyout>
+                                    </controls:BackdropedFlyout>
                                 </Button.Flyout>
                             </Button>
                         </TabView.TabStripHeader>
                         <TabView.TabStripFooter>
-                            <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0"
+                            <SplitButton HorizontalAlignment="Left" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0"
                                     guics:DragRegion.Clickable="True">
                                 <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                                <Button.ContextFlyout>
-                                    <MenuFlyout ShouldConstrainToRootBounds="False">
+                                <SplitButton.Flyout>
+                                    <MenuFlyout ShouldConstrainToRootBounds="False" Placement="BottomEdgeAlignedRight">
                                         <MenuFlyoutItem Click="OnAddTabButtonClick">Add Window</MenuFlyoutItem>
                                         <MenuFlyoutItem Command="{x:Bind AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
                                     </MenuFlyout>
-                                </Button.ContextFlyout>
-                            </Button>
+                                </SplitButton.Flyout>
+                            </SplitButton>
                         </TabView.TabStripFooter>
                     </TabView>
                 </guics:DragRegion>

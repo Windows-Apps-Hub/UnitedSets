@@ -13,4 +13,5 @@ static class XAMLFuncs
     }
     public static Symbol ToSymbol(SymbolEx symbolEx)
         => (Symbol)(int)symbolEx;
+    public static bool Not(bool b) => !b;
 }

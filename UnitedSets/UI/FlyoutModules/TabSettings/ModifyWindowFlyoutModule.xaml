@@ -17,7 +17,7 @@
                 <Style TargetType="StackPanel">
                     <Setter Property="Spacing" Value="12" />
                 </Style>
-                <Style TargetType="ToggleSwitch">
+                <Style TargetType="ToggleSwitch" BasedOn="{StaticResource GlowSwitch}">
                     <Setter Property="OnContent" Value="On" />
                     <Setter Property="OffContent" Value="Off" />
                 </Style>
@@ -55,16 +55,20 @@
                                 <Setter Property="MinWidth" Value="100" />
                             </Style>
 
-                            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                            <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
                                 <Setter Property="Padding" Value="5" />
+                            </Style>
+                            <Style x:Key="TextButton" TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                                <Setter Property="Padding" Value="5" />
+                                <Setter Property="BorderBrush" Value="#66757575"/>
                             </Style>
 
                         </StackPanel.Resources>
                         <settings:SettingsItem Label="Top:">
                             <StackPanel>
-                                <Button Click="TopMarginShortcutClick">32</Button>
-                                <Button Click="TopMarginShortcutClick">40</Button>
-                                <Button Click="TopMarginShortcutClick">41</Button>
+                                <Button Style="{StaticResource TextButton}" Click="TopMarginShortcutClick">32</Button>
+                                <Button Style="{StaticResource TextButton}" Click="TopMarginShortcutClick">40</Button>
+                                <Button Style="{StaticResource TextButton}" Click="TopMarginShortcutClick">41</Button>
                                 <NumberBox x:Name="TopCropMargin" Value="{x:Bind ToDouble(RegisteredWindow.Properties.CropRegion.Top), Mode=TwoWay, BindBack=CropTopBindBack}" />
                                 <Button Tag="{x:Bind TopCropMargin}" Click="OnResetClick">
                                     <SymbolIcon Symbol="Undo"/>
@@ -103,6 +107,7 @@
                 <Button Click="DetachWindow">Detach Window</Button>
             </StackPanel>
             <Button HorizontalAlignment="Center" x:Name="ApplyToFuture" Click="ApplyToFutureApp">Apply to all future (code behind)</Button>
+            <TextBlock x:Name="AutoSaveRemarksTb" HorizontalAlignment="Center" HorizontalTextAlignment="Center" TextAlignment="Center"/>
             <Button HorizontalAlignment="Center" Click="OpenWindowLocation">Open Window file location</Button>
         </StackPanel>
     </Border>

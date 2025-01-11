@@ -21,7 +21,8 @@ namespace UnitedSets;
 partial class UnitedSetsApp : INotifyPropertyChanged
 {
     // singleton setup
-    private UnitedSetsApp() {
+    private UnitedSetsApp()
+    {
         Settings = new();
         Configuration = new();
     }
@@ -29,16 +30,20 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     public UnitedSetsAppConfiguration Configuration { get; } = new();
     public static UnitedSetsApp Current { get; } = new();
     readonly List<Window> _allWindows = [];
-    
+
     public IReadOnlyList<Window> AllUnitedSetsWindows => _allWindows;
     public MainWindow MainWindow { get; private set; } = null!;
     public DispatcherQueue DispatcherQueue { get; private set; } = null!;
     public ObservableCollection<TabBase> Tabs { get; } = [];
     public ObservableCollection<TabGroup> HiddenTabs { get; } = [];
-    [AutoNotifyProperty]
+    [AutoNotifyProperty(OnChanged = nameof(OnSelectedTabChanged))]
     TabBase? _SelectedTab;
     public event PropertyChangedEventHandler? PropertyChanged;
-    
+    void OnSelectedTabChanged()
+    {
+        if (_SelectedTab is { } tab)
+            tab.IsFlashing = false;
+    }
     public void RegisterUnitedSetsWindow(Window window) => _allWindows.Add(window);
     public void RegisterUnitedSetsWindow(MainWindow window)
     {

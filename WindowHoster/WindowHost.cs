@@ -46,11 +46,21 @@ public partial class WindowHost : FrameworkElement
     partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
     {
         Controller = null;
+        if (oldValue is not null)
+            oldValue.BecomesInvalid -= RemoveController;
         if (IsLoaded)
         {
+            if (newValue is not null)
+                newValue.BecomesInvalid += RemoveController;
             Controller = newValue?.GetController(ParentWindow, DispatcherQueue);
         }
     }
+
+    private void RemoveController()
+    {
+        Controller = null;
+    }
+
     RegisteredWindowController? Controller
     {
         get => _Controller;
@@ -81,7 +91,12 @@ public partial class WindowHost : FrameworkElement
     private void WindowHost_Loaded(object sender, RoutedEventArgs e)
     {
         Controller = null;
-        Controller = AssociatedWindow?.GetController(ParentWindow, DispatcherQueue);
+        Update(); // update position
+        if (AssociatedWindow is { } window)
+        {
+            window.BecomesInvalid += RemoveController;
+            Controller = window.GetController(ParentWindow, DispatcherQueue);
+        }
         XamlRoot.Changed += XamlRoot_Changed;
     }
     bool wasVisible;

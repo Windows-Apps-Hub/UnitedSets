@@ -4,13 +4,18 @@ using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Cells;
 namespace UnitedSets.Tabs;
 [AutoProperty]
-public partial class CellTab(ContainerCell Cell, bool IsTabSwitcherVisibile = TabBase.DefaultIsSwitcherVisible) : TabBase(IsTabSwitcherVisibile) {
-
-	public CellTab(bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible)
-        : this(
-              CreateEmpty(),
-              IsTabSwitcherVisibile
-        )
+public partial class CellTab : TabBase
+{
+    public CellTab(ContainerCell Cell, bool IsTabSwitcherVisibile = TabBase.DefaultIsSwitcherVisible) : base(IsTabSwitcherVisibile)
+    {
+        Cell.ParentCellTab = this;
+        MainCellProperty = Auto(Cell);
+    }
+    public CellTab(bool IsTabSwitcherVisibile = DefaultIsSwitcherVisible)
+    : this(
+          CreateEmpty(),
+          IsTabSwitcherVisibile
+    )
     {
     }
     static ContainerCell CreateEmpty()

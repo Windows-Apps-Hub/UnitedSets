@@ -18,6 +18,7 @@ using WinWrapper.Windowing;
 using WindowHoster;
 using UnitedSets.Cells;
 using UnitedSets.PostProcessing;
+using UnitedSets.Apps;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -121,7 +122,8 @@ public sealed partial class MainWindow
             {
                 Tab.DetachAndDispose(false);
             }
-        } else
+        }
+        else
         {
             _ = window.Owner.SendMessage(
             Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
@@ -164,12 +166,13 @@ public sealed partial class MainWindow
     private partial void OnWindowClosing(AppWindowClosingEventArgs e)
     {
         e.Cancel = true;//as we will just exit if we want to actually close
-        if (UnitedSetsApp.Current.Tabs.Count > 1)
+        if (UnitedSetsApp.Current.Tabs.Count >= 1)
         {
             Win32Window.Focus();
             ClosingFlyout.XamlRoot = Content.XamlRoot;
-            ClosingFlyout.ShowAt((FrameworkElement)Content);
-        }else
+            ClosingFlyout.ShowAt((FrameworkElement)TabViewBorder);
+        }
+        else
             RequestCloseAsync(CloseMode.ReleaseWindow);
     }
     public enum CloseMode
@@ -228,6 +231,15 @@ public sealed partial class MainWindow
             }
             else e.Result = 0;
             e.Handled = true;
+        }
+        if (id == ShellHookMessage & e.Message.WParam is /* HSHELL_FLASH */0x8006)
+        {
+            var winPtr = e.Message.LParam;
+
+            if (UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(x => x.Windows.Any(y => y == winPtr)) is TabBase Tab)
+            {
+                Tab.IsFlashing = true;
+            }
         }
         e.Handled = false;
     }

@@ -6,6 +6,7 @@
     Grid.Row="1"
     HorizontalAlignment="Center"
     Canvas.ZIndex="-1"
+    xmlns:usapp="using:UnitedSets.Apps"
 >
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
         <Image x:Name="AppFontIcon"
@@ -21,7 +22,7 @@
                 FontSize="28"/>
         <!--Margin="8, 0, 0, 0"-->
         <TextBlock
-                Text="{StaticResource AppVersion}"
+                Text="{x:Bind usapp:Constants.AppVersionTag}"
                 VerticalAlignment="Center"
                 Margin="8, 6, 0, 0"
                 Opacity="0.7"
@@ -31,21 +32,17 @@
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
         <TextBlock>
         • Drag a Tab out to release the Window
-        <LineBreak/>• Double Click On the Tab for more customization
+        <LineBreak/>• Double Click tab or Right Click tab for more
+        <LineBreak/>&#160;&#160;customization options
         </TextBlock>
         <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
-        <TextBlock HorizontalAlignment="Center">
+        <TextBlock>
         • May not work well with UWP windows
-        <LineBreak/>• [Experimental] Save and Close may sometimes fail to add
-        <LineBreak/>&#160;&#160;windows back to United Sets.
-        <LineBreak/>• [Experimental] Save and Close will NOT work for system
-        <LineBreak/>&#160;&#160;UWP or Packaged apps (like Calculator/Paint/Notepad/etc)
-        <LineBreak/>&#160;&#160;and one-process-only app (like File Explorer).
-        <LineBreak/>&#160;&#160;(It will still work for user installed ones)
-        <LineBreak/>• [Experimental] Removing title bar makes them undragable
-        <LineBreak/>&#160;&#160;sometimes. Therefore, it is advised not to do that for
-        <LineBreak/>&#160;&#160;windows in the Splitable Tab. If you did, you can detach or
-        <LineBreak/>&#160;&#160;remove it from the tab customization menu.
+        <LineBreak/>• [Experimental] Save and Close
+        <LineBreak/>&#160;&#160;• may fail to add windows back to United Sets
+        <LineBreak/>&#160;&#160;• will NOT work for system UWP/WinUI Packaged apps
+        <LineBreak/>&#160;&#160;&#160;&#160;(like Calculator/Paint/Notepad/etc)
+        <LineBreak/>&#160;&#160;• will NOT work for one-process-only app (like File Explorer)
         </TextBlock>
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 12, 0, 4">Hotkeys:</TextBlock>
         <TextBlock>
@@ -57,5 +54,12 @@
         <LineBreak/>• Hold [ALT] while adding a window:
         <LineBreak/>&#160;&#160;add window in a borderless mode
         </TextBlock>
+        <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Spacing="4" Margin="0,20,0,0" Visibility="{x:Bind usapp:Constants.ExperimentalFeedback}">
+            <TextBlock VerticalAlignment="Center" Text="Experimental Version: Your feedback is important."/>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="4">
+                <HyperlinkButton Content="Discord" NavigateUri="https://discord.gg/3WYcKat"/>
+                <HyperlinkButton Content="Github Issues" NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets/issues/71"/>
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </StackPanel>

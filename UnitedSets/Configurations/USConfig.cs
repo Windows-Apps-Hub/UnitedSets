@@ -69,7 +69,8 @@ public partial class USConfig : SavedInstanceData
                 Backdrop = USBackdrop.Mica
             },
             DragAnywhere = true,
-            CloseWindowOnCloseTab = true,
+            CloseTabBehaviors = CloseTabBehaviors.DetachWindow,
+            UserMoveWindowBehavior = UserMoveWindowBehaviors.DetachWindow,
             DefaultWindowStylesData = [],
             DefaultCellData = new() { Borderless = false, CropEnabled = false, CropRect = default, CustomTitle = "" },
             DefaultTabData = new() { CustomTitle = "" }

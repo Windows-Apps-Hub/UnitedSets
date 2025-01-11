@@ -16,11 +16,26 @@ public partial class WindowCell : Cell
     public WindowCell(ContainerCell Parent, RegisteredWindow window) : base(Parent)
     {
         Window = window;
-        window.Closed += GoToEmpty;
-        window.Detached += GoToEmpty;
+        window.ShownByUser += AttemptToSelectTab;
+        window.BecomesInvalid += GoToEmpty;
         if (!window.IsValid)
             GoToEmpty();
     }
+
+    private async void AttemptToSelectTab()
+    {
+        await Task.Delay(100);
+        ContainerCell c = Parent!;
+        while (c.Parent is { } c2)
+        {
+            c = c2;
+        }
+        if (c.ParentCellTab is { } celltab)
+        {
+            UnitedSetsApp.Current.SelectedTab = celltab;
+        }
+    }
+
     bool wentToEmpty = false;
     async void GoToEmpty()
     {

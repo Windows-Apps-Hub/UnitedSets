@@ -33,4 +33,6 @@ partial class TabBase
 
     [Event(typeof(DoubleTappedEventHandler), Name = "TabDoubleTapped", Visibility = GeneratorVisibility.Public)]
     protected virtual void OnDoubleClick([CastFrom(typeof(object))] UIElement sender, DoubleTappedRoutedEventArgs args) { }
+    [Event(typeof(RightTappedEventHandler), Name = "TabRightTapped", Visibility = GeneratorVisibility.Public)]
+    protected virtual void OnRightClick([CastFrom(typeof(object))] UIElement sender, RightTappedRoutedEventArgs args) { }
 }

@@ -37,7 +37,10 @@
                     <x:Double x:Key="ToggleSwitchThemeMinWidth">0</x:Double>
                     <controls:NullableBoolConverter x:Key="nullableBoolConverter" />
                     <controls:EnumToStringConverter x:Key="enumToStringConverter" EnumType="ElementTheme"  />
-                    <x:String x:Key="AppVersion">- Experimental Indev</x:String>
+                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                        <Setter Property="BorderBrush" Value="#66757575"/>
+                    </Style>
+                    <Style TargetType="ToggleSwitch" BasedOn="{StaticResource GlowSwitch}"></Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -11,6 +11,7 @@ namespace WindowHoster;
 
 public partial class RegisteredWindowController
 {
+    internal bool Updating { get; private set; } = false;
     bool isRegistered = true;
     Window Parent;
     RegisteredWindow self;
@@ -21,6 +22,7 @@ public partial class RegisteredWindowController
     {
         if (!isRegistered) return;
         if (self.CompatablityMode.NoMoving) return;
+        Updating = true;
         var window = self.Window;
         Point windowOffset;
         unsafe
@@ -67,6 +69,7 @@ public partial class RegisteredWindowController
             if (!Cursor.IsLeftButtonDown)
                 window.SetAsForegroundWindow();
         }
+        Updating = false;
     }
     static Rectangle RectToScreen(Windows.Foundation.Rect rect, Point WindowPosOffset, double RasterizationScale)
     {
@@ -78,7 +81,7 @@ public partial class RegisteredWindowController
         );
     }
     bool queueSetVisible;
-    readonly DispatcherQueue DispatcherQueue;
+    internal readonly DispatcherQueue DispatcherQueue;
     internal RegisteredWindowController(Window Parent, RegisteredWindow self, DispatcherQueue dispatcherQueue)
     {
         this.Parent = Parent;

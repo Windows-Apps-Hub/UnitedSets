@@ -14,6 +14,7 @@ public sealed partial class MainWindow
 {
     #region Tabs
     [RelayCommand]
+    [Event(typeof(TypedEventHandler<SplitButton, SplitButtonClickEventArgs>))]
     [Event(typeof(RoutedEventHandler))]
     private partial void OnAddTabButtonClick();
 

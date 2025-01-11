@@ -1,4 +1,4 @@
-﻿using Windows.Win32;
+using Windows.Win32;
 using Windows.Win32.UI.Accessibility;
 using Windows.Win32.Foundation;
 using System;
@@ -120,7 +120,8 @@ public enum WinEventTypes : uint
     PositionSizeChanged = PInvoke.EVENT_OBJECT_LOCATIONCHANGE,
     WindowMovedStart = PInvoke.EVENT_SYSTEM_MOVESIZESTART,
     NameChanged = PInvoke.EVENT_OBJECT_NAMECHANGE,
-    ObjectDestroyed = PInvoke.EVENT_OBJECT_DESTROY
+    ObjectDestroyed = PInvoke.EVENT_OBJECT_DESTROY,
+    WindowShown = PInvoke.EVENT_OBJECT_SHOW
 }
 public readonly record struct WinEventsRegistrationParameters(nint Hwnd, WinEventTypes Type, bool SkipOwnProcess, WinEventHandler Handler)
 {

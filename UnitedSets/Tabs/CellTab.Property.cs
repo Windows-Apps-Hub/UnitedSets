@@ -10,5 +10,5 @@ partial class CellTab
     [Property(SetVisibility = GeneratorVisibility.DoNotGenerate, OverrideKeyword = true)]
     bool _IsDisposed;
 
-    public IProperty<ContainerCell> MainCellProperty { get; } = Auto(Cell);
+    public IProperty<ContainerCell> MainCellProperty { get; }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Get.Data.Properties;
+using UnitedSets.Tabs;
 namespace UnitedSets.Cells;
 [AutoProperty]
 public abstract partial class Cell(ContainerCell? Parent) : INotifyPropertyChanged

@@ -1,2 +1,5 @@
 IApplicationActivationManager
 ApplicationActivationManager
+
+RegisterShellHookWindow
+RegisterWindowMessage

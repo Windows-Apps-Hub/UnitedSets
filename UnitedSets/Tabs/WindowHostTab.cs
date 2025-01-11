@@ -8,6 +8,9 @@ using WindowHoster;
 using System.Linq;
 using System;
 using UnitedSets.PostProcessing;
+using System.Threading.Tasks;
+using Windows.Win32;
+using UnitedSets.Apps;
 
 namespace UnitedSets.Tabs;
 
@@ -26,9 +29,17 @@ public partial class WindowHostTab : TabBase
 
 
 		RegisteredWindow.BecomesInvalid += DoRemoveTab;
+        RegisteredWindow.ShownByUser += AttemptToSelectTab;
         _Title = DefaultTitle;
         UpdateAppIcon();
     }
+
+    private async void AttemptToSelectTab()
+    {
+        await Task.Delay(100);
+        UnitedSetsApp.Current.SelectedTab = this;
+    }
+
     public static WindowHostTab? Create(WindowEx newWindow)
     {
         if (!newWindow.IsValid)

@@ -2,6 +2,7 @@ using System;
 using Get.Data.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using UnitedSets.Apps;
 using WindowHoster;
 
 namespace UnitedSets.Cells;

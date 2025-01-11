@@ -15,6 +15,7 @@
     mc:Ignorable="d"
     xmlns:settings="using:UnitedSets.Settings"
     xmlns:usControls="using:UnitedSets.UI.Controls"
+    xmlns:usapp="using:UnitedSets.Apps"
     >
     <Grid>
         <Border x:Name="AppTitleBar"
@@ -29,7 +30,7 @@
                     <Image x:Name="AppFontIcon"
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center"
-                    Source="Assets/Square44x44Logo.scale-100.png"   
+                    Source="ms-appx:///Assets/Square44x44Logo.scale-100.png"   
                     Width="24" 
                     Height="24"/>
                     <TextBlock x:Name="AppTitle"
@@ -111,7 +112,7 @@
                                 <FlipViewItem>
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="8">
-                                            <Image Stretch="UniformToFill" Source="https://media.discordapp.net/attachments/954440366940102657/1032420858318291024/unknown.png" Width="365"/>
+                                            <Image Stretch="UniformToFill" Source="ms-appx:///Assets/OOBE/1.png" Width="365"/>
 
                                             <StackPanel Orientation="Vertical" Margin="28,40,28,0" Width="375">
                                                 <icons:FluentSymbolIcon Symbol="Beach24" Foreground="{ThemeResource ResponsiveAccentBrush1}" HorizontalAlignment="Left" Margin="0,0,0,12" RenderTransformOrigin="0.5,0.5">
@@ -119,7 +120,8 @@
                                                         <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
                                                     </icons:FluentSymbolIcon.RenderTransform>
                                                 </icons:FluentSymbolIcon>
-                                                <TextBlock Text="Welcome to United Sets preview beta" TextWrapping="WrapWholeWords" Width="325" FontSize="32" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
+                                                <TextBlock Text="Welcome to United Sets" TextWrapping="WrapWholeWords" FontSize="32" Margin="0,0,0,4" FontWeight="SemiBold" CharacterSpacing="-20"/>
+                                                <TextBlock Text="{x:Bind usapp:Constants.AppVersionTag}" TextWrapping="WrapWholeWords" FontSize="32" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
                                                 <TextBlock Opacity="0.70" LineHeight="24" Width="325" HorizontalAlignment="Left"
                             Text="Thank you for downloading United Sets. After following this quick setup, you can begin using the app!" TextWrapping="WrapWholeWords"/>
                                                 <StackPanel Orientation="Horizontal" Margin="0,172,0,0" >
@@ -133,7 +135,7 @@
                                 <FlipViewItem>
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="8">
-                                            <Image Stretch="UniformToFill" Source="https://media.discordapp.net/attachments/954440366940102657/1032428097129152592/unknown.png" Width="365"/>
+                                            <Image Stretch="UniformToFill" Source="ms-appx:///Assets/OOBE/1.png" Width="365"/>
 
                                             <StackPanel Orientation="Vertical" Margin="28,40,28,0" Width="375">
                                                 <icons:FluentSymbolIcon Symbol="Settings24" Foreground="{ThemeResource ResponsiveAccentBrush1}" HorizontalAlignment="Left" Margin="0,0,0,12" RenderTransformOrigin="0.5,0.5">
@@ -144,30 +146,33 @@
                                                 <TextBlock Text="Customize Settings" FontSize="32" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
                                                 <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" Height="300">
                                                     <ItemsControl Margin="4, 8, 12, 8" ItemsSource="{x:Bind Settings.AllSettings}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate
                                                         x:DataType="settings:Setting">
-                                                            <Grid
+                                                                <Grid
                                                             Padding="12, 8, 12, 4"
                                                             Background="{ThemeResource LayerFillColorDefaultBrush}"
                                                             CornerRadius="4"
                                                             BorderThickness="1"
-                                                            BorderBrush="{ThemeResource MicaBorderBrush}">
-                                                                <StackPanel HorizontalAlignment="Left">
-                                                                    <TextBlock Text="{x:Bind Title}" MaxWidth="220" FontWeight="SemiBold" Margin="0, 0, 0, 4" TextWrapping="WrapWholeWords"/>
-                                                                    <TextBlock Text="{x:Bind Description}" MaxWidth="220" Opacity="0.7" TextWrapping="WrapWholeWords" />
-                                                                </StackPanel>
-                                                                <usControls:SettingController Setting="{x:Bind}" HorizontalAlignment="Right"/>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <StackPanel Orientation="Vertical" Spacing="8"/>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
+                                                                Margin="0,8,0,0"
+                                                            BorderBrush="{ThemeResource MicaBorderBrush}"
+                                                                Visibility="{x:Bind OOBEUserInterfaceVisibility}">
+                                                                    <StackPanel HorizontalAlignment="Left">
+                                                                        <TextBlock Text="{x:Bind Title}" MaxWidth="220" FontWeight="SemiBold" Margin="0, 0, 0, 4" TextWrapping="WrapWholeWords"/>
+                                                                        <TextBlock Text="{x:Bind Description}" MaxWidth="220" Opacity="0.7" TextWrapping="WrapWholeWords" />
+                                                                    </StackPanel>
+                                                                    <usControls:SettingController Setting="{x:Bind}" HorizontalAlignment="Right"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Vertical"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
                                                 </ScrollViewer>
+                                                <TextBlock Text="More Advanced Settings can be found in the Settings menu" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -176,7 +181,7 @@
                                 <FlipViewItem>
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="8">
-                                            <Image Stretch="UniformToFill" Source="https://media.discordapp.net/attachments/954440366940102657/1032307449362919564/unknown.png" Width="365"/>
+                                            <Image Stretch="UniformToFill" Source="ms-appx:///Assets/OOBE/1.png" Width="365"/>
 
                                             <StackPanel Orientation="Vertical" Margin="28,40,28,0" Width="375">
                                                 <icons:FluentSymbolIcon Symbol="Info24" Foreground="{ThemeResource ResponsiveAccentBrush1}" HorizontalAlignment="Left" Margin="0,0,0,12" RenderTransformOrigin="0.5,0.5">
@@ -186,17 +191,15 @@
                                                 </icons:FluentSymbolIcon>
                                                 <TextBlock Text="Preview" FontSize="32" Margin="0,0,0,12" FontWeight="SemiBold" CharacterSpacing="-20"/>
                                                 <TextBlock LineHeight="24" HorizontalAlignment="left" Margin="0, 0, 24, 0">
-                                                    - UWP Apps are not stable yet
+                                                    - May not work well with UWP windows
                                                     <LineBreak/>
-                                                    - Bugs are to be expected
+                                                    - Bugs are still to be expected
                                                     <LineBreak/>
-                                                    - You can see the full list of shortcuts in the starting screen
-                                                    <LineBreak/>
-                                                    - Many planned settings aren't added yet
+                                                    - See the full list of shortcuts and warnings in the starting screen
                                                     <LineBreak/>
                                                     ✓ Open source
                                                 </TextBlock>
-                                                <HyperlinkButton Margin="6, 0, 0, 0" Content="GitHub" NavigateUri="https://github.com/FireCubeStudios/Run"/>
+                                                <HyperlinkButton Margin="6, 0, 0, 0" Content="GitHub" NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>

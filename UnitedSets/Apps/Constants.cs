@@ -1,12 +1,26 @@
-﻿using CommunityToolkit.WinUI.Helpers;
+using CommunityToolkit.WinUI.Helpers;
+using Visibility = Microsoft.UI.Xaml.Visibility;
 using System;
-using Windows.Win32;
 using WinWrapper.Windowing;
 
-namespace UnitedSets;
+namespace UnitedSets.Apps;
 
 static class Constants
 {
+#if false // Dev Version
+    public const Visibility ExperimentalFeedback = Visibility.Collapsed;
+    public const Visibility VisibleOnExperimental = Visibility.Visible;
+    public const string AppVersionTag = "- Development";
+#elif true // Experimental Version
+    public const Visibility ExperimentalFeedback = Visibility.Visible;
+    public const Visibility VisibleOnExperimental = Visibility.Visible;
+    public const string AppVersionTag = "- Experimental";
+#else // Release Version
+    public const Visibility ExperimentalFeedback = Visibility.Collapsed;
+    public const Visibility VisibleOnExperimental = Visibility.Collapsed;
+    public const string AppVersionTag = "- Preview Beta";
+#endif
+
     public const string UnitedSetsLifeCycleKey = "UnitedSetsLifeCycle";
     public const string UnitedSetsTabWindowDragProperty = "UnitedSetsTabWindow";
     public static readonly bool IsAltTabVisible = false;

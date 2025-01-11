@@ -34,4 +34,6 @@ partial class WindowHostTab
     {
 		ShowFlyout(new ModifyWindowFlyoutModule(RegisteredWindow), sender);
     }
+    protected override void OnRightClick(UIElement sender, RightTappedRoutedEventArgs args)
+        => OnDoubleClick(sender, null!);
 }

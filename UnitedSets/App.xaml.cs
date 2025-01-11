@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using UnitedSets.Apps;
 using UnitedSets.Configurations;
 using UnitedSets.UI.AppWindows;
 
@@ -38,6 +39,7 @@ public partial class App : Application
         //if (Constants.IsFirstRun)
         //    LaunchNewOOBE();
         //else
+        //    LaunchNewMain();
         LaunchNewMain();
     }
 
@@ -50,8 +52,14 @@ public partial class App : Application
 
     public void LaunchNewMain()
     {
-        var window = new MainWindow();
-        window.Activate();
+        if (UnitedSetsApp.Current.MainWindow is null)
+        {
+            var window = new MainWindow();
+            window.Activate();
+        } else
+        {
+            UnitedSetsApp.Current.MainWindow.Activate();
+        }
     }
 
     private static void OnUnobservedException(object? sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();

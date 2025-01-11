@@ -32,6 +32,7 @@
         <Compile Remove="UI\AppWindows\NewWindow.xaml.cs" />
     </ItemGroup>
     <ItemGroup>
+        <None Remove="Assets\OOBE\1.png" />
         <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
         <None Remove="UI\AppWindows\MainWindow.xaml" />
         <None Remove="UI\AppWindows\NewWindow.xaml" />

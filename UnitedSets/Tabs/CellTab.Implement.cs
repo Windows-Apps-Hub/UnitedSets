@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;
 using UnitedSets.Cells;
-
+using Get.EasyCSharp;
 
 namespace UnitedSets.Tabs;
 
@@ -65,4 +65,6 @@ partial class CellTab
             ),
             sender
         );
+    protected override void OnRightClick(UIElement sender, RightTappedRoutedEventArgs args)
+        => OnDoubleClick(sender, null!);
 }

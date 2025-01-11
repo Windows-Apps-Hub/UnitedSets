@@ -1,4 +1,4 @@
-﻿<Grid
+<Grid
     x:Class="UnitedSets.UI.FlyoutModules.BasicTabFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -22,7 +22,7 @@
                 <TextBlock Text="Display Name: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                     <TextBox x:Name="TabNameTextBox" TextChanged="TabNameTextBoxChanged" Text="{x:Bind TabBase.CustomTitle, Mode=TwoWay}" PlaceholderText="{x:Bind TabBase.DefaultTitle, Mode=OneWay}" MinWidth="100" MaxWidth="200"/>
-                    <Button Padding="5" Click="TabNameReset">
+                    <Button Padding="5" Click="TabNameReset" Style="{StaticResource ToolbarButton}">
                         <SymbolIcon Symbol="Undo"/>
                     </Button>
                 </StackPanel>

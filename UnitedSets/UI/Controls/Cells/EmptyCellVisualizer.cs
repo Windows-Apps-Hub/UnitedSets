@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Get.Data.Properties;
 using UnitedSets.Cells;
+using UnitedSets.Apps;
 
 namespace UnitedSets.UI.Controls.Cells;
 using static Get.UI.Data.QuickCreate;

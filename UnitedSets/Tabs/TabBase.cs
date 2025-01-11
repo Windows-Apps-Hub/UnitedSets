@@ -1,8 +1,12 @@
 using Get.EasyCSharp;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using UnitedSets.UI.Controls;
 using UnitedSets.UI.FlyoutModules;
 
 namespace UnitedSets.Tabs;
@@ -25,7 +29,7 @@ public abstract partial class TabBase : INotifyPropertyChanged
 	protected async void ShowFlyout(UIElement Element, UIElement RelativeTo) {
 		await Task.Delay(300);
 
-        var flyout = new Flyout
+        var flyout = new BackdropedFlyout
         {
             Content = new StackPanel
             {

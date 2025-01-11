@@ -5,11 +5,13 @@ using Get.Data.Collections.Linq;
 using Get.Data.Collections.Update;
 using Get.Data.Properties;
 using Microsoft.UI.Xaml.Controls;
+using UnitedSets.Tabs;
 using static Get.Data.Properties.AutoTyper;
 namespace UnitedSets.Cells;
 [AutoProperty]
 public partial class ContainerCell : Cell
 {
+    public CellTab? ParentCellTab { get; set; }
     public ContainerCell(ContainerCell? Parent, Orientation Orientation) : base(Parent)
     {
         this.Orientation = Orientation;

@@ -37,6 +37,13 @@ public sealed partial class ModifyWindowFlyoutModule
             ApplyToFuture.IsEnabled = false;
         }
         BorderlessWindowSettings.Visibility = window.CompatablityMode.NoMoving ? Visibility.Collapsed : Visibility.Visible;
+        if (UnitedSetsApp.Current.Configuration.MainConfiguration.Autosave ?? true)
+        {
+            AutoSaveRemarksTb.Text = "Autosave is on.";
+        } else
+        {
+            AutoSaveRemarksTb.Text = "Autosave is off.\nThis will only apply to the current session\nunless the setting is exported.";
+        }
     }
     readonly RegisteredWindow RegisteredWindow;
 

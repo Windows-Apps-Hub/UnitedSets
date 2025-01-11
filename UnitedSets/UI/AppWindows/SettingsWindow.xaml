@@ -9,6 +9,7 @@
     xmlns:settings="using:Cube.UI.Controls.Settings"
 	xmlns:USsettings="using:UnitedSets.Settings"
     xmlns:controls="using:UnitedSets.UI.Controls"
+    xmlns:usapp="using:UnitedSets.Apps"
     MinWidth="890"
     Title="United Sets - Settings"
     mc:Ignorable="d">
@@ -47,7 +48,7 @@
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="100, 50, 300, 100">
                     <StackPanel Margin="4, 4, 4, 24" Orientation="Horizontal">
                         <TextBlock FontSize="24" FontWeight="SemiBold">United Sets</TextBlock>
-                        <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7" Text="{StaticResource AppVersion}"/>
+                        <TextBlock FontSize="20" VerticalAlignment="Bottom" Margin="8, 0, 0, 0" Opacity="0.7" Text="{x:Bind usapp:Constants.AppVersionTag}"/>
                     </StackPanel>
                     <!--<TextBlock FontSize="12" FontWeight="SemiBold" Margin="4">Warning options only effect this instance unless you click "Make These Settings the Defaults"</TextBlock>-->
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 24, 4, 4">Options</TextBlock>
@@ -56,6 +57,7 @@
                             <DataTemplate x:DataType="USsettings:Setting">
                                 <settings:SettingsBlockControl
 	                                xmlns:helpers="using:UnitedSets.Helpers"
+                                    Visibility="{x:Bind UserInterfaceVisibility}"
 	                                Title="{x:Bind
 	                                    helpers:XAMLFuncs.ConcatWithSpaceIf(RequiresRestart, Title, '(Restart Required)')
 	                                }"
@@ -92,18 +94,18 @@
                                 <StackPanel Margin="20, 12, 12, 0" Padding="4,4,4,10" Spacing="4">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock FontSize="14">United Sets&#160;</TextBlock>
-                                        <TextBlock FontSize="14" Text="{StaticResource AppVersion}"/>
+                                        <TextBlock FontSize="14" Text="{x:Bind usapp:Constants.AppVersionTag}"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="United Sets is open sourced on"/>
-                                        <HyperlinkButton NavigateUri="https://github.com/Developer-Sanctuary/Community-UnitedSets" Padding="3">GitHub</HyperlinkButton>
+                                        <HyperlinkButton NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets" Padding="3">GitHub</HyperlinkButton>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">Developed by</TextBlock>
                                         <HyperlinkButton Margin="2,0,0,0" Padding="3" NavigateUri="https://github.com/GetGet99">Get,</HyperlinkButton>
                                         <HyperlinkButton Padding="3" NavigateUri="https://twitter.com/FireCubeStudios">FireCubeStudios,</HyperlinkButton>
                                         <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextWrapping="WrapWholeWords">and</TextBlock>
-                                        <HyperlinkButton Padding="3" NavigateUri="https://github.com/Developer-Sanctuary/Community-UnitedSets/graphs/contributors">other contributors</HyperlinkButton>
+                                        <HyperlinkButton Padding="3" NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets/graphs/contributors">other contributors</HyperlinkButton>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Join our Discord server:"/>
@@ -129,11 +131,11 @@
                     <TextBlock FontSize="14" FontWeight="SemiBold" Margin="4, 4, 4, 8">About this app</TextBlock>
                     <StackPanel Margin="4, 0, 4, 0" Orientation="Horizontal">
                         <TextBlock FontSize="14" Margin="0, 4, 4, 0">United Sets</TextBlock>
-                        <TextBlock Opacity="0.7" FontSize="14" Margin="2, 4, 4, 0" Text="{StaticResource AppVersion}"/>
+                        <TextBlock Opacity="0.7" FontSize="14" Margin="2, 4, 4, 0" Text="{x:Bind usapp:Constants.AppVersionTag}"/>
                     </StackPanel>
                     <TextBlock FontSize="14" Margin="4, 0, 4, 0" TextWrapping="WrapWholeWords">Developed by <LineBreak/> • Get <LineBreak/> • FireCubeStudios <LineBreak/> • Full contributors list on GitHub</TextBlock>
                     <HyperlinkButton NavigateUri="https://discord.gg/3WYcKat" Padding="3">Join Discord</HyperlinkButton>
-                    <HyperlinkButton NavigateUri="https://github.com/FireCubeStudios/UnitedSets" Padding="3">GitHub Repository</HyperlinkButton>
+                    <HyperlinkButton NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets" Padding="3">GitHub Repository</HyperlinkButton>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

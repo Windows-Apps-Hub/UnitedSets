@@ -82,7 +82,10 @@ public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged
     public bool? _Autosave;
 
     [AutoNotifyProperty]
-    public bool _CloseWindowOnCloseTab;
+    public CloseTabBehaviors _CloseTabBehaviors;
+
+    [AutoNotifyProperty]
+    public UserMoveWindowBehaviors _UserMoveWindowBehavior;
 
     [AutoNotifyProperty]
     public bool _BypassMinSize;

@@ -8,7 +8,7 @@ body:
   attributes:
     label: Feature Request Description
     description: Describe your feature request
-    value: |
+    placeholder: |
       Ex. I want a new Settings _____ that does _____.
       
       Add screenshots, design sketches, or anything else if you wish to do so.

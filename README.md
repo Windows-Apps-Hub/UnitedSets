@@ -6,7 +6,7 @@ An open-sourced program that groups windows into tabs, inspired by the unrelease
 
 United Sets is live on [Microsoft Store](https://www.microsoft.com/store/apps/9N7CWZ3L5RWL).
 
-Want to try out more features? Try out the [Experimental Version](https://www.microsoft.com/store/apps/9N9FR4ZZ6TQP).<br>Warning: Installing experimental version may replace the regular version.
+Want to try out more features? [Experimental Version](https://www.microsoft.com/store/apps/9N9FR4ZZ6TQP) is also avaliable on the Microsoft Store.<br>Warning: Installing experimental version may replace the regular version.
 
 ## Screenshot
 

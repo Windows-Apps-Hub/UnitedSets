@@ -1,4 +1,4 @@
-# United Sets (BETA)
+# ![United Sets Icon](UnitedSets/Assets/SmallTile.scale-400.png) United Sets (BETA)
 
 An open-sourced program that groups windows into tabs, inspired by the unreleased Sets feature 
 

@@ -2,7 +2,7 @@ name: Bug report
 about: Create a report to help us improve
 title: "[Bug] "
 labels: bug
-assignees: ''
+assignees: []
 body:
   - type: markdown
     attributes:
@@ -13,8 +13,8 @@ body:
       label: Description
       description: Describe your bug here
       placeholder: |
-          Ex. Settings button not working...
-          If applicable, please attached a screenshot.
+        Ex. Settings button not working...
+        If applicable, please attach a screenshot.
     validations:
       required: true
   - type: textarea
@@ -25,7 +25,7 @@ body:
       placeholder: |
         1. Go to '...'
         2. Click on '....'
-        3. See error |
-        If applicable, please attached a screenshot.
+        3. See error
+        If applicable, please attach a screenshot.
     validations:
       required: false

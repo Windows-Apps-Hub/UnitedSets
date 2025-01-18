@@ -44,6 +44,23 @@ public sealed partial class ModifyWindowFlyoutModule
         {
             AutoSaveRemarksTb.Text = "Autosave is off.\nThis will only apply to the current session\nunless the setting is exported.";
         }
+        if (window.CompatablityMode.NoOwner)
+        {
+            var w = UnitedSetsApp.Current.MainWindow.Win32Window;
+            var allPopupWindows = WinWrapper.Windowing.Window.GetWindowsInThread(w.Thread)
+                .Where(x => x.Class.Name is "Microsoft.UI.Content.PopupWindowSiteBridge");
+            foreach (var wind in allPopupWindows)
+                wind.SetTopMost();
+        }
+        Unloaded += delegate
+        {
+
+            var w = UnitedSetsApp.Current.MainWindow.Win32Window;
+            var allPopupWindows = WinWrapper.Windowing.Window.GetWindowsInThread(w.Thread)
+                .Where(x => x.Class.Name is "Microsoft.UI.Content.PopupWindowSiteBridge");
+            foreach (var wind in allPopupWindows)
+                wind[WinWrapper.Windowing.WindowExStyles.TOPMOST] = false;
+        };
     }
     readonly RegisteredWindow RegisteredWindow;
 

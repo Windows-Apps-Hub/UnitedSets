@@ -8,6 +8,10 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using WinWrapper.Taskbar;
 using WinWrapper;
+using Win32Window = WinWrapper.Windowing.Window;
+using UnitedSets.Cells;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Media;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -50,6 +54,55 @@ public sealed partial class MainWindow
             }
             if (TabGroup.Tabs.Count == 0)
                 await UIRemoveFromCollectionAsync(UnitedSetsApp.Current.HiddenTabs, TabGroup);
+        }
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    void BringUWPWindowUp()
+    {
+        // prevent case of united sets in united sets update
+        if (!Win32Window.IsVisible) return;
+        var fg = Win32Window.ForegroundWindow;
+        if (Win32Window.Root == fg.Root)
+        {
+            if (UnitedSetsApp.Current.SelectedTab is { } tab)
+            {
+                if (tab is WindowHostTab wht)
+                {
+                    if (wht.RegisteredWindow.CompatablityMode.NoOwner)
+                    {
+                        // uwp window is probably behind
+                        // don't activate the logic if we have any popups
+                        DispatcherQueue.TryEnqueue(delegate
+                        {
+                            var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
+                            if (popups.Count is 0)
+                                // attempt to activate it
+                                wht.RegisteredWindow.Window.Activate(WinWrapper.Windowing.ActivationTechnique.SetWindowPosTopMost);
+                        });
+                    }
+                }
+                else if (tab is CellTab ct)
+                {
+                    foreach (var cell in ct.MainCell.AllSubCells)
+                    {
+                        if (cell is not WindowCell wc) continue;
+                        if (wc.Window.CompatablityMode.NoOwner)
+                        {
+                            // uwp window is probably behind
+                            // don't activate the logic if we have any popups
+                            DispatcherQueue.TryEnqueue(delegate
+                            {
+                                var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
+                                if (popups.Count is 0)
+                                    // attempt to activate it
+                                    wc.Window.Window.Activate(WinWrapper.Windowing.ActivationTechnique.SetWindowPosTopMost);
+                            });
+                        }
+                    }
+                }
+            }
         }
     }
 

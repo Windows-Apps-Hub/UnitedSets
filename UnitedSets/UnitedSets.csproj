@@ -137,6 +137,9 @@
         <Page Update="Controls\CellVisualizer.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
+        <Page Update="UI\Controls\Settings\CornerRadiusEditor.xaml">
+          <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
     <Choose>
         <When Condition="'$(Configuration)'=='DebugUnpackaged'">

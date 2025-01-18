@@ -39,8 +39,9 @@ public partial class App : Application
         //if (Constants.IsFirstRun)
         //    LaunchNewOOBE();
         //else
-        //    LaunchNewMain();
+            //LaunchNewMain();
         LaunchNewMain();
+        //LaunchNewSocialPreview();
     }
 
 
@@ -61,6 +62,14 @@ public partial class App : Application
             UnitedSetsApp.Current.MainWindow.Activate();
         }
     }
+
+    void LaunchNewSocialPreview()
+    {
+        var window = new SocialPreviewWindow();
+        window.Activate();
+    }
+
+
 
     private static void OnUnobservedException(object? sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();
 

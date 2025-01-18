@@ -28,7 +28,8 @@ public partial class TabVisualizer : TemplateControl<Grid>
                 {
                     CellTab ct => new GenericCellVisualizer(ct.MainCell)
                     {
-                        CellBinding = OneWay(ct.MainCellProperty.Select(x => (Cell)x))
+                        CellBinding = OneWay(ct.MainCellProperty.Select(x => (Cell)x)),
+                        CellMarginBinding = OneWay(ct.CellMarginProperty)
                     },
                     WindowHostTab wt => new WindowHost { AssociatedWindow = wt.RegisteredWindow },
                     _ => throw new System.InvalidCastException("Unknown tab type")

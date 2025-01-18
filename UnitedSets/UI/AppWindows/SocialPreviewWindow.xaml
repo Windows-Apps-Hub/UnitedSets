@@ -1,0 +1,55 @@
+<winex:WindowEx
+    xmlns:winex="using:WinUIEx" 
+    x:Class="UnitedSets.UI.AppWindows.SocialPreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:icons="using:Cube.UI.Icons" 
+    xmlns:settings="using:Cube.UI.Controls.Settings"
+	xmlns:USsettings="using:UnitedSets.Settings"
+    xmlns:controls="using:UnitedSets.UI.Controls"
+    xmlns:usapp="using:UnitedSets.Apps"
+    Width="640"
+    Height="320"
+    Title="United Sets - Social Preview"
+    mc:Ignorable="d">
+    <winex:WindowEx.SystemBackdrop>
+        <MicaBackdrop/>
+    </winex:WindowEx.SystemBackdrop>
+    <Viewbox Stretch="Uniform" StretchDirection="Both" Width="480">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Image
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Source="ms-appx:///Assets/Square44x44Logo.targetsize-256.png"   
+                    Margin="0,3,0,0"
+                    Width="32" 
+                    Height="32"/>
+                <TextBlock
+                    Text="United Sets"
+                    VerticalAlignment="Center"
+                    Margin="4,0,0,0"
+                    FontSize="28"/>
+                <TextBlock
+                    Text="- GitHub"
+                    VerticalAlignment="Center"
+                    Margin="6, 0, 0, 0"
+                    Opacity="0.7"
+                    FontSize="28"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <TextBlock Width="32"/>
+                <!-- Pad -->
+                <TextBlock
+                    Margin="4,4,0,0"
+                    Text="Group windows into tabs"
+                    VerticalAlignment="Center"
+                    FontFamily="Aptos"
+                    FontStyle="Italic"
+                    FontSize="18"/> 
+            </StackPanel>
+        </StackPanel>
+    </Viewbox>
+</winex:WindowEx>

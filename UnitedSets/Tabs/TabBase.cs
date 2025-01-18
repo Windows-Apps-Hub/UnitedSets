@@ -25,25 +25,31 @@ public abstract partial class TabBase : INotifyPropertyChanged
     }
 	protected virtual void DoShowTab() {
 		UnitedSetsApp.Current.SelectedTab = this;
-	}
-	protected async void ShowFlyout(UIElement Element, UIElement RelativeTo) {
-		await Task.Delay(300);
+    }
+    protected void ShowFlyout(UIElement Element, UIElement RelativeTo)
+    {
+        ShowFlyout([Element], RelativeTo);
+    }
 
+    protected async void ShowFlyout(UIElement[] Elements, UIElement RelativeTo) {
+		await Task.Delay(300);
+        StackPanel sp;
         var flyout = new BackdropedFlyout
         {
-            Content = new StackPanel
+            Content = sp = new StackPanel
             {
                 Width = 350,
                 Spacing = 8,
                 Children =
                 {
-                    new BasicTabFlyoutModule(this),
-                    Element
+                    new BasicTabFlyoutModule(this)
                 }
             },
             ShouldConstrainToRootBounds = false,
             Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
         };
+        foreach (var ele in Elements)
+            sp.Children.Add(ele);
         flyout.ShowAt((FrameworkElement)RelativeTo);
     }
 	protected virtual void DoRemoveTab()

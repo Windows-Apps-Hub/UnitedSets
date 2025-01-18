@@ -9,24 +9,24 @@
     xmlns:usapp="using:UnitedSets.Apps"
 >
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <Image x:Name="AppFontIcon"
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Center"
-                Source="ms-appx:///Assets/SmallTile.scale-100.png"   
-                Width="48" 
-                Height="48"/>
+        <Image
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center"
+            Source="ms-appx:///Assets/Square44x44Logo.targetsize-256.png"   
+            Margin="0,3,0,0"
+            Width="32" 
+            Height="32"/>
         <TextBlock
-                Text="United Sets"
-                VerticalAlignment="Center"
-                
-                FontSize="28"/>
-        <!--Margin="8, 0, 0, 0"-->
+            Text="United Sets"
+            VerticalAlignment="Center"
+            Margin="4,0,0,0"
+            FontSize="28"/>
         <TextBlock
-                Text="{x:Bind usapp:Constants.AppVersionTag}"
-                VerticalAlignment="Center"
-                Margin="8, 6, 0, 0"
-                Opacity="0.7"
-                FontSize="24"/>
+            Text="{x:Bind usapp:Constants.AppVersionTag}"
+            VerticalAlignment="Center"
+            Margin="6, 0, 0, 0"
+            Opacity="0.7"
+            FontSize="28"/>
     </StackPanel>
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" x:Name="hintInfo">
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
@@ -61,5 +61,16 @@
                 <HyperlinkButton Content="Github Issues" NavigateUri="https://github.com/Windows-Apps-Hub/UnitedSets/issues/71"/>
             </StackPanel>
         </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="descInfo">
+        <TextBlock Width="32"/>
+        <!-- Pad -->
+        <TextBlock
+            Margin="4,4,0,0"
+            Text="Group windows into tabs"
+            VerticalAlignment="Center"
+            FontFamily="Aptos"
+            FontStyle="Italic"
+            FontSize="18"/>
     </StackPanel>
 </StackPanel>

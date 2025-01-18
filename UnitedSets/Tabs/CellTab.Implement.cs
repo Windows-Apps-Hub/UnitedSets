@@ -55,14 +55,17 @@ partial class CellTab
     // UI
     protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
         => ShowFlyout(
-            new MultiWindowModifyFlyoutModule(
-                (
-                    from x in MainCell.AllSubCells
-                    let wc = x as WindowCell
-                    where wc is not null
-                    select wc.Window
-                ).ToArray()
-            ),
+            [
+                new CellTabFlyoutModule(this),
+                new MultiWindowModifyFlyoutModule(
+                    (
+                        from x in MainCell.AllSubCells
+                        let wc = x as WindowCell
+                        where wc is not null
+                        select wc.Window
+                    ).ToArray()
+                )
+            ],
             sender
         );
     protected override void OnRightClick(UIElement sender, RightTappedRoutedEventArgs args)

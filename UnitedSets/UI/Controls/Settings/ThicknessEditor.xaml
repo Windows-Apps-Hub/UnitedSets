@@ -1,0 +1,28 @@
+<Button
+    x:Class="UnitedSets.UI.Controls.ThicknessEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:settings="using:UnitedSets.Settings"
+    Content="{x:Bind Value.ToString(), Mode=OneWay}"
+    Style="{StaticResource DefaultUnitedSetsButtonStyle}"
+>
+    <Button.Flyout>
+        <Flyout x:Name="flyout" Placement="Bottom">
+            <Grid Width="200" Height="150">
+                <NumberBox Value="0" x:Name="left" HorizontalAlignment="Left" VerticalAlignment="Center"  ValueChanged="NumberBox_ValueChanged"/>
+                <NumberBox Value="0" x:Name="top" VerticalAlignment="Top" HorizontalAlignment="Center"  ValueChanged="NumberBox_ValueChanged"/>
+                <NumberBox Value="0" x:Name="right" HorizontalAlignment="Right" VerticalAlignment="Center"  ValueChanged="NumberBox_ValueChanged"/>
+                <NumberBox Value="0" x:Name="bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" ValueChanged="NumberBox_ValueChanged" />
+                <Button
+                    Name="confirmBtn"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Padding="5"
+                    Click="confirmBtn_Click"
+                    Style="{StaticResource ToolbarButton}"
+                >
+                    <SymbolIcon Symbol="Accept"/>
+                </Button>
+            </Grid>
+        </Flyout>
+    </Button.Flyout>
+</Button>

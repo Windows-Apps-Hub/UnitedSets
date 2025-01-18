@@ -13,9 +13,7 @@ using EnumsNET;
 using Windows.UI;
 using UnitedSets.Configurations;
 using Get.Symbols;
-using WinUIEx;
 using UnitedSets.Apps;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace UnitedSets.Mvvm.Services;
@@ -65,7 +63,7 @@ public partial class UnitedSetsAppSettings
             //    Icon = SymbolEx.PPSOneLandscape,
             //    RequiresRestart = true
             //},
-            HomePageBackground = new(
+            HomePageInfo = new(
                 () => Configuration.HomePageBackground ?? true, x => Configuration.HomePageBackground = x
             )
             {
@@ -86,19 +84,8 @@ public partial class UnitedSetsAppSettings
             BackdropMode = new(
                 () => Configuration.Design!.Backdrop, x => Configuration.Design!.Backdrop = x, Enums.GetValues<USBackdrop>()
             ) {
-                Title = "Window Background",
-                Description = "Select the Window Background",
+                Title = "Window Backdrop",
                 Icon = SymbolEx.Color,
-                UserInterfaceVisibility = Visibility.Visible
-            },
-            WindowTitlePrefix = new(
-                () => Configuration.TitlePrefix ?? "", x => Configuration.TitlePrefix = x
-            )
-            {
-                Title = "Window Title Prefix",
-                Description = "Prefix that shows up before the normal UnitedSets title",
-                Icon = SymbolEx.AlignLeft,
-                PlaceholderText = "None - Normal Title Mode",
                 UserInterfaceVisibility = Visibility.Visible
             },
             Theme = new(
@@ -112,6 +99,55 @@ public partial class UnitedSetsAppSettings
                 RequiresRestart = true,
                 UserInterfaceVisibility = Visibility.Visible
             },
+            Background = new(
+                () => PreservedHelpers.ConvertToColor(Configuration.Design!.PrimaryBackgroundNonTranslucent ?? ""),
+                x => Configuration.Design!.PrimaryBackgroundNonTranslucent = PreservedHelpers.ColorToStr(x)
+            )
+            {
+                Title = "Background Color",
+                Description = "Background color to be applied after the selected backdrop",
+                Icon = SymbolEx.MailFill,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            BorderColor = new(
+                () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderColor ?? ""),
+                x => Configuration.Design!.BorderColor = PreservedHelpers.ColorToStr(x)
+            )
+            {
+                Title = "Border Color",
+                Icon = SymbolEx.DeviceMonitorNoPic,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            BorderThickness = new(
+                () => PreservedHelpers.RectToThick(Configuration.Design!.BorderThickness),
+                x => Configuration.Design!.BorderThickness = PreservedHelpers.ThickToRect(x)
+            )
+            {
+                Title = "Thickness",
+                Description = "Sets the thickness (useful with border color)",
+                Icon = SymbolEx.ChromeMaximize,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            CornerRadius = new(
+                () => PreservedHelpers.RectToCornerRadius(Configuration.Design!.BorderCorner),
+                x => Configuration.Design!.BorderCorner = PreservedHelpers.RectToCornerRadius(x)
+            )
+            {
+                Title = "Corner Radius",
+                Description = "Sets the corner radius (useful with border color)",
+                Icon = SymbolEx.Checkbox,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            WindowTitlePrefix = new(
+                () => Configuration.TitlePrefix ?? "", x => Configuration.TitlePrefix = x
+            )
+            {
+                Title = "Window Title Prefix",
+                Description = "Prefix that shows up before the normal UnitedSets title",
+                Icon = SymbolEx.AlignLeft,
+                PlaceholderText = "None - Normal Title Mode",
+                UserInterfaceVisibility = Visibility.Visible
+            },
             TaskbarIcon = new(
                 () => Configuration.TaskbarIco ?? "", x => Configuration.TaskbarIco = x
             )
@@ -120,51 +156,24 @@ public partial class UnitedSetsAppSettings
                 Description = "Override the taskbar icon",
                 Icon = SymbolEx.Picture
             },
-            BorderGraident1 = new(
-                () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant1 ?? ""),
-                x => Configuration.Design!.BorderGradiant1 = PreservedHelpers.ColorToStr(x)
-            )
-            {
-                Title = "[Transparent Window] Border Gradient (1)",
-                Description = "Sets the border gradient if the window is transparent",
-                Icon = SymbolEx.DeviceMonitorNoPic
-            },
-            BorderGraident2 = new(
-                () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant2 ?? ""),
-                x => Configuration.Design!.BorderGradiant2 = PreservedHelpers.ColorToStr(x)
-            )
-            {
-                Title = "[Transparent Window] Border Gradient (2)",
-                Description = "Sets the border gradient if the window is transparent",
-                Icon = SymbolEx.DeviceMonitorNoPic
-            },
-            Background = new(
-                () => PreservedHelpers.ConvertToColor(Configuration.Design!.PrimaryBackgroundNonTranslucent ?? ""),
-                x => Configuration.Design!.PrimaryBackgroundNonTranslucent = PreservedHelpers.ColorToStr(x)
-            )
-            {
-                Title = "Background (Non Transculent)",
-                Description = "Sets the background color (transparent/semi transparent will use backdrop)",
-                Icon = SymbolEx.MailFill
-            },
-            CornerRadius = new(
-                () => PreservedHelpers.RectToCornerRadius(Configuration.Design!.BorderCorner),
-                x => Configuration.Design!.BorderCorner = PreservedHelpers.RectToCornerRadius(x)
-            )
-            {
-                Title = "Corner Radius",
-                Description = "Sets the corner radius (only applies in transparent window)",
-                Icon = SymbolEx.Checkbox
-            },
-            BorderThickness = new(
-                () => PreservedHelpers.RectToThick(Configuration.Design!.BorderThickness),
-                x => Configuration.Design!.BorderThickness = PreservedHelpers.ThickToRect(x)
-            )
-            {
-                Title = "Thickness",
-                Description = "Sets the thickness",
-                Icon = SymbolEx.ChromeMaximize
-            },
+            //BorderGraident1 = new(
+            //    () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant1 ?? ""),
+            //    x => Configuration.Design!.BorderGradiant1 = PreservedHelpers.ColorToStr(x)
+            //)
+            //{
+            //    Title = "[Transparent Window] Border Gradient (1)",
+            //    Description = "Sets the border gradient if the window is transparent",
+            //    Icon = SymbolEx.DeviceMonitorNoPic
+            //},
+            //BorderGraident2 = new(
+            //    () => PreservedHelpers.ConvertToColor(Configuration.Design!.BorderGradiant2 ?? ""),
+            //    x => Configuration.Design!.BorderGradiant2 = PreservedHelpers.ColorToStr(x)
+            //)
+            //{
+            //    Title = "[Transparent Window] Border Gradient (2)",
+            //    Description = "Sets the border gradient if the window is transparent",
+            //    Icon = SymbolEx.DeviceMonitorNoPic
+            //},
             MainMargin = new(
                 () => PreservedHelpers.RectToThick(Configuration.Design!.BorderThickness),
                 x => Configuration.Design!.BorderThickness = PreservedHelpers.ThickToRect(x)
@@ -172,7 +181,8 @@ public partial class UnitedSetsAppSettings
             {
                 Title = "Main Margin",
                 Description = "Sets the main margin",
-                Icon = SymbolEx.ChromeMaximize
+                Icon = SymbolEx.ChromeMaximize,
+                UserInterfaceVisibility = Visibility.Collapsed
             },
             InitialWindowSize = new(
                 () => Configuration.Design!.WindowSize,
@@ -180,9 +190,10 @@ public partial class UnitedSetsAppSettings
             )
             {
                 Title = "Initial Window Size",
-                Description = "Sets the main margin",
+                Description = "Sets the startup window size",
                 Icon = SymbolEx.WindowsInsider,
-                RequiresRestart = true
+                RequiresRestart = true,
+                UserInterfaceVisibility = Visibility.Collapsed
             },
         ];
         foreach (var setting in AllSettings)
@@ -200,20 +211,21 @@ public partial class UnitedSetsAppSettings
     public OnOffSetting Autosave { get; }
     public SelectSetting<UserMoveWindowBehaviors> UserMoveWindowBehavior { get; }
     public OnOffSetting BypassMinimumSize { get; }
-    public OnOffSetting HomePageBackground { get; }
+    public OnOffSetting HomePageInfo { get; }
     //public OnOffSetting TransculentWindow { get; }
     public TextSetting WindowTitlePrefix { get; }
     public TempLinkSetting<string> TaskbarIcon { get; }
-    public TempLinkSetting<Color> BorderGraident1 { get; }
-    public TempLinkSetting<Color> BorderGraident2 { get; }
-    public TempLinkSetting<Color> Background { get; }
-    public TempLinkSetting<CornerRadius> CornerRadius { get; }
-    public TempLinkSetting<Thickness> BorderThickness { get; }
+    public ColorPickerSetting BorderColor { get; }
+    //public TempLinkSetting<Color> BorderGraident1 { get; }
+    //public TempLinkSetting<Color> BorderGraident2 { get; }
+    public ThicknessSetting BorderThickness { get; }
+    public CornerRadiusSetting CornerRadius { get; }
     public TempLinkSetting<Thickness> MainMargin { get; }
     public TempLinkSetting<System.Drawing.Size?> InitialWindowSize { get; }
     public SelectSetting<ElementTheme> Theme { get; }
 
     public SelectSetting<USBackdrop> BackdropMode { get; }
+    public ColorPickerSetting Background { get; }
 
     SettingsWindow? s_window;
     [RelayCommand]

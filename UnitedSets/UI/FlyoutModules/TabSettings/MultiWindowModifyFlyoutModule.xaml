@@ -1,11 +1,10 @@
-﻿<Grid
+<Grid
     x:Class="UnitedSets.UI.FlyoutModules.MultiWindowModifyFlyoutModule"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnitedSets"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:localclass="using:UnitedSets.Classes"
     mc:Ignorable="d"
     xmlns:communitytoolkitconverters="using:CommunityToolkit.WinUI.UI.Converters"
     >
@@ -18,7 +17,7 @@
             <StackPanel.Resources>
                 <communitytoolkitconverters:BoolToVisibilityConverter x:Name="BoolToVisibilityConvertor"/>
             </StackPanel.Resources>
-            <TextBlock Text="Tab Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
+            <TextBlock Text="Window Settings" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" HorizontalAlignment="Left"/>
             <Grid>
                 <TextBlock Text="Window To Modify: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <ComboBox x:Name="RegisteredWindowSelector"

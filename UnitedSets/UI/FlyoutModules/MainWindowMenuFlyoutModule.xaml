@@ -7,6 +7,7 @@
     mc:Ignorable="d"
     xmlns:tabs="using:UnitedSets.Tabs"
     xmlns:us="using:UnitedSets"
+    xmlns:usapps="using:UnitedSets.Apps"
     MinWidth="400"
     >
     <StackPanel Orientation="Vertical" Spacing="8">
@@ -42,16 +43,18 @@
 			</StackPanel>
         </Border>
         <Border BorderThickness="1"
-        CornerRadius="8"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-        Padding="16">
+            CornerRadius="8"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            Padding="16"
+            Visibility="{x:Bind usapps:Constants.VisibleOnExperimental}"
+        >
             <StackPanel Spacing="8">
 
                 <Grid>
                     <TextBlock Text="Set Asided Tabs" Style="{StaticResource FlyoutPickerTitleTextBlockStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center"/>
                     <Button ToolTipService.ToolTip="Set All Currently Opened Tabs Aside" Click="SetTabsAside" HorizontalAlignment="Right" Padding="5">
-                        <SymbolIcon Symbol="ClosePane"/>
+                        <SymbolIcon Symbol="OpenPane"/>
                     </Button>
                 </Grid>
                 <TextBlock Text="Right click for more actions" />
@@ -124,7 +127,7 @@
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Source="{x:Bind Icon, Mode=OneWay}" Margin="10" Width="30"/>
-                                        <TextBlock Grid.Column="1" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="WordEllipsis" MaxWidth="80" ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}"/>
                                     </Grid>
                                     <ListViewItem.ContextFlyout>
                                         <MenuFlyout>

@@ -199,23 +199,30 @@ public sealed partial class MainWindow
         {
             var window = OtherWindowDragging;
             OtherWindowDragging = default;
-            DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
-            var foreground = WindowEx.ForegroundWindow;
-            if (foreground == window &&
-                IsInTitleBarBounds(Win32Window, window) &&
-                IsUnitedSetWindowVisible(Win32Window, window))
+            // Since the condition is already checked earlier,
+            // we can skip it.
+            // This check actually leads to some bugs.
+            //var foreground = WindowEx.ForegroundWindow;
+            //if (foreground == window &&
+            //    IsInTitleBarBounds(Win32Window, window) &&
+            //    IsUnitedSetWindowVisible(Win32Window, window))
+            //{
+            //}
+
+            if (SelectedCell is not null)
             {
-                if (SelectedCell is not null)
+                SelectedCell.HoverEffect = false;
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    SelectedCell.HoverEffect = false;
-                    DispatcherQueue.TryEnqueue(() =>
-                    {
-                        var registeredWindow = PostProcessingRegisteredWindow.Register(window);
-                        if (registeredWindow is not null)
-                            DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
-                    });
-                }
-                else DispatcherQueue.TryEnqueue(delegate
+                    var registeredWindow = PostProcessingRegisteredWindow.Register(window);
+                    if (registeredWindow is not null)
+                        DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
+                });
+            }
+            else
+            {
+                DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                DispatcherQueue.TryEnqueue(delegate
                 {
                     if (WindowHostTab.Create(window) is { } tab)
                     {

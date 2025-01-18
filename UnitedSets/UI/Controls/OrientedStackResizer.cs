@@ -1,26 +1,14 @@
-#nullable enable
-using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using CommunityToolkit.WinUI.UI;
 using Get.UI.Data;
-using Get.Data.Properties;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Shapes;
+using UnitedSets.UI.Controls.Cells.Resizer;
 namespace UnitedSets.Controls;
 
-public partial class OrientedStackResizer : SizerBase
+public partial class OrientedStackResizer : CustomSizerBase
 {
-    public OrientedStackResizer()
-    {
-        DefaultStyleKey = typeof(SizerBase);
-    }
     OrientedStack? panel;
     UIElement? target;
     FrameworkElement? sibling;
@@ -67,6 +55,8 @@ public partial class OrientedStackResizer : SizerBase
         var targetNewSize = Math.Max(_targetInitSize + change, 10);
         var targetNewRS = _targetInitRS * targetNewSize / _targetInitSize;
         var siblingNewRS = _siblingInitRS - (targetNewRS - _targetInitRS);
+        OrientedStack.LengthTypeProperty.SetValue(target, GridUnitType.Star);
+        OrientedStack.LengthTypeProperty.SetValue(sibling, GridUnitType.Star);
         OrientedStack.LengthValueProperty.SetValue(target, targetNewRS);
         OrientedStack.LengthValueProperty.SetValue(sibling, siblingNewRS);
     }

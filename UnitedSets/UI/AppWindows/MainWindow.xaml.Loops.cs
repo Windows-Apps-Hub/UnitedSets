@@ -18,6 +18,8 @@ public sealed partial class MainWindow
 
         HasOwnerUpdate();
 
+        BringUWPWindowUp();
+
         await RemoveDisposedTab();
 
         if (Cursor.IsLeftButtonDown && Keyboard.IsControlDown)

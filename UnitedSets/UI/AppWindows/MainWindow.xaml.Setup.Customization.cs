@@ -26,7 +26,7 @@ partial class MainWindow
             onUpdate(setting.Value);
         }
         var settings = UnitedSetsApp.Current.Settings;
-        var gradStops = (WindowBorderOnTransparent.BorderBrush as LinearGradientBrush)!.GradientStops;
+        //var gradStops = (WindowBorderOnTransparent.BorderBrush as LinearGradientBrush)!.GradientStops;
         SetupSetting(settings.TaskbarIcon, x =>
         {
             if (x is not null)
@@ -45,11 +45,12 @@ partial class MainWindow
             MinWidth = bypass ? Constants.BypassMinWidth : Constants.MinWidth;
             MinHeight = bypass ? Constants.BypassMinHeight : Constants.MinHeight;
         });
-        SetupSetting(settings.BorderGraident1, x => gradStops[0].Color = x);
-        SetupSetting(settings.BorderGraident2, x => gradStops[^1].Color = x);
-        SetupSetting(settings.BorderThickness, x => WindowBorderOnTransparent.BorderThickness = x);
-        SetupSetting(settings.MainMargin, x => WindowBorderOnTransparent.Margin = x);
-        SetupSetting(settings.CornerRadius, x => WindowBorderOnTransparent.CornerRadius = x);
+        SetupSetting(settings.Background, x => MainBackgroundColor.Color = x);
+        SetupSetting(settings.BorderColor, x => MainBorderColor.Color = x);
+        //SetupSetting(settings.BorderGradient1, x => gradStops[^1].Color = x);
+        SetupSetting(settings.BorderThickness, x => RootGrid.BorderThickness = x);
+        //SetupSetting(settings.MainMargin, x => WindowBorderOnTransparent.Margin = x);
+        SetupSetting(settings.CornerRadius, x => RootGrid.CornerRadius = x);
         SetupSetting(settings.WindowTitlePrefix, x => UpdateTitle());
         SetupStartupSetting(settings.InitialWindowSize, size =>
         {

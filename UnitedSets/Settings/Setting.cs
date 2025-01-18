@@ -1,6 +1,7 @@
 using Get.Symbols;
 using Microsoft.UI.Xaml;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnitedSets.Apps;
 
@@ -13,6 +14,8 @@ public abstract class Setting<T>(Func<T> Getter, Action<T> Setter) : Setting
         get => Getter();
         set
         {
+            if (EqualityComparer<T>.Default.Equals(Getter(), value))
+                return;
             Setter(value);
             PropertyChanged?.Invoke(this, new(nameof(Value)));
         }

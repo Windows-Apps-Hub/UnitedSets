@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using Get.XAMLTools;
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
+using WinWrapper.Windowing;
 using Window = WinWrapper.Windowing.Window;
 namespace WindowHoster;
 /// <summary>
@@ -43,7 +45,7 @@ public partial class WindowHost : FrameworkElement
         controller.ContainerRectangle = cachedContainerRectangle;
     }
 
-    partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
+    async partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
     {
         Controller = null;
         if (oldValue is not null)
@@ -52,7 +54,18 @@ public partial class WindowHost : FrameworkElement
         {
             if (newValue is not null)
                 newValue.BecomesInvalid += RemoveController;
-            Controller = newValue?.GetController(ParentWindow, DispatcherQueue);
+            while (true)
+            {
+                try
+                {
+                    Controller = newValue?.GetController(ParentWindow, DispatcherQueue);
+                    break;
+                }
+                catch
+                {
+                    await Task.Delay(1000);
+                }
+            }
         }
     }
 
@@ -88,14 +101,25 @@ public partial class WindowHost : FrameworkElement
         Controller = null;
     }
 
-    private void WindowHost_Loaded(object sender, RoutedEventArgs e)
+    private async void WindowHost_Loaded(object sender, RoutedEventArgs e)
     {
         Controller = null;
         Update(); // update position
         if (AssociatedWindow is { } window)
         {
             window.BecomesInvalid += RemoveController;
-            Controller = window.GetController(ParentWindow, DispatcherQueue);
+            while (true)
+            {
+                try
+                {
+                    Controller = window.GetController(ParentWindow, DispatcherQueue);
+                    break;
+                }
+                catch
+                {
+                    await Task.Delay(1000);
+                }
+            }
         }
         XamlRoot.Changed += XamlRoot_Changed;
     }

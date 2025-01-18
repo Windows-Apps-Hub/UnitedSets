@@ -1,8 +1,9 @@
-﻿<ContentControl
+<ContentControl
     x:Class="UnitedSets.UI.Controls.SettingController"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:settings="using:UnitedSets.Settings"
+    xmlns:controls="using:UnitedSets.UI.Controls"
     Content="{x:Bind Setting}"
 >
     <ContentControl.Resources>
@@ -28,6 +29,29 @@
                 SelectedIndex="{x:Bind ValueIndex, Mode=TwoWay}"
                 Style="{ThemeResource GlowComboBox}"
             />
+        </DataTemplate>
+        <DataTemplate x:Name="ColorPickerSettingTemplate" x:DataType="settings:ColorPickerSetting">
+            <Button Content="Select Color">
+                <Button.Background>
+                    <SolidColorBrush Color="{x:Bind Value, Mode=OneWay}"/>
+                </Button.Background>
+                <Button.Flyout>
+                    <Flyout Placement="Bottom">
+                        <ColorPicker
+                            IsAlphaEnabled="True"
+                            IsAlphaSliderVisible="True"
+                            IsAlphaTextInputVisible="True"
+                            Color="{x:Bind Value, Mode=TwoWay}"
+                        />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Name="ThicknessSettingTemplate" x:DataType="settings:ThicknessSetting">
+            <controls:ThicknessEditor Value="{x:Bind Value, Mode=TwoWay}"/>
+        </DataTemplate>
+        <DataTemplate x:Name="CornerRadiusSettingTemplate" x:DataType="settings:CornerRadiusSetting">
+            <controls:CornerRadiusEditor Value="{x:Bind Value, Mode=TwoWay}"/>
         </DataTemplate>
         <DataTemplate x:Name="TempLinkSettingTemplate" x:DataType="settings:ITempLinkSetting">
             <TextBlock Text="{x:Bind Display}"/>

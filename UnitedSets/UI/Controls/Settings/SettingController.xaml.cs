@@ -1,4 +1,4 @@
-﻿using Get.XAMLTools;
+using Get.XAMLTools;
 using UnitedSets.Settings;
 
 namespace UnitedSets.UI.Controls;
@@ -21,6 +21,9 @@ public partial class SettingController
         {
             OnOffSetting => OnOffSettingTemplate,
             TextSetting => TextSettingTemplate,
+            ColorPickerSetting => ColorPickerSettingTemplate,
+            CornerRadiusSetting => CornerRadiusSettingTemplate,
+            ThicknessSetting => ThicknessSettingTemplate,
             ISelectSetting => SelectSettingTemplate,
             ITempLinkSetting => TempLinkSettingTemplate,
             _ => null

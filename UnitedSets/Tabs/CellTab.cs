@@ -6,6 +6,7 @@ namespace UnitedSets.Tabs;
 [AutoProperty]
 public partial class CellTab : TabBase
 {
+    public IProperty<double> CellMarginProperty { get; } = Auto(10d);
     public CellTab(ContainerCell Cell, bool IsTabSwitcherVisibile = TabBase.DefaultIsSwitcherVisible) : base(IsTabSwitcherVisibile)
     {
         Cell.ParentCellTab = this;

@@ -53,6 +53,7 @@ public partial class SavedWindowDesign : CloneableBase, INotifyPropertyChanged
 
     public Size? WindowSize { get; set; }
     public bool? UseTranslucentWindow { get; set; }
+    public string? BorderColor { get; set; }
     public string? BorderGradiant1 { get; set; }
     public string? BorderGradiant2 { get; set; }
     public bool? UseDXBorderTransparency { get; set; }

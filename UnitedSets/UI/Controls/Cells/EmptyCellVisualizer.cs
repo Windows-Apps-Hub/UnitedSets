@@ -13,9 +13,9 @@ using UnitedSets.Cells;
 using UnitedSets.Apps;
 
 namespace UnitedSets.UI.Controls.Cells;
-using static Get.UI.Data.QuickCreate;
 public partial class EmptyCellVisualizer(EmptyCell emptyCell) : TemplateControl<Grid>
 {
+    public IProperty<double> CellMarginProperty { get; } = Auto(10d);
     protected override void Initialize(Grid rootElement)
     {
         int splitCount = 2;
@@ -117,7 +117,6 @@ public partial class EmptyCellVisualizer(EmptyCell emptyCell) : TemplateControl<
         var transparent = Solid(Colors.Transparent);
         rootElement.Children.Add(rect = new Rectangle
         {
-            Margin = new(8),
             RadiusX = 8,
             RadiusY = 8,
             StrokeDashCap = PenLineCap.Flat,
@@ -125,6 +124,10 @@ public partial class EmptyCellVisualizer(EmptyCell emptyCell) : TemplateControl<
             StrokeDashArray = [3],
             Stroke = Solid(Colors.Gray),
             StrokeThickness = 3
+        });
+        CellMarginProperty.ApplyAndRegisterForNewValue((_, x) =>
+        {
+            rect.Margin = new(x);
         });
         var layerBrushProp = ThemeResources.Get<Brush>("LayerFillColorDefaultBrush", this);
         emptyCell.HoverEffectProperty.ApplyAndRegisterForNewValue((_, hovering) =>

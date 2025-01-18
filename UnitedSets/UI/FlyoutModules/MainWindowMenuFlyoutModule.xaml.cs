@@ -12,6 +12,7 @@ using UnitedSets.UI.AppWindows;
 using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Apps;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.UI.FlyoutModules;
 
@@ -60,6 +61,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (sender.Tag is not TabBase tab) return;
         UnitedSetsApp.Current.Tabs.Add(tab);
+        UnitedSetsApp.Current.SelectedTab = tab;
         if (TabGroupListView.SelectedItem is TabGroup TabGroup)
             TabGroup.Tabs.Remove(tab);
     }
@@ -68,10 +70,13 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (sender.Tag is not TabGroup tabgroup) return;
         UnitedSetsApp.Current.HiddenTabs.Remove(tabgroup);
+        TabBase? lastTab = null;
         foreach (var tab in tabgroup.Tabs)
         {
-            UnitedSetsApp.Current.Tabs.Add(tab);
+            UnitedSetsApp.Current.Tabs.Add(lastTab = tab);
         }
+        if (lastTab is not null)
+            UnitedSetsApp.Current.SelectedTab = lastTab;
     }
     [Event(typeof(RoutedEventHandler))]
     async void OpenContentDialogTag([CastFrom(typeof(object))] FrameworkElement sender)

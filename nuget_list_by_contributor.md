@@ -4,7 +4,7 @@ We've included the list of nuget packages that we own here, so that people can c
 
 - Get.Data [source](https://github.com/GetGet99/Get.Data)
 - Get.Data.SoureGenerator [source](https://github.com/GetGet99/Get.Data)
-- Get.EasyCsharp nuget [source](https://github.com/GetGet99/Get.EasyCSharp)
+- Get.EasyCsharp [source](https://github.com/GetGet99/Get.EasyCSharp)
 - Get.EasyCSharp.Generator [source](https://github.com/GetGet99/Get.EasyCSharp)
 - Get.UI Data.WASDK [source](https://github.com/Gtudios-UI/UI-Data)
 - Get.UI.WinUI [source](https://github.com/GetGet99/Get.UI)

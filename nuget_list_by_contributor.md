@@ -1,6 +1,6 @@
 # Nuget Packages List this is owned by the contributor
 
-We've included the list of nuget packages that we own here, so that people can check the source code for transparency.
+We've included the list of nuget packages that we own (and is referenced in United Sets) here, so that people can check the source code for transparency.
 
 - Get.Data [source](https://github.com/GetGet99/Get.Data)
 - Get.Data.SoureGenerator [source](https://github.com/GetGet99/Get.Data)

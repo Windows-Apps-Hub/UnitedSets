@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Input;
+using Get.Data.Bindings;
 namespace UnitedSets.UI.Controls.Cells.Resizer;
 [AutoProperty]
 public abstract partial class CustomSizerBase : TemplateControl<Grid>
@@ -27,7 +28,8 @@ public abstract partial class CustomSizerBase : TemplateControl<Grid>
         IsFocusEngagementEnabled = true;
         MinWidth = 8;
         MinHeight = 8;
-        Padding = new(4); // SizerBasePaddingHorizontalContentAlignment = HorizontalAlignment.Center;
+        Padding = new(4); // SizerBasePadding
+        HorizontalContentAlignment = HorizontalAlignment.Center;
         VerticalContentAlignment = VerticalAlignment.Center;
         ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
     }
@@ -63,17 +65,18 @@ public abstract partial class CustomSizerBase : TemplateControl<Grid>
         var SizerBaseBackgroundPointerOver = ThemeResources.Get<Brush>("ControlAltFillColorTertiaryBrush", this);
         var SizerBaseBackgroundPressed = ThemeResources.Get<Brush>("ControlAltFillColorQuarternaryBrush", this);
         var SizerBaseBackgroundDisabled = ThemeResources.Get<Brush>("ControlAltFillColorDisabledBrush", this);
-        var output = from ptstate in PointerStates
-                     from bgptover in SizerBaseBackgroundPointerOver
-                     from bgpressed in SizerBaseBackgroundPressed
-                     from bgdisabled in SizerBaseBackgroundDisabled
-                     select ptstate.HasFlag(SizerBasePointerStates.Pressed)
-                     ? bgpressed : (
-                         ptstate.HasFlag(SizerBasePointerStates.Over) ?
-                         bgptover :
-                         Solid(Colors.Transparent)
-                     // disabled not handled
-                     );
+        var output =
+            from ptstate in PointerStates
+            from bgptover in SizerBaseBackgroundPointerOver
+            from bgpressed in SizerBaseBackgroundPressed
+            from bgdisabled in SizerBaseBackgroundDisabled
+            select ptstate.HasFlag(SizerBasePointerStates.Pressed)
+            ? bgpressed : (
+                ptstate.HasFlag(SizerBasePointerStates.Over) ?
+                bgptover :
+                Solid(Colors.Transparent)
+            // disabled not handled
+            );
         output.ApplyAndRegisterForNewValue((_, x) => RootGrid.Background = x);
         Rectangle PART_Thumb;
         RootGrid.Children.Add(PART_Thumb = new Rectangle());

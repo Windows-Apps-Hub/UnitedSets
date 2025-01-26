@@ -61,7 +61,7 @@ public partial class USConfig : SavedInstanceData
                 MainMargin = new(8, 0, 8, 8),
                 PrimaryBackgroundLightTheme = "#DDFFFFFF",
                 PrimaryBackgroundDarkTheme = "#DD000000",
-                PrimaryBackgroundNonTranslucent = "White",
+                PrimaryBackgroundNonTranslucent = "#00FFFFFF",
                 WindowSize = new(1000, 800),
                 UseTranslucentWindow = true,
                 Theme = ElementTheme.Default,

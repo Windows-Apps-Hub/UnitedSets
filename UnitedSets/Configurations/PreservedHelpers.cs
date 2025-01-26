@@ -22,7 +22,7 @@ public static class PreservedHelpers
 
     public static Color ConvertToColor(string? colorStr)
     {
-        if (colorStr is null) return default;
+        if (colorStr is null) return Color.FromArgb(0, 255, 255, 255);
         var dcolor = (System.Drawing.Color)ColorConvert.ConvertFromString(colorStr);
         return Color.FromArgb(dcolor.A, dcolor.R, dcolor.G, dcolor.B);
     }

@@ -20,3 +20,8 @@ However, we might be unable to list all of them and/or we don't know about the b
 Therefore, feel free to create the issue if you find a bug.
 
 Be cautious when using in the work environment. Save your work very often on the apps used with Untied Sets. We do not want you to lose your work. 🙏🙏🙏
+
+## NuGet Packages owned by us and referenced by us
+
+We believe that using nuget packages that are owned by us without sharing the source code may seem like it is not fully transparent.
+We have compile the list [here](nuget_list_by_contributor.md) with the source code associated to it, so anybody can fully review the source code there as well.

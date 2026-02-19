@@ -9,7 +9,8 @@
     xmlns:Materials="using:Cube.UI.Materials"
     xmlns:icons="using:Cube.UI.Icons"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media" 
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
+    xmlns:tkmd="using:CommunityToolkit.WinUI.Media"
     MinHeight="800"
     MinWidth="900"
     mc:Ignorable="d"
@@ -89,13 +90,17 @@
                     </StackPanel>
                     <Rectangle x:Name="hostForVisual" Fill="Transparent"/>
                     <StackPanel HorizontalAlignment="Center" Canvas.ZIndex="2"  VerticalAlignment="Center">
-                        <controls:DropShadowPanel
+                        <Grid
                             Canvas.ZIndex="2"
-                            BlurRadius="16"
-                            ShadowOpacity="0.12"
-                            OffsetX="24" OffsetY="24"
                             CornerRadius="8"
                         >
+                            <tkui:Effects.Shadow>
+                                <tkmd:AttachedCardShadow 
+                                    BlurRadius="16"
+                                    Opacity="0.12"
+                                    Offset="24,24"
+                                />
+                            </tkui:Effects.Shadow>
                             <FlipView
                                 RequiresPointer="Never"
                                 BorderBrush="{ThemeResource BorderHighContrastBrush}"
@@ -224,7 +229,7 @@
                                     </StackPanel>
                                 </FlipViewItem>
                             </FlipView>
-                        </controls:DropShadowPanel>
+                        </Grid>
                         <StackPanel x:Name="Stepper">
                             <TextBlock
                                 HorizontalAlignment="Center"

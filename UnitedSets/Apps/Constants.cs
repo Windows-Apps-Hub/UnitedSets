@@ -8,12 +8,12 @@ namespace UnitedSets.Apps;
 
 static class Constants
 {
-#if true // Dev Version
+#if false // Dev Version
     public static string Version => $"v{VersionRaw}-dev";
     public const Visibility ExperimentalFeedback = Visibility.Collapsed;
     public const Visibility VisibleOnExperimental = Visibility.Visible;
     public const string AppVersionTag = "- Development";
-#elif false // Experimental Version
+#elif true // Experimental Version
     public static string Version => $"v{VersionRaw}-exp";
     public const Visibility ExperimentalFeedback = Visibility.Visible;
     public const Visibility VisibleOnExperimental = Visibility.Visible;

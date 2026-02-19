@@ -1,4 +1,4 @@
-﻿<window:SizeToContentWindow
+<window:SizeToContentWindow
     xmlns:winex="using:WinUIEx" 
     x:Class="UnitedSets.UI.AppWindows.FloatingTaskbar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,14 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:icons="using:Cube.UI.Icons" 
     xmlns:settings="using:Cube.UI.Controls.Settings"
-    xmlns:USsettings="using:UnitedSets.Classes.Settings"
     xmlns:ui="using:Windows.UI"
     xmlns:controls="using:UnitedSets.UI.Controls"
     xmlns:window="using:UnitedSets.UI.AppWindows"
     xmlns:us="using:UnitedSets"
-    xmlns:oobf="using:Get.OutOfBoundsFlyout"
     xmlns:module="using:UnitedSets.UI.FlyoutModules"
-    xmlns:tabs="using:UnitedSets.Tabs" xmlns:ToolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:tabs="using:UnitedSets.Tabs"
+    xmlns:tkui="using:CommunityToolkit.WinUI"
+    xmlns:tkmd="using:CommunityToolkit.WinUI.Media"
     mc:Ignorable="d">
     <window:SizeToContentWindow.SizeToWindowContent>
         <Grid>
@@ -151,16 +151,17 @@
                                             </SymbolIcon.Foreground>
                                         </SymbolIcon>
                                     </Grid>
-                                    <ToolkitControls:DropShadowPanel
+                                    <Grid
                                         CornerRadius="2"
                                         Margin="2,0,2,2"
                                         x:Name="Glow"
-                                        Color="{ThemeResource SystemAccentColorLight2}"
-                                        ShadowOpacity="0.93"
                                         Grid.Row="0"
                                         VerticalAlignment="Bottom"
                                         HorizontalAlignment="Center"
                                     >
+                                        <tkui:Effects.Shadow>
+                                            <tkmd:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight2}" Opacity="0.93" />
+                                        </tkui:Effects.Shadow>
                                         <Grid x:Name="Pipe"
                                             Height="2" Width="0.1"
                                             CornerRadius="2"
@@ -175,7 +176,7 @@
                                                 </LinearGradientBrush>
                                             </Grid.Background>
                                         </Grid>
-                                    </ToolkitControls:DropShadowPanel>
+                                    </Grid>
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>

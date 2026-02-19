@@ -1,9 +1,10 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ToolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:media="using:CommunityToolkit.WinUI.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="ms-appx:///Cube.UI/Styles/CubeThemeDictionary.xaml" />
@@ -104,12 +105,12 @@
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.23">
+                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.23">
                                         </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Color">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColorLight3}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.23">
+                                        <DoubleAnimation Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.23">
                                         </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="Color">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColorLight3}" />
@@ -171,7 +172,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.93">
+                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.93">
                                         </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Color">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColorLight1}" />
@@ -248,12 +249,12 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
+                                        <DoubleAnimation Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
                                         </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ThumbShadow" Storyboard.TargetProperty="Color">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColorLight3}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
+                                        <DoubleAnimation Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
                                         </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TickShadow" Storyboard.TargetProperty="Color">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColorLight3}" />
@@ -338,7 +339,14 @@
                                             RadiusX="1"
                                             RadiusY="1"/>
                                 </Border>
-                                <ToolkitControls:DropShadowPanel Grid.Row="1" OffsetX="0" OffsetY="0" x:Name="TickShadow" Color="{ThemeResource SystemAccentColorLight3}" ShadowOpacity="0.23" BlurRadius="16">
+                                <Grid Grid.Row="1">
+                                    <ui:Effects.Shadow>
+                                        <media:AttachedCardShadow x:Name="TickShadow"
+                                                                  Color="{ThemeResource SystemAccentColorLight3}"
+                                                                  Opacity="0.23"
+                                                                  Offset="0,0,0"
+                                                                  BlurRadius="16" />
+                                    </ui:Effects.Shadow>
                                     <Border Grid.Row="1" CornerRadius="2,0,0,2">
                                         <Rectangle x:Name="HorizontalDecreaseRect" Grid.Row="1">
                                             <Rectangle.Fill>
@@ -350,7 +358,7 @@
                                             </Rectangle.Fill>
                                         </Rectangle>
                                     </Border>
-                                </ToolkitControls:DropShadowPanel>
+                                </Grid>
                                 <TickBar x:Name="TopTickBar"
                                     Visibility="Collapsed"
                                     Fill="{ThemeResource SliderTickBarFill}"
@@ -372,7 +380,14 @@
                                     Margin="0,4,0,0"
                                     Grid.Row="2"
                                     Grid.ColumnSpan="3" />
-                                <ToolkitControls:DropShadowPanel Grid.Row="0" x:Name="ThumbShadow" Grid.Column="1" Grid.RowSpan="3" OffsetX="0" OffsetY="8" Color="{ThemeResource SystemAccentColorLight3}" ShadowOpacity="0.23" BlurRadius="16">
+                                <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+                                    <ui:Effects.Shadow>
+                                        <media:AttachedCardShadow x:Name="ThumbShadow"
+                                                                  Color="{ThemeResource SystemAccentColorLight3}"
+                                                                  Opacity="0.23"
+                                                                  Offset="0,8,0"
+                                                                  BlurRadius="16" />
+                                    </ui:Effects.Shadow>
                                     <Thumb x:Name="HorizontalThumb"
                                         Style="{StaticResource SliderThumbStyle}"
                                         DataContext="{TemplateBinding Value}"
@@ -383,7 +398,7 @@
                                         Grid.Column="1"
                                         FocusVisualMargin="-14,-6,-14,-6"
                                         AutomationProperties.AccessibilityView="Raw" />
-                                </ToolkitControls:DropShadowPanel>
+                                </Grid>
                             </Grid>
                             <Grid x:Name="VerticalTemplate" MinWidth="{ThemeResource SliderVerticalWidth}" Visibility="Collapsed">
 
@@ -516,8 +531,11 @@
                                                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                                     AutomationProperties.AccessibilityView="Raw"/>
-                        <ToolkitControls:DropShadowPanel CornerRadius="2" Margin="2,0,2,2" x:Name="Glow" Color="{ThemeResource SystemAccentColorLight2}" ShadowOpacity="0.93" Grid.Row="0" VerticalAlignment="Bottom"
+                        <Grid CornerRadius="2" Margin="2,0,2,2" x:Name="Glow" Grid.Row="0" VerticalAlignment="Bottom"
                 HorizontalAlignment="Center">
+                            <ui:Effects.Shadow>
+                                <media:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight2}" Opacity="0.93" />
+                            </ui:Effects.Shadow>
                             <Grid x:Name="Pipe"
                 Height="2" Width="0.1" CornerRadius="2"
                 VerticalAlignment="Bottom" 
@@ -530,7 +548,7 @@
                                     </LinearGradientBrush>
                                 </Grid.Background>
                             </Grid>
-                        </ToolkitControls:DropShadowPanel>
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -559,7 +577,7 @@
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" >
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
+                                        <DoubleAnimation Storyboard.TargetName="GlowShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.43">
                                         </DoubleAnimation>
                                         <DoubleAnimation Storyboard.TargetName="SwitchKnobOn" Storyboard.TargetProperty="Width" EnableDependentAnimation="True" Duration="0:0:0.12" To="10">
                                         </DoubleAnimation>
@@ -591,7 +609,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Gs0" Storyboard.TargetProperty="Offset">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="0.0" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="ShadowOpacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.73">
+                                        <DoubleAnimation Storyboard.TargetName="GlowShadow" Storyboard.TargetProperty="Opacity" EnableDependentAnimation="True" Duration="0:0:0.12" To="0.73">
                                         </DoubleAnimation>
                                         <DoubleAnimation Storyboard.TargetName="SwitchKnobOn" Storyboard.TargetProperty="Width" EnableDependentAnimation="True" Duration="0:0:0.12" To="12">
                                         </DoubleAnimation>
@@ -912,10 +930,13 @@
                   Fill="{ThemeResource ToggleSwitchFillOff}"
                   Stroke="{ThemeResource ToggleSwitchStrokeOff}"
                   StrokeThickness="2" />
-                            <ToolkitControls:DropShadowPanel BlurRadius="16.0" Grid.Row="1"
+                            <Grid Grid.Row="1"
                                 Height="20"
-                                Width="44" IsMasked="True" x:Name="Glow"
-                          OffsetX="0.0" OffsetY="0.0" Color="{ThemeResource SystemAccentColor}">
+                                Width="44" x:Name="Glow">
+                                <!-- IsMasked="True" -->
+                                <ui:Effects.Shadow>
+                                    <media:AttachedCardShadow x:Name="GlowShadow" BlurRadius="16.0" Offset="0,0" Color="{ThemeResource SystemAccentColor}" />
+                                </ui:Effects.Shadow>
                                 <Rectangle x:Name="SwitchKnobBounds"
                   Grid.Row="1"
                   Height="20"
@@ -933,7 +954,7 @@
                                         </LinearGradientBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
-                            </ToolkitControls:DropShadowPanel>
+                            </Grid>
                             <Grid x:Name="SwitchKnob"
                   Grid.Row="1"
                   HorizontalAlignment="Left"
@@ -1051,8 +1072,11 @@
                                 </muxc:AnimatedIcon.FallbackIconSource>
                             </muxc:AnimatedIcon>
                         </Grid>
-                        <ToolkitControls:DropShadowPanel CornerRadius="2" Margin="2,0,2,2" x:Name="Glow" Color="{ThemeResource SystemAccentColorLight2}" ShadowOpacity="0.93" Grid.Row="0" VerticalAlignment="Bottom"
+                        <Grid CornerRadius="2" Margin="2,0,2,2" x:Name="Glow" Grid.Row="0" VerticalAlignment="Bottom"
                 HorizontalAlignment="Center">
+                            <ui:Effects.Shadow>
+                                <media:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight2}" Opacity="0.93" />
+                            </ui:Effects.Shadow>
                             <Grid x:Name="Pipe"
                 Height="2" Width="0.1" CornerRadius="2"
                 VerticalAlignment="Bottom" 
@@ -1065,7 +1089,7 @@
                                     </LinearGradientBrush>
                                 </Grid.Background>
                             </Grid>
-                        </ToolkitControls:DropShadowPanel>
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -1293,8 +1317,15 @@
                             Control.IsTemplateFocusTarget="True"
                             MinWidth="{TemplateBinding MinWidth}"
                             MinHeight="{TemplateBinding MinHeight}" />
-                            <ToolkitControls:DropShadowPanel BlurRadius="16.0" MinHeight="{TemplateBinding MinHeight}" ShadowOpacity="0.43" IsMasked="True" Grid.Row="1"
-                          OffsetX="0.0" OffsetY="0.0" VerticalAlignment="Bottom" Color="{ThemeResource SystemAccentColorLight3}">
+                            <Grid Grid.Row="1"
+                                  MinHeight="{TemplateBinding MinHeight}"
+                                  VerticalAlignment="Bottom">
+                                <ui:Effects.Shadow>
+                                    <media:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight3}"
+                                                              Opacity="0.43"
+                                                              Offset="0,0,0"
+                                                              BlurRadius="16.0" />
+                                </ui:Effects.Shadow>
                                 <Grid VerticalAlignment="Bottom" Margin="0, 0, 0, 0" MinWidth="0.1"
                             Height="2" x:Name="BottomBar" CornerRadius="0, 0, 4, 4">
                                     <Grid.Background>
@@ -1305,7 +1336,7 @@
                                         </LinearGradientBrush>
                                     </Grid.Background>
                                 </Grid>
-                            </ToolkitControls:DropShadowPanel>
+                            </Grid>
                         </Grid>
 
                         <ScrollViewer x:Name="ContentElement"
@@ -1621,12 +1652,24 @@
                             Opacity="0" >
 
                         </Border>
-                        <ToolkitControls:DropShadowPanel Grid.Column="0" HorizontalAlignment="Left"
-                            Grid.ColumnSpan="2" BlurRadius="16.0" Canvas.ZIndex="2" MinHeight="2" ShadowOpacity="0.43" IsMasked="True" Grid.Row="1"
-                            OffsetX="0.0" OffsetY="0.0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5, 0.5" Color="{ThemeResource SystemAccentColorLight3}" MinWidth="0.1">
-                            <ToolkitControls:DropShadowPanel.RenderTransform>
+                        <Grid Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="1"
+                            Canvas.ZIndex="2"
+                            MinHeight="2"
+                            MinWidth="0.1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            RenderTransformOrigin="0.5, 0.5">
+                            <ui:Effects.Shadow>
+                                <media:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight3}"
+                                                          Opacity="0.43"
+                                                          Offset="0,0,0"
+                                                          BlurRadius="16.0" />
+                            </ui:Effects.Shadow>
+                            <Grid.RenderTransform>
                                 <ScaleTransform x:Name="BottomBar" ScaleX="0" ScaleY="1"/>
-                            </ToolkitControls:DropShadowPanel.RenderTransform>
+                            </Grid.RenderTransform>
                             <Grid Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" RenderTransformOrigin="0.5, 0.5" Width="{TemplateBinding Width}" Height="2" CornerRadius="0, 0, 4, 4">
                                 <Grid.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -1636,7 +1679,7 @@
                                     </LinearGradientBrush>
                                 </Grid.Background>
                             </Grid>
-                        </ToolkitControls:DropShadowPanel>
+                        </Grid>
                         <Border x:Name="Background"
                             Grid.Row="1"
                             Grid.Column="0"
@@ -1796,8 +1839,7 @@
                                         <DoubleAnimation Storyboard.TargetName="Pill"  Storyboard.TargetProperty="Height" EnableDependentAnimation="True" Duration="0:0:0.12" To="18">
 
                                         </DoubleAnimation>
-                                        <DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="3">
-                                        </DoubleAnimation>
+                                        <!--<DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="3" />-->
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -1828,16 +1870,14 @@
                                         </DoubleAnimation>
                                         <DoubleAnimation Storyboard.TargetName="Pill"  Storyboard.TargetProperty="Height" EnableDependentAnimation="True" Duration="0:0:0.16" To="8">
                                         </DoubleAnimation>
-                                        <DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="8">
-                                        </DoubleAnimation>
+                                        <!--<DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="8" />-->
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Selected">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="Pill"  Storyboard.TargetProperty="Height" EnableDependentAnimation="True" Duration="0:0:0.12" To="24">
                                         </DoubleAnimation>
-                                        <DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="0">
-                                        </DoubleAnimation>
+                                        <!--<DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="0"/>-->
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Pill" Storyboard.TargetProperty="Opacity">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -1907,8 +1947,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Pill" Storyboard.TargetProperty="Opacity">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="4">
-                                        </DoubleAnimation>
+                                        <!--<DoubleAnimation Storyboard.TargetName="Glow"  Storyboard.TargetProperty="OffsetY" EnableDependentAnimation="True" Duration="0:0:0.0" To="4" />-->
                                         <!--   <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PillTransform" Storyboard.TargetProperty="ScaleY">
                                                                             <SplineDoubleKeyFrame KeyTime="{StaticResource ComboBoxItemScaleAnimationDuration}" Value="{StaticResource ComboBoxItemPillMinScale}" KeySpline="0,0,0,1" />
                                                                         </DoubleAnimationUsingKeyFrames>-->
@@ -1944,7 +1983,10 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <ToolkitControls:DropShadowPanel CornerRadius="2" Height="24" x:Name="Glow" IsMasked="True" Color="{ThemeResource SystemAccentColorLight3}" ShadowOpacity="0.93" Grid.Row="1" Grid.Column="0">
+                        <Grid CornerRadius="2" Height="24" x:Name="Glow" Grid.Row="1" Grid.Column="0">
+                            <ui:Effects.Shadow>
+                                <media:AttachedCardShadow Color="{ThemeResource SystemAccentColorLight3}" Opacity="0.93"  />
+                            </ui:Effects.Shadow>
                             <Rectangle
                             x:Name="Pill"
                             Style="{StaticResource ComboBoxItemPill}"
@@ -1958,7 +2000,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                        </ToolkitControls:DropShadowPanel>
+                        </Grid>
                         <ContentPresenter x:Name="ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"

@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<RootNamespace>WinUI3HwndHostPlus</RootNamespace>
-		<RootNamespace>EasyXAMLTools</RootNamespace>
-		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-		<UseWinUI>true</UseWinUI>
-		<Nullable>enable</Nullable>
-		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+        <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+        <RootNamespace>WinUI3HwndHostPlus</RootNamespace>
+        <RootNamespace>EasyXAMLTools</RootNamespace>
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+        <UseWinUI>true</UseWinUI>
+        <Nullable>enable</Nullable>
+        <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+        <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="EasyCSharp.Generator" Version="0.0.3" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
-		<PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
-		<PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="EasyCSharp.Generator" Version="0.0.3" />
+		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.0-prerelease.251115.2" />
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+        <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
+        <PackageReference Include="WinWrapper.Windowing" Version="2.0.0" />
+    </ItemGroup>
 </Project>

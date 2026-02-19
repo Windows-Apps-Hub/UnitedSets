@@ -1,18 +1,11 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Microsoft.UI.Xaml;
 using UnitedSets.Mvvm.Services;
-using WindowsOG = Windows;
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 namespace UnitedSets.Configurations;
 
 public partial class USConfig : SavedInstanceData
 {
-    public USConfig CloneWithoutTabs()
-    {
-        return (USConfig)_CloneWithoutTabs();
-    }
+    public USConfig CloneWithoutTabs() => (USConfig)_CloneWithoutTabs();
     public static bool FLAGS_THEME_CHOICE_ENABLED { get; } = true;// ughz https://github.com/microsoft/WindowsAppSDK/issues/3487 https://github.com/microsoft/microsoft-ui-xaml/issues/8249 although even setting it at the app level doesnt work
     public static string BaseProfileFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UnitedSets");
     public static string DefaultConfigFile => Path.Combine(BaseProfileFolder, "default.json");
@@ -27,9 +20,9 @@ public partial class USConfig : SavedInstanceData
         );
     public static string RootLocation =>
 #if UNPKG
-			System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
+		System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
 #else
-        WindowsOG.ApplicationModel.Package.Current.InstalledLocation.Path;
+        global::Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
 #endif
 
     static USConfig? _DefaultConfiguration;
@@ -77,5 +70,3 @@ public partial class USConfig : SavedInstanceData
         };
     }
 }
-
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

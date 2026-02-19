@@ -1,9 +1,3 @@
-using Get.Data.Collections;
-using Get.Data.Properties;
-using Get.UI.Data;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Cells;
 using UnitedSets.Controls;
 namespace UnitedSets.UI.Controls.Cells;

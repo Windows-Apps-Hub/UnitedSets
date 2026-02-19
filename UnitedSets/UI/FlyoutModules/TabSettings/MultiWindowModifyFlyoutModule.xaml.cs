@@ -1,8 +1,5 @@
-using System.Linq;
-using Get.EasyCSharp;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls;
 using WindowHoster;
+
 namespace UnitedSets.UI.FlyoutModules;
 
 public sealed partial class MultiWindowModifyFlyoutModule

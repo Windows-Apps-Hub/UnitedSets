@@ -1,20 +1,9 @@
+namespace UnitedSets.UI.Controls.Cells.Resizer;
+
 // Most logics are from Community Toolkit
 // Original: https://github.com/CommunityToolkit/Windows/blob/main/components/Sizers/src/
 // This is a (simplified) port to XACL.
 
-using System;
-using Get.Data.Properties;
-using Get.Data.Bindings.Linq;
-using Get.UI.Data;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Input;
-using Get.Data.Bindings;
-namespace UnitedSets.UI.Controls.Cells.Resizer;
 [AutoProperty]
 public abstract partial class CustomSizerBase : TemplateControl<Grid>
 {

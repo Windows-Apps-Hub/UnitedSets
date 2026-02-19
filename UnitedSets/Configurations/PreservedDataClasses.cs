@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using Get.EasyCSharp;
-using Microsoft.UI.Xaml;
 using UnitedSets.Tabs;
 using UnitedSets.Mvvm.Services;
 using WindowHoster;
@@ -51,7 +45,7 @@ public partial class SavedWindowDesign : CloneableBase, INotifyPropertyChanged
     public string? PrimaryBackgroundDarkTheme { get; set; }
     public string? PrimaryBackgroundNonTranslucent { get; set; }
 
-    public Size? WindowSize { get; set; }
+    public SizeInt? WindowSize { get; set; }
     public bool? UseTranslucentWindow { get; set; }
     public string? BorderColor { get; set; }
     public string? BorderGradiant1 { get; set; }

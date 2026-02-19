@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
 using WindowHoster;
 using WinWrapper.Input;
-using WinWrapper.Windowing;
 
 namespace UnitedSets.PostProcessing;
+
 public static class PostProcessingRegisteredWindow
 {
-    public static RegisteredWindow? Register(Window window, bool shouldBeHidden = false)
+    public static RegisteredWindow? Register(WindowEx window, bool shouldBeHidden = false)
     {
         var r = RegisteredWindow.Register(window, shouldBeHidden);
         if (r is null) return null;

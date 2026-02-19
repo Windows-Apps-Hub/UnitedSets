@@ -1,4 +1,3 @@
-using Get.XAMLTools;
 using UnitedSets.Settings;
 
 namespace UnitedSets.UI.Controls;

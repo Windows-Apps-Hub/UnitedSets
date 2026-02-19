@@ -1,9 +1,3 @@
-using CommunityToolkit.WinUI;
-using Get.XAMLTools;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Settings;
-
 namespace UnitedSets.UI.Controls;
 [DependencyProperty(
     typeof(Thickness),

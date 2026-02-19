@@ -1,8 +1,5 @@
-﻿using EnumsNET;
-using System;
+using EnumsNET;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace UnitedSets.Settings;
 
@@ -22,7 +19,7 @@ public interface ISelectSetting
     string? GetDisplayName(object value);
     string? GetDescription(object value);
 }
-public class SelectSetting<TEnum>(Func<TEnum> Getter, Action<TEnum> Setter, IReadOnlyList<TEnum> ValidOptions) : Setting<TEnum>(Getter, Setter), IEnumSelectSetting where TEnum : struct, Enum
+public partial class SelectSetting<TEnum>(Func<TEnum> Getter, Action<TEnum> Setter, IReadOnlyList<TEnum> ValidOptions) : Setting<TEnum>(Getter, Setter), IEnumSelectSetting where TEnum : struct, Enum
 {
     public IReadOnlyList<TEnum> ValidOptions { get; } = ValidOptions;
 

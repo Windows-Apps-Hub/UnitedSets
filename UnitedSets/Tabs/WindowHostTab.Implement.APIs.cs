@@ -22,7 +22,7 @@ partial class WindowHostTab
 		await RegisteredWindow.DetachAsync();
         var CursorPos = Cursor.Position;
         if (JumpToCursor && !NoMovingMode)
-            Window.Location = new Point(CursorPos.X - 100, CursorPos.Y - 30);
+            Window.Location = new PointInt(CursorPos.X - 100, CursorPos.Y - 30);
         _IsDisposed = true;
     }
     public override void Focus()

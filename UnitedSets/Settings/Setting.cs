@@ -1,8 +1,3 @@
-using Get.Symbols;
-using Microsoft.UI.Xaml;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnitedSets.Apps;
 
 namespace UnitedSets.Settings;

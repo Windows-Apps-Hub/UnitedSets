@@ -1,8 +1,7 @@
-using Get.Data.Collections;
-using Get.Data.Properties;
-using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Cells;
+
 namespace UnitedSets.Tabs;
+
 [AutoProperty]
 public partial class CellTab : TabBase
 {

@@ -1,14 +1,6 @@
-using System;
 using System.IO;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Configurations;
 using Windows.System;
-using CNTRLS = Microsoft.UI.Xaml.Controls;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -69,7 +61,7 @@ public sealed partial class ExportImportInputPage : Page
 
             //	if (deferral != null)
             //		deferral.Complete();
-            var flyout = new CNTRLS.Flyout();
+            var flyout = new Flyout();
             var sp = new StackPanel { Spacing = 10 };
             sp.Children.Add(new TextBlock { Text = msg });
             var btn = new Button() { Content = "OK" };

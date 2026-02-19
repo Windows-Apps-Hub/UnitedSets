@@ -1,13 +1,10 @@
-using Microsoft.UI.Xaml;
-using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
-using UnitedSets.Apps;
 using UnitedSets.Configurations;
 using UnitedSets.UI.AppWindows;
-
+#if !DEBUG
+using System.Runtime.ExceptionServices;
+#endif
 namespace UnitedSets;
 
 public partial class App : Application
@@ -70,7 +67,7 @@ public partial class App : Application
     }
 
 
-
+#if !DEBUG
     private static void OnUnobservedException(object? sender, UnobservedTaskExceptionEventArgs e) => e.SetObserved();
 
     private static void OnUnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
@@ -78,9 +75,10 @@ public partial class App : Application
     private void CurrentDomain_FirstChanceException(object? sender, FirstChanceExceptionEventArgs e)
     {
     }
+#endif
 }
 
-public class DebugRedir : StringWriter
+public partial class DebugRedir : StringWriter
 {
     static DebugRedir? instance = null;
     public static void Listen()

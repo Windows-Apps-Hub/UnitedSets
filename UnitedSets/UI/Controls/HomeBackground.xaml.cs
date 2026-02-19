@@ -1,6 +1,5 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 namespace UnitedSets.UI.Controls;
+
 public partial class HomeBackground : StackPanel
 {
 	public HomeBackground()

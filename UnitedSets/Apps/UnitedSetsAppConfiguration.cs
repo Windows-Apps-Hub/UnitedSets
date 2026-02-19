@@ -1,7 +1,6 @@
-using System.Threading.Tasks;
 using UnitedSets.Configurations;
 
-namespace UnitedSets;
+namespace UnitedSets.Apps;
 
 class UnitedSetsAppConfiguration
 {

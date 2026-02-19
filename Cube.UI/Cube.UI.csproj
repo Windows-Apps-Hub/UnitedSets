@@ -9,6 +9,7 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		<Nullable>enable</Nullable>
 		<NoWarn>WMC1500</NoWarn>
+        <LangVersion>12</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Controls\Toolkit\**" />

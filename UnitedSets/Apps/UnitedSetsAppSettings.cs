@@ -1,20 +1,11 @@
-using CommunityToolkit.Mvvm.Input;
-using UnitedSets.UI.AppWindows;
-using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
-using UnitedSets.Settings;
-using System.Collections.Generic;
-using System;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
 using EnumsNET;
-using Windows.UI;
-using UnitedSets.Configurations;
-using Get.Symbols;
-using UnitedSets.Apps;
 using System.ComponentModel.DataAnnotations;
+using UnitedSets.Apps;
+using UnitedSets.Configurations;
+using UnitedSets.Settings;
+using UnitedSets.UI.AppWindows;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -23,7 +14,7 @@ public partial class UnitedSetsAppSettings
     private static USConfig Configuration => UnitedSetsApp.Current.Configuration.PersistantService.MainConfiguration;
     public UnitedSetsAppSettings()
     {
-        AllSettings = [
+        AllSettings = (Setting[])[
             Autosave = new(
                 () => Configuration.Autosave ?? true, x => Configuration.Autosave = x
             ) {
@@ -221,7 +212,7 @@ public partial class UnitedSetsAppSettings
     public ThicknessSetting BorderThickness { get; }
     public CornerRadiusSetting CornerRadius { get; }
     public TempLinkSetting<Thickness> MainMargin { get; }
-    public TempLinkSetting<System.Drawing.Size?> InitialWindowSize { get; }
+    public TempLinkSetting<SizeInt?> InitialWindowSize { get; }
     public SelectSetting<ElementTheme> Theme { get; }
 
     public SelectSetting<USBackdrop> BackdropMode { get; }

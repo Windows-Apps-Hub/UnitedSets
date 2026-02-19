@@ -1,18 +1,13 @@
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
-using System;
 using UnitedSets.Tabs;
-using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Keyboard = WinWrapper.Input.Keyboard;
-using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using Icon = WinWrapper.Icon;
 using System.IO;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using UnitedSets.Configurations;
 using UnitedSets.Cells;
-using Windows.Win32;
 using WinWrapper.Windowing;
 using WindowHoster;
 using UnitedSets.Mvvm.Services;

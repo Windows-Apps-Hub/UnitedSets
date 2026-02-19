@@ -1,9 +1,5 @@
 using CommunityToolkit.WinUI;
 using Get.XAMLTools;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using UnitedSets.Settings;
 
 namespace UnitedSets.UI.Controls;
 [DependencyProperty(

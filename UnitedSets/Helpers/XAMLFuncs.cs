@@ -1,6 +1,3 @@
-using Get.Symbols;
-using Microsoft.UI.Xaml.Controls;
-
 namespace UnitedSets.Helpers;
 
 static class XAMLFuncs

@@ -1,6 +1,5 @@
-using System;
-
 namespace UnitedSets.Configurations;
+
 public abstract class CloneableBase : ICloneable
 {
     object ICloneable.Clone() => MemberwiseClone();

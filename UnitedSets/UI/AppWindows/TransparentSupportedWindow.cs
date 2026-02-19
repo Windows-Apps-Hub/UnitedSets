@@ -1,29 +1,22 @@
-﻿//using System.Drawing;
-//using System.Runtime.InteropServices;
-//using Windows.Win32;
+//using System.Drawing;
 //using WinRT.Interop;
-//using WinUIEx;
 //using WinUIEx.Messaging;
 //using WinWrapper.Windowing;
-//using Windows.Win32.UI.WindowsAndMessaging;
-//using UnitedSets.Helpers;
-//using Microsoft.UI.Xaml.Media;
 //using SystemBackdrop = Microsoft.UI.Xaml.Media.SystemBackdrop;
 //using Windows.UI.Composition;
 //using ICompositionSupportsSystemBackdrop = Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop;
-//using System;
 
 //namespace UnitedSets.UI.AppWindows;
 
-//public class TransparentSupportedWindow : WindowEx
+//public class TransparentSupportedWindow : WinUIEx.WindowEx
 //{
 //    WindowMessageMonitor m;
-//    Window Win32Window;
+//    WindowEx WindowEx;
 //    public TransparentSupportedWindow()
 //    {
 //        m = new(this);
 //        m.WindowMessageReceived += WindowMessageReceived;
-//        Win32Window = Window.FromWindowHandle(WindowNative.GetWindowHandle(this));
+//        WindowEx = WindowEx.FromWindowHandle(WindowNative.GetWindowHandle(this));
 //        Activated += FirstRun;
 //    }
 //    bool _TransparentMode;
@@ -34,11 +27,11 @@
 //            if (_TransparentMode != value)
 //            {
 //                _TransparentMode = value;
-//                Win32Window[WindowExStyles.Layered] = value;
+//                WindowEx[WindowExStyles.Layered] = value;
 //                if (value)
 //                {
-//                    Win32Window.Hide();
-//                    Win32Window.Show();
+//                    WindowEx.Hide();
+//                    WindowEx.Show();
 //                }
 //            }
 //        }
@@ -56,10 +49,10 @@
 //        if (e.Message.MessageId is (uint)WindowMessages.EarseBackground)
 //        {
 //            var g = Graphics.FromHdc((nint)e.Message.WParam);
-//            g.Clear(Color.Transparent);
+//            g.Clear(System.Drawing.Color.Transparent);
 //            //PInvoke.GetClientRect(Win32Window, out var rect);
 //            //PInvoke.FillRect(new((nint)e.Message.WParam), rect, TransparentBrush);
-            
+
 //            e.Handled = true;
 //            e.Result = 1;
 //        }

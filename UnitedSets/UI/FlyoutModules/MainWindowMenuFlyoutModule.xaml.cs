@@ -1,18 +1,9 @@
-using Get.EasyCSharp;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
-using Window = WinWrapper.Windowing.Window;
 using UnitedSets.Tabs;
 using UnitedSets.UI.AppWindows;
-using System.ComponentModel;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Apps;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitedSets.UI.FlyoutModules;
 
@@ -193,7 +184,7 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
         if (TabGroupListView.SelectedIndex is -1)
 			return;
         var tabgroup = UnitedSetsApp.Current.HiddenTabs[TabGroupListView.SelectedIndex];
-        var window = Window.FromWindowHandle((nint)a);
+        var window = WindowEx.FromWindowHandle((nint)a);
         var finalIdx = (
             from index in Enumerable.Range(0, tabgroup.Tabs.Count)
             let ele = TabListView.ContainerFromIndex(index) as UIElement

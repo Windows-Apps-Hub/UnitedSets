@@ -1,15 +1,9 @@
-﻿using EasyCSharp;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Windows.Foundation;
 using WinUIEx;
 using UnitedSets.Mvvm.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Input;
-using WinUIEx;
 using UnitedSets.Tabs;
 
 namespace UnitedSets.UI.AppWindows;

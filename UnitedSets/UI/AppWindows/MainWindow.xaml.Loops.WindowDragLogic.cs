@@ -1,13 +1,9 @@
-using Microsoft.UI.Xaml.Controls;
 using WindowRelative = WinWrapper.Windowing.WindowRelative;
-using WindowEx = WinWrapper.Windowing.Window;
 using Cursor = WinWrapper.Input.Cursor;
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
-using Windows.Foundation;
 using UnitedSets.Tabs;
 using System.Runtime.CompilerServices;
-using WindowHoster;
 using Thread = System.Threading.Thread;
 using UnitedSets.Cells;
 using UnitedSets.PostProcessing;

@@ -1,15 +1,11 @@
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using UnitedSets.Configurations;
 using UnitedSets.Mvvm.Services;
-using WinUIEx;
 
 namespace UnitedSets.UI.AppWindows;
 
 
-public sealed partial class SettingsWindow : WindowEx
+public sealed partial class SettingsWindow : WinUIEx.WindowEx
 {
     public UnitedSetsAppSettings Settings;
 

@@ -1,28 +1,23 @@
-﻿using Get.EasyCSharp;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using WinUIEx;
-using System.ComponentModel;
 using UnitedSets.UI.Controls;
-using WinWrapper;
-using Win32Window = WinWrapper.Windowing.Window;
 
 namespace UnitedSets.UI.AppWindows;
 
 [ContentProperty(Name = nameof(SizeToWindowContent))]
-public partial class SizeToContentWindow : WindowEx
+public partial class SizeToContentWindow : WinUIEx.WindowEx
 {
     [Property(OnChanged = nameof(SizeToWindowContentChanged))]
     UIElement? _SizeToWindowContent;
     void SizeToWindowContentChanged() => Panel.Content = _SizeToWindowContent;
     SizeChangedDetectorPanel Panel = new();
-    readonly Win32Window Win32Window;
+    readonly WindowEx WindowEx;
     public SizeToContentWindow()
     {
         Content = Panel;
         Panel.SizeUpdated += SizeUpdate;
-        Win32Window = Win32Window.FromWindowHandle(this.GetWindowHandle());
+        WindowEx = WindowEx.FromWindowHandle(this.GetWindowHandle());
     }
     Size cacheSize;
     void SizeUpdate(Size size)
@@ -42,7 +37,7 @@ public partial class SizeToContentWindow : WindowEx
             Panel.InvalidateMeasure();
         }
         var scale = HwndExtensions.GetDpiForWindow(this.GetWindowHandle()) / 96f;
-        Win32Window.Bounds = new(
+        WindowEx.Bounds = new(
             x: (int)(_AnchorPoint.X - (cacheSize.Width + 6) * scale),
             y: (int)_AnchorPoint.Y,
             width: (int)(cacheSize.Width * scale),

@@ -1,15 +1,10 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Windowing;
-using System.Threading.Tasks;
-using WindowEx = WinWrapper.Windowing.Window;
-using WinUIEx;
-using Windows.Graphics;
-using WinWrapper;
-using Get.EasyCSharp;
-using WinWrapper.Input;
-using Microsoft.UI.Xaml.Media;
-using UnitedSets.Mvvm.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Windowing;
+using UnitedSets.Mvvm.Services;
+using Windows.Graphics;
+using WinUIEx;
+using WinWrapper;
+using WinWrapper.Input;
 
 namespace UnitedSets.UI.Popups;
 

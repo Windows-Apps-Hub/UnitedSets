@@ -1,10 +1,5 @@
-using Microsoft.UI.Xaml;
-using System;
-using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using CommunityToolkit.WinUI.UI;
-using Get.UI.Data;
 using UnitedSets.UI.Controls.Cells.Resizer;
+
 namespace UnitedSets.Controls;
 
 public partial class OrientedStackResizer : CustomSizerBase

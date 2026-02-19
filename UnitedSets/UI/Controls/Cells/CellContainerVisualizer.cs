@@ -1,9 +1,5 @@
-using Get.UI.Data;
-using Microsoft.UI.Xaml.Controls;
 using Get.Data.XACL;
-using Get.Data.Properties;
 using Get.Data.DataTemplates;
-using Microsoft.UI.Xaml;
 using UnitedSets.Cells;
 namespace UnitedSets.UI.Controls.Cells;
 [AutoProperty]

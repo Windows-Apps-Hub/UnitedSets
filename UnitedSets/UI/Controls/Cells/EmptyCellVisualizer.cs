@@ -1,14 +1,4 @@
-using System;
-using Get.Data.Helpers;
-using Get.UI.Data;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Get.Symbols;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
-using Get.Data.Properties;
 using UnitedSets.Cells;
 using UnitedSets.Apps;
 

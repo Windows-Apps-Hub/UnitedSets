@@ -1,8 +1,4 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using UnitedSets.Mvvm.Services;
-using Get.EasyCSharp;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using CommunityToolkit.Mvvm.Input;

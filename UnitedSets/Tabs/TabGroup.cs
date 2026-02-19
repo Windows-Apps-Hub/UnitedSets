@@ -1,16 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Get.EasyCSharp;
-
 namespace UnitedSets.Tabs;
 
-public partial class TabGroup : INotifyPropertyChanged
+public partial class TabGroup(string Name) : INotifyPropertyChanged
 {
-    public TabGroup(string Name) { _Name = Name; }
     [AutoNotifyProperty]
-    string _Name;
+    string _Name = Name;
 
-    public ObservableCollection<TabBase> Tabs { get; } = new();
+    public ObservableCollection<TabBase> Tabs { get; } = [];
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

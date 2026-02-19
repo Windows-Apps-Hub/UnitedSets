@@ -1,16 +1,9 @@
-using Window = Microsoft.UI.Xaml.Window;
-using WindowEx = WinWrapper.Windowing.Window;
-using UnitedSets.Helpers;
-using WinWrapper.Input;
 using Microsoft.UI.Dispatching;
-using WinWrapper;
-using WindowHoster;
-using System.Linq;
-using System;
-using UnitedSets.PostProcessing;
-using System.Threading.Tasks;
-using Windows.Win32;
 using UnitedSets.Apps;
+using UnitedSets.Helpers;
+using UnitedSets.PostProcessing;
+using WindowHoster;
+using WinWrapper;
 
 namespace UnitedSets.Tabs;
 
@@ -18,7 +11,7 @@ public partial class WindowHostTab : TabBase
 {
     Icon _Icon = default;
     string _Title;
-	private DispatcherQueue UIDispatcher;
+	private readonly DispatcherQueue UIDispatcher;
 	private WindowHostTab(RegisteredWindow Window, DispatcherQueue UIDispatcher, WindowEx WindowEx, bool IsTabSwitcherVisibile) : base(IsTabSwitcherVisibile)
     {
 		this.UIDispatcher = UIDispatcher;

@@ -1,20 +1,12 @@
 using Microsoft.UI.Dispatching;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.IO;
 using UnitedSets.Tabs;
 using UnitedSets.UI.AppWindows;
-using Window = WinWrapper.Windowing.Window;
-using System;
-using Get.EasyCSharp;
-using System.ComponentModel;
-using System.Linq;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Helpers;
-using System.IO;
 using UnitedSets.Configurations;
+using System.Diagnostics;
+using UnitedSets.Apps;
 
 namespace UnitedSets;
 
@@ -29,9 +21,9 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     public UnitedSetsAppSettings Settings { get; } = new();
     public UnitedSetsAppConfiguration Configuration { get; } = new();
     public static UnitedSetsApp Current { get; } = new();
-    readonly List<Window> _allWindows = [];
+    readonly List<WindowEx> _allWindows = [];
 
-    public IReadOnlyList<Window> AllUnitedSetsWindows => _allWindows;
+    public IReadOnlyList<WindowEx> AllUnitedSetsWindows => _allWindows;
     public MainWindow MainWindow { get; private set; } = null!;
     public DispatcherQueue DispatcherQueue { get; private set; } = null!;
     public ObservableCollection<TabBase> Tabs { get; } = [];
@@ -44,12 +36,12 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         if (_SelectedTab is { } tab)
             tab.IsFlashing = false;
     }
-    public void RegisterUnitedSetsWindow(Window window) => _allWindows.Add(window);
+    public void RegisterUnitedSetsWindow(WindowEx window) => _allWindows.Add(window);
     public void RegisterUnitedSetsWindow(MainWindow window)
     {
         MainWindow = window;
         DispatcherQueue = window.DispatcherQueue;
-        RegisterUnitedSetsWindow(Window.FromWindowHandle((nint)window.AppWindow.Id.Value));
+        RegisterUnitedSetsWindow(WindowEx.FromWindowHandle((nint)window.AppWindow.Id.Value));
     }
 
     [DoesNotReturn]
@@ -85,7 +77,7 @@ partial class UnitedSetsApp : INotifyPropertyChanged
             var procs = System.Diagnostics.Process.GetProcesses().Where(p => p.ProcessName.Equals(itm, StringComparison.OrdinalIgnoreCase)).ToList();
             foreach (var proc in procs)
             {
-                if (!proc.HasExited && WindowHostTab.Create(Window.FromWindowHandle(proc.MainWindowHandle)) is { } tab)
+                if (!proc.HasExited && WindowHostTab.Create(WindowEx.FromWindowHandle(proc.MainWindowHandle)) is { } tab)
                     UnitedSetsApp.Current.Tabs.Add(tab);
             }
         }

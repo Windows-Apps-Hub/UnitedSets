@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
-using Get.EasyCSharp;
 using Windows.Storage.Pickers;
-using WindowsOG = Windows;
 
 namespace UnitedSets.Configurations;
 
@@ -36,7 +29,7 @@ public partial class ExportImportInputViewModel : INotifyPropertyChanged {
 				loc = PickerLocationId.DocumentsLibrary;//stupid winui hahahahaha lemme give you a folder nt or i shall martial a real picker in here
 			firstTime = false;
 
-			WindowsOG.Storage.StorageFile res;
+			global::Windows.Storage.StorageFile res;
 
 
 

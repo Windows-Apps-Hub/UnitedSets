@@ -1,8 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using System;
-using Windows.Foundation;
-
 namespace UnitedSets.UI.Controls;
+
 public partial class SizeChangedDetectorPanel : UserControl
 {
     public event Action<Size>? SizeUpdated;

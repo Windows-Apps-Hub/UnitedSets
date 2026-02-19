@@ -1,4 +1,3 @@
-using System;
 using UnitedSets.Mvvm.Services;
 using Microsoft.UI.Dispatching;
 

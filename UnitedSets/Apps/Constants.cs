@@ -1,6 +1,4 @@
 using CommunityToolkit.WinUI.Helpers;
-using Visibility = Microsoft.UI.Xaml.Visibility;
-using System;
 using WinWrapper.Windowing;
 using Windows.ApplicationModel;
 
@@ -57,7 +55,7 @@ static class Constants
         return isFirstRun;
     });
     public static bool IsFirstRun => _IsFirstRun.Value;
-    public static bool ShouldBeBlacklisted(Window Window)
+    public static bool ShouldBeBlacklisted(WindowEx Window)
         => Window.Class.Name is
             "Shell_TrayWnd" // Taskbar
             or "Progman" or "WorkerW" // Desktop

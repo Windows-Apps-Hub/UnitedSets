@@ -1,21 +1,17 @@
-﻿using System.IO;
-using System;
+using System.IO;
 using UnitedSets.Helpers;
 using Microsoft.Win32;
-using WindowHoster;
-using WinWrapper.Windowing;
-using System.Linq;
 
 namespace UnitedSets;
 
 static class Utils
 {
-    public static string? GetOwnerProcessModuleFilename(Window window) => GetOwnerWindow(window).OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+    public static string? GetOwnerProcessModuleFilename(WindowEx window) => GetOwnerWindow(window).OwnerProcess.GetDotNetProcess.MainModule?.FileName;
     /// <summary>
     /// Work around WinUI/UWP as AppFrameHost is normally the owner but we want the actual app
     /// </summary>
     /// <returns></returns>
-    static Window GetOwnerWindow(Window window, out bool wasUwp)
+    static WindowEx GetOwnerWindow(WindowEx window, out bool wasUwp)
     {
         var owner = window;
         wasUwp = false;
@@ -30,7 +26,7 @@ static class Utils
         var child = GetCoreWindowFromAppHostWindow(window);
         return child;
     }
-    public static Window GetCoreWindowFromAppHostWindow(Window appFrameHostMainWindow)
+    public static WindowEx GetCoreWindowFromAppHostWindow(WindowEx appFrameHostMainWindow)
         => appFrameHostMainWindow.Children
         .FirstOrDefault(x => x.Class.Name is "Windows.UI.Core.CoreWindow", appFrameHostMainWindow);
     private static string? WindowsAppFolder = null;
@@ -44,9 +40,9 @@ static class Utils
         return WindowsAppFolder;
     }
     public const string OUR_WINDOWS_STORE_APP_EXEC_PREFIX = "#WindowsApp!";
-    static Window GetOwnerWindow(Window window) => GetOwnerWindow(window, out _);
+    static WindowEx GetOwnerWindow(WindowEx window) => GetOwnerWindow(window, out _);
 
-    public static (string cmd, string args) GetOwnerProcessInfo(Window window)
+    public static (string cmd, string args) GetOwnerProcessInfo(WindowEx window)
     {
         var owner = GetOwnerWindow(window, out var wasUWP);
         var toParse = ExternalProcessHelper.GetProcessCommandLineByPID(owner.OwnerProcess.Id.ToString());

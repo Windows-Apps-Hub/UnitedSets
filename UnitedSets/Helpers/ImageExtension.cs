@@ -1,8 +1,6 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
-using System;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace UnitedSets.Helpers;
 
@@ -11,7 +9,7 @@ static class ImageExtension
     public async static ValueTask<BitmapImage> ToXAMLBitmapImageAsync(this Bitmap bmp)
     {
         using var ms = new MemoryStream();
-        bmp.MakeTransparent(Color.Black);
+        bmp.MakeTransparent(System.Drawing.Color.Black);
         bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
         return await ms.ToXAMLBitmapImageAsync();
     }

@@ -1,10 +1,9 @@
 using Microsoft.UI.Windowing;
-using WinUIEx;
 
 namespace UnitedSets.UI.AppWindows;
 
 
-public sealed partial class SocialPreviewWindow : WindowEx
+public sealed partial class SocialPreviewWindow : WinUIEx.WindowEx
 {
     public SocialPreviewWindow()
     {

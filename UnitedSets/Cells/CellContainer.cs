@@ -1,21 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Get.Data.Collections;
-using Get.Data.Collections.Linq;
-using Get.Data.Collections.Update;
-using Get.Data.Properties;
-using Microsoft.UI.Xaml.Controls;
 using UnitedSets.Tabs;
-using static Get.Data.Properties.AutoTyper;
 namespace UnitedSets.Cells;
 [AutoProperty]
 public partial class ContainerCell : Cell
 {
     public CellTab? ParentCellTab { get; set; }
     public ContainerCell(ContainerCell? Parent, Orientation Orientation) : base(Parent)
-    {
-        this.Orientation = Orientation;
-    }
+        => this.Orientation = Orientation;
     public IUpdateCollection<Cell> SubCells { get; } = new UpdateCollection<Cell>();
     public IProperty<Orientation> OrientationProperty { get; } = Auto<Orientation>(default);
 

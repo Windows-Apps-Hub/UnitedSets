@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace UnitedSets.UI.FlyoutModules;
 
 interface IWindowFlyoutModule

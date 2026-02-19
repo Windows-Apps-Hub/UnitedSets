@@ -1,5 +1,3 @@
-using Get.Data.Properties;
-using Get.UI.Data;
 using UnitedSets.Cells;
 using WindowHoster;
 

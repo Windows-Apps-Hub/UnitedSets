@@ -1,7 +1,4 @@
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using Windows.UI;
 using Microsoft.UI.Composition;
 
 namespace UnitedSets.Helpers;

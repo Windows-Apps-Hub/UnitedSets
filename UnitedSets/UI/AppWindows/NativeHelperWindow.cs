@@ -1,10 +1,9 @@
-using Microsoft.UI.Windowing;
 using WinRT.Interop;
-using WinUIEx;
 using WinUIEx.Messaging;
 
 namespace UnitedSets.UI.AppWindows;
-public abstract class NativeHelperWindow : WindowEx
+
+public abstract class NativeHelperWindow : WinUIEx.WindowEx
 {
     // Readonly
     public readonly WinWrapper.Windowing.Window Win32Window;

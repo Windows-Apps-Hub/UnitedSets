@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 #pragma warning disable CS8603 // Possible null reference return.
 #pragma warning disable CS8605 // Unboxing a possibly null value.

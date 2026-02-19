@@ -1,21 +1,12 @@
 using EasyCSharp;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls;
-using System.Linq;
-using Microsoft.UI.Xaml;
 using Windows.ApplicationModel.DataTransfer;
-using System;
-using WindowEx = WinWrapper.Windowing.Window;
 using Keyboard = WinWrapper.Input.Keyboard;
-using System.Threading.Tasks;
 using WinUIEx.Messaging;
 using UnitedSets.Tabs;
 using UnitedSets.UI.Popups;
-using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Windowing;
-
-using WindowHoster;
 using UnitedSets.Cells;
 using UnitedSets.PostProcessing;
 using UnitedSets.Apps;

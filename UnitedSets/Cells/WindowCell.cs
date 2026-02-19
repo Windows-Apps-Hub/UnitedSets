@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Get.Data.Properties;
-using static Get.Data.Properties.AutoTyper;
 using WindowHoster;
-using Get.Data.Collections;
 
 namespace UnitedSets.Cells;
+
 public partial class WindowCell : Cell
 {
     public RegisteredWindow Window { get; }
@@ -25,7 +18,7 @@ public partial class WindowCell : Cell
     private async void AttemptToSelectTab()
     {
         await Task.Delay(100);
-        ContainerCell c = Parent!;
+        var c = Parent!;
         while (c.Parent is { } c2)
         {
             c = c2;

@@ -1,219 +1,121 @@
-﻿using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+namespace Cube.UI.Controls.Settings;
 
-#nullable enable
-
-namespace Cube.UI.Controls.Settings
+/// <summary>
+/// The generic base implementation of a value converter.
+/// </summary>
+/// <typeparam name="TSource">The source type.</typeparam>
+/// <typeparam name="TTarget">The target type.</typeparam>
+public abstract class ValueConverter<TSource, TTarget>
+    : IValueConverter
 {
     /// <summary>
-    /// The generic base implementation of a value converter.
+    /// Converts a source value to the target type.
     /// </summary>
-    /// <typeparam name="TSource">The source type.</typeparam>
-    /// <typeparam name="TTarget">The target type.</typeparam>
-    public abstract class ValueConverter<TSource, TTarget>
-        : IValueConverter
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public TTarget? Convert(TSource? value) => Convert(value, null, null);
+
+    /// <summary>
+    /// Converts a target value back to the source type.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public TSource? ConvertBack(TTarget? value) => ConvertBack(value, null, null);
+
+    /// <summary>
+    /// Modifies the source data before passing it to the target for display in the UI.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="targetType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public object? Convert(object? value, Type? targetType, object? parameter, string? language)
     {
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public TTarget? Convert(TSource? value)
-        {
-            return Convert(value, null, null);
-        }
-
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public TSource? ConvertBack(TTarget? value)
-        {
-            return ConvertBack(value, null, null);
-        }
-
-        /// <summary>
-        /// Modifies the source data before passing it to the target for display in the UI.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="targetType"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        public object? Convert(object? value, Type? targetType, object? parameter, string? language)
-        {
-            // CastExceptions will occur when invalid value, or target type provided.
-            return Convert((TSource?)value, parameter, language);
-        }
-
-        /// <summary>
-        /// Modifies the target data before passing it to the source object. This method is called only in TwoWay bindings.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="targetType"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        public object? ConvertBack(object? value, Type? targetType, object? parameter, string? language)
-        {
-            // CastExceptions will occur when invalid value, or target type provided.
-            return ConvertBack((TTarget?)value, parameter, language);
-        }
-
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected virtual TTarget? Convert(TSource? value, object? parameter, string? language)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected virtual TSource? ConvertBack(TTarget? value, object? parameter, string? language)
-        {
-            throw new NotSupportedException();
-        }
+        // CastExceptions will occur when invalid value, or target type provided.
+        return Convert((TSource?)value, parameter, language);
     }
 
     /// <summary>
-    /// The base class for converting instances of type T to object and vice versa.
+    /// Modifies the target data before passing it to the source object. This method is called only in TwoWay bindings.
     /// </summary>
-    public abstract class ToObjectConverter<T>
-        : ValueConverter<T?, object?>
+    /// <param name="value"></param>
+    /// <param name="targetType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public object? ConvertBack(object? value, Type? targetType, object? parameter, string? language)
     {
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override object? Convert(T? value, object? parameter, string? language)
-        {
-            return value;
-        }
-
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override T? ConvertBack(object? value, object? parameter, string? language)
-        {
-            return (T?)value;
-        }
+        // CastExceptions will occur when invalid value, or target type provided.
+        return ConvertBack((TTarget?)value, parameter, language);
     }
 
     /// <summary>
-    /// Converts a boolean to and from a visibility value.
+    /// Converts a source value to the target type.
     /// </summary>
-    public class InverseBooleanConverter
-        : ValueConverter<bool, bool>
-    {
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override bool Convert(bool value, object? parameter, string? language)
-        {
-            return !value;
-        }
+    /// <param name="value"></param>
+    /// <param name="parameter"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    protected virtual TTarget? Convert(TSource? value, object? parameter, string? language)
+        => throw new NotSupportedException();
 
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override bool ConvertBack(bool value, object? parameter, string? language)
-        {
-            return !value;
-        }
-    }
+    /// <summary>
+    /// Converts a target value back to the source type.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="parameter"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    protected virtual TSource? ConvertBack(TTarget? value, object? parameter, string? language)
+        => throw new NotSupportedException();
+}
 
-    public class NullToTrueConverter
-        : ValueConverter<object?, bool>
-    {
-        /// <summary>
-        /// Determines whether an inverse conversion should take place.
-        /// </summary>
-        /// <remarks>If set, the value True results in <see cref="Visibility.Collapsed"/>, and false in <see cref="Visibility.Visible"/>.</remarks>
-        public bool Inverse { get; set; }
+/// <summary>
+/// The base class for converting instances of type T to object and vice versa.
+/// </summary>
+public abstract class ToObjectConverter<T>
+    : ValueConverter<T?, object?>
+{
+    protected override object? Convert(T? value, object? parameter, string? language) => value;
+    protected override T? ConvertBack(object? value, object? parameter, string? language) => (T?)value;
+}
 
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override bool Convert(object? value, object? parameter, string? language)
-        {
-            return Inverse ? value != null : value == null;
-        }
+/// <summary>
+/// Converts a boolean to and from a visibility value.
+/// </summary>
+public partial class InverseBooleanConverter
+    : ValueConverter<bool, bool>
+{
+    protected override bool Convert(bool value, object? parameter, string? language) => !value;
+    protected override bool ConvertBack(bool value, object? parameter, string? language) => !value;
+}
 
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override object? ConvertBack(bool value, object? parameter, string? language)
-        {
-            return null;
-        }
-    }
+public partial class NullToTrueConverter
+    : ValueConverter<object?, bool>
+{
+    /// <summary>
+    /// Determines whether an inverse conversion should take place.
+    /// </summary>
+    /// <remarks>If set, the value True results in <see cref="Visibility.Collapsed"/>, and false in <see cref="Visibility.Visible"/>.</remarks>
+    public bool Inverse { get; set; }
 
-    public class StringNullOrWhiteSpaceToTrueConverter
-        : ValueConverter<string, bool>
-    {
-        /// <summary>
-        /// Determines whether an inverse conversion should take place.
-        /// </summary>
-        /// <remarks>If set, the value True results in <see cref="Visibility.Collapsed"/>, and false in <see cref="Visibility.Visible"/>.</remarks>
-        public bool Inverse { get; set; }
+    protected override bool Convert(object? value, object? parameter, string? language) => Inverse ? value != null : value == null;
 
-        /// <summary>
-        /// Converts a source value to the target type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override bool Convert(string? value, object? parameter, string? language)
-        {
-            return Inverse ? !string.IsNullOrWhiteSpace(value) : string.IsNullOrWhiteSpace(value);
-        }
+    protected override object? ConvertBack(bool value, object? parameter, string? language) => null;
+}
 
-        /// <summary>
-        /// Converts a target value back to the source type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="parameter"></param>
-        /// <param name="language"></param>
-        /// <returns></returns>
-        protected override string ConvertBack(bool value, object? parameter, string? language)
-        {
-            return string.Empty;
-        }
-    }
+public partial class StringNullOrWhiteSpaceToTrueConverter
+    : ValueConverter<string, bool>
+{
+    /// <summary>
+    /// Determines whether an inverse conversion should take place.
+    /// </summary>
+    /// <remarks>If set, the value True results in <see cref="Visibility.Collapsed"/>, and false in <see cref="Visibility.Visible"/>.</remarks>
+    public bool Inverse { get; set; }
+
+    protected override bool Convert(string? value, object? parameter, string? language)
+        => Inverse ? !string.IsNullOrWhiteSpace(value) : string.IsNullOrWhiteSpace(value);
+
+    protected override string ConvertBack(bool value, object? parameter, string? language) => string.Empty;
 }

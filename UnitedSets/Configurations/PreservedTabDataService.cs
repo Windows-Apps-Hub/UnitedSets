@@ -1,18 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using UnitedSets.Tabs;
 using static UnitedSets.Configurations.PreservedHelpers;
-using WindowsOG = Windows;
 using Windows.Win32;
 using WindowHoster;
-using System.Diagnostics.CodeAnalysis;
-using Get.Data.Collections.Linq;
+using UnitedSets.Tabs;
 using UnitedSets.Cells;
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8602 // 
@@ -132,9 +123,9 @@ public class PreservedTabDataService
         var hwnd = start_arg.running?.MainWindowHandle;//may need to make sure not yexited
         if (hwnd == null)
             hwnd = IntPtr.Zero;
-        WinWrapper.Windowing.Window? wind = null;
+        WindowEx? wind = null;
         if (hwnd != IntPtr.Zero)
-            wind = WinWrapper.Windowing.Window.FromWindowHandle((nint)hwnd);
+            wind = WindowEx.FromWindowHandle((nint)hwnd);
         if (start_arg?.NeedNewTab != false)
         {
             if (isCell == false)
@@ -148,7 +139,7 @@ public class PreservedTabDataService
                             break;
                         try
                         {
-                            var testWind = Utils.GetCoreWindowFromAppHostWindow(WinWrapper.Windowing.Window.FromWindowHandle(hostProc.MainWindowHandle));
+                            var testWind = Utils.GetCoreWindowFromAppHostWindow(WindowEx.FromWindowHandle(hostProc.MainWindowHandle));
                             if (testWind.OwnerProcess.Id == start_arg.running.Id)
                             {
                                 wind = testWind;
@@ -249,7 +240,7 @@ public class PreservedTabDataService
             if (start_arg.startInfo.FileName.StartsWith(Utils.OUR_WINDOWS_STORE_APP_EXEC_PREFIX))
             {
                 var pkgId = start_arg.startInfo.FileName[Utils.OUR_WINDOWS_STORE_APP_EXEC_PREFIX.Length..];
-                var manager = new WindowsOG.Management.Deployment.PackageManager();
+                var manager = new global::Windows.Management.Deployment.PackageManager();
                 var pkg = manager.FindPackageForUser(string.Empty, pkgId);
                 if (pkg is null)
                     // To do
@@ -257,10 +248,10 @@ public class PreservedTabDataService
                 var allEntries = await pkg.GetAppListEntriesAsync();
                 var entry = allEntries.First();
                 //allEntries.First().LaunchForUserAsync(
-                var manager2 = (WindowsOG.Win32.UI.Shell.IApplicationActivationManager)new WindowsOG.Win32.UI.Shell.ApplicationActivationManager();
+                var manager2 = (global::Windows.Win32.UI.Shell.IApplicationActivationManager)new global::Windows.Win32.UI.Shell.ApplicationActivationManager();
                 var args = start_arg.startInfo.Arguments;
 
-                UI_Shell_IApplicationActivationManager_Extensions.ActivateApplication(manager2, entry.AppUserModelId, args, WindowsOG.Win32.UI.Shell.ACTIVATEOPTIONS.AO_NONE, out var pid);//sadly we can only launch without splash screen (AO_NOSPLASHSCREEN) if we enable debug on the app
+                UI_Shell_IApplicationActivationManager_Extensions.ActivateApplication(manager2, entry.AppUserModelId, args, global::Windows.Win32.UI.Shell.ACTIVATEOPTIONS.AO_NONE, out var pid);//sadly we can only launch without splash screen (AO_NOSPLASHSCREEN) if we enable debug on the app
                 start_arg.running = Process.GetProcessById((int)pid);
             }
             else

@@ -42,6 +42,10 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         MainWindow = window;
         DispatcherQueue = window.DispatcherQueue;
         RegisterUnitedSetsWindow(WindowEx.FromWindowHandle((nint)window.AppWindow.Id.Value));
+
+        ReactiveScheduler.AddTickCallbackForCurrentThread(() =>
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, ReactiveScheduler.Tick)
+        );
     }
 
     [DoesNotReturn]

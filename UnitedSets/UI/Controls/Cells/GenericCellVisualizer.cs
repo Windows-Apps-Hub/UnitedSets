@@ -1,58 +1,64 @@
 using UnitedSets.Cells;
-using UnitedSets.Controls;
 namespace UnitedSets.UI.Controls.Cells;
-[AutoProperty]
-public partial class GenericCellVisualizer(Cell cell) : TemplateControl<OrientedStack>
-{
-    public IProperty<double> CellMarginProperty { get; } = Auto(10d);
-    public IProperty<Cell> CellProperty { get; } = Auto(cell);
-    protected override void Initialize(OrientedStack rootElement)
-    {
-        rootElement.HorizontalAlignment = HorizontalAlignment.Stretch;
-        rootElement.VerticalAlignment = VerticalAlignment.Stretch;
-        OrientedStack.LengthTypeProperty.SetValue(this, GridUnitType.Star);
-        OrientedStack.LengthValueProperty
-            .GetProperty(this)
-            .BindOneWay(cell.RelativeSizeProperty);
-        var visContainer = new Border();
-        OrientedStack.LengthProperty.SetValue(visContainer, Star(1));
+[QuickMarkup("""
+    using UnitedSets.Cells;
+    using UnitedSets.Controls;
+    Cell Cell;
+    double CellMargin;
+    private ContainerCell? CellParent => `Cell?.Parent`;
+    private bool ShouldShowResizer => `() => {
+        if (Cell?.Parent is not { } parent) return false;
+        var idx = parent.SubCells.IndexOf(Cell);
+        // don't show the resizer if it's the last element
+        // (or if somehow idx is invalid)
+        return idx >= 0 && idx < parent.SubCells.Count - 1;
+    }`;
+    <root
+        StretchH StretchV
+        LengthValue=`Cell.RelativeSize`
+        Orientation=`CellParent?.Orientation ?? default(Orientation)`
+    >
+        visContainer = <Border Child=`CreateVisualizer(Cell)` />
         // resizer not working due to https://github.com/CommunityToolkit/Windows/issues/273
-        var resizer = new OrientedStackResizer
-        {
-            Background = Solid(Colors.Red),
-            MinWidth = 5,
-            MinHeight = 5,
-            IsEnabled = true
-        };
-        Canvas.SetZIndex(resizer, 100);
-        rootElement.Children.Add(visContainer);
-        rootElement.Children.Add(resizer);
-        CellProperty.ApplyAndRegisterForNewValue((_, x) =>
-        {
-            if (cell.Parent is { } parent)
-            {
-                rootElement.Orientation = parent.Orientation;
-                resizer.Orientation = rootElement.Orientation is Orientation.Horizontal ? Orientation.Vertical : Orientation.Horizontal;
-                var idx = parent.SubCells.IndexOf(x);
-                // don't show the resizer if it's the last element
-                // (or if somehow idx is invalid)
-                resizer.Visibility = idx >= 0 && idx < parent.SubCells.Count - 1 ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else
-            {
-                resizer.Visibility = Visibility.Collapsed;
-            }
-            visContainer.Child = CreateVisualizer(x);
-        });
+        resizer = <OrientedStackResizer
+            Canvas_ZIndex=100
+            Background=`Solid(Colors.Red)`
+            MinWidth=5 MinHeight = 5
+            IsEnabled
+            Orientation=`CellParent?.Orientation.Flip() ?? default(Orientation)`
+            IsVisible=`ShouldShowResizer`
+        />
+    </root>
+    """)]
+public partial class GenericCellVisualizer : OrientedStack
+{
+    private double LengthValue
+    {
+        set => OrientedStack.LengthProperty.SetValue(this, new(value, GridUnitType.Star));
     }
-    UIElement CreateVisualizer(Cell x)
+    public GenericCellVisualizer(Cell cell)
+    {
+        Cell = cell;
+        Init();
+        OrientedStack.LengthProperty.SetValue(visContainer, Star(1));
+    }
+
+    UIElement CreateVisualizer(Cell x) => ReferenceTracker.NoCapture<UIElement>(() =>
     {
         if (x is EmptyCell ec)
             return new EmptyCellVisualizer(ec);
         else if (x is ContainerCell cc)
-            return new CellContainerVisualizer(cc) { CellMarginBinding = OneWay(CellMarginProperty) };
+        {
+            var a = new CellContainerVisualizer(cc);
+            CellMarginProp.Watch(x => a.CellMargin = x, immediete: true);
+            return a;
+        }
         else if (x is WindowCell wc)
-            return new WindowCellVisualizer(wc) { CellMarginBinding = OneWay(CellMarginProperty) };
+        {
+            var a = new WindowCellVisualizer(wc);
+            CellMarginProp.Watch(x => a.CellMargin = x, immediete: true);
+            return a;
+        }
         throw new System.InvalidCastException("Cannot infer type");
-    }
+    });
 }

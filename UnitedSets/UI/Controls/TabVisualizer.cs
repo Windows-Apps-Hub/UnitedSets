@@ -21,11 +21,11 @@ public partial class TabVisualizer : TemplateControl<Grid>
             rootElement.Children.Add(
                 newValue switch
                 {
-                    CellTab ct => new GenericCellVisualizer(ct.MainCell)
+                    CellTab ct => new GenericCellVisualizer(ct.MainCell).WithCustomCode(vis =>
                     {
-                        CellBinding = OneWay(ct.MainCellProperty.Select(x => (Cell)x)),
-                        CellMarginBinding = OneWay(ct.CellMarginProperty)
-                    },
+                        ct.MainCellProperty.ApplyAndRegisterForNewValue(x => vis.Cell = x);
+                        ct.CellMarginProperty.ApplyAndRegisterForNewValue(x => vis.CellMargin = x);
+                    }),
                     WindowHostTab wt => new WindowHost { AssociatedWindow = wt.RegisteredWindow },
                     _ => throw new System.InvalidCastException("Unknown tab type")
                 }

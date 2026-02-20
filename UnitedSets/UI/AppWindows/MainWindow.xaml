@@ -21,28 +21,6 @@
         BorderThickness="3"
     >
         <Grid.Resources>
-            <Storyboard x:Name="WindowHoveringStoryBoard">
-                <ColorAnimation Storyboard.TargetName="FlashingBackgroundColor"
-                Storyboard.TargetProperty="Color"
-                Duration="0:0:0.5"
-                From="Transparent"
-                To="{ThemeResource LayerFillColorDefault}">
-                    <ColorAnimation.EasingFunction>
-                        <CircleEase EasingMode="EaseOut" />
-                    </ColorAnimation.EasingFunction>
-                </ColorAnimation>
-            </Storyboard>
-            <Storyboard x:Name="NoWindowHoveringStoryBoard">
-                <ColorAnimation Storyboard.TargetName="FlashingBackgroundColor"
-                Storyboard.TargetProperty="Color"
-                Duration="0:0:0.5"
-                From="{ThemeResource LayerFillColorDefault}"
-                To="Transparent">
-                    <ColorAnimation.EasingFunction>
-                        <CircleEase EasingMode="EaseIn" />
-                    </ColorAnimation.EasingFunction>
-                </ColorAnimation>
-            </Storyboard>
             <controls:BackdropedFlyout x:Name="ClosingFlyout" Placement="BottomEdgeAlignedRight" ShouldConstrainToRootBounds="False">
                 <StackPanel Spacing="16">
                     <TextBlock HorizontalAlignment="Center">How would you like to close the app?</TextBlock>
@@ -92,12 +70,8 @@
                 </LinearGradientBrush>
             </Border.BorderBrush>
         </Border>-->
-        <Grid x:Name="FlashingBackground" Grid.RowSpan="2">
-            <Grid.Background>
-                <SolidColorBrush x:Name="FlashingBackgroundColor" Color="Transparent"/>
-            </Grid.Background>
-        </Grid>
-        <Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>
+        <controls:WindowHoverIndicatorBackground x:Name="HoverIndicator" Grid.RowSpan="2" />
+        <!--<Grid x:Name="CustomDragRegion" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2" Width="10" Height="10" Canvas.ZIndex="90"/>-->
         <Border x:Name="TabViewBorder" MinHeight="40" PointerMoved="DragRegion_PointerMoved" Background="Transparent">
             <guics:DragRegion x:Name="DragRegion" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <guics:DragRegion.ColumnDefinitions>
@@ -106,106 +80,40 @@
                     <ColumnDefinition Width="32"/>
                     <ColumnDefinition Width="{x:Bind GridLengthFromPixelInt(AppWindow.TitleBar.RightInset), Mode=OneTime}"/>
                 </guics:DragRegion.ColumnDefinitions>
-                <TabView
-                Grid.Column="1"
-                Style="{ThemeResource GlowTabView}"
-                x:Name="TabView"
-                x:FieldModifier="Public"
-                IsAddTabButtonVisible="False"
-                TabItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
-                SelectedItem="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=TwoWay}"
-                VerticalAlignment="Center"
-                TabDragStarting="TabDragStarting"
-                TabDroppedOutside="TabDroppedOutside"
-                CanDragTabs="True"
-                CanReorderTabs="True"
-                BorderBrush="Transparent"
-                AllowDrop="True"
-                DragOver="OnDragItemOverTabView"
-                Drop="OnDropOverTabView"
-                MinHeight="42"
-                HorizontalAlignment="Left"
-                SelectionChanged="TabSelectionChanged"
-            >
-                    <TabView.Resources>
-                        <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
-                    </TabView.Resources>
-                    <TabView.TabItemTemplate>
-                        <DataTemplate x:DataType="tabs:TabBase">
-                            <TabViewItem
-                            x:Name="TabViewItem"
-                            Margin="2, 0, 2, 2"
-                            Background="{ThemeResource 12Brush}"
-                            Style="{ThemeResource UndockedTabViewItemStyle}"
-                            CloseRequested="{x:Bind TabCloseRequestedEv}"
-                            DoubleTapped="{x:Bind TabDoubleTapped}"
-                            RightTapped="{x:Bind TabRightTapped}"
-                            Tag="{x:Bind}"
-                            PointerPressed="{x:Bind TabClickEv}"
-                            AllowDrop="True"
-                            DragOver="OnDragOverTabViewItem"
+                <controls:HorizontalTabs
+                    Grid.Column="1"
+                    x:Name="TabView"
+                    x:FieldModifier="public"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    SelectionChanged="TabSelectionChanged"
+                >
+                    <controls:HorizontalTabs.TabStripHeader>
+                        <controls:MainWindowControlButton
+                            VerticalAlignment="Center"
+                            Margin="5,0,0,0"
+                            Style="{ThemeResource ToolbarButton}"
+                            MainWindow="{x:Bind}"
+                        />
+                    </controls:HorizontalTabs.TabStripHeader>
+                    <controls:HorizontalTabs.TabStripFooter>
+                        <controls:AddTabSplitButton
+                            Canvas.ZIndex="8"
+                            Margin="0,0,20,0"
+                            HorizontalAlignment="Left"
                             guics:DragRegion.Clickable="True"
-                        >
-                                <!--<VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="FlashingStates">
-                                    <VisualState x:Name="Flashing">
-                                        <VisualState.StateTriggers>
-                                            <StateTrigger IsActive="{x:Bind IsFlashing}"/>
-                                        </VisualState.StateTriggers>
-                                        <VisualState.Setters>
-                                            <Setter Target="TabViewItem.Background" Value="Red" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Regular">
-                                        <VisualState.StateTriggers>
-                                            <StateTrigger IsActive="{x:Bind helpers:XAMLFuncs.Not(IsFlashing)}"/>
-                                        </VisualState.StateTriggers>
-                                        <VisualState.Setters>
-                                            <Setter Target="TabViewItem.Background" Value="{ThemeResource 12Brush}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>-->
-                                <TabViewItem.Header>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
-                                        <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
-                                    </StackPanel>
-                                </TabViewItem.Header>
-                            </TabViewItem>
-                        </DataTemplate>
-                    </TabView.TabItemTemplate>
-                    <TabView.TabStripHeader>
-                        <Button x:Name="Ele" VerticalAlignment="Center" Style="{ThemeResource ToolbarButton}" Padding="5" Margin="5,0,0,0" Width="32" Height="32">
-                            <icons:FluentIconElement Symbol="Navigation20" Margin="-2,-6,0,0" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                            <Button.Flyout>
-                                <controls:BackdropedFlyout ShouldConstrainToRootBounds="False">
-                                    <module:MainWindowMenuFlyoutModule MainWindow="{x:Bind}"/>
-                                </controls:BackdropedFlyout>
-                            </Button.Flyout>
-                        </Button>
-                    </TabView.TabStripHeader>
-                    <TabView.TabStripFooter>
-                        <SplitButton HorizontalAlignment="Left" Click="OnAddTabButtonClick" Canvas.ZIndex="8" Padding="5" Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0"
-                            guics:DragRegion.Clickable="True">
-                            <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
-                            <SplitButton.Flyout>
-                                <MenuFlyout ShouldConstrainToRootBounds="False" Placement="BottomEdgeAlignedRight">
-                                    <MenuFlyoutItem Click="OnAddTabButtonClick">Add Window</MenuFlyoutItem>
-                                    <MenuFlyoutItem Command="{x:Bind AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
-                                </MenuFlyout>
-                            </SplitButton.Flyout>
-                        </SplitButton>
-                    </TabView.TabStripFooter>
-                </TabView>
+                            AddTab="OnAddTabButtonClick" AddSplitableTab="AddSplitableTab"
+                        />
+                    </controls:HorizontalTabs.TabStripFooter>
+                </controls:HorizontalTabs>
             </guics:DragRegion>
         </Border>
         <Border Grid.Row="1" x:Name="MainAreaBorder">
             <controls:TabVisualizer
-            Tab="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=OneWay}"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-        />
+                Tab="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=OneWay}"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+            />
         </Border>
         <controls:HomeBackground x:Name="UnitedSetsHomeBackground"/>
     </Grid>

@@ -22,7 +22,7 @@
         <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
         <Configurations>Debug;Release;DebugUnpackaged</Configurations>
         <ApplicationIcon>Assets\UnitedSets.ico</ApplicationIcon>
-        <LangVersion>12</LangVersion>
+        <LangVersion>14.0</LangVersion>
         <UseRidGraph>True</UseRidGraph>
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
@@ -44,6 +44,8 @@
         <None Remove="Tab Settings\Modules\BasicTabFlyoutModule.xaml" />
         <None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
         <None Remove="TabPropertiesFlyout.xaml" />
+        <None Remove="UI\Controls\FlashingBackground.xaml" />
+        <None Remove="UI\Controls\HorizontalTabs.xaml" />
     </ItemGroup>
     <ItemGroup>
         <Page Remove="UI\AppWindows\NewWindow.xaml" />
@@ -88,6 +90,8 @@
         <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
         <ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
         <ProjectReference Include="..\WindowHoster\WindowHoster.csproj" />
+        <ProjectReference Include="..\QuickMarkup\QuickMarkup.Infra\QuickMarkup.Infra.csproj" />
+        <ProjectReference Include="..\QuickMarkup\QuickMarkup.SourceGen\QuickMarkup.SourceGen.csproj" ReferenceOutputAssembly="False" OutputItemType="Analyzer" />
     </ItemGroup>
     <ItemGroup>
         <Page Update="UI\AppWindows\FloatingTaskbar.xaml">
@@ -132,6 +136,16 @@
     </ItemGroup>
     <ItemGroup>
         <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <Page Update="UI\Controls\HorizontalTabs.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+    </ItemGroup>
+    <ItemGroup>
+      <Page Update="UI\Controls\FlashingBackground.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\CellVisualizer.xaml">

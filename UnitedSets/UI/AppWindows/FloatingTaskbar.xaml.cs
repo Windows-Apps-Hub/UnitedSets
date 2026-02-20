@@ -91,7 +91,8 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     }
     private void RadioButton_DragOver(object sender, DragEventArgs e)
     {
-        MainWindow.OnDragOverTabViewItem(sender);
+        // TODO: when we do work on floating taskbar again
+        // MainWindow.OnDragOverTabViewItem(sender);
     }
 
     private void RadioButton_Checked(object sender, RoutedEventArgs e)

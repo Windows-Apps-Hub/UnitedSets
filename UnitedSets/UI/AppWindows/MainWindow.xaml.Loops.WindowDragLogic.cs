@@ -137,7 +137,7 @@ public sealed partial class MainWindow
                 var info = GetCellAtCursor(normPos, CellTab.MainCell);
                 if (info is not null)
                 {
-                    var (rect, cell) = info.Value;
+                    var (_, cell) = info.Value;
                     return (CellTab, cell);
                 }
             }
@@ -163,29 +163,26 @@ public sealed partial class MainWindow
                     var (NewTab, NewCell) = DetectCell();
                     var UpdateHoverToTrue = OtherWindowDragging == default;
                     if (NewCell != SelectedCell)
-                        if (SelectedCell is not null)
-                            SelectedCell.HoverEffect = false;
-                    if (NewCell is not null)
-                        NewCell.HoverEffect = true;
+                        SelectedCell?.HoverEffect = false;
+                    NewCell?.HoverEffect = true;
                     if (NewCell is not null)
                     {
                         if (SelectedCell is null && UpdateHoverToTrue == false)
-                            DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                            HoverIndicator.TransitionToNotHoverState();
                     }
                     else if (UpdateHoverToTrue || (SelectedCell is not null && NewCell is null))
-                        DispatcherQueue.TryEnqueue(() => WindowHoveringStoryBoard.Begin());
+                        HoverIndicator.TransitionToHoverState();
                     SelectedCell = NewCell;
                     SelectedCellTab = NewTab;
                     OtherWindowDragging = foregroundWindow;
                 }
                 else
                 {
-                    if (SelectedCell is not null)
-                        SelectedCell.HoverEffect = false;
+                    SelectedCell?.HoverEffect = false;
                     SelectedCell = null;
                     SelectedCellTab = null;
                     if (OtherWindowDragging != default)
-                        DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                        HoverIndicator.TransitionToNotHoverState();
                     OtherWindowDragging = default;
                 }
             }
@@ -217,7 +214,7 @@ public sealed partial class MainWindow
             }
             else
             {
-                DispatcherQueue.TryEnqueue(() => NoWindowHoveringStoryBoard.Begin());
+                HoverIndicator.TransitionToNotHoverState();
                 DispatcherQueue.TryEnqueue(delegate
                 {
                     if (WindowHostTab.Create(window) is { } tab)

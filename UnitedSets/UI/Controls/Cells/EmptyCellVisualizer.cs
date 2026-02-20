@@ -1,124 +1,65 @@
-using Windows.ApplicationModel.DataTransfer;
-using UnitedSets.Cells;
 using UnitedSets.Apps;
+using UnitedSets.Cells;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace UnitedSets.UI.Controls.Cells;
-public partial class EmptyCellVisualizer(EmptyCell emptyCell) : TemplateControl<Grid>
-{
-    public IProperty<double> CellMarginProperty { get; } = Auto(10d);
-    protected override void Initialize(Grid rootElement)
-    {
-        int splitCount = 2;
-        rootElement.AllowDrop = true;
-        rootElement.DragOver += OnDragOver;
-        rootElement.Drop += emptyCell.OnItemDrop;
-        rootElement.Children.Add(new ScrollViewer
-        {
-            HorizontalScrollMode = ScrollMode.Auto,
-            VerticalScrollMode = ScrollMode.Auto,
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-            ZoomMode = ZoomMode.Enabled,
-            MaxZoomFactor = 1.5f,
-            MinZoomFactor = 0.1f,
-            Content = new OrientedStack(Orientation.Vertical, spacing: 16)
-            {
-                Margin = new(0, 0, 0, -180), // oriented stack is questionable its size
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Children =
-                {
-                    new TextBlock {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        FontSize = 20,
-                    }.AssignTo(out var hintTb),
-                    new TextBlock {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        FontSize = 16,
-                        Text = "or"
-                    },
-                    new Button
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Content = new StackPanel
-                        {
-                            Orientation = Orientation.Horizontal,
-                            Children =
-                            {
-                                new SymbolExIcon { SymbolEx = SymbolEx.GripperBarHorizontal },
-                                new TextBlock { Margin = new(4, 0, 4, 0), Text = "Split Horizontally" },
-                                new SymbolExIcon { SymbolEx = SymbolEx.GripperBarHorizontal },
-                            }
-                        }
-                    }.WithCustomCode(
-                        x => x.Click += delegate
-                        {
-                            emptyCell.Split(splitCount, Orientation.Vertical); // intentionally swap orientation
-                        }
-                    ),
-                    new Button
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Content = new StackPanel
-                        {
-                            Orientation = Orientation.Horizontal,
-                            Children =
-                            {
-                                new SymbolExIcon { SymbolEx = SymbolEx.GripperBarVertical },
-                                new TextBlock { Margin = new(4, 0, 4, 0), Text = "Split Vertically" },
-                                new SymbolExIcon { SymbolEx = SymbolEx.GripperBarVertical },
-                            }
-                        }
-                    }.WithCustomCode(
-                        x => x.Click += delegate
-                        {
-                            emptyCell.Split(splitCount, Orientation.Horizontal); // intentionally swap orientation
-                        }
-                    ),
-                    new OrientedStack(Orientation.Horizontal, spacing: 8)
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Children =
-                        {
-                            new TextBlock { VerticalAlignment = VerticalAlignment.Center, Text = "Number of Cells to Split:" },
-                            new Button
-                            {
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Content = new SymbolIcon(Symbol.Add),
-                                Padding = new(5)
-                            }.AssignTo(out var plusbtn),
-                            new TextBlock { VerticalAlignment = VerticalAlignment.Center, Text = splitCount.ToString() }
-                            .AssignTo(out var splitCountDisplay),
-                            new Button
-                            {
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Content = new SymbolIcon(Symbol.Remove),
-                                Padding = new(5)
-                            }.AssignTo(out var minusbtn),
-                        }
-                    }
-                }
-            }.WithCustomCode(x =>
-            {
-                x.DragOver += OnDragOver;
-                x.Drop += emptyCell.OnItemDrop;
-            })
 
-        }.WithCustomCode(x => Canvas.SetZIndex(x, 1)));
-        Rectangle rect;
+[QuickMarkup("""
+    using Rectangle = Microsoft.UI.Xaml.Shapes.Rectangle;
+    double CellMargin;
+    private int SplitCount = 2;
+    <root AllowDrop DragOver+=`OnDragOver` Drop+=`emptyCell.OnItemDrop`>
+        <ScrollViewer
+            Canvas_ZIndex=1
+            HorizontalScrollMode=Auto VerticalScrollMode=Auto HorizontalScrollBarVisibility=Auto
+            ZoomMode=Enabled
+            MinZoomFactor=`0.1f` MaxZoomFactor=`1.5f`
+        >
+            <VStack Spacing=16
+                CenterH CenterV
+                DragOver+=`OnDragOver` Drop+=`emptyCell.OnItemDrop`
+            >
+                hintTb = <TextBlock CenterH FontSize=20 />
+                <TextBlock CenterH FontSize=16 Text="or" />
+                <Button CenterH @Click+=`emptyCell.Split(SplitCount, Orientation.Vertical)`> // intentionally swap orientation
+                    <HStack Spacing=4>
+                        <SymbolExIcon(GripperBarHorizontal) />
+                        <TextBlock Text="Split Horizontally" />
+                        <SymbolExIcon(GripperBarHorizontal) />
+                    </HStack>
+                </Button>
+                <Button CenterH @Click+=`emptyCell.Split(SplitCount, Orientation.Horizontal)`> // intentionally swap orientation
+                    <HStack Spacing=4>
+                        <SymbolExIcon(GripperBarVertical) />
+                        <TextBlock Text="Split Vertically" />
+                        <SymbolExIcon(GripperBarVertical) />
+                    </HStack>
+                </Button>
+                <HStack Spacing=8 CenterH>
+                    <TextBlock CenterV Text="Number of Cells to Split:" />
+                    plusbtn = <Button CenterV Padding=5 Content=<SymbolIcon(Add) /> @Click+=`SplitCount++;` />
+                    <TextBlock CenterV Text=`SplitCount.ToString()` />
+                    minusbtn = <Button CenterV Padding=5 Content=<SymbolIcon(Remove) /> @Click+=`SplitCount--;` />
+                </HStack>
+            </VStack>
+        </ScrollViewer>
+        rect = <Rectangle
+            Margin=`new(CellMargin)`
+            RadiusX=8 RadiusY=8
+            StrokeThickness=3 Stroke=`Solid(Colors.Gray)`
+            StrokeDashCap=Flat StrokeDashOffset=1.5 StrokeDashArray=`new() { 3 }`
+        />
+    </root>
+    """)]
+public partial class EmptyCellVisualizer : Grid
+{
+    private readonly EmptyCell emptyCell;
+
+    public EmptyCellVisualizer(EmptyCell emptyCell)
+    {
+        this.emptyCell = emptyCell;
+        Init();
         var transparent = Solid(Colors.Transparent);
-        rootElement.Children.Add(rect = new Rectangle
-        {
-            RadiusX = 8,
-            RadiusY = 8,
-            StrokeDashCap = PenLineCap.Flat,
-            StrokeDashOffset = 1.5,
-            StrokeDashArray = [3],
-            Stroke = Solid(Colors.Gray),
-            StrokeThickness = 3
-        });
-        CellMarginProperty.ApplyAndRegisterForNewValue((_, x) =>
-        {
-            rect.Margin = new(x);
-        });
         var layerBrushProp = ThemeResources.Get<Brush>("LayerFillColorDefaultBrush", this);
         emptyCell.HoverEffectProperty.ApplyAndRegisterForNewValue((_, hovering) =>
         {
@@ -139,19 +80,7 @@ public partial class EmptyCellVisualizer(EmptyCell emptyCell) : TemplateControl<
                 Act();
             else
                 DispatcherQueue.TryEnqueue(Act);
-
         });
-        plusbtn.Click += delegate
-        {
-            splitCount++;
-            splitCountDisplay.Text = splitCount.ToString();
-        };
-        minusbtn.Click += delegate
-        {
-            if (splitCount <= 2) return;
-            splitCount--;
-            splitCountDisplay.Text = splitCount.ToString();
-        };
     }
     public void OnDragOver(object? _, DragEventArgs e)
     {

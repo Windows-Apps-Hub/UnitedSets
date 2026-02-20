@@ -20,25 +20,17 @@ public sealed partial class MainWindow
     AddTabPopup? AddTabPopup;
     private async partial void OnAddTabButtonClick()
     {
-        if (Keyboard.IsShiftDown)
+        AddTabPopup ??= new();
+        Win32Window.Minimize();
+        await AddTabPopup.ShowAsync();
+        Win32Window.Restore();
+        var result = AddTabPopup.Result;
+        if (WindowHostTab.Create(result) is { } tab)
         {
-            AddSplitableTab();
-        }
-        else
-        {
-            AddTabPopup ??= new();
-            Win32Window.Minimize();
-            await AddTabPopup.ShowAsync();
-            Win32Window.Restore();
-            var result = AddTabPopup.Result;
-            if (WindowHostTab.Create(result) is { } tab)
-            {
-                UnitedSetsApp.Current.Tabs.Add(tab);
-                UnitedSetsApp.Current.SelectedTab = tab;
-            }
+            UnitedSetsApp.Current.Tabs.Add(tab);
+            UnitedSetsApp.Current.SelectedTab = tab;
         }
     }
-    [RelayCommand]
     void AddSplitableTab()
     {
         var newTab = new CellTab(Constants.IsAltTabVisible);
@@ -62,47 +54,6 @@ public sealed partial class MainWindow
         UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(res.FullFilename);
     }
 
-    private partial void TabDragStarting(TabViewTabDragStartingEventArgs args)
-    {
-        if (args.Item is WindowHostTab item)
-            args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
-    }
-
-    private partial void OnDragItemOverTabView(DragEventArgs e)
-    {
-        if (e.DataView.Properties?.ContainsKey(Constants.UnitedSetsTabWindowDragProperty) == true)
-            e.AcceptedOperation = DataPackageOperation.Move;
-    }
-
-    public partial void OnDragOverTabViewItem(object sender)
-    {
-        if (sender is FrameworkElement tvi && tvi.Tag is TabBase tb)
-            TabView.SelectedIndex = UnitedSetsApp.Current.Tabs.IndexOf(tb);
-    }
-
-    private partial void OnDropOverTabView(DragEventArgs e)
-    {
-        if (e.DataView.Properties.TryGetValue(Constants.UnitedSetsTabWindowDragProperty, out var _a) && _a is long a)
-        {
-
-            var window = WindowEx.FromWindowHandle((nint)a);
-            var ret = window.Owner.SendMessage(
-                Constants.UnitedSetCommunicationChangeWindowOwnership, new(), window);
-            var pt = e.GetPosition(TabView);
-            var finalIdx = (
-                from index in Enumerable.Range(0, UnitedSetsApp.Current.Tabs.Count)
-                let ele = TabView.ContainerFromIndex(index) as UIElement
-                let posele = ele.TransformToVisual(TabView).TransformPoint(default)
-                let size = ele.ActualSize
-                let IsMoreThanTopLeft = pt.X >= posele.X && pt.Y >= posele.Y
-                let IsLessThanBotRigh = pt.X <= posele.X + size.X && pt.Y <= posele.Y + size.Y
-                where IsMoreThanTopLeft && IsLessThanBotRigh
-                select index
-            ).FirstOrDefault();
-            if (WindowHostTab.Create(window) is { } tab)
-                UnitedSetsApp.Current.Tabs.Insert(finalIdx, tab);
-        }
-    }
     private partial void OnDropOverCell(EmptyCell cell, nint hwnd)
     {
         var window = WindowEx.FromWindowHandle(hwnd);
@@ -122,12 +73,6 @@ public sealed partial class MainWindow
         var r = PostProcessingRegisteredWindow.Register(window);
         if (r != null)
             cell.RegisterWindow(r);
-    }
-
-    private partial void TabDroppedOutside(TabViewTabDroppedOutsideEventArgs args)
-    {
-        if (args.Tab.Tag is TabBase Tab)
-            Tab.DetachAndDispose(JumpToCursor: true);
     }
 
     private partial void TabSelectionChanged()

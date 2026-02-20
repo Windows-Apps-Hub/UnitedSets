@@ -249,7 +249,8 @@
                         </DataTemplate>
                     </RadioButtons.ItemTemplate>
                 </RadioButtons>
-                <Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Command="{x:Bind MainWindow.AddTabButtonClickCommand}" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <!-- TODO: When we work on FloatingTaskbar -->
+                <!--<Button HorizontalAlignment="Left" Style="{ThemeResource ToolbarButton}" Command="{x:Bind MainWindow.AddTabButtonClickCommand}" Canvas.ZIndex="8" Padding="5" Width="32" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <icons:FluentSymbolIcon Symbol="Add20" Margin="-2,-2,0,0"/>
                     <Button.ContextFlyout>
                         <MenuFlyout ShouldConstrainToRootBounds="False">
@@ -257,7 +258,7 @@
                             <MenuFlyoutItem Command="{x:Bind MainWindow.AddSplitableTabCommand}">Add Splitable Tab</MenuFlyoutItem>
                         </MenuFlyout>
                     </Button.ContextFlyout>
-                </Button>
+                </Button>-->
                 <Button
                     x:Name="Minimize"
                     Style="{ThemeResource ChromeWindowButton}"

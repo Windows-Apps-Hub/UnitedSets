@@ -1,0 +1,75 @@
+<TabView
+    x:Class="UnitedSets.UI.Controls.HorizontalTabs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:us="using:UnitedSets"
+    xmlns:tabs="using:UnitedSets.Tabs"
+    xmlns:guics="using:Get.UI.Controls"
+    mc:Ignorable="d"
+    Style="{ThemeResource GlowTabView}"
+    IsAddTabButtonVisible="False"
+    TabItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
+    SelectedItem="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=TwoWay}"
+    CanDragTabs="True"
+    CanReorderTabs="True"
+    BorderBrush="Transparent"
+    AllowDrop="True"
+    MinHeight="42"
+    HorizontalAlignment="Left"
+    TabDragStarting="_TabDragStarting"
+    TabDroppedOutside="_TabDroppedOutside"
+    DragOver="OnDragItemOverTabView"
+    Drop="OnDropOverTabView"
+>
+    <TabView.Resources>
+        <SolidColorBrush x:Key="TabViewBorderBrush" Color="Transparent"/>
+    </TabView.Resources>
+    <TabView.TabItemTemplate>
+        <DataTemplate x:DataType="tabs:TabBase">
+            <TabViewItem
+            x:Name="TabViewItem"
+            Margin="2, 0, 2, 2"
+            Background="{ThemeResource 12Brush}"
+            Style="{ThemeResource UndockedTabViewItemStyle}"
+            CloseRequested="{x:Bind TabCloseRequestedEv}"
+            DoubleTapped="{x:Bind TabDoubleTapped}"
+            RightTapped="{x:Bind TabRightTapped}"
+            Tag="{x:Bind}"
+            PointerPressed="{x:Bind TabClickEv}"
+            AllowDrop="True"
+            DragOver="OnDragOverTabViewItem"
+            guics:DragRegion.Clickable="True"
+        >
+                <!--<VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="FlashingStates">
+                    <VisualState x:Name="Flashing">
+                        <VisualState.StateTriggers>
+                            <StateTrigger IsActive="{x:Bind IsFlashing}"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="TabViewItem.Background" Value="Red" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Regular">
+                        <VisualState.StateTriggers>
+                            <StateTrigger IsActive="{x:Bind helpers:XAMLFuncs.Not(IsFlashing)}"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="TabViewItem.Background" Value="{ThemeResource 12Brush}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>-->
+                <TabViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
+                        <TextBlock Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
+                    </StackPanel>
+                </TabViewItem.Header>
+            </TabViewItem>
+        </DataTemplate>
+    </TabView.TabItemTemplate>
+</TabView>

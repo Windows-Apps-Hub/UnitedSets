@@ -55,16 +55,6 @@ partial class MainWindow : NativeHelperWindow
         //PInvoke.RegisterShellHookWindow(new(Win32Window.Handle));
         RegisteredWindow.ShouldWindowBeDetachOnUserMove =
             _ => UnitedSetsApp.Current.Settings.UserMoveWindowBehavior.Value is UserMoveWindowBehaviors.DetachWindow;
-
-        if (!Constants.IsExperimentalVersion)
-        {
-            // change to settings button
-            ((FluentIconElement)Ele.Content).Symbol = FluentSymbol.Settings20;
-            // remove the flyout
-            Ele.Flyout = null;
-            // change to settings butotn instead
-            Ele.Command = Settings.LaunchSettingsCommand;
-        }
     }
     WindowMessages ShellHookMessage;
 

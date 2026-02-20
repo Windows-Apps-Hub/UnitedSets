@@ -16,10 +16,12 @@ public partial class CellContainerVisualizer(ContainerCell cellContainer) : Temp
                 CollectionItemsBinding.Create(
                     cellContainer.SubCells,
                     new DataTemplate<Cell, UIElement>(
-                        x => new GenericCellVisualizer(x.CurrentValue)
+                        cell =>
                         {
-                            CellBinding = OneWay(x),
-                            CellMarginBinding = OneWay(CellMarginProperty)
+                            var vis = new GenericCellVisualizer(cell.CurrentValue);
+                            cell.ApplyAndRegisterForNewValue((x, _) => vis.Cell = x);
+                            CellMarginProperty.ApplyAndRegisterForNewValue((x, _) => vis.CellMargin = x);
+                            return vis;
                         }
                     )
                 )

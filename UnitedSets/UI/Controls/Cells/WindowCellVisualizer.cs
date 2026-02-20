@@ -2,16 +2,20 @@ using UnitedSets.Cells;
 using WindowHoster;
 
 namespace UnitedSets.UI.Controls.Cells;
-[AutoProperty]
-public partial class WindowCellVisualizer(WindowCell cell) : TemplateControl<WindowHost>
+
+[QuickMarkup("""
+    double CellMargin;
+    <root
+        Margin=`new(CellMargin)`
+        AssociatedWindow = `cell.Window`
+    />
+    """)]
+public partial class WindowCellVisualizer : WindowHost
 {
-    public IProperty<double> CellMarginProperty { get; } = Auto(10d);
-    protected override void Initialize(WindowHost rootElement)
+    readonly WindowCell cell;
+    public WindowCellVisualizer(WindowCell cell)
     {
-        CellMarginProperty.ApplyAndRegisterForNewValue((_, x) =>
-        {
-            rootElement.Margin = new(x);
-        });
-        rootElement.AssociatedWindow = cell.Window;
+        this.cell = cell;
+        Init();
     }
 }

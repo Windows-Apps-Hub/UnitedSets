@@ -39,8 +39,19 @@ global using Get.Symbols;
 global using Get.UI.Data;
 global using Get.XAMLTools;
 
-
 global using static Get.Data.Properties.AutoTyper;
 global using static Get.Data.XACL.QuickBindingExtension;
 global using static Get.UI.Data.QuickCreate;
 global using WindowEx = WinWrapper.Windowing.Window;
+
+global using QuickMarkup.SourceGen;
+global using QuickMarkup.Infra;
+
+global using static QuickMarkup.Infra.QuickRefs;
+
+// Usage in QuickMarkup
+global using Cube.UI.Icons;
+global using UnitedSets.UI.AppWindows;
+global using UnitedSets.UI.Controls;
+global using UnitedSets.UI.FlyoutModules;
+global using UnitedSets.QuickMarkup;

@@ -4,6 +4,7 @@
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
         <RootNamespace>WindowHoster</RootNamespace>
         <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+        <Platforms>x86;x64;arm64</Platforms>
         <UseWinUI>true</UseWinUI>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>

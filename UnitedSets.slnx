@@ -29,8 +29,8 @@
   </Project>
   <Project Path="WindowHoster/WindowHoster.csproj">
     <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
-  </Project>
-  <Project Path="WinUI3HwndHostPlus/WinUI3HwndHostPlus.csproj">
-    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
+    <Platform Solution="Debug|Any CPU" Project="x64" />
+    <Platform Solution="Debug|arm64" Project="arm64" />
+    <Platform Solution="Debug|x64" Project="x64" />
   </Project>
 </Solution>

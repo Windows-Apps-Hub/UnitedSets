@@ -1,4 +1,3 @@
-using EasyCSharp;
 using Microsoft.UI.Windowing;
 using Windows.ApplicationModel.DataTransfer;
 using Keyboard = WinWrapper.Input.Keyboard;

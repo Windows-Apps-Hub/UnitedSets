@@ -1,18 +1,16 @@
-using Microsoft.UI.Dispatching;
-using UnitedSets.Tabs;
-using Microsoft.UI.Windowing;
-using Keyboard = WinWrapper.Input.Keyboard;
 using System.Runtime.CompilerServices;
-using Icon = WinWrapper.Icon;
-using System.IO;
-using AppWindow = Microsoft.UI.Windowing.AppWindow;
-using UnitedSets.Configurations;
-using UnitedSets.Cells;
-using WinWrapper.Windowing;
-using WindowHoster;
-using UnitedSets.Mvvm.Services;
-using UnitedSets.Apps;
 using Cube.UI.Icons;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
+using UnitedSets.Apps;
+using UnitedSets.Cells;
+using UnitedSets.Configurations;
+using UnitedSets.Mvvm.Services;
+using UnitedSets.Tabs;
+using WindowHoster;
+using WinWrapper.Windowing;
+using Icon = WinWrapper.Icon;
+using Keyboard = WinWrapper.Input.Keyboard;
 
 namespace UnitedSets.UI.AppWindows;
 

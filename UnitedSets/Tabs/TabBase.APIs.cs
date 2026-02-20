@@ -1,6 +1,3 @@
-﻿
-using CommunityToolkit.Mvvm.Input;
-
 namespace UnitedSets.Tabs;
 
 partial class TabBase

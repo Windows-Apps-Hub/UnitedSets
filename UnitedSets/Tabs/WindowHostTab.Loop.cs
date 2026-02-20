@@ -1,7 +1,3 @@
-﻿using System;
-using Window = Microsoft.UI.Xaml.Window;
-using CommunityToolkit.WinUI;
-
 namespace UnitedSets.Tabs;
 
 partial class WindowHostTab

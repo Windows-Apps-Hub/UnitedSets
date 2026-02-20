@@ -1,5 +1,3 @@
-﻿using System.ComponentModel;
-
 namespace UnitedSets.Tabs;
 
 partial class TabBase
@@ -16,5 +14,6 @@ partial class TabBase
         InvokePropertyChanged(nameof(Icon));
     }
 
-    protected void InvokePropertyChanged(string? PropertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    protected void InvokePropertyChanged(string? PropertyName)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 }

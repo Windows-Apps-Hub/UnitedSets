@@ -1,17 +1,10 @@
-using System.Collections.ObjectModel;
-using System.Linq;
-using System;
-using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using UnitedSets.Tabs;
 using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 using WinWrapper.Taskbar;
 using WinWrapper;
 using Win32Window = WinWrapper.Windowing.Window;
 using UnitedSets.Cells;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Media;
 
 namespace UnitedSets.UI.AppWindows;
 

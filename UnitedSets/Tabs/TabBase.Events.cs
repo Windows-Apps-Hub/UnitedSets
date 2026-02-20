@@ -1,6 +1,3 @@
-using Microsoft.UI.Xaml.Controls;
-using Get.EasyCSharp;
-using Windows.Foundation;
 using UnitedSets.Mvvm.Services;
 
 namespace UnitedSets.Tabs;

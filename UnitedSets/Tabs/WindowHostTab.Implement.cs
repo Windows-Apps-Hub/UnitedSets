@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing;
-using Window = Microsoft.UI.Xaml.Window;
 
 namespace UnitedSets.Tabs;
 

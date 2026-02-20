@@ -1,8 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Get.EasyCSharp;
-
-namespace UnitedSets.Tabs;
+﻿namespace UnitedSets.Tabs;
 
 partial class CellTab
 {

@@ -1,8 +1,6 @@
-﻿using Microsoft.UI.Xaml;
 using Window = WinWrapper.Windowing.Window;
 using Microsoft.UI.Windowing;
 using WinUIEx;
-using Microsoft.UI.Xaml.Controls;
 
 namespace UnitedSets.UI.AppWindows;
 

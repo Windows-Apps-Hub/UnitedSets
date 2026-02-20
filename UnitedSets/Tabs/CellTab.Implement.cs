@@ -1,14 +1,7 @@
 using Microsoft.UI.Xaml.Media.Imaging;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using Window = WinWrapper.Windowing.Window;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using UnitedSets.UI.FlyoutModules;
 using UnitedSets.Cells;
-using Get.EasyCSharp;
 
 namespace UnitedSets.Tabs;
 
@@ -17,7 +10,7 @@ partial class CellTab
     protected override Bitmap? BitmapIcon => null;
     public override BitmapImage? Icon => null;
     public override string DefaultTitle => "Cell Tab";
-    public override IEnumerable<Window> Windows => Enumerable.Repeat(default(Window), 0);
+    public override IEnumerable<WindowEx> Windows => Enumerable.Repeat(default(WindowEx), 0);
 
     // API
     public override void Focus() { }

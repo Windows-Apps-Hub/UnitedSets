@@ -1,7 +1,4 @@
-using Get.Data.Properties;
-using Get.EasyCSharp;
 using UnitedSets.Cells;
-
 
 namespace UnitedSets.Tabs;
 

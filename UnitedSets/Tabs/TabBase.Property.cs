@@ -1,8 +1,3 @@
-using Microsoft.UI.Xaml.Controls;
-using System.ComponentModel;
-using Get.EasyCSharp;
-using Microsoft.UI.Xaml.Media;
-
 namespace UnitedSets.Tabs;
 
 partial class TabBase

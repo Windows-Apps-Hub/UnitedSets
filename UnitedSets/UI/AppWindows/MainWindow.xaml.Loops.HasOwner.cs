@@ -1,6 +1,4 @@
-using System;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
 
 namespace UnitedSets.UI.AppWindows;
 

@@ -1,11 +1,5 @@
 using Microsoft.UI.Xaml.Media.Imaging;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
-using Get.EasyCSharp;
-using Microsoft.UI.Xaml;
-using Window = WinWrapper.Windowing.Window;
 
 namespace UnitedSets.Tabs;
 
@@ -15,7 +9,7 @@ partial class TabBase
     public abstract BitmapImage? Icon { get; }
     public abstract string DefaultTitle { get; }
 
-    public abstract IEnumerable<Window> Windows { get; }
+    public abstract IEnumerable<WindowEx> Windows { get; }
     //public abstract bool Selected { get; set; }
     public abstract bool IsDisposed { get; }
     

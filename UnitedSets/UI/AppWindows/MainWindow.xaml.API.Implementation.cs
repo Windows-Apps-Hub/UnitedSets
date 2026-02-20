@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace UnitedSets.UI.AppWindows;
 
 public sealed partial class MainWindow

@@ -4,16 +4,7 @@ using WindowHoster;
 namespace UnitedSets.Cells;
 public partial class EmptyCell(ContainerCell Parent) : Cell(Parent)
 {
-
-    /// <summary>
-    /// Removes this cell and replace with a ContainerCell with <paramref name="amount"/> EmptyCell and given <paramref name="orientation"/>
-    /// </summary>
-    /// <param name="amount"></param>
-    /// <param name="orientation"></param>
-    /// <exception cref="InvalidOperationException">
-    /// Throws if this cell is in an invalid state.
-    /// </exception>
-    public void Split(int amount, Orientation orientation)
+    public partial void Split(int amount, Orientation orientation)
     {
         if (Parent is null) throw new InvalidOperationException();
         int idx = Parent.SubCells.IndexOf(this);
@@ -24,13 +15,7 @@ public partial class EmptyCell(ContainerCell Parent) : Cell(Parent)
         Parent.SubCells[idx] = newCell;
     }
 
-    /// <summary>
-    /// Removes this cell and replace with a WindowCell with given <paramref name="window"/>
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// Throws if this cell is in an invalid state.
-    /// </exception>
-    public void RegisterWindow(RegisteredWindow window)
+    public partial void RegisterWindow(RegisteredWindow window)
     {
         if (Parent is null) throw new InvalidOperationException();
         int idx = Parent.SubCells.IndexOf(this);

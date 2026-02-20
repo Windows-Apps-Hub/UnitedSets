@@ -1,0 +1,36 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DebugUnpackaged" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="arm64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="Cube.UI/Cube.UI.csproj">
+    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
+  </Project>
+  <Project Path="UnitedSets.WinFormss/UnitedSets.WinForms.csproj">
+    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
+  </Project>
+  <Project Path="UnitedSets/UnitedSets.csproj">
+    <BuildType Solution="DebugUnpackaged|arm64" Project="Debug" />
+    <BuildType Solution="DebugUnpackaged|x64" Project="Debug" />
+    <BuildType Solution="DebugUnpackaged|x86" Project="Debug" />
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|arm64" Project="arm64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+  <Project Path="WindowHoster/WindowHoster.csproj">
+    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
+  </Project>
+  <Project Path="WinUI3HwndHostPlus/WinUI3HwndHostPlus.csproj">
+    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
+  </Project>
+</Solution>

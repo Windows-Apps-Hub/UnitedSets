@@ -20,26 +20,6 @@
         Canvas.ZIndex="1"
         BorderThickness="3"
     >
-        <Grid.Resources>
-            <controls:BackdropedFlyout x:Name="ClosingFlyout" Placement="BottomEdgeAlignedRight" ShouldConstrainToRootBounds="False">
-                <StackPanel Spacing="16">
-                    <TextBlock HorizontalAlignment="Center">How would you like to close the app?</TextBlock>
-                    <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
-                        <StackPanel.Resources>
-                            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-                                <Style.Setters>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Style.Setters>
-                            </Style>
-                        </StackPanel.Resources>
-                        <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind ReleaseWindowCloseMode}" Foreground="{ThemeResource SystemAccentColorLight2}" BorderBrush="{ThemeResource SystemAccentColorLight2}">Release</Button>
-                        <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind SaveCloseWindowCloseMode}" Visibility="{x:Bind usapps:Constants.VisibleOnExperimental}">Save and close</Button>
-                        <Button HorizontalAlignment="Center" Command="{x:Bind RequestCloseCommand}" CommandParameter="{x:Bind CloseWindowCloseMode}" Foreground="#e96e60" BorderBrush="#e96e60">Close</Button>
-                    </StackPanel>
-                    <CheckBox Content="Remember my option" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </controls:BackdropedFlyout>
-        </Grid.Resources>
         <Grid.Background>
             <SolidColorBrush x:Name="MainBackgroundColor" Color="Transparent"/>
         </Grid.Background>

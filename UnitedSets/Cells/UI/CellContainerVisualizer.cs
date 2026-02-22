@@ -1,6 +1,6 @@
 using Get.Data.XACL;
 using Get.Data.DataTemplates;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 namespace UnitedSets.UI.Controls.Cells;
 [AutoProperty]
 public partial class CellContainerVisualizer(ContainerCell cellContainer) : TemplateControl<Grid>

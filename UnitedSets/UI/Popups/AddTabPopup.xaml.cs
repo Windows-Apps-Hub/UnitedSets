@@ -44,7 +44,7 @@ public sealed partial class AddTabPopup
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
         AppWindow.Show();
-        while (AppWindow.IsVisible) 
+        while (AppWindow.IsVisible)
             await Task.Delay(1000);
     }
 

@@ -1,12 +1,10 @@
 using Microsoft.UI.Windowing;
-using Windows.ApplicationModel.DataTransfer;
-using Keyboard = WinWrapper.Input.Keyboard;
 using WinUIEx.Messaging;
 using UnitedSets.Tabs;
 using UnitedSets.UI.Popups;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Windowing;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 using UnitedSets.PostProcessing;
 using UnitedSets.Apps;
 
@@ -108,26 +106,15 @@ public sealed partial class MainWindow
             ClosingFlyout.ShowAt((FrameworkElement)TabViewBorder);
         }
         else
-            RequestCloseAsync(CloseMode.ReleaseWindow);
+            RequestCloseAsync(UnitedSetsCloseMode.ReleaseWindow);
     }
-    public enum CloseMode
-    {
-        ReleaseWindow,
-        CloseWindow,
-        SaveCloseWindow
-    }
-    // for XAML Bindings
-    readonly CloseMode ReleaseWindowCloseMode = CloseMode.ReleaseWindow;
-    readonly CloseMode CloseWindowCloseMode = CloseMode.CloseWindow;
-    readonly CloseMode SaveCloseWindowCloseMode = CloseMode.SaveCloseWindow;
-    [RelayCommand]
     [DoesNotReturn]
-    public async Task RequestCloseAsync(CloseMode closeMode)
+    public async void RequestCloseAsync(UnitedSetsCloseMode closeMode)
     {
         ClosingFlyout.Hide();
         switch (closeMode)
         {
-            case CloseMode.ReleaseWindow:
+            case UnitedSetsCloseMode.ReleaseWindow:
                 // Release all windows
                 while (UnitedSetsApp.Current.Tabs.Count > 0)
                 {
@@ -140,15 +127,15 @@ public sealed partial class MainWindow
                 await UnitedSetsApp.Current.Suicide();
 
                 return;
-            case CloseMode.CloseWindow:
+            case UnitedSetsCloseMode.CloseWindow:
                 // Close all windows
                 await Task.Delay(100);
                 await Task.WhenAll(UnitedSetsApp.Current.Tabs.ToArray().Select(SafeClose));
                 await UnitedSetsApp.Current.Suicide();
                 return;
-            case CloseMode.SaveCloseWindow:
+            case UnitedSetsCloseMode.SaveCloseWindow:
                 UnitedSetsApp.Current.Configuration.SaveCurrentSession();
-                goto case CloseMode.CloseWindow;
+                goto case UnitedSetsCloseMode.CloseWindow;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));
         }
@@ -178,4 +165,11 @@ public sealed partial class MainWindow
         }
         e.Handled = false;
     }
+}
+
+public enum UnitedSetsCloseMode
+{
+    ReleaseWindow,
+    CloseWindow,
+    SaveCloseWindow
 }

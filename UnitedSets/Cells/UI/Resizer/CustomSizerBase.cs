@@ -1,5 +1,3 @@
-using UnitedSets.QuickMarkup;
-
 namespace UnitedSets.UI.Controls.Cells.Resizer;
 
 // Most logics are from Community Toolkit

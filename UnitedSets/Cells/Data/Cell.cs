@@ -1,4 +1,4 @@
-namespace UnitedSets.Cells;
+namespace UnitedSets.Cells.Data;
 
 [AutoProperty]
 [QuickMarkup("""

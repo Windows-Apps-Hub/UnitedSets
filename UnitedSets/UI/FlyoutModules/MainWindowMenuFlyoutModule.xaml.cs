@@ -223,9 +223,4 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
 		else tabgroup.Tabs.Add(tabValue);
 	}
 
-
-    // UI Function
-    Visibility InverseBoolVisibility(bool boolean)
-        => boolean ? Visibility.Collapsed : Visibility.Visible;
-
 }

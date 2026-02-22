@@ -3,7 +3,7 @@ using Cube.UI.Icons;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using UnitedSets.Apps;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 using UnitedSets.Configurations;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Tabs;
@@ -47,6 +47,7 @@ partial class MainWindow : NativeHelperWindow
         void SetupEvent()
         {
             AppWindow.Closing += OnWindowClosing;
+            ClosingFlyout.CloseRequest += RequestCloseAsync;
             Activated += FirstRun;
             TabBase.OnUpdateStatusLoopComplete += OnDifferentThreadLoop;
             EmptyCell.ValidDrop += OnDropOverCell;

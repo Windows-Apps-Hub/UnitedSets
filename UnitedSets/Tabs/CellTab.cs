@@ -1,4 +1,4 @@
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 
 namespace UnitedSets.Tabs;
 

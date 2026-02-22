@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using WinWrapper.Taskbar;
 using WinWrapper;
 using Win32Window = WinWrapper.Windowing.Window;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 
 namespace UnitedSets.UI.AppWindows;
 

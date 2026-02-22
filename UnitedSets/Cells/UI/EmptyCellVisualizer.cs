@@ -1,5 +1,5 @@
 using UnitedSets.Apps;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace UnitedSets.UI.Controls.Cells;

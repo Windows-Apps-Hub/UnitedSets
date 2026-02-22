@@ -1,7 +1,6 @@
 using Microsoft.UI.Dispatching;
 using System.IO;
 using UnitedSets.Tabs;
-using UnitedSets.UI.AppWindows;
 using UnitedSets.Mvvm.Services;
 using UnitedSets.Helpers;
 using UnitedSets.Configurations;

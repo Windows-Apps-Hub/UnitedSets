@@ -1,7 +1,6 @@
-using CommunityToolkit.Mvvm.Input;
 using WinUIEx.Messaging;
 using Microsoft.UI.Windowing;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 
 namespace UnitedSets.UI.AppWindows;
 

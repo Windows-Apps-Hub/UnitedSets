@@ -1,4 +1,4 @@
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 using UnitedSets.Tabs;
 using UnitedSets.UI.Controls.Cells;
 using WindowHoster;

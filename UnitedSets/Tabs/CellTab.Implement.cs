@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing;
 using UnitedSets.UI.FlyoutModules;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 
 namespace UnitedSets.Tabs;
 

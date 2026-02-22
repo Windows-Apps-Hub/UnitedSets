@@ -4,7 +4,8 @@ using static UnitedSets.Configurations.PreservedHelpers;
 using Windows.Win32;
 using WindowHoster;
 using UnitedSets.Tabs;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
+using UnitedSets.Cells.Data;
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8602 // 
 #pragma warning disable CS8601 // Possible null reference assignment.

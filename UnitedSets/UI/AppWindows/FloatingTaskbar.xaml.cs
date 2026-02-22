@@ -81,13 +81,13 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     async void ExitCloseAllWindows()
     {
         CloseWindowFlyout.Hide();
-        await MainWindow.RequestCloseAsync(MainWindow.CloseMode.CloseWindow);
+        MainWindow.RequestCloseAsync(UnitedSetsCloseMode.CloseWindow);
     }
     [RelayCommand]
     async void ExitRelaseAllWindows()
     {
         CloseWindowFlyout.Hide();
-        await MainWindow.RequestCloseAsync(MainWindow.CloseMode.ReleaseWindow);
+        MainWindow.RequestCloseAsync(UnitedSetsCloseMode.ReleaseWindow);
     }
     private void RadioButton_DragOver(object sender, DragEventArgs e)
     {

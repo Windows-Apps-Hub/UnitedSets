@@ -6,7 +6,7 @@ using UnitedSets.Tabs;
 using UnitedSets.UI.Popups;
 using CommunityToolkit.Mvvm.Input;
 using WinWrapper.Windowing;
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 using UnitedSets.PostProcessing;
 using UnitedSets.Apps;
 

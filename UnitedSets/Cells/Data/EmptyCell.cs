@@ -1,7 +1,7 @@
 using UnitedSets.Apps;
 using WindowHoster;
 
-namespace UnitedSets.Cells;
+namespace UnitedSets.Cells.Data;
 public partial class EmptyCell(ContainerCell Parent) : Cell(Parent)
 {
     public partial void Split(int amount, Orientation orientation)

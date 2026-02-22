@@ -1,6 +1,6 @@
 using WindowHoster;
 
-namespace UnitedSets.Cells;
+namespace UnitedSets.Cells.Data;
 
 partial class EmptyCell
 {

@@ -1,7 +1,7 @@
-using UnitedSets.Cells;
+using UnitedSets.Cells.Data;
 namespace UnitedSets.UI.Controls.Cells;
 [QuickMarkup("""
-    using UnitedSets.Cells;
+    using UnitedSets.Cells.Data;
     using UnitedSets.Controls;
     Cell Cell;
     double CellMargin;

@@ -1,5 +1,5 @@
 using UnitedSets.Tabs;
-namespace UnitedSets.Cells;
+namespace UnitedSets.Cells.Data;
 [AutoProperty]
 public partial class ContainerCell : Cell
 {

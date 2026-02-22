@@ -26,10 +26,6 @@
         <Grid.BorderBrush>
             <SolidColorBrush x:Name="MainBorderColor" Color="Transparent"/>
         </Grid.BorderBrush>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
         <!--<Border x:Name="WindowBorderOnTransparent"
             Visibility="Collapsed"
             Grid.RowSpan="50"
@@ -95,6 +91,6 @@
                 VerticalContentAlignment="Stretch"
             />
         </Border>
-        <controls:HomeBackground x:Name="UnitedSetsHomeBackground"/>
+        <controls:HomeBackground x:Name="UnitedSetsHomeBackground" Grid.Row="1" />
     </Grid>
 </aw:NativeHelperWindow>

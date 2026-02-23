@@ -6,8 +6,8 @@ namespace UnitedSets.UI.AppWindows;
         RootGrid = <Grid
             Canvas_ZIndex=1
             BorderThickness=3
-            Background = MainBackgroundColor = <SolidColorBrush(Colors.Transparent) />
-            BorderBrush = MainBorderColor = <SolidColorBrush(Colors.Transparent) />
+            Background = MainBackgroundColor = <SolidColorBrush(`Colors.Transparent`) />
+            BorderBrush = MainBorderColor = <SolidColorBrush(`Colors.Transparent`) />
         >
             /* WindowBorderOnTransparent = <Border
                 Visibility="Collapsed"

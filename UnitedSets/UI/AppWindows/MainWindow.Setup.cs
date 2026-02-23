@@ -20,7 +20,7 @@ partial class MainWindow : NativeHelperWindow
     {
         UnitedSetsApp.Current.RegisterUnitedSetsWindow(this);
 
-        InitializeComponent();
+        Init();
 
         SetupBasicWindow();
         

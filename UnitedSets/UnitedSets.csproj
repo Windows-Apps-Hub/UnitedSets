@@ -33,7 +33,6 @@
     <ItemGroup>
         <None Remove="Assets\OOBE\1.png" />
         <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
-        <None Remove="UI\AppWindows\MainWindow.xaml" />
         <None Remove="UI\AppWindows\NewWindow.xaml" />
         <None Remove="AddTabFlyout.xaml" />
         <None Remove="Controls\CellVisualizer.xaml" />
@@ -95,9 +94,6 @@
     </ItemGroup>
     <ItemGroup>
         <Page Update="UI\AppWindows\FloatingTaskbar.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="UI\AppWindows\MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>

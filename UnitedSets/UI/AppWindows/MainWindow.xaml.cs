@@ -13,16 +13,4 @@ public sealed partial class MainWindow : NativeHelperWindow
     readonly DispatcherQueueTimer timer;
 
     readonly CloseAppFlyout ClosingFlyout = new();
-
-    DateTime LatestUpdate;
-    private void DragRegion_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-    {
-        if (DateTime.UtcNow - LatestUpdate < TimeSpan.FromSeconds(1))
-        {
-            LatestUpdate = DateTime.UtcNow;
-            return;
-        }
-        DragRegion.UpdateRegion();
-        LatestUpdate = DateTime.UtcNow;
-    }
 }

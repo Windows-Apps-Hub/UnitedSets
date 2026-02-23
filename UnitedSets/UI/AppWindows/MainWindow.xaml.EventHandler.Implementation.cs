@@ -15,33 +15,13 @@ namespace UnitedSets.UI.AppWindows;
 /// </summary>
 public sealed partial class MainWindow
 {
-    AddTabPopup? AddTabPopup;
-    private async partial void OnAddTabButtonClick()
-    {
-        AddTabPopup ??= new();
-        Win32Window.Minimize();
-        await AddTabPopup.ShowAsync();
-        Win32Window.Restore();
-        var result = AddTabPopup.Result;
-        if (WindowHostTab.Create(result) is { } tab)
-        {
-            UnitedSetsApp.Current.Tabs.Add(tab);
-            UnitedSetsApp.Current.SelectedTab = tab;
-        }
-    }
-    void AddSplitableTab()
-    {
-        var newTab = new CellTab(Constants.IsAltTabVisible);
-        UnitedSetsApp.Current.Tabs.Add(newTab);
-        UnitedSetsApp.Current.SelectedTab = newTab;
-    }
     [RelayCommand]
     public async Task ExportData()
     {
         var res = await ExportImportInputPage.ShowExportImport(true, this);
         if (res == null)
             return;
-        UnitedSetsApp.Current.Configuration.PersistantService.ExportSettings(res.FullFilename, res.OnlyExportNonDefault);
+        UnitedSetsApp.Current.Configuration.PersistantService.ExportSettings(res.FullFilename!, res.OnlyExportNonDefault);
     }
     [CommunityToolkit.Mvvm.Input.RelayCommand]
     public async Task ImportData()
@@ -49,7 +29,7 @@ public sealed partial class MainWindow
         var res = await ExportImportInputPage.ShowExportImport(false, this);
         if (res == null)
             return;
-        UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(res.FullFilename);
+        await UnitedSetsApp.Current.Configuration.PersistantService.ImportSettings(res.FullFilename!);
     }
 
     private partial void OnDropOverCell(EmptyCell cell, nint hwnd)
@@ -76,7 +56,7 @@ public sealed partial class MainWindow
     private partial void TabSelectionChanged()
     {
         UnitedSetsHomeBackground.Visibility =
-                TabView.SelectedIndex != -1 && UnitedSetsApp.Current.Tabs[TabView.SelectedIndex] is CellTab ?
+                UnitedSetsApp.Current.SelectedTab is CellTab ?
                 Visibility.Collapsed :
                 Visibility.Visible;
         UpdateTitle();
@@ -103,7 +83,7 @@ public sealed partial class MainWindow
         {
             Win32Window.Focus();
             ClosingFlyout.XamlRoot = Content.XamlRoot;
-            ClosingFlyout.ShowAt((FrameworkElement)TabViewBorder);
+            MainAreaPanel.ShowClosingFlyout(ClosingFlyout);
         }
         else
             RequestCloseAsync(UnitedSetsCloseMode.ReleaseWindow);

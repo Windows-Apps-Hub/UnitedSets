@@ -7,9 +7,6 @@ namespace UnitedSets.UI.AppWindows;
 public sealed partial class MainWindow
 {
     #region Tabs
-    private partial void OnAddTabButtonClick();
-
-    [Event(typeof(SelectionChangedEventHandler))]
     private partial void TabSelectionChanged();
 
     #region Tabs Dragging

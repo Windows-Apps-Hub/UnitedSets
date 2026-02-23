@@ -8,7 +8,6 @@ using Thread = System.Threading.Thread;
 using UnitedSets.Cells.Data;
 using UnitedSets.PostProcessing;
 using WinWrapper.Input;
-using UnitedSets.Cells.Data;
 
 namespace UnitedSets.UI.AppWindows;
 
@@ -23,13 +22,8 @@ public sealed partial class MainWindow
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void CacheValue()
     {
-        var Pt = MainAreaBorder.TransformToVisual(Content).TransformPoint(
-            new Point(0, 0)
-        );
-        var size = MainAreaBorder.ActualSize;
-        CacheMiddleAreaBounds = new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
-        var idx = TabView.SelectedIndex;
-        SelectedTabCache = idx < 0 ? null : (idx >= UnitedSetsApp.Current.Tabs.Count ? null : UnitedSetsApp.Current.Tabs[idx]);
+        CacheMiddleAreaBounds = MainAreaPanel.GetMainAreaRectangle(Content);
+        SelectedTabCache = UnitedSetsApp.Current.SelectedTab;
     }
 
     static ((double X1, double Y1, double X2, double Y2), EmptyCell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)

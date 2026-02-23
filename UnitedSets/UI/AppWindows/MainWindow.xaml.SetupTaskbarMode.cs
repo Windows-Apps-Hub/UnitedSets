@@ -8,13 +8,13 @@ partial class MainWindow
 {
     void SetupTaskbarMode()
     {
-        TabViewBorder.Visibility = Visibility.Collapsed;
+        //TabViewBorder.Visibility = Visibility.Collapsed;
         //CustomDragRegionUpdator
         IsMinimizable = false;
         IsMaximizable = false;
-        Grid.SetRow(MainAreaBorder, 0);
-        Grid.SetRowSpan(MainAreaBorder, 2);
-        MainAreaBorder.Margin = new(0, top: 8, 0, 0);
+        //Grid.SetRow(MainAreaBorder, 0);
+        //Grid.SetRowSpan(MainAreaBorder, 2);
+        //MainAreaBorder.Margin = new(0, top: 8, 0, 0);
         var window = new FloatingTaskbar(this)
         {
             IsShownInSwitchers = false,

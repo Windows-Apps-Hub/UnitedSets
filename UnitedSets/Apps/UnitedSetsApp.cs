@@ -1,21 +1,29 @@
-using Microsoft.UI.Dispatching;
-using System.IO;
-using UnitedSets.Tabs;
-using UnitedSets.Mvvm.Services;
-using UnitedSets.Helpers;
-using UnitedSets.Configurations;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using Microsoft.UI.Dispatching;
 using UnitedSets.Apps;
+using UnitedSets.Configurations;
+using UnitedSets.Helpers;
+using UnitedSets.Mvvm.Services;
+using UnitedSets.Tabs;
+using UnitedSets.UI.Popups;
 
 namespace UnitedSets;
 
+[QuickMarkup("""
+    using UnitedSets.Tabs;
+    TabBase? SelectedTab;
+    """)]
 partial class UnitedSetsApp : INotifyPropertyChanged
 {
     // singleton setup
     private UnitedSetsApp()
     {
+        Init();
         Settings = new();
         Configuration = new();
+        SelectedTabProp!.Watch(tab => tab?.IsFlashing = false);
     }
     public UnitedSetsAppSettings Settings { get; } = new();
     public UnitedSetsAppConfiguration Configuration { get; } = new();
@@ -27,14 +35,7 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     public DispatcherQueue DispatcherQueue { get; private set; } = null!;
     public ObservableCollection<TabBase> Tabs { get; } = [];
     public ObservableCollection<TabGroup> HiddenTabs { get; } = [];
-    [AutoNotifyProperty(OnChanged = nameof(OnSelectedTabChanged))]
-    TabBase? _SelectedTab;
     public event PropertyChangedEventHandler? PropertyChanged;
-    void OnSelectedTabChanged()
-    {
-        if (_SelectedTab is { } tab)
-            tab.IsFlashing = false;
-    }
     public void RegisterUnitedSetsWindow(WindowEx window) => _allWindows.Add(window);
     public void RegisterUnitedSetsWindow(MainWindow window)
     {
@@ -86,5 +87,19 @@ partial class UnitedSetsApp : INotifyPropertyChanged
         }
         if (editLastAddedWindow && UnitedSetsApp.Current.Tabs.Count > 0)
             UnitedSetsApp.Current.Tabs.Last().TabDoubleTapped(this, new Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs());
+    }
+
+    public AddTabPopup AddTabPopup => field ??= new();
+    public async void OpenAddTabDialog()
+    {
+        MainWindow.Win32Window.Minimize();
+        await AddTabPopup.ShowAsync();
+        MainWindow.Win32Window.Restore();
+        var result = AddTabPopup.Result;
+        if (WindowHostTab.Create(result) is { } tab)
+        {
+            UnitedSetsApp.Current.Tabs.Add(tab);
+            UnitedSetsApp.Current.SelectedTab = tab;
+        }
     }
 }

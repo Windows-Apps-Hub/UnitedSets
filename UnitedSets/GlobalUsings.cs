@@ -38,6 +38,8 @@ global using Get.EasyCSharp;
 global using Get.Symbols;
 global using Get.UI.Data;
 global using Get.XAMLTools;
+global using DragRegion = Get.UI.Controls.DragRegion;
+
 
 global using static Get.Data.Properties.AutoTyper;
 global using static Get.Data.XACL.QuickBindingExtension;

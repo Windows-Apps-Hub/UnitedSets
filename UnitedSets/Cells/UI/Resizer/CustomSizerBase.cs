@@ -11,7 +11,7 @@ namespace UnitedSets.UI.Controls.Cells.Resizer;
     double DragIncrement = 1;
     double KeyboardIncrement = 8;
 
-    private SizerBasePointerStates PointerStates = None;
+    private SizerBasePointerStates PointerStates = `SizerBasePointerStates.None`;
     <setup>
     var SizerBaseBackgroundPointerOver = ThemeResources.Get<Brush>("ControlAltFillColorTertiaryBrush", this).CreateReadOnlyReference();
     var SizerBaseBackgroundPressed = ThemeResources.Get<Brush>("ControlAltFillColorQuarternaryBrush", this).CreateReadOnlyReference();
@@ -77,13 +77,6 @@ public abstract partial class CustomSizerBase : UserControl
         PART_Thumb.SetValueBindOneWay(Rectangle.MarginProperty, (this, PaddingProperty));
         PART_Thumb.SetValueBindOneWay(Rectangle.FillProperty, (this, ForegroundProperty));
         Init();
-    }
-    [Flags]
-    enum SizerBasePointerStates
-    {
-        None = 0,
-        Pressed = 0b01,
-        Over = 0b10
     }
     protected override void OnManipulationStarting(ManipulationStartingRoutedEventArgs e)
     {
@@ -171,4 +164,12 @@ static class BindingExtension
     {
         (dest, prop).SetValueBindOneWay(src);
     }
+}
+
+[Flags]
+enum SizerBasePointerStates
+{
+    None = 0,
+    Pressed = 0b01,
+    Over = 0b10
 }

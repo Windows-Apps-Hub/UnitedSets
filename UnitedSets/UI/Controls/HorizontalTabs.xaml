@@ -12,7 +12,6 @@
     Style="{ThemeResource GlowTabView}"
     IsAddTabButtonVisible="False"
     TabItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
-    SelectedItem="{x:Bind us:UnitedSetsApp.Current.SelectedTab, Mode=TwoWay}"
     CanDragTabs="True"
     CanReorderTabs="True"
     BorderBrush="Transparent"

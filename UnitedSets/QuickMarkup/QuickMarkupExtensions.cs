@@ -1,9 +1,4 @@
-using System.Xml.Linq;
 using Get.Data.Bindings;
-using Get.UI.Controls;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Effects;
-using Windows.UI.Core;
 
 namespace UnitedSets.QuickMarkup;
 
@@ -154,6 +149,11 @@ static class QuickMarkupExtensions
         public T Right()
         {
             element.HorizontalAlignment = HorizontalAlignment.Right;
+            return element;
+        }
+        public T TitleBarInteractable()
+        {
+            DragRegion.SetClickable(element, true);
             return element;
         }
     }

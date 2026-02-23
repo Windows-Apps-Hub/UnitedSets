@@ -1,3 +1,5 @@
+using UnitedSets.Apps;
+using UnitedSets.Tabs;
 using WinWrapper.Input;
 
 namespace UnitedSets.UI.Controls;
@@ -9,8 +11,8 @@ namespace UnitedSets.UI.Controls;
         @Click+=`OnAddTabClick()`
         Flyout =
             <MenuFlyout Placement=BottomEdgeAlignedRight !ShouldConstrainToRootBounds>
-                <MenuFlyoutItem @Click+=`OnAddTabClick()` Text="Add Window" />
-                <MenuFlyoutItem @Click+=`AddSplitableTab?.Invoke()` Text="Add Splitable Tab" />
+                <MenuFlyoutItem @Click+=`UnitedSetsApp.Current.OpenAddTabDialog()` Text="Add Window" />
+                <MenuFlyoutItem @Click+=`AddSplitableTab()` Text="Add Splitable Tab" />
             </MenuFlyout>
     >
         <FluentSymbolIcon Symbol=Add20 Margin=`new(-2,-2,0,0)` />
@@ -18,8 +20,6 @@ namespace UnitedSets.UI.Controls;
     """)]
 partial class AddTabSplitButton : SplitButton
 {
-    public event Action? AddTab;
-    public event Action? AddSplitableTab;
     public AddTabSplitButton()
     {
         DefaultStyleKey = typeof(SplitButton);
@@ -29,11 +29,17 @@ partial class AddTabSplitButton : SplitButton
     {
         if (Keyboard.IsShiftDown)
         {
-            AddSplitableTab?.Invoke();
+            AddSplitableTab();
         }
         else
         {
-            AddTab?.Invoke();
+            UnitedSetsApp.Current.OpenAddTabDialog();
         }
+    }
+    void AddSplitableTab()
+    {
+        var newTab = new CellTab(Constants.IsAltTabVisible);
+        UnitedSetsApp.Current.Tabs.Add(newTab);
+        UnitedSetsApp.Current.SelectedTab = newTab;
     }
 }

@@ -77,6 +77,9 @@ public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged
     public bool? _Autosave;
 
     [AutoNotifyProperty]
+    public UnitedSetsLayouts _UnitedSetsLayout;
+
+    [AutoNotifyProperty]
     public CloseTabBehaviors _CloseTabBehaviors;
 
     [AutoNotifyProperty]

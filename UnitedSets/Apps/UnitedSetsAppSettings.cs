@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using UnitedSets.Apps;
 using UnitedSets.Configurations;
 using UnitedSets.Settings;
-using UnitedSets.UI.AppWindows;
 
 namespace UnitedSets.Mvvm.Services;
 
@@ -22,6 +21,18 @@ public partial class UnitedSetsAppSettings
                 Description = "Automatically saves the settings as you edit them. Turn this off if you only want the current session to have this setting.",
                 Icon = SymbolEx.Save,
                 UserInterfaceVisibility = Visibility.Visible
+            },
+            Layout = new(
+                () => Configuration.UnitedSetsLayout, x => Configuration.UnitedSetsLayout = x,
+                Enum.GetValues<UnitedSetsLayouts>()
+            )
+            {
+                Title = "Layout",
+                Description = "United Sets layout style",
+                Icon = SymbolEx.Move,
+                UserInterfaceVisibility = Visibility.Visible,
+                OOBEUserInterfaceVisibility = Visibility.Visible,
+                RequiresRestart = true
             },
             CloseTabBehavior = new(
                 () => Configuration.CloseTabBehaviors, x => Configuration.CloseTabBehaviors = x,
@@ -200,6 +211,7 @@ public partial class UnitedSetsAppSettings
 
     public SelectSetting<CloseTabBehaviors> CloseTabBehavior { get; }
     public OnOffSetting Autosave { get; }
+    public SelectSetting<UnitedSetsLayouts> Layout { get; }
     public SelectSetting<UserMoveWindowBehaviors> UserMoveWindowBehavior { get; }
     public OnOffSetting BypassMinimumSize { get; }
     public OnOffSetting HomePageInfo { get; }
@@ -263,6 +275,15 @@ public enum UserMoveWindowBehaviors
     [Display(Name = "Detach Window")]
     DetachWindow,
     Ignore
+}
+public enum UnitedSetsLayouts
+{
+    [Display(Name = "Regular")]
+    HorizontalTabs,
+    [Display(Name = "Vertical tabs")]
+    VerticalTabs,
+    [Display(Name = "Vertical tabs (Full Height)")]
+    VerticalTabsFull
 }
 static class BackdropHelper
 {

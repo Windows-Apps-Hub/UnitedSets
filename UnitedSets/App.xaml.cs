@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.IO;
 using UnitedSets.Configurations;
-using UnitedSets.UI.AppWindows;
 #if !DEBUG
 using System.Runtime.ExceptionServices;
 #endif

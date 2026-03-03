@@ -1,7 +1,12 @@
+using UnitedSets.Mvvm.Services;
+using UnitedSets.UI.Controls.MainArea;
+
 namespace UnitedSets.UI.AppWindows;
 
 [QuickMarkup("""
     using UnitedSets.UI.Controls.MainArea;
+    GridLength LeftInset;
+    GridLength RightInset;
     <root>
         RootGrid = <Grid
             Canvas_ZIndex=1
@@ -27,11 +32,7 @@ namespace UnitedSets.UI.AppWindows;
                 </LinearGradientBrush>
             /> */
             HoverIndicator = <WindowHoverIndicatorBackground Grid_RowSpan=2 />
-            MainAreaPanel = <HorizontalTabsPanel
-                LeftInset=`GridLengthFromPixelInt(AppWindow.TitleBar.LeftInset)`
-                RightInset=`GridLengthFromPixelInt(AppWindow.TitleBar.RightInset)`
-                TabSelectionChanged+=`TabSelectionChanged`
-            />
+            `CreateMainAreaPanel()`
             UnitedSetsHomeBackground = <HomeBackground Grid_Row=1 />
         </Grid>
     </root>
@@ -39,4 +40,26 @@ namespace UnitedSets.UI.AppWindows;
 partial class MainWindow
 {
     private GridLength GridLengthFromPixelInt(int i) => new(i * Win32Window.CurrentDisplay.ScaleFactor / 100);
+    IMainAreaPanel MainAreaPanel;
+    UIElement CreateMainAreaPanel()
+    {
+        MainAreaPanel = UnitedSetsApp.Current.Settings.Layout.Value switch
+        {
+            UnitedSetsLayouts.VerticalTabs => new VerticalTabsPanel(),
+            UnitedSetsLayouts.VerticalTabsFull => new VerticalTabsFullPanel(),
+            _ => new HorizontalTabsPanel()
+        };
+        QUICKMARKUP_EFFECTS.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
+            return LeftInset;
+        }, QUICKMARUP_TEMPVALUE => {
+            MainAreaPanel.LeftInset = QUICKMARUP_TEMPVALUE;
+        }));
+        QUICKMARKUP_EFFECTS.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
+            return RightInset;
+        }, QUICKMARUP_TEMPVALUE => {
+            MainAreaPanel.RightInset = QUICKMARUP_TEMPVALUE;
+        }));
+        MainAreaPanel.TabSelectionChanged += TabSelectionChanged;
+        return (UIElement)MainAreaPanel;
+    }
 }

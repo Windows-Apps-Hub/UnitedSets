@@ -40,12 +40,19 @@ partial class MainWindow : NativeHelperWindow
         {
             Title = "UnitedSets";
             ExtendsContentIntoTitleBar = true;
-            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+            AppWindow.TitleBar.PreferredHeightOption = 
+                UnitedSetsApp.Current.Settings.Layout.Value is UnitedSetsLayouts.HorizontalTabs ?
+                    TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;
             //SetTitleBar(CustomDragRegion);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void SetupEvent()
         {
+            ((FrameworkElement)Content).FirstLoadedEv(() =>
+            {
+                LeftInset = GridLengthFromPixelInt(AppWindow.TitleBar.LeftInset);
+                RightInset = GridLengthFromPixelInt(AppWindow.TitleBar.RightInset);
+            });
             AppWindow.Closing += OnWindowClosing;
             ClosingFlyout.CloseRequest += RequestCloseAsync;
             Activated += FirstRun;
@@ -57,6 +64,7 @@ partial class MainWindow : NativeHelperWindow
         RegisteredWindow.ShouldWindowBeDetachOnUserMove =
             _ => UnitedSetsApp.Current.Settings.UserMoveWindowBehavior.Value is UserMoveWindowBehaviors.DetachWindow;
     }
+
     WindowMessages ShellHookMessage;
 
 

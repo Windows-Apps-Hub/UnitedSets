@@ -4,7 +4,7 @@ namespace UnitedSets.UI.Controls;
 
 [QuickMarkup("""
     MainWindow MainWindow;
-    <root Padding=5 Width=32 Height=32
+    <root Padding=5
         Flyout=
             <BackdropedFlyout !ShouldConstrainToRootBounds>
                 <MainWindowMenuFlyoutModule MainWindow=`MainWindow` />

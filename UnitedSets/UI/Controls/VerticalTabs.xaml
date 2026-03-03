@@ -1,0 +1,71 @@
+<Grid
+    x:Class="UnitedSets.UI.Controls.VerticalTabs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnitedSets.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:us="using:UnitedSets"
+    xmlns:tabs="using:UnitedSets.Tabs"
+    xmlns:guics="using:Get.UI.Controls"
+>
+    <ListView
+        x:Name="ListView"
+        ItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
+        SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
+        Footer="{x:Bind Footer, Mode=OneWay}"
+        Margin="4,0,0,0"
+        CanDragItems="True"
+        CanReorderItems="True"
+        BorderBrush="Transparent"
+        AllowDrop="True"
+        VerticalAlignment="Top"
+        DragItemsStarting="ListView_TabDragStarting"
+        DragItemsCompleted="ListView_DragItemsCompleted"
+        DragOver="OnDragItemOverTabView"
+        Drop="OnDropOverTabView"
+        SelectionChanged="ListView_SelectionChanged"
+        Canvas.ZIndex="102"
+        CornerRadius="0"
+    >
+        <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <ItemsStackPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="tabs:TabBase">
+                <ListViewItem
+                    Margin="-4,0,-4,0"
+                    DoubleTapped="{x:Bind TabDoubleTapped}"
+                    RightTapped="{x:Bind TabRightTapped}"
+                    Tag="{x:Bind}"
+                    PointerPressed="{x:Bind TabClickEv}"
+                    AllowDrop="True"
+                    DragOver="OnDragOverTabViewItem"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    guics:DragRegion.Clickable="True"
+                    >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
+                            <TextBlock Grid.Column="1" Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
+                        </Grid>
+                        <Button Padding="2" VerticalAlignment="Center" Click="{x:Bind TabCloseClickEv}" Grid.Column="1">
+                            <SymbolIcon Symbol="Cancel" />
+                        </Button>
+                    </Grid>
+                </ListViewItem>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</Grid>

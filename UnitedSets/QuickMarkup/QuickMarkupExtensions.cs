@@ -85,6 +85,11 @@ static class QuickMarkupExtensions
             get => Grid.GetColumnSpan(element);
             set => Grid.SetColumnSpan(element, value);
         }
+        public GridLength OrientedStack_Length
+        {
+            get => OrientedStack.LengthProperty.GetValue(element);
+            set => OrientedStack.LengthProperty.SetValue(element, value);
+        }
         public int Canvas_ZIndex
         {
             get => Canvas.GetZIndex(element);
@@ -92,8 +97,13 @@ static class QuickMarkupExtensions
         }
         public bool DragRegion_Clickable
         {
-            get => DragRegion.GetClickable(element);
-            set => DragRegion.SetClickable(element, value);
+            get => UnitedSetsDragRegion.GetClickable(element);
+            set => UnitedSetsDragRegion.SetClickable(element, value);
+        }
+        public NonClientRegionKind DragRegion_ClientKind
+        {
+            get => UnitedSetsDragRegion.GetClientKind(element);
+            set => UnitedSetsDragRegion.SetClientKind(element, value);
         }
         //public CoreCursorType Cursor
         //{
@@ -153,7 +163,7 @@ static class QuickMarkupExtensions
         }
         public T TitleBarInteractable()
         {
-            DragRegion.SetClickable(element, true);
+            UnitedSetsDragRegion.SetClickable(element, true);
             return element;
         }
     }

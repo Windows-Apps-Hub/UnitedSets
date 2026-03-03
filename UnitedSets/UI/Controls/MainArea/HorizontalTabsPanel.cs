@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using UnitedSets.Tabs;
 
 namespace UnitedSets.UI.Controls.MainArea;
 
@@ -8,11 +9,11 @@ namespace UnitedSets.UI.Controls.MainArea;
     GridLength RightInset;
     <root>
         <.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Auto />
             <RowDefinition />
         </.RowDefinitions>
         TabViewBorder = <Border MinHeight=40 PointerMoved+=`DragRegion_PointerMoved` Background=`Solid(Colors.Transparent)`>
-            DragRegion = <DragRegion Background=`Solid(Colors.Transparent)` StretchH StretchV>
+            DragRegion = <UnitedSetsDragRegion Background=`Solid(Colors.Transparent)` StretchH StretchV>
                 <.ColumnDefinitions>
                     <ColumnDefinition Width=`LeftInset` />
                     <ColumnDefinition />
@@ -21,9 +22,10 @@ namespace UnitedSets.UI.Controls.MainArea;
                 </.ColumnDefinitions>
                 TabView = <HorizontalTabs Grid_Column=1 Left CenterV
                     SelectedItem=`UnitedSetsApp.Current.SelectedTab`
+                    SelectedItem=>`SelectedTabBindback`
                     @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                     TabStripHeader=<MainWindowControlButton
-                        CenterV
+                        CenterV Width=32 Height=32
                         Margin=`new(5,0,0,0)`
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
                         MainWindow=`UnitedSetsApp.Current.MainWindow`
@@ -35,7 +37,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                         TitleBarInteractable
                     />
                 />
-            </DragRegion>
+            </UnitedSetsDragRegion>
         </Border>
         MainAreaBorder = <Border Grid_Row=1>
             <TabVisualizer
@@ -46,8 +48,12 @@ namespace UnitedSets.UI.Controls.MainArea;
         </Border>
     </root>
     """)]
-partial class HorizontalTabsPanel : Grid
+partial class HorizontalTabsPanel : Grid, IMainAreaPanel
 {
+    static object SelectedTabBindback
+    {
+        set => UnitedSetsApp.Current.SelectedTab = (TabBase)value;
+    }
     public event Action? TabSelectionChanged;
     DateTime LatestUpdate;
     private void DragRegion_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

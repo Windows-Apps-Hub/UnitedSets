@@ -134,6 +134,9 @@
         <Page Remove="Controls\CellVisualizerUnderConstruction.xaml" />
     </ItemGroup>
     <ItemGroup>
+      <Page Update="UI\Controls\VerticalTabs.xaml">
+        <SubType>Designer</SubType>
+      </Page>
       <Page Update="UI\Controls\HorizontalTabs.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>

@@ -282,7 +282,7 @@ public enum UnitedSetsLayouts
     HorizontalTabs,
     [Display(Name = "Vertical tabs")]
     VerticalTabs,
-    [Display(Name = "Vertical tabs (Full Height)")]
+    [Display(Name = "(Experimental) Vertical tabs (Full Height)")]
     VerticalTabsFull
 }
 static class BackdropHelper

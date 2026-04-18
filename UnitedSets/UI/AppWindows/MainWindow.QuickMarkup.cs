@@ -49,12 +49,12 @@ partial class MainWindow
             UnitedSetsLayouts.VerticalTabsFull => new VerticalTabsFullPanel(),
             _ => new HorizontalTabsPanel()
         };
-        QUICKMARKUP_EFFECTS.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
+        QUICKMARKUP_DISPOSABLES.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
             return LeftInset;
         }, QUICKMARUP_TEMPVALUE => {
             MainAreaPanel.LeftInset = QUICKMARUP_TEMPVALUE;
         }));
-        QUICKMARKUP_EFFECTS.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
+        QUICKMARKUP_DISPOSABLES.Add(global::QuickMarkup.Infra.ReferenceTracker.RunAndRerunOnReferenceChange(() => {
             return RightInset;
         }, QUICKMARUP_TEMPVALUE => {
             MainAreaPanel.RightInset = QUICKMARUP_TEMPVALUE;

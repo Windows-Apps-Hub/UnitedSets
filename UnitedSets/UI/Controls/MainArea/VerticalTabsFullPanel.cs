@@ -26,7 +26,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                     <Image Width=24 Height=24 Left CenterV
                         Source=`new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-100.png"))`
                     />
-                    <HStack Left Spacing=4 Grid_Column=1 IsVisible=`!HasTab`>
+                    <HStack Spacing=4 IsVisible=`!HasTab`>
                         <TextBlock CenterV Margin=`new(8, 0, 0, 0)`
                             Text="United Sets" 
                             Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` />
@@ -42,11 +42,24 @@ namespace UnitedSets.UI.Controls.MainArea;
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
                         MainWindow=`UnitedSetsApp.Current.MainWindow`
                     />
-                    <HStack CenterV Grid_Column=3 IsVisible=`HasTab`>
-                        minimizeBtn = <Button CenterV BorderThickness=0 Padding=5 Content=<SymbolExIcon SymbolEx=ChromeMinimize /> DragRegion_ClientKind=`NonClientRegionKind.Minimize` />
-                        maximizeBtn = <Button CenterV BorderThickness=0 Padding=5 Content=<SymbolExIcon SymbolEx=ChromeMaximize /> DragRegion_ClientKind=`NonClientRegionKind.Maximize` />
-                        closeBtn = <Button CenterV BorderThickness=0 Padding=5 Content=<SymbolIcon Symbol=Clear /> DragRegion_ClientKind=`NonClientRegionKind.Close` />
-                    </HStack>
+                    if (`HasTab`)
+                    {
+                        <Button
+                            CenterV BorderThickness=0 Padding=5
+                            Content=<SymbolExIcon SymbolEx=ChromeMinimize />
+                            DragRegion_ClientKind=`NonClientRegionKind.Minimize`
+                        />
+                        <Button
+                            CenterV BorderThickness=0 Padding=5
+                            Content=<SymbolExIcon SymbolEx=ChromeMaximize />
+                            DragRegion_ClientKind=`NonClientRegionKind.Maximize`
+                        />
+                        closeBtn = <Button
+                            CenterV BorderThickness=0 Padding=5
+                            Content=<SymbolIcon Symbol=Clear />
+                            DragRegion_ClientKind=`NonClientRegionKind.Close`
+                        />
+                    }
                 </HStack>
             </Grid>
             <VerticalTabs StretchH StretchV Grid_Row=1 TitleBarInteractable
@@ -78,6 +91,10 @@ namespace UnitedSets.UI.Controls.MainArea;
     """)]
 partial class VerticalTabsFullPanel : OrientedStack, IMainAreaPanel
 {
+    public VerticalTabsFullPanel()
+    {
+        Init();
+    }
     static object SelectedTabBindback
     {
         set => UnitedSetsApp.Current.SelectedTab = (TabBase)value;
@@ -92,5 +109,5 @@ partial class VerticalTabsFullPanel : OrientedStack, IMainAreaPanel
         return new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
     }
     public void ShowClosingFlyout(FlyoutBase flyoutBase)
-    => flyoutBase.ShowAt(closeBtn.IsVisible ? closeBtn : MainAreaBorder);
+    => flyoutBase.ShowAt(HasTab && closeBtn is not null ? closeBtn : MainAreaBorder);
 }

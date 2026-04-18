@@ -3,7 +3,6 @@
     <BuildType Name="Debug" />
     <BuildType Name="DebugUnpackaged" />
     <BuildType Name="Release" />
-    <Platform Name="Any CPU" />
     <Platform Name="arm64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
@@ -11,11 +10,8 @@
   <Folder Name="/QuickMarkup/">
     <Project Path="QuickMarkup/QuickMarkup.Infra.Test/QuickMarkup.Infra.Test.csproj" Id="8ce6f563-b4da-4552-956c-beb3e51648dd" />
     <Project Path="QuickMarkup/QuickMarkup.Infra/QuickMarkup.Infra.csproj" Id="141f36ca-c094-45e9-9559-315c38783ec9" />
-    <Project Path="QuickMarkup/QuickMarkup.IntegrationTest/QuickMarkup.IntegrationTest.csproj" Id="78e4530c-69b2-4f1e-bb44-03ba441d462d" />
-    <Project Path="QuickMarkup/QuickMarkup.Language/QuickMarkup.Language.csproj" />
     <Project Path="QuickMarkup/QuickMarkup.SourceGen.Test/QuickMarkup.SourceGen.Test.csproj" Id="e61a9f0e-7a5c-4a6c-99fd-e6c3e7a7e6b6" />
     <Project Path="QuickMarkup/QuickMarkup.SourceGen/QuickMarkup.SourceGen.csproj" Id="88646990-7457-4dbf-a047-0f33c980f9c6" />
-    <Project Path="QuickMarkup/QuickMarkup.Syntax.Test/QuickMarkup.Syntax.Test.csproj" Id="5bea7f71-6078-4e0e-a96c-12098aa0a2c9" />
   </Folder>
   <Folder Name="/QuickMarkup/Libraries/">
     <Project Path="QuickMarkup/Parser/Get.EasyCSharp.GeneratorTools/Get.EasyCSharp.GeneratorTools.csproj" />
@@ -40,10 +36,7 @@
     <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
   </Project>
   <Project Path="UnitedSets/UnitedSets.csproj">
-    <BuildType Solution="DebugUnpackaged|arm64" Project="Debug" />
-    <BuildType Solution="DebugUnpackaged|x64" Project="Debug" />
-    <BuildType Solution="DebugUnpackaged|x86" Project="Debug" />
-    <Platform Solution="*|Any CPU" Project="x64" />
+    <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
     <Platform Solution="*|arm64" Project="arm64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
@@ -51,8 +44,8 @@
   </Project>
   <Project Path="WindowHoster/WindowHoster.csproj">
     <BuildType Solution="DebugUnpackaged|*" Project="Debug" />
-    <Platform Solution="Debug|Any CPU" Project="x64" />
-    <Platform Solution="Debug|arm64" Project="arm64" />
-    <Platform Solution="Debug|x64" Project="x64" />
+    <Platform Solution="*|arm64" Project="arm64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
   </Project>
 </Solution>

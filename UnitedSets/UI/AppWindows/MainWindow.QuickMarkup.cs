@@ -9,7 +9,7 @@ namespace UnitedSets.UI.AppWindows;
     GridLength RightInset;
     <root>
         RootGrid = <Grid
-            Canvas_ZIndex=1
+            Canvas.ZIndex=1
             BorderThickness=3
             Background = MainBackgroundColor = <SolidColorBrush(`Colors.Transparent`) />
             BorderBrush = MainBorderColor = <SolidColorBrush(`Colors.Transparent`) />
@@ -31,9 +31,9 @@ namespace UnitedSets.UI.AppWindows;
                     </LinearGradientBrush.GradientStops>
                 </LinearGradientBrush>
             /> */
-            HoverIndicator = <WindowHoverIndicatorBackground Grid_RowSpan=2 />
+            HoverIndicator = <WindowHoverIndicatorBackground Grid.RowSpan=2 />
             `CreateMainAreaPanel()`
-            UnitedSetsHomeBackground = <HomeBackground Grid_Row=1 />
+            UnitedSetsHomeBackground = <HomeBackground Grid.Row=1 />
         </Grid>
     </root>
     """)]

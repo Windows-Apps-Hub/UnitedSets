@@ -22,21 +22,22 @@ namespace UnitedSets.UI.Controls.MainArea;
                     <ColumnDefinition />
                     <ColumnDefinition Auto />
                 </.ColumnDefinitions>
-                <HStack Left Margin=`new(12, 0, 0, 0)` Grid_Column=1>
+                <HStack Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
                     <Image Width=24 Height=24 Left CenterV
                         Source=`new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-100.png"))`
                     />
-                    <HStack Spacing=4 IsVisible=`!HasTab`>
-                        <TextBlock CenterV Margin=`new(8, 0, 0, 0)`
-                            Text="United Sets" 
-                            Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` />
-                        <TextBlock CenterV Opacity=0.7
-                            Text=`Constants.AppVersionTag`
-                            Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` 
-                        />
-                    </HStack>
+                    if (`!HasTab`)
+                        <HStack Spacing=4>
+                            <TextBlock CenterV Margin=`new(8, 0, 0, 0)`
+                                Text="United Sets" 
+                                Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` />
+                            <TextBlock CenterV Opacity=0.7
+                                Text=`Constants.AppVersionTag`
+                                Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` 
+                            />
+                        </HStack>
                 </HStack>
-                <HStack CenterV Grid_Column=3>
+                <HStack CenterV Grid.Column=3>
                     <MainWindowControlButton
                         CenterV
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
@@ -47,40 +48,40 @@ namespace UnitedSets.UI.Controls.MainArea;
                         <Button
                             CenterV BorderThickness=0 Padding=5
                             Content=<SymbolExIcon SymbolEx=ChromeMinimize />
-                            DragRegion_ClientKind=`NonClientRegionKind.Minimize`
+                            `DragRegion_ClientKind`=`NonClientRegionKind.Minimize`
                         />
                         <Button
                             CenterV BorderThickness=0 Padding=5
                             Content=<SymbolExIcon SymbolEx=ChromeMaximize />
-                            DragRegion_ClientKind=`NonClientRegionKind.Maximize`
+                            `DragRegion_ClientKind`=`NonClientRegionKind.Maximize`
                         />
                         closeBtn = <Button
                             CenterV BorderThickness=0 Padding=5
                             Content=<SymbolIcon Symbol=Clear />
-                            DragRegion_ClientKind=`NonClientRegionKind.Close`
+                            `DragRegion_ClientKind`=`NonClientRegionKind.Close`
                         />
                     }
                 </HStack>
             </Grid>
-            <VerticalTabs StretchH StretchV Grid_Row=1 TitleBarInteractable
+            <VerticalTabs StretchH StretchV Grid.Row=1 TitleBarInteractable
                 SelectedItem=`UnitedSetsApp.Current.SelectedTab`
                 SelectedItem=>`SelectedTabBindback`
                 @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                 Footer=<AddTabSplitButton
-                    Canvas_ZIndex=8
+                    Canvas.ZIndex=8
                     StretchH
                 />
             />
         </UnitedSetsDragRegion>
-        <VerticalTabsResizer OrientedStack_Length=`Auto()`
+        <VerticalTabsResizer `OrientedStack_Length`=`Auto()`
             Right StretchV
-            Canvas_ZIndex=99 MinWidth=5 MinHeight = 5
+            Canvas.ZIndex=99 MinWidth=5 MinHeight = 5
             Minimum=250
             Orientation=`Orientation.Vertical`
             Background=`Solid(Colors.Transparent)`
             IsEnabled
         />
-        MainAreaBorder = <Border Grid_Column=1 OrientedStack_Length=`Star()`>
+        MainAreaBorder = <Border Grid.Column=1 `OrientedStack_Length`=`Star()`>
             <TabVisualizer
                 Tab=`UnitedSetsApp.Current.SelectedTab`
                 HorizontalContentAlignment=Stretch

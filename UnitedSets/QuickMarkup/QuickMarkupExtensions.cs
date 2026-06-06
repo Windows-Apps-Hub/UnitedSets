@@ -55,45 +55,10 @@ static class QuickMarkupExtensions
 
     extension<T>(T element) where T : FrameworkElement
     {
-        public double Canvas_Left
-        {
-            get => Canvas.GetLeft(element);
-            set => Canvas.SetLeft(element, value);
-        }
-        public double Canvas_Top
-        {
-            get => Canvas.GetTop(element);
-            set => Canvas.SetTop(element, value);
-        }
-        public int Grid_Row
-        {
-            get => Grid.GetRow(element);
-            set => Grid.SetRow(element, value);
-        }
-        public int Grid_Column
-        {
-            get => Grid.GetColumn(element);
-            set => Grid.SetColumn(element, value);
-        }
-        public int Grid_RowSpan
-        {
-            get => Grid.GetRowSpan(element);
-            set => Grid.SetRowSpan(element, value);
-        }
-        public int Grid_ColumnSpan
-        {
-            get => Grid.GetColumnSpan(element);
-            set => Grid.SetColumnSpan(element, value);
-        }
         public GridLength OrientedStack_Length
         {
             get => OrientedStack.LengthProperty.GetValue(element);
             set => OrientedStack.LengthProperty.SetValue(element, value);
-        }
-        public int Canvas_ZIndex
-        {
-            get => Canvas.GetZIndex(element);
-            set => Canvas.SetZIndex(element, value);
         }
         public bool DragRegion_Clickable
         {
@@ -104,16 +69,6 @@ static class QuickMarkupExtensions
         {
             get => UnitedSetsDragRegion.GetClientKind(element);
             set => UnitedSetsDragRegion.SetClientKind(element, value);
-        }
-        //public CoreCursorType Cursor
-        //{
-        //    get => FrameworkElementExtensions.GetCursor(element);
-        //    set => FrameworkElementExtensions.SetCursor(element, value);
-        //}
-        public object Tooltip
-        {
-            get => ToolTipService.GetToolTip(element);
-            set => ToolTipService.SetToolTip(element, value);
         }
         public T Center()
         {

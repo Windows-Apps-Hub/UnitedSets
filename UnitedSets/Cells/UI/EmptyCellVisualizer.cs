@@ -10,7 +10,7 @@ namespace UnitedSets.UI.Controls.Cells;
     private int SplitCount = 2;
     <root AllowDrop DragOver+=`OnDragOver` Drop+=`emptyCell.OnItemDrop`>
         <ScrollViewer
-            Canvas_ZIndex=1
+            Canvas.ZIndex=1
             HorizontalScrollMode=Auto VerticalScrollMode=Auto HorizontalScrollBarVisibility=Auto
             ZoomMode=Enabled
             MinZoomFactor=`0.1f` MaxZoomFactor=`1.5f`

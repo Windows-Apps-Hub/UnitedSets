@@ -21,7 +21,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                 <ColumnDefinition Auto />
                 <ColumnDefinition Width=`RightInset` />
             </.ColumnDefinitions>
-            <HStack Left Margin=`new(12, 0, 0, 0)` Grid_Column=1>
+            <HStack Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
                 <Image Width=24 Height=24 Left CenterV
                     Source=`new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-100.png"))`
                 />
@@ -33,7 +33,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                     Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` 
                 />
             </HStack>
-            <HStack CenterV Grid_Column=3>
+            <HStack CenterV Grid.Column=3>
                 <MainWindowControlButton
                     CenterV
                     Style=`(Style)App.Current.Resources["ToolbarButton"]`
@@ -41,26 +41,26 @@ namespace UnitedSets.UI.Controls.MainArea;
                 />
             </HStack>
         </UnitedSetsDragRegion>
-        <OrientedStack Grid_Row=1 Orientation=Horizontal StretchH>
+        <OrientedStack Grid.Row=1 Orientation=Horizontal StretchH>
             <VerticalTabs StretchH StretchV OrientedStack_Length=`new GridLength(250)`
                 SelectedItem=`UnitedSetsApp.Current.SelectedTab`
                 SelectedItem=>`SelectedTabBindback`
                 @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                 Footer=<AddTabSplitButton
-                    Canvas_ZIndex=8
+                    Canvas.ZIndex=8
                     StretchH
                     TitleBarInteractable
                 />
             />
             <VerticalTabsResizer OrientedStack_Length=`Auto()`
                 Right StretchV
-                Canvas_ZIndex=99 MinWidth=5 MinHeight = 5
+                Canvas.ZIndex=99 MinWidth=5 MinHeight = 5
                 Orientation=`Orientation.Vertical`
                 Background=`Solid(Colors.Transparent)`
                 IsEnabled
                 TitleBarInteractable
             />
-            MainAreaBorder = <Border Grid_Column=1 OrientedStack_Length=`Star()`>
+            MainAreaBorder = <Border Grid.Column=1 OrientedStack_Length=`Star()`>
                 <TabVisualizer
                     Tab=`UnitedSetsApp.Current.SelectedTab`
                     HorizontalContentAlignment=Stretch

@@ -21,7 +21,7 @@ namespace UnitedSets.UI.Controls.Cells;
         visContainer = <Border Child=`CreateVisualizer(Cell)` />
         // resizer not working due to https://github.com/CommunityToolkit/Windows/issues/273
         resizer = <OrientedStackResizer
-            Canvas_ZIndex=100
+            Canvas.ZIndex=100
             Background=`Solid(Colors.Red)`
             MinWidth=5 MinHeight = 5
             IsEnabled

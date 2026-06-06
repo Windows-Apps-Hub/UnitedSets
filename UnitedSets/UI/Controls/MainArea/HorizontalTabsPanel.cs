@@ -20,7 +20,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                     <ColumnDefinition Width=32 />
                     <ColumnDefinition Width=`RightInset` />
                 </.ColumnDefinitions>
-                TabView = <HorizontalTabs Grid_Column=1 Left CenterV
+                TabView = <HorizontalTabs Grid.Column=1 Left CenterV
                     SelectedItem=`UnitedSetsApp.Current.SelectedTab`
                     SelectedItem=>`SelectedTabBindback`
                     @SelectionChanged+=`TabSelectionChanged?.Invoke()`
@@ -31,7 +31,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                         MainWindow=`UnitedSetsApp.Current.MainWindow`
                     />
                     TabStripFooter=<AddTabSplitButton
-                        Canvas_ZIndex=8
+                        Canvas.ZIndex=8
                         Margin=`new(0,0,20,0)`
                         Left
                         TitleBarInteractable
@@ -39,7 +39,7 @@ namespace UnitedSets.UI.Controls.MainArea;
                 />
             </UnitedSetsDragRegion>
         </Border>
-        MainAreaBorder = <Border Grid_Row=1>
+        MainAreaBorder = <Border Grid.Row=1>
             <TabVisualizer
                 Tab=`UnitedSetsApp.Current.SelectedTab`
                 HorizontalContentAlignment=Stretch

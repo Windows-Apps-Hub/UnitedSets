@@ -7,12 +7,6 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/QuickMarkup/" />
-  <Folder Name="/QuickMarkup/Libraries/">
-    <Project Path="QuickMarkup/Parser/Get.Lexer.Shared/Get.Lexer.Shared.shproj" />
-    <Project Path="QuickMarkup/Parser/Get.Parser.Shared/Get.Parser.Shared.shproj" />
-    <Project Path="QuickMarkup/Parser/Get.RegexMachine.Shared/Get.RegexMachine.Shared.shproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>

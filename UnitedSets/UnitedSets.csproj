@@ -44,7 +44,6 @@
         <None Remove="Tab Settings\Modules\MultiWindowModifyFlyoutModule.xaml" />
         <None Remove="TabPropertiesFlyout.xaml" />
         <None Remove="UI\Controls\FlashingBackground.xaml" />
-        <None Remove="UI\Controls\HorizontalTabs.xaml" />
     </ItemGroup>
     <ItemGroup>
         <Page Remove="UI\AppWindows\NewWindow.xaml" />
@@ -71,6 +70,7 @@
         <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.0-prerelease.251115.2" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+        <PackageReference Include="QuickMarkup" Version="0.1.12-beta" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
         <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
         <PackageReference Include="WinUIEx" Version="2.3.3" />
@@ -89,8 +89,6 @@
         <ProjectReference Include="..\Cube.UI\Cube.UI.csproj" />
         <ProjectReference Include="..\UnitedSets.WinFormss\UnitedSets.WinForms.csproj" />
         <ProjectReference Include="..\WindowHoster\WindowHoster.csproj" />
-        <ProjectReference Include="..\QuickMarkup\QuickMarkup.Infra\QuickMarkup.Infra.csproj" />
-        <ProjectReference Include="..\QuickMarkup\QuickMarkup.SourceGen\QuickMarkup.SourceGen.csproj" ReferenceOutputAssembly="False" OutputItemType="Analyzer" />
     </ItemGroup>
     <ItemGroup>
         <Page Update="UI\AppWindows\FloatingTaskbar.xaml">
@@ -136,9 +134,6 @@
     <ItemGroup>
       <Page Update="UI\Controls\VerticalTabs.xaml">
         <SubType>Designer</SubType>
-      </Page>
-      <Page Update="UI\Controls\HorizontalTabs.xaml">
-        <Generator>MSBuild:Compile</Generator>
       </Page>
     </ItemGroup>
     <ItemGroup>

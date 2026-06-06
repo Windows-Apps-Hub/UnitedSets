@@ -7,24 +7,11 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/QuickMarkup/">
-    <Project Path="QuickMarkup/QuickMarkup.Infra.Test/QuickMarkup.Infra.Test.csproj" Id="8ce6f563-b4da-4552-956c-beb3e51648dd" />
-    <Project Path="QuickMarkup/QuickMarkup.Infra/QuickMarkup.Infra.csproj" Id="141f36ca-c094-45e9-9559-315c38783ec9" />
-    <Project Path="QuickMarkup/QuickMarkup.SourceGen.Test/QuickMarkup.SourceGen.Test.csproj" Id="e61a9f0e-7a5c-4a6c-99fd-e6c3e7a7e6b6" />
-    <Project Path="QuickMarkup/QuickMarkup.SourceGen/QuickMarkup.SourceGen.csproj" Id="88646990-7457-4dbf-a047-0f33c980f9c6" />
-  </Folder>
+  <Folder Name="/QuickMarkup/" />
   <Folder Name="/QuickMarkup/Libraries/">
-    <Project Path="QuickMarkup/Parser/Get.EasyCSharp.GeneratorTools/Get.EasyCSharp.GeneratorTools.csproj" />
-    <Project Path="QuickMarkup/Parser/Get.LangSupport/Get.LangSupport.csproj" />
     <Project Path="QuickMarkup/Parser/Get.Lexer.Shared/Get.Lexer.Shared.shproj" />
-    <Project Path="QuickMarkup/Parser/Get.Lexer.SourceGenerator/Get.Lexer.SourceGenerator.csproj" />
-    <Project Path="QuickMarkup/Parser/Get.Lexer/Get.Lexer.csproj" />
     <Project Path="QuickMarkup/Parser/Get.Parser.Shared/Get.Parser.Shared.shproj" />
-    <Project Path="QuickMarkup/Parser/Get.Parser.SourceGenerator/Get.Parser.SourceGenerator.csproj" />
-    <Project Path="QuickMarkup/Parser/Get.Parser/Get.Parser.csproj" />
-    <Project Path="QuickMarkup/Parser/Get.PLShared/Get.PLShared.csproj" />
     <Project Path="QuickMarkup/Parser/Get.RegexMachine.Shared/Get.RegexMachine.Shared.shproj" />
-    <Project Path="QuickMarkup/Parser/Get.RegexMachine/Get.RegexMachine.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />

@@ -36,12 +36,15 @@ partial class CellTab
     }
 
     public override void DetachAndDispose(bool JumpToCursor = false)
+        => _ = DetachAndDisposeAsync(JumpToCursor);
+
+    public override async Task DetachAndDisposeAsync(bool JumpToCursor = false)
     {
-        foreach (var cell in MainCell.AllSubCells.ToArray())
-        {
-            if (cell is WindowCell wc)
-                wc.Window.Detach();
-        }
+        await Task.WhenAll(
+            MainCell.AllSubCells
+                .OfType<WindowCell>()
+                .Select(x => x.Window.DetachAsync())
+        );
         _IsDisposed = true;
     }
 

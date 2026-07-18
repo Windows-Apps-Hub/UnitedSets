@@ -11,16 +11,15 @@ namespace UnitedSets.UI.Popups;
 public sealed partial class AddTabPopup
 {
     public WindowEx Result;
+    TaskCompletionSource<WindowEx>? _completion;
 
     public AddTabPopup()
     {
         UnitedSetsApp.Current.RegisterUnitedSetsWindow(WindowEx.FromWindowHandle((nint)AppWindow.Id.Value));
         InitializeComponent();
-        LowLevelKeyboard.KeyPressed += OnKeyPressed;
-        this.SetForegroundWindow();
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
-        AppWindow.Closing += (_, _) => LowLevelKeyboard.KeyPressed -= OnKeyPressed;
+        AppWindow.Closing += (_, _) => Complete(default);
         SystemBackdrop = new InfiniteSystemBackdrop<MicaController>();
         this.Hide();
     }
@@ -29,25 +28,44 @@ public sealed partial class AddTabPopup
     {
         if (state == KeyboardState.KeyDown)
         {
-            if (eventDetails.KeyCode is VirtualKey.Tab or VirtualKey.ESCAPE && AppWindow.IsVisible)
+            if (eventDetails.KeyCode is VirtualKey.Tab or VirtualKey.ESCAPE && _completion is not null)
             {
-				Handled = true; //don't pass the tab through
-                Result = WindowEx.GetWindowFromPoint(Cursor.Position);
-                this.Hide();
+                Handled = true;
+                var result = eventDetails.KeyCode == VirtualKey.ESCAPE
+                    ? default
+                    : WindowEx.GetWindowFromPoint(Cursor.Position);
+                DispatcherQueue.TryEnqueue(() => Complete(result));
             }
         }
     }
 
-    public async ValueTask ShowAsync()
+    public Task<WindowEx> ShowAsync()
     {
+        if (_completion is not null)
+            return _completion.Task;
+
         Result = default;
+        _completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        LowLevelKeyboard.KeyPressed += OnKeyPressed;
         this.CenterOnScreen();
         AppWindow.Move(new PointInt32(AppWindow.Position.X, 80));
         AppWindow.Show();
-        while (AppWindow.IsVisible)
-            await Task.Delay(1000);
+        this.SetForegroundWindow();
+        return _completion.Task;
+    }
+
+    void Complete(WindowEx result)
+    {
+        var completion = _completion;
+        if (completion is null) return;
+
+        _completion = null;
+        Result = result;
+        LowLevelKeyboard.KeyPressed -= OnKeyPressed;
+        this.Hide();
+        completion.TrySetResult(result);
     }
 
     [Event(typeof(RoutedEventHandler))]
-    private void CancelClick() => this.Hide();
+    private void CancelClick() => Complete(default);
 }

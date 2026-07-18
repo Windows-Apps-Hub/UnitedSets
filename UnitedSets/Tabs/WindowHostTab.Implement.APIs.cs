@@ -9,6 +9,9 @@ partial class WindowHostTab
         => await Window.TryCloseAsync();
 
     public override async void DetachAndDispose(bool JumpToCursor)
+        => await DetachAndDisposeAsync(JumpToCursor);
+
+    public override async Task DetachAndDisposeAsync(bool JumpToCursor)
     {
         var Window = this.Window;
 		var NoMovingMode = RegisteredWindow.CompatablityMode.NoMoving;
@@ -20,8 +23,7 @@ partial class WindowHostTab
     }
     public override void Focus()
     {
-        //RegisteredWindow.SetVisible(true);
-        RegisteredWindow.Window.Focus();
+        DoShowTab();
     }
     protected override void OnDoubleClick(UIElement sender, DoubleTappedRoutedEventArgs args)
     {

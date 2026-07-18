@@ -27,10 +27,9 @@ public partial class WindowHostTab : TabBase
         UpdateAppIcon();
     }
 
-    private async void AttemptToSelectTab()
+    private void AttemptToSelectTab()
     {
-        await Task.Delay(100);
-        UnitedSetsApp.Current.SelectedTab = this;
+        UIDispatcher.TryEnqueue(() => UnitedSetsApp.Current.SelectedTab = this);
     }
 
     public static WindowHostTab? Create(WindowEx newWindow)

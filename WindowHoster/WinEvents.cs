@@ -3,24 +3,26 @@ using Windows.Win32.UI.Accessibility;
 using Windows.Win32.Foundation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 namespace WindowHoster;
 
 public static class WinEvents
 {
+    static readonly object Sync = new();
     readonly static Dictionary<WinEventTypes, IDisposable> UnhookFuncs = [];
     readonly static Dictionary<WinEventTypes, IDisposable> UnhookFuncsSkipOwnProcess = [];
     public static WinEventsRegistrationParameters Register(nint hwnd, WinEventTypes type, bool skipOwnProcess, WinEventHandler handler)
     {
-        EnsureWinHookRegistered(type, skipOwnProcess);
-        if (!EventRegistrations.TryGetValue((HWND)hwnd, out var registeredWindow))
+        lock (Sync)
         {
-            EventRegistrations[(HWND)hwnd] = registeredWindow = [];
-        }
-        if (registeredWindow.TryGetValue(type, out var oldHandler)) {
-            registeredWindow[type] = oldHandler + handler;
-        } else
-        {
-            registeredWindow[type] = handler;
+            EnsureWinHookRegistered(type, skipOwnProcess);
+            var registrations = skipOwnProcess ? EventRegistrationsSkipOwnProcess : EventRegistrations;
+            if (!registrations.TryGetValue((HWND)hwnd, out var registeredWindow))
+                registrations[(HWND)hwnd] = registeredWindow = [];
+            if (registeredWindow.TryGetValue(type, out var oldHandler))
+                registeredWindow[type] = oldHandler + handler;
+            else
+                registeredWindow[type] = handler;
         }
         return new(hwnd, type, skipOwnProcess, handler);
     }
@@ -28,25 +30,27 @@ public static class WinEvents
         => Unregister(param.Hwnd, param.Type, param.SkipOwnProcess, param.Handler);
     public static void Unregister(nint hwnd, WinEventTypes type, bool skipOwnProcess, WinEventHandler handler)
     {
-        if (!EventRegistrations.TryGetValue((HWND)hwnd, out var registeredWindow)) return;
-        if (registeredWindow.TryGetValue(type, out var oldHandler))
+        lock (Sync)
         {
+            var registrations = skipOwnProcess ? EventRegistrationsSkipOwnProcess : EventRegistrations;
+            if (!registrations.TryGetValue((HWND)hwnd, out var registeredWindow) ||
+                !registeredWindow.TryGetValue(type, out var oldHandler)) return;
             var newHandler = oldHandler - handler;
             if (newHandler is null)
             {
                 registeredWindow.Remove(type);
-                
-                if (UnhookFuncs.TryGetValue(type, out var disposable)) {
-                    UnhookFuncs.Remove(type);
+                if (registeredWindow.Count == 0)
+                    registrations.Remove((HWND)hwnd);
+
+                if (!registrations.Values.Any(x => x.ContainsKey(type)))
+                {
+                    var unhookFunctions = skipOwnProcess ? UnhookFuncsSkipOwnProcess : UnhookFuncs;
+                    if (!unhookFunctions.Remove(type, out var disposable)) return;
                     disposable.Dispose();
                 }
             }
             else
                 registeredWindow[type] = newHandler;
-        }
-        else
-        {
-            registeredWindow[type] = handler;
         }
     }
     static void EnsureWinHookRegistered(WinEventTypes type, bool skipOwnProcess)
@@ -89,12 +93,11 @@ public static class WinEvents
         uint dwmsEventTime
     )
     {
-        if (
-            EventRegistrations.TryGetValue(hwnd, out var registeredWindow) &&
-            registeredWindow.TryGetValue((WinEventTypes)@event, out var handler))
-        {
-            handler((WinEventTypes)@event, hwnd, idObject, idChild, idEventThread, dwmsEventTime);
-        }
+        WinEventHandler? handler;
+        lock (Sync)
+            handler = EventRegistrations.TryGetValue(hwnd, out var registeredWindow) &&
+                registeredWindow.TryGetValue((WinEventTypes)@event, out var found) ? found : null;
+        handler?.Invoke((WinEventTypes)@event, hwnd, idObject, idChild, idEventThread, dwmsEventTime);
     }
     static void EventCallbackSkipOwnProcess(
         HWINEVENTHOOK hWinEventHook,
@@ -106,12 +109,11 @@ public static class WinEvents
         uint dwmsEventTime
     )
     {
-        if (
-            EventRegistrationsSkipOwnProcess.TryGetValue(hwnd, out var registeredWindow) &&
-            registeredWindow.TryGetValue((WinEventTypes)@event, out var handler))
-        {
-            handler((WinEventTypes)@event, hwnd, idObject, idChild, idEventThread, dwmsEventTime);
-        }
+        WinEventHandler? handler;
+        lock (Sync)
+            handler = EventRegistrationsSkipOwnProcess.TryGetValue(hwnd, out var registeredWindow) &&
+                registeredWindow.TryGetValue((WinEventTypes)@event, out var found) ? found : null;
+        handler?.Invoke((WinEventTypes)@event, hwnd, idObject, idChild, idEventThread, dwmsEventTime);
     }
 }
 public delegate void WinEventHandler(WinEventTypes eventType, nint hwnd, int idObject, int idChild, uint idEventThread, uint dwmsEventTime);
@@ -121,7 +123,8 @@ public enum WinEventTypes : uint
     WindowMovedStart = PInvoke.EVENT_SYSTEM_MOVESIZESTART,
     NameChanged = PInvoke.EVENT_OBJECT_NAMECHANGE,
     ObjectDestroyed = PInvoke.EVENT_OBJECT_DESTROY,
-    WindowShown = PInvoke.EVENT_OBJECT_SHOW
+    WindowShown = PInvoke.EVENT_OBJECT_SHOW,
+    Foreground = 0x0003
 }
 public readonly record struct WinEventsRegistrationParameters(nint Hwnd, WinEventTypes Type, bool SkipOwnProcess, WinEventHandler Handler)
 {

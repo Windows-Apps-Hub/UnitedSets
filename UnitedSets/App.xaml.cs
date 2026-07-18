@@ -26,7 +26,7 @@ public partial class App : Application
     async static void RequestAttachDebugger()
     {
         await Task.Delay(2000);
-        if (!Debugger.IsAttached)
+        if (!Debugger.IsAttached && string.Equals(Environment.GetEnvironmentVariable("UNITEDSETS_ATTACH_DEBUGGER"), "1", StringComparison.Ordinal))
             Debugger.Launch();
     }
     protected override void OnLaunched(LaunchActivatedEventArgs args)

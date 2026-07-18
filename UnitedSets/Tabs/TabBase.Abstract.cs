@@ -14,6 +14,7 @@ partial class TabBase
     public abstract bool IsDisposed { get; }
     
     public abstract void DetachAndDispose(bool JumpToCursor = false);
+    public abstract Task DetachAndDisposeAsync(bool JumpToCursor = false);
     ///// <summary>
     ///// Release the ownership of the window without detaching or disposing it.
     ///// </summary>

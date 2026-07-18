@@ -50,8 +50,7 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     [DoesNotReturn]
     public async Task Suicide()
     {
-        //trans_mgr?.Cleanup();
-        await Task.Delay(300);
+        await Task.CompletedTask;
         Debug.WriteLine("Cleanish exit");
         Environment.Exit(0);
     }
@@ -91,10 +90,7 @@ partial class UnitedSetsApp : INotifyPropertyChanged
     public AddTabPopup AddTabPopup => field ??= new();
     public async void OpenAddTabDialog()
     {
-        MainWindow.Win32Window.Minimize();
-        await AddTabPopup.ShowAsync();
-        MainWindow.Win32Window.Restore();
-        var result = AddTabPopup.Result;
+        var result = await AddTabPopup.ShowAsync();
         if (WindowHostTab.Create(result) is { } tab)
         {
             UnitedSetsApp.Current.Tabs.Add(tab);

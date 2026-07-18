@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System;
 using Get.XAMLTools;
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
@@ -45,27 +46,19 @@ public partial class WindowHost : FrameworkElement
         controller.ContainerRectangle = cachedContainerRectangle;
     }
 
-    async partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
+    partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
     {
         Controller = null;
         if (oldValue is not null)
             oldValue.BecomesInvalid -= RemoveController;
-        if (IsLoaded)
+        if (IsLoaded && newValue is not null)
         {
-            if (newValue is not null)
-                newValue.BecomesInvalid += RemoveController;
-            while (true)
+            newValue.BecomesInvalid += RemoveController;
+            try
             {
-                try
-                {
-                    Controller = newValue?.GetController(ParentWindow, DispatcherQueue);
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
+                Controller = newValue.GetController(ParentWindow, DispatcherQueue);
             }
+            catch (InvalidOperationException) { }
         }
     }
 
@@ -98,29 +91,28 @@ public partial class WindowHost : FrameworkElement
     }
     private void WindowHost_Unloaded(object sender, RoutedEventArgs e)
     {
+        if (AssociatedWindow is { } window)
+            window.BecomesInvalid -= RemoveController;
+        if (XamlRoot is not null)
+            XamlRoot.Changed -= XamlRoot_Changed;
         Controller = null;
     }
 
-    private async void WindowHost_Loaded(object sender, RoutedEventArgs e)
+    private void WindowHost_Loaded(object sender, RoutedEventArgs e)
     {
         Controller = null;
         Update(); // update position
         if (AssociatedWindow is { } window)
         {
+            window.BecomesInvalid -= RemoveController;
             window.BecomesInvalid += RemoveController;
-            while (true)
+            try
             {
-                try
-                {
-                    Controller = window.GetController(ParentWindow, DispatcherQueue);
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
+                Controller = window.GetController(ParentWindow, DispatcherQueue);
             }
+            catch (InvalidOperationException) { }
         }
+        XamlRoot.Changed -= XamlRoot_Changed;
         XamlRoot.Changed += XamlRoot_Changed;
     }
     bool wasVisible;

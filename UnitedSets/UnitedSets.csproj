@@ -27,9 +27,22 @@
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'==''">
+        <Platform>x64</Platform>
+    </PropertyGroup>
     <ItemGroup>
         <Compile Remove="UI\AppWindows\NewWindow.xaml.cs" />
     </ItemGroup>
+    <Target Name="PatchBrokenGetUiDataWasdkRuntimeLayout" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <_GetUiDataWasdkRuntimeRoot>$(NuGetPackageRoot)get.ui.data.wasdk\1.0.7\lib\net8.0-windows10.0.22621\Get.UI.Data.WASDK\runtimes</_GetUiDataWasdkRuntimeRoot>
+            <_WebView2RuntimeRoot>$(NuGetPackageRoot)microsoft.web.webview2\1.0.3179.45\runtimes</_WebView2RuntimeRoot>
+        </PropertyGroup>
+        <MakeDir Directories="$(_GetUiDataWasdkRuntimeRoot)\win-x86\native;$(_GetUiDataWasdkRuntimeRoot)\win-x64\native;$(_GetUiDataWasdkRuntimeRoot)\win-arm64\native" />
+        <Copy SourceFiles="$(_WebView2RuntimeRoot)\win-x86\native\WebView2Loader.dll" DestinationFiles="$(_GetUiDataWasdkRuntimeRoot)\win-x86\native\WebView2Loader.dll" SkipUnchangedFiles="true" Condition="Exists('$(_WebView2RuntimeRoot)\\win-x86\\native\\WebView2Loader.dll')" />
+        <Copy SourceFiles="$(_WebView2RuntimeRoot)\win-x64\native\WebView2Loader.dll" DestinationFiles="$(_GetUiDataWasdkRuntimeRoot)\win-x64\native\WebView2Loader.dll" SkipUnchangedFiles="true" Condition="Exists('$(_WebView2RuntimeRoot)\\win-x64\\native\\WebView2Loader.dll')" />
+        <Copy SourceFiles="$(_WebView2RuntimeRoot)\win-arm64\native\WebView2Loader.dll" DestinationFiles="$(_GetUiDataWasdkRuntimeRoot)\win-arm64\native\WebView2Loader.dll" SkipUnchangedFiles="true" Condition="Exists('$(_WebView2RuntimeRoot)\\win-arm64\\native\\WebView2Loader.dll')" />
+    </Target>
     <ItemGroup>
         <None Remove="Assets\OOBE\1.png" />
         <None Remove="UI\AppWindows\FloatingTaskbar.xaml" />
@@ -60,7 +73,7 @@
         <!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
         <PackageReference Include="Enums.NET" Version="4.0.1" />
         <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
-        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.11" />
+        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.7" />
         <PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
         <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">

@@ -15,6 +15,7 @@ namespace UnitedSets.UI.AppWindows;
 /// </summary>
 public sealed partial class MainWindow
 {
+    bool _shutdownStarted;
     [RelayCommand]
     public async Task ExportData()
     {
@@ -56,9 +57,9 @@ public sealed partial class MainWindow
     private partial void TabSelectionChanged()
     {
         UnitedSetsHomeBackground.Visibility =
-                UnitedSetsApp.Current.SelectedTab is CellTab ?
-                Visibility.Collapsed :
-                Visibility.Visible;
+                UnitedSetsApp.Current.SelectedTab is null ?
+                Visibility.Visible :
+                Visibility.Collapsed;
         UpdateTitle();
     }
     private async Task SafeClose(TabBase tab)
@@ -73,7 +74,7 @@ public sealed partial class MainWindow
         catch (Exception)
         {
         }
-        tab.DetachAndDispose();
+        await tab.DetachAndDisposeAsync();
     }
 
     private partial void OnWindowClosing(AppWindowClosingEventArgs e)
@@ -88,33 +89,31 @@ public sealed partial class MainWindow
         else
             RequestCloseAsync(UnitedSetsCloseMode.ReleaseWindow);
     }
-    [DoesNotReturn]
     public async void RequestCloseAsync(UnitedSetsCloseMode closeMode)
     {
+        if (_shutdownStarted) return;
+        _shutdownStarted = true;
         ClosingFlyout.Hide();
+        var tabs = UnitedSetsApp.Current.Tabs
+            .Concat(UnitedSetsApp.Current.HiddenTabs.SelectMany(x => x.Tabs))
+            .Distinct()
+            .ToArray();
         switch (closeMode)
         {
             case UnitedSetsCloseMode.ReleaseWindow:
-                // Release all windows
-                while (UnitedSetsApp.Current.Tabs.Count > 0)
-                {
-                    var Tab = UnitedSetsApp.Current.Tabs.First();
-                    UnitedSetsApp.Current.Tabs.Remove(Tab);
-                    Tab.DetachAndDispose(JumpToCursor: false);
-                }
                 await TimerStop();
-
+                await Task.WhenAll(tabs.Select(x => x.DetachAndDisposeAsync(JumpToCursor: false)));
+                UnitedSetsApp.Current.Tabs.Clear();
+                UnitedSetsApp.Current.HiddenTabs.Clear();
                 await UnitedSetsApp.Current.Suicide();
-
                 return;
             case UnitedSetsCloseMode.CloseWindow:
-                // Close all windows
-                await Task.Delay(100);
-                await Task.WhenAll(UnitedSetsApp.Current.Tabs.ToArray().Select(SafeClose));
+                await TimerStop();
+                await Task.WhenAll(tabs.Select(SafeClose));
                 await UnitedSetsApp.Current.Suicide();
                 return;
             case UnitedSetsCloseMode.SaveCloseWindow:
-                UnitedSetsApp.Current.Configuration.SaveCurrentSession();
+                await Task.Run(UnitedSetsApp.Current.Configuration.SaveCurrentSession);
                 goto case UnitedSetsCloseMode.CloseWindow;
             default:
                 throw new ArgumentOutOfRangeException(nameof(closeMode));

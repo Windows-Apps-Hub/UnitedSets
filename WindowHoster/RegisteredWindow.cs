@@ -34,18 +34,22 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         ShouldWindowBeDetachOnUserMove
     { get; set; } = (window) => true;
     internal readonly WindowStylingState InitalStylingState;
+    readonly Window InitalOwner;
     public Window Window { get; }
+    public bool UsesOwnerHosting { get; }
     [AutoNotifyProperty(SetVisibility = GeneratorVisibility.Private, OnChanged = nameof(CompatablityModeChanged))]
     CompatablityMode _CompatablityMode;
 
     private RegisteredWindow(Window WindowToHost, bool shouldBeHidden = false)
     {
         if (WindowToHost.IsMaximized)
-            WindowToHost.SendMessage(WindowMessages.SysCommand, /* SC_RESTORE */ 0xF120, 0);
+            _ = ShowWindowAsync(WindowToHost.Handle, /* SW_RESTORE */ 9);
 
         InitalStylingState = WindowStylingState.GetCurrentState(WindowToHost);
+        InitalOwner = WindowToHost.Owner;
 
         Window = WindowToHost;
+        UsesOwnerHosting = WindowToHost.Class.Name is "Chrome_WidgetWin_1";
 
         CompatablityMode = CompatablityMode with { NoMoving = NoMovingModeChecker(WindowToHost) };
 
@@ -99,13 +103,19 @@ public partial class RegisteredWindow : INotifyPropertyChanged
                 }
             }
         );
+        registeredWindowActivatedEvent = WinEvents.Register(
+            Window.Handle,
+            WinEventTypes.Foreground,
+            Window.OwnerProcess.Id == Process.Current.Id,
+            delegate { ShownByUser?.Invoke(); }
+        );
         if (shouldBeHidden && IsValid)
             WindowToHost.IsVisible = false;
         Closed += delegate { BecomesInvalid?.Invoke(); };
         Detached += delegate { BecomesInvalid?.Invoke(); };
         Properties = new(this);
     }
-    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent, registeredWindowShownEvent;
+    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent, registeredWindowShownEvent, registeredWindowActivatedEvent;
     void CompatablityModeChanged()
     {
         if (CompatablityMode.NoOwner)
@@ -118,17 +128,24 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     DateTime TimeWhenGettingController = default;
     internal void InternalUpdateParent(Window parent)
     {
-        if (parent == default)
-            // replace with some window
-            parent = default;
-        var window = Window;
-        window.Owner = parent;
-        CompatablityMode = CompatablityMode with { NoOwner = Window.Owner != parent };
+        if (UsesOwnerHosting)
+        {
+            var window = Window;
+            window.Owner = parent;
+            CompatablityMode = CompatablityMode with { NoOwner = window.Owner != parent };
+            return;
+        }
+
+        // Keep games as normal top-level windows. Changing owner or taskbar styles
+        // alters activation and rendering behavior in many game engines.
+        CompatablityMode = CompatablityMode with { NoOwner = false };
     }
     private void Dispose()
     {
         registeredWindowClosedEvent.Unregister();
         registeredPosSizeChangedEvent.Unregister();
+        registeredWindowShownEvent.Unregister();
+        registeredWindowActivatedEvent.Unregister();
         IsValid = false;
     }
     /// <summary>
@@ -161,24 +178,23 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     /// </summary>
     public async Task DetachAsync()
     {
-
-        var WindowToHost = Window;
-        WindowToHost.Region = InitalStylingState.Region;
-        Properties.ActivateCrop = false;
-        Properties.BorderlessWindow = false;
-        IsValid = false;
-        WindowToHost.Owner = default;
-        WindowToHost.IsResizable = InitalStylingState.IsResizable;
-        WindowToHost.IsVisible = true;
-        Dispose();
-
-        WindowToHost.Focus();
-        WindowToHost.Redraw();
-        WindowToHost.SetAsForegroundWindow();
-        await Task.Delay(100).ContinueWith(_ =>
+        lock (this)
         {
-            WindowToHost.Redraw();
-            WindowToHost.IsVisible = true;
+            if (!IsValid) return;
+            IsValid = false;
+        }
+
+        CurrentController?.Unregister();
+        var windowToHost = Window;
+        await Task.Run(() =>
+        {
+            windowToHost.Region = InitalStylingState.Region;
+            Properties.ActivateCrop = false;
+            Properties.BorderlessWindow = false;
+            windowToHost.Owner = InitalOwner;
+            InitalStylingState.RestoreTo(windowToHost);
+            windowToHost.IsVisible = true;
+            Dispose();
         });
         Detached?.Invoke();
     }
@@ -209,4 +225,9 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         if (BlacklistChecker(window)) return null;
         return new(window, shouldBeHidden);
     }
+
+    [System.Runtime.InteropServices.LibraryImport("user32.dll")]
+    [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+    private static partial bool ShowWindowAsync(nint window, int command);
+
 }

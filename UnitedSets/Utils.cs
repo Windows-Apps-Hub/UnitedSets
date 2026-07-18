@@ -6,7 +6,8 @@ namespace UnitedSets;
 
 static class Utils
 {
-    public static string? GetOwnerProcessModuleFilename(WindowEx window) => GetOwnerWindow(window).OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+    public static string? GetOwnerProcessModuleFilename(WindowEx window)
+        => TryGetProcessMainModuleFilename(GetOwnerWindow(window));
     /// <summary>
     /// Work around WinUI/UWP as AppFrameHost is normally the owner but we want the actual app
     /// </summary>
@@ -15,7 +16,7 @@ static class Utils
     {
         var owner = window;
         wasUwp = false;
-        var mainModulePath = owner.OwnerProcess.GetDotNetProcess.MainModule?.FileName ?? "";
+        var mainModulePath = TryGetProcessMainModuleFilename(owner) ?? "";
         if (mainModulePath?.Equals(System.IO.Path.Combine(Environment.SystemDirectory, "ApplicationFrameHost.exe"), StringComparison.CurrentCultureIgnoreCase) != true)
         {
             wasUwp = mainModulePath!.Contains(WindowsAppFolder ?? LoadWindowsAppFolder(), StringComparison.CurrentCultureIgnoreCase);//some windows apps dont use appframehost, IE windows terminal
@@ -26,6 +27,19 @@ static class Utils
         var child = GetCoreWindowFromAppHostWindow(window);
         return child;
     }
+
+    static string? TryGetProcessMainModuleFilename(WindowEx window)
+    {
+        try
+        {
+            return window.OwnerProcess.GetDotNetProcess.MainModule?.FileName;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public static WindowEx GetCoreWindowFromAppHostWindow(WindowEx appFrameHostMainWindow)
         => appFrameHostMainWindow.Children
         .FirstOrDefault(x => x.Class.Name is "Windows.UI.Core.CoreWindow", appFrameHostMainWindow);

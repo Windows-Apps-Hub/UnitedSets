@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -8,13 +8,13 @@
   IgnorableNamespaces="uap rescap mp">
 
   <Identity
-    Name="3749Get.6496034D6FE7C"
+    Name="UnitedSetsX"
     Publisher="CN=95122495-0FC5-4CBE-B461-D28358AFE57A"
     Version="0.1.16.0" />
 
   <Properties>
-    <DisplayName>United Sets Beta (InDev)</DisplayName>
-    <PublisherDisplayName>Get</PublisherDisplayName>
+    <DisplayName>United Sets X</DisplayName>
+    <PublisherDisplayName>United Sets X contributors</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,8 +32,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="United Sets Beta (InDev)"
-        Description="United Sets"
+        DisplayName="United Sets X"
+        Description="Group any windows into tabs"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

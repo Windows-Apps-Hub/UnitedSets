@@ -215,7 +215,7 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-                <RadioButtons MaxColumns="10000" ItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs}" Padding="0" VerticalAlignment="Center" x:Name="RadioButtons">
+                <RadioButtons MaxColumns="10000" ItemsSource="{x:Bind MainWindow.Tabs}" Padding="0" VerticalAlignment="Center" x:Name="RadioButtons">
                     <RadioButtons.ItemTemplate>
                         <DataTemplate x:DataType="tabs:TabBase">
                             <RadioButton Style="{StaticResource DefaultToggleButtonStyle}"

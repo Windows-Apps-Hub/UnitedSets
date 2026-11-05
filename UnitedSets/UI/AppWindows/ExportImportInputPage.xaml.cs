@@ -28,8 +28,9 @@ public sealed partial class ExportImportInputPage : Page
 
     public static async Task<ExportImportInputViewModel?> ShowExportImport(bool ForExportNotImport, MainWindow parentWindow)
     {
-        var origSelected = UnitedSetsApp.Current.SelectedTab;
-        UnitedSetsApp.Current.SelectedTab = null;
+        // hide the hosted window while the dialog is shown
+        var origSelected = parentWindow.SelectedTab;
+        parentWindow.SelectedTab = null;
         var wind = new ExportImportInputPage();
         wind.vm.SaveNotLoad = ForExportNotImport;
         wind.vm.hWnd = WinRT.Interop.WindowNative.GetWindowHandle(parentWindow);
@@ -116,7 +117,7 @@ public sealed partial class ExportImportInputPage : Page
         wind.vm.RequestClose += (_, _) => dialog.Hide();
 
         var result = await dialog.ShowAsync();
-        UnitedSetsApp.Current.SelectedTab = origSelected;
+        parentWindow.SelectedTab = origSelected;
         if ((result == ContentDialogResult.Primary || wind.vm.OverrideAsSuccess) && String.IsNullOrWhiteSpace(wind.vm.FullFilename) == false)
         {
             var fileExists = File.Exists(wind.vm.FullFilename);

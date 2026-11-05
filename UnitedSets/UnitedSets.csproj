@@ -60,7 +60,7 @@
         <!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
         <PackageReference Include="Enums.NET" Version="4.0.1" />
         <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
-        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.11" />
+        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.7" />
         <PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
         <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
@@ -149,6 +149,23 @@
             <SubType>Designer</SubType>
         </Page>
     </ItemGroup>
+    <!--
+        Get.UI.Data.WASDK 1.0.11 was never published to nuget.org, so 1.0.7 (the latest public version) is used.
+        Its library layout references WebView2Loader.dll files that are not part of the package, which fails
+        the copy step. Drop the missing files.
+    -->
+    <Target Name="RemoveMissingLibraryLayoutFiles" BeforeTargets="_CopyOutOfDateSourceItemsToOutputDirectory;_CopyOutOfDateSourceItemsToOutputDirectoryAlways">
+        <ItemGroup>
+            <_SourceItemsToCopyToOutputDirectory Remove="@(_SourceItemsToCopyToOutputDirectory)" Condition="!Exists('%(FullPath)')" />
+            <_SourceItemsToCopyToOutputDirectoryAlways Remove="@(_SourceItemsToCopyToOutputDirectoryAlways)" Condition="!Exists('%(FullPath)')" />
+        </ItemGroup>
+    </Target>
+    <!-- Same for the MSIX package payload (packaged builds) -->
+    <Target Name="RemoveMissingAppxPayloadFiles" AfterTargets="_ComputeAppxPackagePayload">
+        <ItemGroup>
+            <AppxPackagePayload Remove="@(AppxPackagePayload)" Condition="!Exists('%(FullPath)')" />
+        </ItemGroup>
+    </Target>
     <Choose>
         <When Condition="'$(Configuration)'=='DebugUnpackaged'">
             <PropertyGroup>

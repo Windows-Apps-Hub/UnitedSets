@@ -21,7 +21,7 @@ partial class TabBase
     bool _IsFlashing;
     void FlashingChanged()
     {
-        if (UnitedSetsApp.Current.SelectedTab == this)
+        if (ParentWindow?.SelectedTab == this)
         {
             // no, do not allow flashing on this tab.
             IsFlashing = false;

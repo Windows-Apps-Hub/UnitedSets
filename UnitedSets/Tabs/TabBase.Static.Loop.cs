@@ -12,7 +12,7 @@ partial class TabBase
         {
             do
                 Thread.Sleep(500);
-            while (!(UnitedSetsApp.Current.MainWindow?.Win32Window.IsVisible ?? false));
+            while (!UnitedSetsApp.Current.SetWindows.ToArray().Any(w => w.Win32Window.IsVisible));
 
             try
             {
@@ -24,6 +24,7 @@ partial class TabBase
 						tab.UpdateStatusLoop();
                 }
                 OnUpdateStatusLoopComplete?.Invoke();
+                Helpers.CrashRecovery.Save(UnitedSetsApp.Current.AllTabs);
             }
             catch
             {

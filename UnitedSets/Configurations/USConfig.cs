@@ -18,12 +18,9 @@ public partial class USConfig : SavedInstanceData
             "UnitedSets",
             "prevSession.json"
         );
-    public static string RootLocation =>
-#if UNPKG
-		System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
-#else
-        global::Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
-#endif
+    // Works for both packaged (install location) and unpackaged builds.
+    // Package.Current throws when the app is run without package identity.
+    public static string RootLocation => AppContext.BaseDirectory;
 
     static USConfig? _DefaultConfiguration;
     public static USConfig DefaultConfiguration
@@ -47,10 +44,11 @@ public partial class USConfig : SavedInstanceData
             Tabs = [],
             Design = new()
             {
-                BorderCorner = new(15, 5, 15, 5),
+                // no border/rounding around the content: tabbed windows use the full width of the set
+                BorderCorner = new(0, 0, 0, 0),
                 BorderGradiant1 = "#9987C7FF",
                 BorderGradiant2 = "#9900008B",
-                BorderThickness = new(10),
+                BorderThickness = new(0),
                 MainMargin = new(8, 0, 8, 8),
                 PrimaryBackgroundLightTheme = "#DDFFFFFF",
                 PrimaryBackgroundDarkTheme = "#DD000000",
@@ -59,7 +57,8 @@ public partial class USConfig : SavedInstanceData
                 UseTranslucentWindow = true,
                 Theme = ElementTheme.Default,
                 UseDXBorderTransparency = true,
-                Backdrop = USBackdrop.Mica
+                // Mica Alt, like Edge and Windows Terminal tab rows
+                Backdrop = USBackdrop.Tabbed
             },
             DragAnywhere = true,
             CloseTabBehaviors = CloseTabBehaviors.DetachWindow,

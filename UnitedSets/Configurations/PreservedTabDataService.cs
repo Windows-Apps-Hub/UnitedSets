@@ -5,7 +5,6 @@ using Windows.Win32;
 using WindowHoster;
 using UnitedSets.Tabs;
 using UnitedSets.Cells.Data;
-using UnitedSets.Cells.Data;
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8602 // 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -37,6 +36,7 @@ public class PreservedTabDataService
                 try
                 {
                     var loaded = Deserialize<SavedInstanceData>(text);
+                    MigrateOldDefaults(loaded);
                     PropHelper.CopyNotNullPropertiesTo(loaded, MainConfig, true);
                     File.Delete(USConfig.SessionSaveConfigFile);
                 }
@@ -50,11 +50,22 @@ public class PreservedTabDataService
         MainConfig = null;
         return false;
     }
+    bool finalized;
+    /// <summary>
+    /// Restores the previous session (tabs) into the first set window. Only done once: it used to run for
+    /// every new set window, which launched the saved applications again each time.
+    /// </summary>
     public Task FinalizeLoadAsync()
     {
+        if (finalized) return Task.CompletedTask;
+        finalized = true;
         USConfig.LoadDefaultConfig();
         return _ImportSettings(MainConfiguration);
     }
+    /// <summary>
+    /// Whether a saved session ("Save and close") has tabs to restore
+    /// </summary>
+    public bool HasSessionToRestore => MainConfiguration.Tabs is { Length: > 0 };
     public void LoadInitialSettingsAndTheme(out USConfig MainConfig)
     {
         USConfig.LoadDefaultConfig();
@@ -70,6 +81,7 @@ public class PreservedTabDataService
                     //PropHelper.CopyNotNullPropertiesTo(loaded.Design, def_config.Design);
                     //loaded.Design = null;
                     loaded.Tabs = null;
+                    MigrateOldDefaults(loaded);
                     PropHelper.CopyNotNullPropertiesTo(loaded, DefaultConfiguration, true);
                 }
                 catch (Exception e)
@@ -83,6 +95,22 @@ public class PreservedTabDataService
         MainConfig = cfg;
         if (cfg.Design.Theme != ElementTheme.Default && USConfig.FLAGS_THEME_CHOICE_ENABLED)
             Application.Current.RequestedTheme = cfg.Design.Theme == ElementTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
+    }
+
+    /// <summary>
+    /// Saved settings contain every design value, including the ones that were never changed.
+    /// The old defaults put a 10px border and rounded corners around the tabbed window; treat values that are
+    /// exactly the old defaults as "not set" so the new full-width layout is used.
+    /// </summary>
+    static void MigrateOldDefaults(SavedInstanceData loaded)
+    {
+        if (loaded.Design is not { } design) return;
+        static bool Is(OurRect? r, int l, int t, int rr, int b)
+            => r is { } v && v.Left == l && v.Top == t && v.Right == rr && v.Bottom == b;
+        if (Is(design.BorderThickness, 10, 10, 10, 10))
+            design.BorderThickness = null;
+        if (Is(design.BorderCorner, 15, 5, 15, 5))
+            design.BorderCorner = null;
     }
 
     public USConfig MainConfiguration => UnitedSetsApp.Current.Configuration.MainConfiguration;
@@ -101,8 +129,9 @@ public class PreservedTabDataService
         }
         var str = $"{DateTime.Now.ToString("mm:ss.ffff")} {GetCallerIdent(member_name, source_file_path)}: {msg ?? ""}";
         if (ex != null)
-            str += $" Exception {ex.GetType()}: {ex.ToString}";
+            str += $" Exception {ex.GetType()}: {ex}";
         Debug.WriteLine(str);
+        Helpers.CrashLog.Write("Configuration", new Exception(str, ex));
     }
     /*
         We never override existing layouts or cells.   If only a cell is loaded and there is currently a free cell on the page it is placed there,  if there is a split layout loaded it will always load in a new tab.
@@ -152,8 +181,14 @@ public class PreservedTabDataService
                 }
                 if (wind != null)
                 {
-                    start_arg.tab = WindowHostTab.Create(wind.Value);
-                    start_arg.hwndHost = (start_arg.tab as WindowHostTab).RegisteredWindow;
+                    // hidden until its tab is selected (it used to stay floating on the desktop)
+                    start_arg.tab = WindowHostTab.Create(wind.Value, shouldBeHidden: true);
+                    if (start_arg.tab is null)
+                    {
+                        LogCfgError($"Window {wind.Value.TitleText} could not be added as a tab");
+                        return;
+                    }
+                    start_arg.hwndHost = ((WindowHostTab)start_arg.tab).RegisteredWindow;
                 }
                 else
                 {
@@ -176,9 +211,10 @@ public class PreservedTabDataService
                 foreach (var onCreated in start_arg.OnTabCreated)
                     onCreated(start_arg.tab);
             }
-            UnitedSetsApp.Current.Tabs.Add(start_arg.tab);
+            var targetWindow = UnitedSetsApp.Current.MainWindow;
+            targetWindow.Tabs.Add(start_arg.tab);
             //await Task.Delay(300);
-            UnitedSetsApp.Current.SelectedTab = start_arg.tab;
+            targetWindow.SelectedTab = start_arg.tab;
             //if (isCell) { //while selected need to do this to fix
             //	var cTab = start_arg.tab as CellTab;
             //	var subs = cTab.MainCell.SubCells;
@@ -302,7 +338,7 @@ public class PreservedTabDataService
     private void ApplySavedTab(StartingResults starts, SavedTabData data)
     {
 
-        if (UnitedSetsApp.Current.SelectedTab is CellTab cTab)
+        if (UnitedSetsApp.Current.MainWindow.SelectedTab is CellTab cTab)
         {
             starts.CurBuildItem.cell = FindFreeCell(starts, cTab.MainCell);
             if (starts.CurBuildItem.cell != null)
@@ -415,7 +451,8 @@ public class PreservedTabDataService
         try
         {
             var exported = MainConfiguration.CloneWithoutTabs();
-            var allTabs = UnitedSetsApp.Current.Tabs.ToArray();
+            // all set windows are saved (they are restored into a single window)
+            var allTabs = UnitedSetsApp.Current.AllTabs.ToArray();
             if (ExcludeTabs)
                 allTabs = [];
 

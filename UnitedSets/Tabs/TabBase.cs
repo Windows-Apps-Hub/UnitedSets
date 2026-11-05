@@ -15,8 +15,19 @@ public abstract partial class TabBase : INotifyPropertyChanged
         this.IsSwitcherVisible = IsSwitcherVisible;
         InitSwitcher();
     }
+    /// <summary>
+    /// The set window this tab currently belongs to (maintained by <see cref="MainWindow.Tabs"/>).
+    /// </summary>
+    public MainWindow? ParentWindow { get; internal set; }
+
+    /// <summary>
+    /// Whether the given top-level window is hosted by this tab.
+    /// </summary>
+    public virtual bool ContainsWindow(nint hwnd) => Windows.Any(x => x.Handle == hwnd);
+    public abstract bool ContainsRegisteredWindow(WindowHoster.RegisteredWindow window);
+
 	protected virtual void DoShowTab() {
-		UnitedSetsApp.Current.SelectedTab = this;
+		ParentWindow?.SelectedTab = this;
     }
     protected void ShowFlyout(UIElement Element, UIElement RelativeTo)
     {
@@ -46,6 +57,16 @@ public abstract partial class TabBase : INotifyPropertyChanged
     }
 	protected virtual void DoRemoveTab()
     {
-        UnitedSetsApp.Current.DispatcherQueue.TryEnqueue(() => UnitedSetsApp.Current.Tabs.Remove(this));
+        UnitedSetsApp.Current.DispatcherQueue.TryEnqueue(() =>
+        {
+            if (ParentWindow is { } window)
+            {
+                window.Tabs.Remove(this);
+                window.CloseIfEmptyAfterTabMovedOut();
+            }
+            // the tab may also be set aside
+            foreach (var group in UnitedSetsApp.Current.HiddenTabs.ToArray())
+                group.Tabs.Remove(this);
+        });
     }
 }

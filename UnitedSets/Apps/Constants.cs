@@ -11,11 +11,12 @@ static class Constants
     public const Visibility ExperimentalFeedback = Visibility.Collapsed;
     public const Visibility VisibleOnExperimental = Visibility.Visible;
     public const string AppVersionTag = "- Development";
-#elif true // Experimental Version
-    public static string Version => $"v{VersionRaw}-exp";
-    public const Visibility ExperimentalFeedback = Visibility.Visible;
+#elif true // Experimental Version (United Sets X keeps the experimental features enabled)
+    public static string Version => $"v{VersionRaw}";
+    // the feedback links point to the original United Sets project
+    public const Visibility ExperimentalFeedback = Visibility.Collapsed;
     public const Visibility VisibleOnExperimental = Visibility.Visible;
-    public const string AppVersionTag = "- Experimental";
+    public const string AppVersionTag = "";
 #else // Release Version
     public static string Version => $"v{VersionRaw}";
     public const Visibility ExperimentalFeedback = Visibility.Collapsed;
@@ -29,12 +30,26 @@ static class Constants
     {
         get
         {
-            var version = Package.Current.Id.Version;
-            return $"{version.Major}.{version.Minor}.{version.Build}";
+            try
+            {
+                var version = Package.Current.Id.Version;
+                return $"{version.Major}.{version.Minor}.{version.Build}";
+            }
+            catch
+            {
+                // unpackaged build: Package.Current throws
+                var version = typeof(Constants).Assembly.GetName().Version;
+                return version is null ? "unknown" : $"{version.Major}.{version.Minor}.{version.Build}";
+            }
         }
     }
+    public const string AppName = "United Sets X";
     public const string UnitedSetsLifeCycleKey = "UnitedSetsLifeCycle";
     public const string UnitedSetsTabWindowDragProperty = "UnitedSetsTabWindow";
+    /// <summary>
+    /// Marks a drag operation of a tab from one of our tab strips (same process)
+    /// </summary>
+    public const string UnitedSetsTabDragProperty = "UnitedSetsTab";
     public static readonly bool IsAltTabVisible = false;
     public static readonly WindowMessages UnitedSetCommunicationChangeWindowOwnership
         = WindowMessagesHelper.Register(nameof(UnitedSetCommunicationChangeWindowOwnership));

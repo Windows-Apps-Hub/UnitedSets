@@ -34,8 +34,10 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (MainWindow is null) return;
         var tabgroup = new TabGroup($"Tabs {DateTime.Now:hh:mm:ss}");
-        var tabs = UnitedSetsApp.Current.Tabs.ToArray();
-        UnitedSetsApp.Current.Tabs.Clear();
+        var tabs = MainWindow.Tabs.ToArray();
+        // remove one by one (Clear() doesn't tell which tabs left the window)
+        foreach (var tab in tabs)
+            MainWindow.Tabs.Remove(tab);
 
         foreach (var tab in tabs)
             tabgroup.Tabs.Add(tab);
@@ -51,8 +53,9 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     void ShowOnWindow([CastFrom(typeof(object))] FrameworkElement sender)
     {
         if (sender.Tag is not TabBase tab) return;
-        UnitedSetsApp.Current.Tabs.Add(tab);
-        UnitedSetsApp.Current.SelectedTab = tab;
+        var target = MainWindow ?? UnitedSetsApp.Current.MainWindow;
+        target.Tabs.Add(tab);
+        target.SelectedTab = tab;
         if (TabGroupListView.SelectedItem is TabGroup TabGroup)
             TabGroup.Tabs.Remove(tab);
     }
@@ -61,13 +64,14 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     {
         if (sender.Tag is not TabGroup tabgroup) return;
         UnitedSetsApp.Current.HiddenTabs.Remove(tabgroup);
+        var target = MainWindow ?? UnitedSetsApp.Current.MainWindow;
         TabBase? lastTab = null;
         foreach (var tab in tabgroup.Tabs)
         {
-            UnitedSetsApp.Current.Tabs.Add(lastTab = tab);
+            target.Tabs.Add(lastTab = tab);
         }
         if (lastTab is not null)
-            UnitedSetsApp.Current.SelectedTab = lastTab;
+            target.SelectedTab = lastTab;
     }
     [Event(typeof(RoutedEventHandler))]
     async void OpenContentDialogTag([CastFrom(typeof(object))] FrameworkElement sender)
@@ -153,7 +157,8 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
     [Event(typeof(DragItemsStartingEventHandler))]
     void TabDragStarting(DragItemsStartingEventArgs args)
     {
-        if (args.Items.Count is not 0) return;
+        // (was "is not 0", which ignored every drag and threw on empty ones)
+        if (args.Items.Count is 0) return;
         if (args.Items[0] is WindowHostTab item)
             args.Data.Properties.Add(Constants.UnitedSetsTabWindowDragProperty, (long)item.Window.Handle);
     }
@@ -195,18 +200,20 @@ public sealed partial class MainWindowMenuFlyoutModule : Grid, INotifyPropertyCh
             where IsMoreThanTopLeft && IsLessThanBotRigh
             select (int?)index
         ).FirstOrDefault();
-        TabBase? tabValue;
-		if (window.Owner != MainWindow.Win32Window) {
-			var ret = window.Owner.SendMessage(
+        TabBase? tabValue = null;
+		if (UnitedSetsApp.Current.FindTab(window.Handle) is { } found) {
+			// a tab of one of our set windows
+			tabValue = found.Tab;
+            found.Window.Tabs.Remove(tabValue);
+		} else if (window.Owner.IsValid && UnitedSetsApp.Current.FindSetWindowOf(window.Owner) is null) {
+			// owned by another United Sets process
+			_ = window.Owner.SendMessage(
                 Constants.UnitedSetCommunicationChangeWindowOwnership,
                 default,
                 window
             );
 			tabValue = WindowHostTab.Create(window);
 		} else {
-			tabValue = UnitedSetsApp.Current.Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));
-			if (tabValue != null)
-                UnitedSetsApp.Current.Tabs.Remove(tabValue);
             foreach (var tabg in UnitedSetsApp.Current.HiddenTabs.ToArray())
             {
                 var tab = tabg.Tabs.ToArray().FirstOrDefault(tab => tab.Windows.Contains(window));

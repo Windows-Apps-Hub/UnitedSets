@@ -9,14 +9,16 @@ partial class WindowHostTab
         => await Window.TryCloseAsync();
 
     public override async void DetachAndDispose(bool JumpToCursor)
+        => await DetachAndDisposeAsync(JumpToCursor);
+    public override async Task DetachAndDisposeAsync(bool JumpToCursor = false)
     {
         var Window = this.Window;
 		var NoMovingMode = RegisteredWindow.CompatablityMode.NoMoving;
+        _IsDisposed = true;
 		await RegisteredWindow.DetachAsync();
         var CursorPos = Cursor.Position;
-        if (JumpToCursor && !NoMovingMode)
+        if (JumpToCursor && !NoMovingMode && Window.IsValid)
             Window.Location = new PointInt(CursorPos.X - 100, CursorPos.Y - 30);
-        _IsDisposed = true;
     }
     public override void Focus()
     {

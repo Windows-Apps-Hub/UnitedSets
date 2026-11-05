@@ -10,7 +10,13 @@ partial class CellTab
     protected override Bitmap? BitmapIcon => null;
     public override BitmapImage? Icon => null;
     public override string DefaultTitle => "Cell Tab";
-    public override IEnumerable<WindowEx> Windows => Enumerable.Repeat(default(WindowEx), 0);
+    public override IEnumerable<WindowEx> Windows =>
+        from cell in MainCell.AllSubCells
+        let wc = cell as WindowCell
+        where wc is not null && wc.Window.IsValid
+        select wc.Window.Window;
+    public override bool ContainsRegisteredWindow(WindowHoster.RegisteredWindow window) =>
+        MainCell.AllSubCells.Any(cell => cell is WindowCell wc && wc.Window == window);
 
     // API
     public override void Focus() { }

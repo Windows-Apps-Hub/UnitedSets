@@ -25,7 +25,7 @@ public partial class WindowCell : Cell
         }
         if (c.ParentCellTab is { } celltab)
         {
-            UnitedSetsApp.Current.SelectedTab = celltab;
+            celltab.ParentWindow?.SelectedTab = celltab;
         }
     }
 

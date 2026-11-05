@@ -11,7 +11,6 @@
 >
     <ListView
         x:Name="ListView"
-        ItemsSource="{x:Bind us:UnitedSetsApp.Current.Tabs, Mode=OneWay}"
         SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
         Footer="{x:Bind Footer, Mode=OneWay}"
         Margin="4,0,0,0"
@@ -57,7 +56,14 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
+                            <Grid>
+                                <Image Source="{x:Bind Icon, Mode=OneWay}" MaxWidth="16"/>
+                                <!-- the window wants attention (FlashWindow) -->
+                                <Ellipse Width="8" Height="8" Margin="0,0,-4,-4"
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                    Fill="{ThemeResource SystemFillColorCautionBrush}"
+                                    Visibility="{x:Bind IsFlashing, Mode=OneWay}" />
+                            </Grid>
                             <TextBlock Grid.Column="1" Margin="7, 0, 5, 0" Text="{x:Bind Title, Mode=OneWay}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="190"/>
                         </Grid>
                         <Button Padding="2" VerticalAlignment="Center" Click="{x:Bind TabCloseClickEv}" Grid.Column="1">

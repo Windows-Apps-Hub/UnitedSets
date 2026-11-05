@@ -1,3 +1,5 @@
+using UnitedSets.Mvvm.Services;
+
 namespace UnitedSets.UI.Controls;
 
 [QuickMarkup("""
@@ -6,33 +8,43 @@ namespace UnitedSets.UI.Controls;
     Reference<Color> SystemAccentColorLight2 = null!;
     </setup>
     <root Placement=BottomEdgeAlignedRight !ShouldConstrainToRootBounds>
-        <VStack Spacing=16>
-            <TextBlock CenterH Text="How would you like to close the app?" />
-            <HStack Spacing=16 CenterH>
+        <StackPanel Orientation=Vertical Spacing=16>
+            <TextBlock CenterH Text="What should happen to the windows in this set?" />
+            <StackPanel Orientation=Horizontal Spacing=16 CenterH>
                 <Button `ToolBarBtn`
                     `x => SystemAccentColorLight2 = ThemeResources.Get<Color>("SystemAccentColorLight2", x).CreateReadOnlyReference()`
-                    @Click+=`CloseRequest?.Invoke(UnitedSetsCloseMode.ReleaseWindow);`
+                    @Click+=`Choose(UnitedSetsCloseMode.ReleaseWindow);`
                     Foreground=`Solid(SystemAccentColorLight2.Value)`
                     BorderBrush=`Solid(SystemAccentColorLight2.Value)`
-                    Content="Release" />
+                    Content="Keep apps open" />
                 <Button `ToolBarBtn`
-                    @Click+=`CloseRequest?.Invoke(UnitedSetsCloseMode.SaveCloseWindow);`
+                    @Click+=`Choose(UnitedSetsCloseMode.SaveCloseWindow);`
                     Visibility=`Constants.VisibleOnExperimental`
                     Content="Save and close"
                 />
-                <Button `ToolBarBtn` @Click+=`CloseRequest?.Invoke(UnitedSetsCloseMode.CloseWindow);`
+                <Button `ToolBarBtn` @Click+=`Choose(UnitedSetsCloseMode.CloseWindow);`
                     Foreground=`Solid(CloseRed)` BorderBrush=`Solid(CloseRed)`
-                    Content="Close"
+                    Content="Close apps"
                  />
-            </HStack>
-            <CheckBox Content="Remember my option" CenterH />
-        </VStack>
+            </StackPanel>
+            RememberOption = <CheckBox Content="Remember my option (can be changed in the settings)" CenterH />
+        </StackPanel>
     </root>
     """)]
 partial class CloseAppFlyout : BackdropedFlyout
 {
     static readonly Color CloseRed = Color.FromArgb(255, 0xe9, 0x6e, 0x60);
     public event Action<UnitedSetsCloseMode>? CloseRequest;
+    void Choose(UnitedSetsCloseMode mode)
+    {
+        // "Save and close" saves a session, it's not something to do every time
+        if (RememberOption.IsChecked is true && mode is not UnitedSetsCloseMode.SaveCloseWindow)
+            UnitedSetsApp.Current.Settings.CloseSetWithTabsBehavior.Value = mode is UnitedSetsCloseMode.ReleaseWindow
+                ? CloseSetWithTabsBehaviors.ReleaseWindows
+                : CloseSetWithTabsBehaviors.CloseWindows;
+        RememberOption.IsChecked = false;
+        CloseRequest?.Invoke(mode);
+    }
     static void ToolBarBtn(Button btn)
     {
         btn.CenterH();

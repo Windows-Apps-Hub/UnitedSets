@@ -28,7 +28,7 @@ public partial class UnitedSetsAppSettings
             )
             {
                 Title = "Layout",
-                Description = "United Sets layout style",
+                Description = "Layout of the set windows",
                 Icon = SymbolEx.Move,
                 UserInterfaceVisibility = Visibility.Visible,
                 OOBEUserInterfaceVisibility = Visibility.Visible,
@@ -40,7 +40,7 @@ public partial class UnitedSetsAppSettings
             )
             {
                 Title = "Closing tab behavior",
-                Description = "What should United Sets do when you close the tab?",
+                Description = "What happens when you close a tab?",
                 Icon = SymbolEx.ChromeClose,
                 UserInterfaceVisibility = Visibility.Visible,
                 OOBEUserInterfaceVisibility = Visibility.Visible
@@ -51,10 +51,77 @@ public partial class UnitedSetsAppSettings
             )
             {
                 Title = "Moving added window behavior",
-                Description = "What should United Sets do when you move the added window?",
+                Description = "What happens when you drag a tabbed window by its title bar?",
                 Icon = SymbolEx.Move,
                 UserInterfaceVisibility = Visibility.Visible,
                 OOBEUserInterfaceVisibility = Visibility.Visible
+            },
+            DragToGroupMode = new(
+                () => Configuration.DragToGroupMode ?? DragToGroupModes.HoldShift, x => Configuration.DragToGroupMode = x,
+                Enum.GetValues<DragToGroupModes>()
+            )
+            {
+                Title = "Grouping windows by dragging",
+                Description = "Drag a window by its title bar onto another window to group them into a set, or onto a set to add it as a tab",
+                Icon = SymbolEx.Add,
+                UserInterfaceVisibility = Visibility.Visible,
+                OOBEUserInterfaceVisibility = Visibility.Visible
+            },
+            GroupWithAnyWindow = new(
+                () => Configuration.GroupWithAnyWindow ?? true, x => Configuration.GroupWithAnyWindow = x
+            )
+            {
+                Title = "Group with any window",
+                Description = "Dropping a window onto another window (not only onto a set) creates a new set with both windows, like Groupy",
+                Icon = SymbolEx.NewWindow,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            TaskbarTabThumbnails = new(
+                () => Configuration.TaskbarTabThumbnails ?? true, x => Configuration.TaskbarTabThumbnails = x
+            )
+            {
+                Title = "Taskbar thumbnail for each tab",
+                Description = "Hovering a set on the taskbar shows every tab (like Groupy); the set uses the icon of its selected app",
+                Icon = SymbolEx.ViewAll,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            StartWithWindows = new(
+                () => Helpers.StartupHelper.IsEnabled, x => Helpers.StartupHelper.IsEnabled = x
+            )
+            {
+                Title = "Start with Windows",
+                Description = "Start United Sets X in the notification area when you sign in. It keeps running in the background until you choose Exit from its tray icon.",
+                Icon = SymbolEx.Home,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            TabDroppedOutsideBehavior = new(
+                () => Configuration.TabDroppedOutsideBehavior ?? TabDroppedOutsideBehaviors.ReleaseWindow, x => Configuration.TabDroppedOutsideBehavior = x,
+                Enum.GetValues<TabDroppedOutsideBehaviors>()
+            )
+            {
+                Title = "Dragging a tab out",
+                Description = "What happens when a tab is dropped outside of a tab bar",
+                Icon = SymbolEx.NewWindow,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            CloseSetWithTabsBehavior = new(
+                () => Configuration.CloseSetWithTabsBehavior ?? CloseSetWithTabsBehaviors.Ask, x => Configuration.CloseSetWithTabsBehavior = x,
+                Enum.GetValues<CloseSetWithTabsBehaviors>()
+            )
+            {
+                Title = "Closing a set window",
+                Description = "What happens to the windows of a set when you close it. United Sets X itself keeps running in the notification area (use Exit in its tray menu to quit).",
+                Icon = SymbolEx.ChromeClose,
+                UserInterfaceVisibility = Visibility.Visible
+            },
+            TabSwitchHotkeys = new(
+                () => Configuration.TabSwitchHotkeys ?? true, x => Configuration.TabSwitchHotkeys = x
+            )
+            {
+                Title = "Tab switching hotkeys",
+                Description = "Win + ` switches to the next tab, Win + Shift + ` to the previous tab of the active set",
+                Icon = SymbolEx.KeyboardClassic,
+                UserInterfaceVisibility = Visibility.Visible
             },
             //TransculentWindow = new(
             //    () => cfg.Design.UseTranslucentWindow ?? false, x => cfg.Design.UseTranslucentWindow = x
@@ -213,6 +280,13 @@ public partial class UnitedSetsAppSettings
     public OnOffSetting Autosave { get; }
     public SelectSetting<UnitedSetsLayouts> Layout { get; }
     public SelectSetting<UserMoveWindowBehaviors> UserMoveWindowBehavior { get; }
+    public SelectSetting<DragToGroupModes> DragToGroupMode { get; }
+    public OnOffSetting GroupWithAnyWindow { get; }
+    public OnOffSetting StartWithWindows { get; }
+    public OnOffSetting TaskbarTabThumbnails { get; }
+    public SelectSetting<TabDroppedOutsideBehaviors> TabDroppedOutsideBehavior { get; }
+    public OnOffSetting TabSwitchHotkeys { get; }
+    public SelectSetting<CloseSetWithTabsBehaviors> CloseSetWithTabsBehavior { get; }
     public OnOffSetting BypassMinimumSize { get; }
     public OnOffSetting HomePageInfo { get; }
     //public OnOffSetting TransculentWindow { get; }
@@ -275,6 +349,37 @@ public enum UserMoveWindowBehaviors
     [Display(Name = "Detach Window")]
     DetachWindow,
     Ignore
+}
+public enum DragToGroupModes
+{
+    [Display(Name = "Hold Shift while dragging (like Groupy)")]
+    HoldShift,
+    [Display(Name = "Hold Ctrl while dragging")]
+    HoldCtrl,
+    [Display(Name = "Hold Alt while dragging")]
+    HoldAlt,
+    [Display(Name = "Hold Tab while dragging (press it after you start dragging)")]
+    HoldTab,
+    [Display(Name = "No key: drop on the title bar or tab bar")]
+    WithoutKey,
+    [Display(Name = "Disabled")]
+    Disabled
+}
+public enum CloseSetWithTabsBehaviors
+{
+    [Display(Name = "Ask every time")]
+    Ask,
+    [Display(Name = "Release the windows")]
+    ReleaseWindows,
+    [Display(Name = "Close the windows")]
+    CloseWindows
+}
+public enum TabDroppedOutsideBehaviors
+{
+    [Display(Name = "Release the window")]
+    ReleaseWindow,
+    [Display(Name = "Open in a new set window")]
+    NewSetWindow
 }
 public enum UnitedSetsLayouts
 {

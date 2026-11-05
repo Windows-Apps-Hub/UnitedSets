@@ -23,202 +23,56 @@ public sealed partial class MainWindow
     void CacheValue()
     {
         CacheMiddleAreaBounds = MainAreaPanel.GetMainAreaRectangle(Content);
-        SelectedTabCache = UnitedSetsApp.Current.SelectedTab;
+        SelectedTabCache = SelectedTab;
     }
 
-    static ((double X1, double Y1, double X2, double Y2), EmptyCell)? GetCellAtCursor((double X, double Y) CursorPos, Cell MainCell)
+    /// <summary>
+    /// Finds the empty cell at the given normalized position (0..1) inside <paramref name="cell"/>,
+    /// taking the (user resizable) relative sizes of the cells into account.
+    /// </summary>
+    static EmptyCell? GetCellAtCursor((double X, double Y) pos, Cell cell)
     {
-        if (MainCell is WindowCell)
-            return null;
-        if (MainCell is EmptyCell ec)
-            return ((0, 0, 1, 1), ec);
-        static (int Index, double RemainingScaled) ComputeScale(int count, double pos)
+        switch (cell)
         {
-            // 1 / count * x = value
-            // x = value * count
-            var idx = (int)(pos * count);
-            if (idx == count) idx--;
-            // [ pos - (idx / count) ] * count
-            // = pos * count - idx
-            var remaining = pos * count - idx;
-            return (idx, remaining);
+            case EmptyCell ec:
+                return ec;
+            case ContainerCell cc when cc.SubCells.Count > 0:
+                var horizontal = cc.Orientation is Orientation.Horizontal;
+                var along = horizontal ? pos.X : pos.Y;
+                var subCells = cc.SubCells.AsEnumerable().ToArray();
+                var total = subCells.Sum(x => x.RelativeSize);
+                if (total <= 0) return null;
+                var start = 0d;
+                foreach (var sub in subCells)
+                {
+                    var size = sub.RelativeSize / total;
+                    if (along <= start + size || sub == subCells[^1])
+                    {
+                        var local = size <= 0 ? 0 : Math.Clamp((along - start) / size, 0, 1);
+                        return GetCellAtCursor(horizontal ? (local, pos.Y) : (pos.X, local), sub);
+                    }
+                    start += size;
+                }
+                return null;
+            default:
+                return null;
         }
-        static (double Out1, double Out2) ComputeScaleReversed((double In1, double In2) scaledRect, int idx, int totalCount)
-        {
-            return (scaledRect.In1 / totalCount + idx / totalCount, scaledRect.In2 / totalCount + idx / totalCount);
-        }
-        if (MainCell is ContainerCell cc)
-        {
-            if (cc.Orientation is Orientation.Horizontal)
-            {
-                var count = cc.SubCells.Count;
-                var (idx, remaining) = ComputeScale(count, CursorPos.X);
-                var output = GetCellAtCursor((remaining, CursorPos.Y), cc.SubCells[idx]);
-                if (output is null) return null;
-                var (Rect, cell) = output.Value;
-                (Rect.X1, Rect.X2) = ComputeScaleReversed((Rect.X1, Rect.X2), idx, count);
-                return (Rect, cell);
-            }
-            if (cc.Orientation is Orientation.Vertical)
-            {
-                var count = cc.SubCells.Count;
-                var (idx, remaining) = ComputeScale(count, CursorPos.Y);
-                var output = GetCellAtCursor((CursorPos.X, remaining), cc.SubCells[idx]);
-                if (output is null) return null;
-                var (Rect, cell) = output.Value;
-                (Rect.Y1, Rect.Y2) = ComputeScaleReversed((Rect.Y1, Rect.Y2), idx, count);
-                return (Rect, cell);
-            }
-        }
-        return null;
     }
-    static bool IsInTitleBarBounds(WindowEx Main, WindowEx ToCheck)
+    /// <summary>
+    /// Finds the empty cell of the selected splitable tab that is under the cursor.
+    /// </summary>
+    internal (CellTab? tab, EmptyCell? cell) DetectCell()
     {
-        var Bounds = Main.Bounds;
-        var CursorPos = Cursor.Position;
-        if (Bounds.Contains(CursorPos))
-        {
-            var foregroundBounds = ToCheck.Bounds;
-            foregroundBounds.Height -= ToCheck.ClientBounds.Height;
-            if (foregroundBounds.Height is <= 16 ||
-                foregroundBounds.Height >> 2 > foregroundBounds.Height) // A >> 2 == A / 2
-                foregroundBounds.Height = 32 * ToCheck.CurrentDisplay.ScaleFactor / 100;
-            if (foregroundBounds.Contains(CursorPos))
-                return true;
-        }
-        return false;
-    }
-    static bool IsUnitedSetWindowVisible(WindowEx Main, WindowEx ToCheck)
-    {
-        if (ToCheck.Bounds.Contains(Main.Bounds))
-            // User can't see United Sets.
-            // User doesn't know United Sets is behind. We can't mess with them.
-            return false;
-        foreach (var below in new WindowRelative(ToCheck).GetBelows())
-        {
-            Debug.WriteLine(below);
-            var CursorPos = Cursor.Position;
-            if (below == Main)
-                return true;
-            if (below.Class.Name is
-                "Qt5152TrayIconMessageWindowClass" or
-                "Qt5152QWindowIcon")
-                continue;
-            if (!below.IsVisible) continue;
-            if (below.Bounds.Contains(CursorPos))
-                // Also Check Region
-                if (below.Region is not System.Drawing.Rectangle rect ||
-                    new System.Drawing.Rectangle(below.Bounds.X + rect.X, below.Bounds.Y + rect.Y,
-                    rect.Width, rect.Height).Contains(CursorPos))
-                    // If there is window above United Sets and it covers up United Sets
-                    // Don't add tabs. User can't see the window
-                    return false;
-        }
-        return false;
-    }
-    (CellTab? tab, EmptyCell? cell) DetectCell()
-    {
+        if (SelectedTabCache is not CellTab cellTab) return (null, null);
         var cursorPos = Cursor.Position;
-        var windowBounds = Win32Window.Bounds;
-        var diffPos = (X: (double)cursorPos.X - windowBounds.X, Y: (double)cursorPos.Y - windowBounds.Y);
-        var scale = Win32Window.CurrentDisplay.ScaleFactor / 100d;
-        var area = CacheMiddleAreaBounds.Location;
-        diffPos = (diffPos.X - area.X * scale, diffPos.Y - area.Y * scale);
-        if (diffPos is { X: > 0, Y: > 0 })
-        {
-            if (SelectedTabCache is CellTab CellTab)
-            {
-                var normPos = (diffPos.X / windowBounds.Width, diffPos.Y / windowBounds.Height);
-                var info = GetCellAtCursor(normPos, CellTab.MainCell);
-                if (info is not null)
-                {
-                    var (_, cell) = info.Value;
-                    return (CellTab, cell);
-                }
-            }
-        }
-        return (null, null);
-    }
-    void WindowDragLogic()
-    {
-        WindowEx OtherWindowDragging = default;
-        EmptyCell? SelectedCell = null;
-        CellTab? SelectedCellTab = null;
-        do
-        {
-            if (!Keyboard.IsControlDown)
-                // let's no longer allow window dragging into
-                // United Sets after control button is released
-                return;
-            var foregroundWindow = WindowEx.ForegroundWindow;
-            if (foregroundWindow != Win32Window)
-            {
-                if (IsInTitleBarBounds(Win32Window, foregroundWindow) && IsUnitedSetWindowVisible(Win32Window, foregroundWindow))
-                {
-                    var (NewTab, NewCell) = DetectCell();
-                    var UpdateHoverToTrue = OtherWindowDragging == default;
-                    if (NewCell != SelectedCell)
-                        SelectedCell?.HoverEffect = false;
-                    NewCell?.HoverEffect = true;
-                    if (NewCell is not null)
-                    {
-                        if (SelectedCell is null && UpdateHoverToTrue == false)
-                            HoverIndicator.TransitionToNotHoverState();
-                    }
-                    else if (UpdateHoverToTrue || (SelectedCell is not null && NewCell is null))
-                        HoverIndicator.TransitionToHoverState();
-                    SelectedCell = NewCell;
-                    SelectedCellTab = NewTab;
-                    OtherWindowDragging = foregroundWindow;
-                }
-                else
-                {
-                    SelectedCell?.HoverEffect = false;
-                    SelectedCell = null;
-                    SelectedCellTab = null;
-                    if (OtherWindowDragging != default)
-                        HoverIndicator.TransitionToNotHoverState();
-                    OtherWindowDragging = default;
-                }
-            }
-            Thread.Sleep(200);
-        } while (Cursor.IsLeftButtonDown);
-        if (OtherWindowDragging != default)
-        {
-            var window = OtherWindowDragging;
-            OtherWindowDragging = default;
-            // Since the condition is already checked earlier,
-            // we can skip it.
-            // This check actually leads to some bugs.
-            //var foreground = WindowEx.ForegroundWindow;
-            //if (foreground == window &&
-            //    IsInTitleBarBounds(Win32Window, window) &&
-            //    IsUnitedSetWindowVisible(Win32Window, window))
-            //{
-            //}
-
-            if (SelectedCell is not null)
-            {
-                SelectedCell.HoverEffect = false;
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    var registeredWindow = PostProcessingRegisteredWindow.Register(window);
-                    if (registeredWindow is not null)
-                        DispatcherQueue.TryEnqueue(() => SelectedCell.RegisterWindow(registeredWindow));
-                });
-            }
-            else
-            {
-                HoverIndicator.TransitionToNotHoverState();
-                DispatcherQueue.TryEnqueue(delegate
-                {
-                    if (WindowHostTab.Create(window) is { } tab)
-                    {
-                        UnitedSetsApp.Current.Tabs.Add(tab);
-                        UnitedSetsApp.Current.SelectedTab = tab;
-                    }
-                });
-            }
-        }
+        // the main area (where cells are shown) in screen pixels
+        var area = ToScreen(CacheMiddleAreaBounds);
+        if (area.Width <= 0 || area.Height <= 0 || !area.Contains(cursorPos)) return (null, null);
+        var normPos = (
+            (double)(cursorPos.X - area.X) / area.Width,
+            (double)(cursorPos.Y - area.Y) / area.Height
+        );
+        var cell = GetCellAtCursor(normPos, cellTab.MainCell);
+        return cell is null ? (null, null) : (cellTab, cell);
     }
 }

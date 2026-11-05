@@ -33,6 +33,12 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     public static Func<Window, bool>
         ShouldWindowBeDetachOnUserMove
     { get; set; } = (window) => true;
+    /// <summary>
+    /// Raised (on the hook thread) when a hosted window gets minimized or maximized by itself,
+    /// e.g. using its own minimize/maximize button, Win+Down or Win+Up. The hosted window is
+    /// restored automatically; the handler typically minimizes/maximizes the host window instead.
+    /// </summary>
+    public static event Action<RegisteredWindow, HostedWindowStateRequest>? HostedWindowStateRequested;
     internal readonly WindowStylingState InitalStylingState;
     public Window Window { get; }
     [AutoNotifyProperty(SetVisibility = GeneratorVisibility.Private, OnChanged = nameof(CompatablityModeChanged))]
@@ -40,7 +46,7 @@ public partial class RegisteredWindow : INotifyPropertyChanged
 
     private RegisteredWindow(Window WindowToHost, bool shouldBeHidden = false)
     {
-        if (WindowToHost.IsMaximized)
+        if (WindowToHost.IsMaximizedReliable() || WindowToHost.IsMinimizedReliable())
             WindowToHost.SendMessage(WindowMessages.SysCommand, /* SC_RESTORE */ 0xF120, 0);
 
         InitalStylingState = WindowStylingState.GetCurrentState(WindowToHost);
@@ -49,50 +55,70 @@ public partial class RegisteredWindow : INotifyPropertyChanged
 
         CompatablityMode = CompatablityMode with { NoMoving = NoMovingModeChecker(WindowToHost) };
 
+        var skipOwnProcess = Window.OwnerProcess.Id == Process.Current.Id;
         registeredWindowClosedEvent = WinEvents.Register(
             Window.Handle,
             WinEventTypes.ObjectDestroyed,
-            Window.OwnerProcess.Id == Process.Current.Id,
-            delegate { Closed?.Invoke(); }
+            skipOwnProcess,
+            (_, _, idObject, idChild, _, _) =>
+            {
+                // EVENT_OBJECT_DESTROY is also raised when the caret/cursor/scrollbar of the window
+                // is destroyed. Treating that as the window being closed made tabs disappear while
+                // the (hidden) window was still alive.
+                if (!WinEvents.IsWindowItself(idObject, idChild)) return;
+                if (!IsValid) return;
+                IsValid = false;
+                Dispose();
+                Closed?.Invoke();
+            }
         );
         if (!CompatablityMode.NoMoving)
+        {
             registeredPosSizeChangedEvent = WinEvents.Register(
                 Window.Handle,
                 WinEventTypes.PositionSizeChanged,
-                Window.OwnerProcess.Id == Process.Current.Id,
-                async delegate
+                skipOwnProcess,
+                (_, _, idObject, idChild, _, _) =>
                 {
-                    if (CurrentController is not { } controller) return;
-                    if (controller.Updating)
-                        // current controller is doing the update
-                        return;
-                    var cachedLatestRequestedRect = controller.LatestRequestedRect;
-                    if (Window.Bounds == cachedLatestRequestedRect)
-                        // same position
-                        return;
-                    if (ShouldWindowBeDetachOnUserMove(Window))
-                        // wait for 200 millisecond, this is basically to ensure that the user
-                        // has actually initiated the action and not some automated program
-                        // that wants to take the window and ended up returning it back to the same positon
-                        await Task.Delay(200).ContinueWith(x =>
-                        {
-                            if (Window.Bounds == cachedLatestRequestedRect)
-                                // same position or current controller is doing the update
-                                return;
-                            if (ShouldWindowBeDetachOnUserMove(Window))
-                                controller.DispatcherQueue.TryEnqueue(delegate
-                                {
-                                    Detach();
-                                });
-                        });
+                    if (!WinEvents.IsWindowItself(idObject, idChild)) return;
+                    OnPositionChangedExternally();
                 }
             );
+            registeredMoveSizeStartEvent = WinEvents.Register(
+                Window.Handle,
+                WinEventTypes.WindowMovedStart,
+                skipOwnProcess,
+                (_, _, idObject, idChild, _, _) =>
+                {
+                    if (!WinEvents.IsWindowItself(idObject, idChild)) return;
+                    if (CurrentController is null) return;
+                    userMoveSizeStartBounds = Window.Bounds;
+                    IsUserMovingOrResizing = true;
+                }
+            );
+            registeredMoveSizeEndEvent = WinEvents.Register(
+                Window.Handle,
+                WinEventTypes.WindowMovedEnd,
+                skipOwnProcess,
+                (_, _, idObject, idChild, _, _) =>
+                {
+                    if (!WinEvents.IsWindowItself(idObject, idChild)) return;
+                    if (!IsUserMovingOrResizing) return;
+                    IsUserMovingOrResizing = false;
+                    // the user resized the window by its border (or dragged it while detaching is disabled):
+                    // put it back to where it belongs
+                    CurrentController?.QueueUpdatePosition(resetCorrections: true);
+                }
+            );
+        }
         registeredWindowShownEvent = WinEvents.Register(
             Window.Handle,
             WinEventTypes.WindowShown,
-            Window.OwnerProcess.Id == Process.Current.Id,
-            delegate
+            skipOwnProcess,
+            (_, _, idObject, idChild, _, _) =>
             {
+                // also raised when the caret is shown
+                if (!WinEvents.IsWindowItself(idObject, idChild)) return;
                 if (CurrentController is null || !CurrentController.Updating)
                 {
                     ShownByUser?.Invoke();
@@ -105,7 +131,52 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         Detached += delegate { BecomesInvalid?.Invoke(); };
         Properties = new(this);
     }
-    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent, registeredWindowShownEvent;
+    WinEventsRegistrationParameters registeredWindowClosedEvent, registeredPosSizeChangedEvent,
+        registeredWindowShownEvent, registeredMoveSizeStartEvent, registeredMoveSizeEndEvent;
+    System.Drawing.Rectangle userMoveSizeStartBounds;
+    /// <summary>
+    /// Whether the user is currently in the move/size modal loop of the window (dragging its title bar or border)
+    /// </summary>
+    public bool IsUserMovingOrResizing { get; private set; }
+
+    void OnPositionChangedExternally()
+    {
+        if (!IsValid) return;
+        if (CurrentController is not { } controller) return;
+        if (controller.Updating)
+            // current controller is doing the update
+            return;
+        var bounds = Window.Bounds;
+        if (bounds == controller.LatestRequestedRect)
+            // same position
+            return;
+        if (Window.IsMinimizedReliable() || Window.IsMaximizedReliable())
+        {
+            // The hosted window was minimized/maximized directly (e.g. its own buttons, Win+Down/Up).
+            // A hosted window can't do that on its own, so restore it and let the host decide.
+            var request = Window.IsMinimizedReliable() ? HostedWindowStateRequest.Minimize : HostedWindowStateRequest.Maximize;
+            Window.SendMessage(WindowMessages.SysCommand, /* SC_RESTORE */ 0xF120, 0);
+            controller.QueueUpdatePosition(resetCorrections: true);
+            HostedWindowStateRequested?.Invoke(this, request);
+            return;
+        }
+        if (IsUserMovingOrResizing)
+        {
+            // Only detach when the user drags the window (title bar), not when they resize it by the border
+            var start = userMoveSizeStartBounds;
+            var isMove = bounds.Size == start.Size && bounds.Location != start.Location;
+            if (isMove && ShouldWindowBeDetachOnUserMove(Window))
+            {
+                IsUserMovingOrResizing = false;
+                controller.DispatcherQueue.TryEnqueue(Detach);
+            }
+            // otherwise wait for the user to finish (move size end will put it back)
+            return;
+        }
+        // The window moved or resized itself (or another program moved it): put it back.
+        controller.OnHostedWindowChangedItself();
+    }
+
     void CompatablityModeChanged()
     {
         if (CompatablityMode.NoOwner)
@@ -115,20 +186,31 @@ public partial class RegisteredWindow : INotifyPropertyChanged
         }
     }
     internal RegisteredWindowController? CurrentController;
-    DateTime TimeWhenGettingController = default;
+    /// <summary>
+    /// The last measured invisible resize borders (see <see cref="RegisteredWindowController"/>)
+    /// </summary>
+    internal InvisibleBorders? CachedInvisibleBorders;
     internal void InternalUpdateParent(Window parent)
     {
-        if (parent == default)
-            // replace with some window
-            parent = default;
         var window = Window;
+        // A tabbed window has no taskbar button of its own: the host represents it.
+        // (WS_EX_APPWINDOW forces a button even for owned windows. The original extended styles are
+        // restored when the window is detached.)
+        if (window[WindowExStyles.APPWINDOW])
+            window[WindowExStyles.APPWINDOW] = false;
         window.Owner = parent;
         CompatablityMode = CompatablityMode with { NoOwner = Window.Owner != parent };
     }
+    bool disposed;
     private void Dispose()
     {
+        if (disposed) return;
+        disposed = true;
         registeredWindowClosedEvent.Unregister();
         registeredPosSizeChangedEvent.Unregister();
+        registeredWindowShownEvent.Unregister();
+        registeredMoveSizeStartEvent.Unregister();
+        registeredMoveSizeEndEvent.Unregister();
         IsValid = false;
     }
     /// <summary>
@@ -161,25 +243,41 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     /// </summary>
     public async Task DetachAsync()
     {
-
+        if (!IsValid) return;
         var WindowToHost = Window;
-        WindowToHost.Region = InitalStylingState.Region;
-        Properties.ActivateCrop = false;
-        Properties.BorderlessWindow = false;
-        IsValid = false;
-        WindowToHost.Owner = default;
-        WindowToHost.IsResizable = InitalStylingState.IsResizable;
-        WindowToHost.IsVisible = true;
+        // stop following the host before restoring anything so the controller
+        // doesn't move the window back while we are detaching it
+        CurrentController?.Unregister(hideWindow: false);
         Dispose();
+        try
+        {
+            WindowToHost.Region = InitalStylingState.Region;
+            Properties.ActivateCrop = false;
+            Properties.BorderlessWindow = false;
+            WindowToHost.Owner = default;
+            WindowToHost.Style = InitalStylingState.Style;
+            // NoOwner compatibility mode adds WS_EX_TOOLWINDOW which hides the window from the taskbar
+            // and Alt+Tab. Always restore the original extended styles.
+            WindowToHost.ExStyle = InitalStylingState.ExStyles;
+            WindowToHost.IsResizable = InitalStylingState.IsResizable;
+            WindowToHost.IsVisible = true;
 
-        WindowToHost.Focus();
-        WindowToHost.Redraw();
-        WindowToHost.SetAsForegroundWindow();
-        await Task.Delay(100).ContinueWith(_ =>
+            WindowToHost.Focus();
+            WindowToHost.Redraw();
+            WindowToHost.SetAsForegroundWindow();
+        }
+        catch (Exception ex)
+        {
+            // the window may have been closed in the mean time
+            Debug.WriteLine($"[RegisteredWindow] Detach failed: {ex}");
+        }
+        await Task.Delay(100);
+        try
         {
             WindowToHost.Redraw();
             WindowToHost.IsVisible = true;
-        });
+        }
+        catch { }
         Detached?.Invoke();
     }
 
@@ -192,10 +290,10 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     /// <exception cref="InvalidOperationException">If <see cref="RegisteredWindowController"/> for the current window already exists and has not been unregistered.</exception>
     public RegisteredWindowController? GetController(Window parentWindow, DispatcherQueue dispatcherQueue)
     {
+        if (!IsValid) return null;
         if (CurrentController is not null)
             throw new InvalidOperationException("You already have a controller. Please unregister that one to get a new controller");
         CurrentController = new(parentWindow, this, dispatcherQueue);
-        TimeWhenGettingController = DateTime.UtcNow;
         return CurrentController;
     }
 
@@ -206,7 +304,14 @@ public partial class RegisteredWindow : INotifyPropertyChanged
     /// <returns>A <see cref="RegisteredWindow"/> if the window is not part of the blacklist. Returns <c>null</c> otherwise.</returns>
     public static RegisteredWindow? Register(Window window, bool shouldBeHidden = false)
     {
+        if (!window.IsValid) return null;
         if (BlacklistChecker(window)) return null;
         return new(window, shouldBeHidden);
     }
+}
+internal readonly record struct InvisibleBorders(int Left, int Top, int Right, int Bottom);
+public enum HostedWindowStateRequest
+{
+    Minimize,
+    Maximize
 }

@@ -38,7 +38,7 @@ public partial class ExportImportInputViewModel : INotifyPropertyChanged {
 				if (loc != null)
 					picker.SuggestedStartLocation = loc.Value;
 				WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
-				picker.FileTypeChoices.Add("United Sets Config", new List<string>() { ".json" });
+				picker.FileTypeChoices.Add("United Sets X Config", new List<string>() { ".json" });
 				res = await picker.PickSaveFileAsync();
 			}else{
 				var picker = new FileOpenPicker();

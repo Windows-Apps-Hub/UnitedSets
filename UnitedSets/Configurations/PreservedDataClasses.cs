@@ -92,6 +92,28 @@ public partial class SavedInstanceData : CloneableBase, INotifyPropertyChanged
     [AutoNotifyProperty]
     public bool _BypassMinSize;
 
+    // nullable so that configuration files from older versions get the default value
+    [AutoNotifyProperty]
+    public DragToGroupModes? _DragToGroupMode;
+
+    [AutoNotifyProperty]
+    public bool? _GroupWithAnyWindow;
+
+    [AutoNotifyProperty]
+    public bool? _RunInBackground;
+
+    [AutoNotifyProperty]
+    public bool? _TaskbarTabThumbnails;
+
+    [AutoNotifyProperty]
+    public TabDroppedOutsideBehaviors? _TabDroppedOutsideBehavior;
+
+    [AutoNotifyProperty]
+    public bool? _TabSwitchHotkeys;
+
+    [AutoNotifyProperty]
+    public CloseSetWithTabsBehaviors? _CloseSetWithTabsBehavior;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public SavedTabData[]? Tabs { get; set; }

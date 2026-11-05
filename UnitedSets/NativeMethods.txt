@@ -3,3 +3,4 @@ ApplicationActivationManager
 
 RegisterShellHookWindow
 RegisterWindowMessage
+ClientToScreen

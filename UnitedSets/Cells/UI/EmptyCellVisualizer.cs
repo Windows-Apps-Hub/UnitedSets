@@ -15,33 +15,33 @@ namespace UnitedSets.UI.Controls.Cells;
             ZoomMode=Enabled
             MinZoomFactor=`0.1f` MaxZoomFactor=`1.5f`
         >
-            <VStack Spacing=16
+            <StackPanel Orientation=Vertical Spacing=16
                 CenterH CenterV
                 DragOver+=`OnDragOver` Drop+=`emptyCell.OnItemDrop`
             >
                 hintTb = <TextBlock CenterH FontSize=20 />
                 <TextBlock CenterH FontSize=16 Text="or" />
                 <Button CenterH @Click+=`emptyCell.Split(SplitCount, Orientation.Vertical)`> // intentionally swap orientation
-                    <HStack Spacing=4>
+                    <StackPanel Orientation=Horizontal Spacing=4>
                         <SymbolExIcon(GripperBarHorizontal) />
                         <TextBlock Text="Split Horizontally" />
                         <SymbolExIcon(GripperBarHorizontal) />
-                    </HStack>
+                    </StackPanel>
                 </Button>
                 <Button CenterH @Click+=`emptyCell.Split(SplitCount, Orientation.Horizontal)`> // intentionally swap orientation
-                    <HStack Spacing=4>
+                    <StackPanel Orientation=Horizontal Spacing=4>
                         <SymbolExIcon(GripperBarVertical) />
                         <TextBlock Text="Split Vertically" />
                         <SymbolExIcon(GripperBarVertical) />
-                    </HStack>
+                    </StackPanel>
                 </Button>
-                <HStack Spacing=8 CenterH>
+                <StackPanel Orientation=Horizontal Spacing=8 CenterH>
                     <TextBlock CenterV Text="Number of Cells to Split:" />
                     plusbtn = <Button CenterV Padding=5 Content=<SymbolIcon(Add) /> @Click+=`SplitCount++;` />
                     <TextBlock CenterV Text=`SplitCount.ToString()` />
                     minusbtn = <Button CenterV Padding=5 Content=<SymbolIcon(Remove) /> @Click+=`SplitCount--;` />
-                </HStack>
-            </VStack>
+                </StackPanel>
+            </StackPanel>
         </ScrollViewer>
         rect = <Rectangle
             Margin=`new(CellMargin)`

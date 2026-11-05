@@ -8,7 +8,7 @@ namespace UnitedSets.UI.Controls.MainArea;
     using Microsoft.UI.Xaml.Media.Imaging;
     GridLength LeftInset;
     GridLength RightInset;
-    private bool HasTab => `UnitedSetsApp.Current.SelectedTab is not null`;
+    private bool HasTab => `Owner.SelectedTab is not null`;
     <root StretchH Orientation=Horizontal>
         <UnitedSetsDragRegion Background=`Solid(Colors.Transparent)` OrientedStack_Length=`new GridLength(250)`>
             <.RowDefinitions>
@@ -22,26 +22,26 @@ namespace UnitedSets.UI.Controls.MainArea;
                     <ColumnDefinition />
                     <ColumnDefinition Auto />
                 </.ColumnDefinitions>
-                <HStack Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
+                <StackPanel Orientation=Horizontal Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
                     <Image Width=24 Height=24 Left CenterV
                         Source=`new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-100.png"))`
                     />
                     if (`!HasTab`)
-                        <HStack Spacing=4>
+                        <StackPanel Orientation=Horizontal Spacing=4>
                             <TextBlock CenterV Margin=`new(8, 0, 0, 0)`
-                                Text="United Sets" 
+                                Text="United Sets X" 
                                 Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` />
                             <TextBlock CenterV Opacity=0.7
                                 Text=`Constants.AppVersionTag`
                                 Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` 
                             />
-                        </HStack>
-                </HStack>
-                <HStack CenterV Grid.Column=3>
+                        </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation=Horizontal CenterV Grid.Column=3>
                     <MainWindowControlButton
                         CenterV
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
-                        MainWindow=`UnitedSetsApp.Current.MainWindow`
+                        MainWindow=`Owner`
                     />
                     if (`HasTab`)
                     {
@@ -61,13 +61,15 @@ namespace UnitedSets.UI.Controls.MainArea;
                             `DragRegion_ClientKind`=`NonClientRegionKind.Close`
                         />
                     }
-                </HStack>
+                </StackPanel>
             </Grid>
-            <VerticalTabs StretchH StretchV Grid.Row=1 TitleBarInteractable
-                SelectedItem=`UnitedSetsApp.Current.SelectedTab`
+            TabList = <VerticalTabs StretchH StretchV Grid.Row=1 TitleBarInteractable
+                Owner=`Owner`
+                SelectedItem=`Owner.SelectedTab`
                 SelectedItem=>`SelectedTabBindback`
                 @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                 Footer=<AddTabSplitButton
+                    Owner=`Owner`
                     Canvas.ZIndex=8
                     StretchH
                 />
@@ -83,7 +85,7 @@ namespace UnitedSets.UI.Controls.MainArea;
         />
         MainAreaBorder = <Border Grid.Column=1 `OrientedStack_Length`=`Star()`>
             <TabVisualizer
-                Tab=`UnitedSetsApp.Current.SelectedTab`
+                Tab=`Owner.SelectedTab`
                 HorizontalContentAlignment=Stretch
                 VerticalContentAlignment=Stretch
             />
@@ -92,13 +94,15 @@ namespace UnitedSets.UI.Controls.MainArea;
     """)]
 partial class VerticalTabsFullPanel : OrientedStack, IMainAreaPanel
 {
-    public VerticalTabsFullPanel()
+    readonly MainWindow Owner;
+    public VerticalTabsFullPanel(MainWindow owner)
     {
+        Owner = owner;
         Init();
     }
-    static object SelectedTabBindback
+    object? SelectedTabBindback
     {
-        set => UnitedSetsApp.Current.SelectedTab = (TabBase)value;
+        set => Owner.SelectedTab = value as TabBase;
     }
     public event Action? TabSelectionChanged;
     public System.Drawing.Rectangle GetMainAreaRectangle(UIElement reference)
@@ -109,6 +113,8 @@ partial class VerticalTabsFullPanel : OrientedStack, IMainAreaPanel
         var size = MainAreaBorder.ActualSize;
         return new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
     }
+    public System.Drawing.Rectangle GetTabStripRectangle(UIElement reference)
+        => IMainAreaPanel.GetRectangle(TabList, reference);
     public void ShowClosingFlyout(FlyoutBase flyoutBase)
     => flyoutBase.ShowAt(HasTab && closeBtn is not null ? closeBtn : MainAreaBorder);
 }

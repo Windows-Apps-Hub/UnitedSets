@@ -42,36 +42,47 @@ public partial class WindowHost : FrameworkElement
             Height = size.Y
         };
         if (Controller is not { } controller) return;
+        controller.RasterizationScale = XamlRoot.RasterizationScale;
         controller.ContainerRectangle = cachedContainerRectangle;
     }
 
-    async partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
+    partial void OnAssociatedWindowChanged(RegisteredWindow? oldValue, RegisteredWindow? newValue)
     {
         Controller = null;
         if (oldValue is not null)
             oldValue.BecomesInvalid -= RemoveController;
         if (IsLoaded)
+            AttachController(newValue);
+    }
+
+    async void AttachController(RegisteredWindow? window)
+    {
+        if (window is null) return;
+        window.BecomesInvalid -= RemoveController;
+        window.BecomesInvalid += RemoveController;
+        // Another host may still own the window (e.g. while the previous tab content is being unloaded).
+        // Retry for a short while instead of forever.
+        for (int i = 0; i < 20; i++)
         {
-            if (newValue is not null)
-                newValue.BecomesInvalid += RemoveController;
-            while (true)
+            if (!IsLoaded || AssociatedWindow != window || !window.IsValid) return;
+            try
             {
-                try
-                {
-                    Controller = newValue?.GetController(ParentWindow, DispatcherQueue);
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
+                Controller = window.GetController(ParentWindow, DispatcherQueue);
+                return;
+            }
+            catch
+            {
+                await Task.Delay(100);
             }
         }
     }
 
     private void RemoveController()
     {
-        Controller = null;
+        if (DispatcherQueue.HasThreadAccess)
+            Controller = null;
+        else
+            DispatcherQueue.TryEnqueue(() => Controller = null);
     }
 
     RegisteredWindowController? Controller
@@ -94,45 +105,44 @@ public partial class WindowHost : FrameworkElement
     void AfterControllerChanged()
     {
         if (Controller is not { } controller) return;
+        if (XamlRoot is not null)
+            controller.RasterizationScale = XamlRoot.RasterizationScale;
         controller.ContainerRectangle = cachedContainerRectangle;
     }
+    XamlRoot? subscribedXamlRoot;
     private void WindowHost_Unloaded(object sender, RoutedEventArgs e)
     {
         Controller = null;
+        if (subscribedXamlRoot is not null)
+        {
+            subscribedXamlRoot.Changed -= XamlRoot_Changed;
+            subscribedXamlRoot = null;
+        }
     }
 
-    private async void WindowHost_Loaded(object sender, RoutedEventArgs e)
+    private void WindowHost_Loaded(object sender, RoutedEventArgs e)
     {
         Controller = null;
         Update(); // update position
-        if (AssociatedWindow is { } window)
-        {
-            window.BecomesInvalid += RemoveController;
-            while (true)
-            {
-                try
-                {
-                    Controller = window.GetController(ParentWindow, DispatcherQueue);
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
-            }
-        }
+        AttachController(AssociatedWindow);
+        if (subscribedXamlRoot is not null)
+            subscribedXamlRoot.Changed -= XamlRoot_Changed;
+        subscribedXamlRoot = XamlRoot;
+        wasVisible = XamlRoot.IsHostVisible;
         XamlRoot.Changed += XamlRoot_Changed;
     }
     bool wasVisible;
     private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
     {
-        if (XamlRoot.IsHostVisible != wasVisible)
+        // DPI change (e.g. moved to another monitor)
+        Update();
+        if (sender.IsHostVisible != wasVisible)
         {
-            wasVisible = XamlRoot.IsHostVisible;
+            wasVisible = sender.IsHostVisible;
             if (AssociatedWindow is { } win && win.IsValid && Controller is not null)
             {
                 var w = win.Window;
-                w.IsVisible = XamlRoot.IsHostVisible;
+                w.IsVisible = sender.IsHostVisible;
             }
         }
     }

@@ -9,16 +9,20 @@ namespace UnitedSets.UI.Controls;
     <root @SizeChanged+=`UpdateShouldUseSplitButtion()` @Loaded+=`UpdateShouldUseSplitButtion()`>
         if (`ShouldUseSplitButton`)
             <SplitButton
-                Padding=5 Height=30
+                Padding=`new(6,2,6,2)` Height=28
                 StretchH
+                BorderThickness=`new(0)`
+                Background=`Solid(Colors.Transparent)`
                 HorizontalContentAlignment=Center VerticalContentAlignment=Center
                 @Click+=`OnAddTabClick()`
                 Flyout = flyoutCopy = <MenuFlyout Placement=BottomEdgeAlignedRight !ShouldConstrainToRootBounds>
-                        <MenuFlyoutItem @Click+=`UnitedSetsApp.Current.OpenAddTabDialog()` Text="Add Window" />
+                        <MenuFlyoutItem @Click+=`UnitedSetsApp.Current.OpenAddTabDialog(Owner)` Text="Add Window" />
                         <MenuFlyoutItem @Click+=`AddSplitableTab()` Text="Add Splitable Tab" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem @Click+=`UnitedSetsApp.Current.CreateNewSetWindow()` Text="New Set Window" />
                     </MenuFlyout>
             >
-                <FluentSymbolIcon Symbol=Add20 Margin=`new(-2,-2,0,0)` />
+                <FluentSymbolIcon Symbol=Add20 Margin=`new(-2,-2,0,0)` Width=16 Height=16 />
             </SplitButton>
         else
             smallBtn = <Button
@@ -34,6 +38,10 @@ partial class AddTabSplitButton : Grid
     {
         Init();
     }
+    /// <summary>
+    /// The set window new tabs are added to
+    /// </summary>
+    public MainWindow? Owner { get; set; }
     void UpdateShouldUseSplitButtion()
     {
         ShouldUseSplitButton = ActualWidth >= 70;
@@ -57,13 +65,14 @@ partial class AddTabSplitButton : Grid
         }
         else
         {
-            UnitedSetsApp.Current.OpenAddTabDialog();
+            UnitedSetsApp.Current.OpenAddTabDialog(Owner);
         }
     }
     void AddSplitableTab()
     {
+        var target = Owner ?? UnitedSetsApp.Current.MainWindow;
         var newTab = new CellTab(Constants.IsAltTabVisible);
-        UnitedSetsApp.Current.Tabs.Add(newTab);
-        UnitedSetsApp.Current.SelectedTab = newTab;
+        target.Tabs.Add(newTab);
+        target.SelectedTab = newTab;
     }
 }

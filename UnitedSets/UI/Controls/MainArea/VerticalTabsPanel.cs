@@ -21,32 +21,34 @@ namespace UnitedSets.UI.Controls.MainArea;
                 <ColumnDefinition Auto />
                 <ColumnDefinition Width=`RightInset` />
             </.ColumnDefinitions>
-            <HStack Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
+            <StackPanel Orientation=Horizontal Left Margin=`new(12, 0, 0, 0)` Grid.Column=1>
                 <Image Width=24 Height=24 Left CenterV
                     Source=`new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-100.png"))`
                 />
                 <TextBlock CenterV Margin=`new(8, 0, 0, 0)`
-                    Text="United Sets" 
+                    Text="United Sets X" 
                     Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` />
                 <TextBlock CenterV Opacity=0.7
                     Text=`Constants.AppVersionTag`
                     Style=`(Style)App.Current.Resources["CaptionTextBlockStyle"]` 
                 />
-            </HStack>
-            <HStack CenterV Grid.Column=3>
+            </StackPanel>
+            <StackPanel Orientation=Horizontal CenterV Grid.Column=3>
                 <MainWindowControlButton
                     CenterV
                     Style=`(Style)App.Current.Resources["ToolbarButton"]`
-                    MainWindow=`UnitedSetsApp.Current.MainWindow`
+                    MainWindow=`Owner`
                 />
-            </HStack>
+            </StackPanel>
         </UnitedSetsDragRegion>
         <OrientedStack Grid.Row=1 Orientation=Horizontal StretchH>
-            <VerticalTabs StretchH StretchV OrientedStack_Length=`new GridLength(250)`
-                SelectedItem=`UnitedSetsApp.Current.SelectedTab`
+            TabList = <VerticalTabs StretchH StretchV OrientedStack_Length=`new GridLength(250)`
+                Owner=`Owner`
+                SelectedItem=`Owner.SelectedTab`
                 SelectedItem=>`SelectedTabBindback`
                 @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                 Footer=<AddTabSplitButton
+                    Owner=`Owner`
                     Canvas.ZIndex=8
                     StretchH
                     TitleBarInteractable
@@ -62,7 +64,7 @@ namespace UnitedSets.UI.Controls.MainArea;
             />
             MainAreaBorder = <Border Grid.Column=1 OrientedStack_Length=`Star()`>
                 <TabVisualizer
-                    Tab=`UnitedSetsApp.Current.SelectedTab`
+                    Tab=`Owner.SelectedTab`
                     HorizontalContentAlignment=Stretch
                     VerticalContentAlignment=Stretch
                 />
@@ -72,9 +74,15 @@ namespace UnitedSets.UI.Controls.MainArea;
     """)]
 partial class VerticalTabsPanel : Grid, IMainAreaPanel
 {
-    static object SelectedTabBindback
+    readonly MainWindow Owner;
+    public VerticalTabsPanel(MainWindow owner)
     {
-        set => UnitedSetsApp.Current.SelectedTab = (TabBase)value;
+        Owner = owner;
+        Init();
+    }
+    object? SelectedTabBindback
+    {
+        set => Owner.SelectedTab = value as TabBase;
     }
     public event Action? TabSelectionChanged;
     public System.Drawing.Rectangle GetMainAreaRectangle(UIElement reference)
@@ -85,6 +93,8 @@ partial class VerticalTabsPanel : Grid, IMainAreaPanel
         var size = MainAreaBorder.ActualSize;
         return new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
     }
+    public System.Drawing.Rectangle GetTabStripRectangle(UIElement reference)
+        => IMainAreaPanel.GetRectangle(TabList, reference);
     public void ShowClosingFlyout(FlyoutBase flyoutBase)
     => flyoutBase.ShowAt(MainAreaBorder);
 }

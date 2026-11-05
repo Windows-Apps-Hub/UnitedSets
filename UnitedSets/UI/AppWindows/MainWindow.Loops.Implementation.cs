@@ -13,30 +13,13 @@ namespace UnitedSets.UI.AppWindows;
 /// </summary>
 public sealed partial class MainWindow
 {
-    Icon lastIcon = default;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    void UpdateWindowIcon()
-    {
-        var icon = SelectedTabCache?.Windows.FirstOrDefault().LargeIcon ?? default;
-        if (icon != lastIcon)
-        {
-
-            Taskbar.SetOverlayIcon(
-                Win32Window,
-                icon,
-                SelectedTabCache?.Title ?? ""
-            );
-            lastIcon = icon;
-        }
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     async Task RemoveDisposedTab()
     {
-        foreach (var Tab in UnitedSetsApp.Current.Tabs.CacheEnumerable())
+        foreach (var Tab in Tabs.CacheEnumerable())
         {
             if (Tab.IsDisposed)
-                await UIRemoveFromCollectionAsync(UnitedSetsApp.Current.Tabs, Tab);
+                await UIRemoveFromCollectionAsync(Tabs, Tab);
         }
         foreach (var TabGroup in UnitedSetsApp.Current.HiddenTabs.CacheEnumerable())
         {
@@ -59,7 +42,7 @@ public sealed partial class MainWindow
         var fg = Win32Window.ForegroundWindow;
         if (Win32Window.Root == fg.Root)
         {
-            if (UnitedSetsApp.Current.SelectedTab is { } tab)
+            if (SelectedTabCache is { } tab)
             {
                 if (tab is WindowHostTab wht)
                 {

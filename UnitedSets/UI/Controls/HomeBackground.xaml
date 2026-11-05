@@ -16,7 +16,7 @@
             Width="32" 
             Height="32"/>
         <TextBlock
-            Text="United Sets"
+            Text="United Sets X"
             VerticalAlignment="Center"
             Margin="4,0,0,0"
             FontSize="28"/>
@@ -30,25 +30,33 @@
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" x:Name="hintInfo">
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 0, 0, 4">Tips:</TextBlock>
         <TextBlock>
-        • Drag a Tab out to release the Window
+        • Hold [SHIFT] (or the key chosen in the settings) and drag
+        <LineBreak/>&#160;&#160;a window onto another window:
+        <LineBreak/>&#160;&#160;they become tabs of a new set (like Groupy)
+        <LineBreak/>• Hold [SHIFT] and drag a window onto a set to add it
+        <LineBreak/>• Drag a tab to another set's tab bar to move it,
+        <LineBreak/>&#160;&#160;or outside to release the window
         <LineBreak/>• Double Click tab or Right Click tab for more
         <LineBreak/>&#160;&#160;customization options
+        <LineBreak/>• Open United Sets X again (or "+" › New Set Window)
+        <LineBreak/>&#160;&#160;to create another set
         </TextBlock>
         <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#e96e60" Margin="0, 12, 0, 4">Preview Warnings:</TextBlock>
         <TextBlock>
         • May not work well with UWP windows
         <LineBreak/>• [Experimental] Save and Close
-        <LineBreak/>&#160;&#160;• may fail to add windows back to United Sets
+        <LineBreak/>&#160;&#160;• may fail to add windows back to United Sets X
         <LineBreak/>&#160;&#160;• will NOT work for system UWP/WinUI Packaged apps
         <LineBreak/>&#160;&#160;&#160;&#160;(like Calculator/Paint/Notepad/etc)
         <LineBreak/>&#160;&#160;• will NOT work for one-process-only app (like File Explorer)
         </TextBlock>
         <TextBlock FontSize="14" FontWeight="SemiBold" Margin="0, 12, 0, 4">Hotkeys:</TextBlock>
         <TextBlock>
-        • [SHIFT] + "New Tab + Icon": Create Splitable Tab
-        <LineBreak/>• Hold [CTRL] while dragging window on top of United Sets:
-        <LineBreak/>&#160;&#160;add that window to United Sets
-        <LineBreak/>• Hold [SHIFT] while opening United Sets:
+        • [WIN] + [`]: next tab, [WIN] + [SHIFT] + [`]: previous tab
+        <LineBreak/>• [SHIFT] + "New Tab + Icon": Create Splitable Tab
+        <LineBreak/>• Hold [SHIFT] while dragging a window over a splitable tab:
+        <LineBreak/>&#160;&#160;drop it into an empty cell
+        <LineBreak/>• Hold [SHIFT] while opening United Sets X:
         <LineBreak/>&#160;&#160;separate app taskbar icons
         <LineBreak/>• Hold [ALT] while adding a window:
         <LineBreak/>&#160;&#160;add window in a borderless mode

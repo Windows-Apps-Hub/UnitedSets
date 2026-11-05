@@ -84,19 +84,33 @@ public partial class UnitedSetsDragRegion : Grid
     }
 
     InputNonClientPointerSource? current;
+    /// <remarks>
+    /// <see cref="InputNonClientPointerSource.SetRegionRects"/> expects rectangles in client coordinates and
+    /// physical pixels. The rectangles used to be in DIPs and relative to this element, which put the
+    /// clickable areas (tabs, buttons) at the wrong place on displays scaled above 100% or when the
+    /// window has a border.
+    /// </remarks>
     public void UpdateRegion()
     {
         try
         {
-            current?.SetRegionRects(NonClientRegionKind.Caption,
-                [new(0, 0, (int)ActualWidth, (int)ActualHeight)]
+            if (current is null || XamlRoot?.Content is not UIElement root) return;
+            var scale = XamlRoot.RasterizationScale;
+            RectInt32 ToClient(RectInt32 r) => new(
+                (int)Math.Round(r.X * scale),
+                (int)Math.Round(r.Y * scale),
+                (int)Math.Round(r.Width * scale),
+                (int)Math.Round(r.Height * scale)
+            );
+            current.SetRegionRects(NonClientRegionKind.Caption,
+                [ToClient(GetRect(this, root))]
             );
             List<RectInt32> passthrough = [];
             List<(RectInt32, NonClientRegionKind)> custom = [];
-            GetClickableRectangles(this, this, passthrough, custom);
-            current?.SetRegionRects(NonClientRegionKind.Passthrough, passthrough.ToArray());
+            GetClickableRectangles(this, root, passthrough, custom);
+            current.SetRegionRects(NonClientRegionKind.Passthrough, passthrough.Select(ToClient).ToArray());
             foreach (var (rect, kind) in custom)
-                current?.SetRegionRects(kind, new RectInt32[] { rect });
+                current.SetRegionRects(kind, [ToClient(rect)]);
         }
         catch
         {

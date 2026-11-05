@@ -98,6 +98,6 @@ public sealed partial class FloatingTaskbar : SizeToContentWindow
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
         if (sender is RadioButton rbtn && rbtn.Tag is TabBase tb)
-            UnitedSetsApp.Current.SelectedTab = tb;
+            MainWindow.SelectedTab = tb;
     }
 }

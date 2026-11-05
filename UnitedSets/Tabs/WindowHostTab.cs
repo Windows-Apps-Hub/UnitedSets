@@ -30,10 +30,16 @@ public partial class WindowHostTab : TabBase
     private async void AttemptToSelectTab()
     {
         await Task.Delay(100);
-        UnitedSetsApp.Current.SelectedTab = this;
+        ParentWindow?.SelectedTab = this;
     }
 
-    public static WindowHostTab? Create(WindowEx newWindow)
+    public override bool ContainsRegisteredWindow(RegisteredWindow window) => RegisteredWindow == window;
+
+    /// <summary>
+    /// Creates a tab for the given window, or returns <c>null</c> if the window can't (or shouldn't) be added.
+    /// </summary>
+    /// <param name="shouldBeHidden">Hide the window until the tab is selected</param>
+    public static WindowHostTab? Create(WindowEx newWindow, bool shouldBeHidden = false)
     {
         if (!newWindow.IsValid)
             return null;
@@ -45,11 +51,13 @@ public partial class WindowHostTab : TabBase
         if (Constants.ShouldBeBlacklisted(newWindow))
             return null;
         // Check if United Sets has owner (United Sets in United Sets)
-        if (UnitedSetsApp.Current.MainWindow.Win32Window.Root.Children.Any(x => x == newWindow))
+        foreach (var setWindow in UnitedSetsApp.Current.SetWindows.ToArray())
+            if (setWindow.Win32Window.Root.Children.Any(x => x == newWindow))
+                return null;
+        // already in a tab
+        if (UnitedSetsApp.Current.FindTab(newWindow.Handle) is not null)
             return null;
-        if (UnitedSetsApp.Current.Tabs.ToArray().Any(x => x.Windows.Any(y => y == newWindow)))
-            return null;
-        var registeredWindow = PostProcessingRegisteredWindow.Register(newWindow);
+        var registeredWindow = PostProcessingRegisteredWindow.Register(newWindow, shouldBeHidden);
         if (registeredWindow is null)
             return null;
         return new WindowHostTab(registeredWindow, UnitedSetsApp.Current.DispatcherQueue, newWindow, Constants.IsAltTabVisible);

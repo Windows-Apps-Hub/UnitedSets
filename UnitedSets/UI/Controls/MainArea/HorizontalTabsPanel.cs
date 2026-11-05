@@ -12,28 +12,30 @@ namespace UnitedSets.UI.Controls.MainArea;
             <RowDefinition Auto />
             <RowDefinition />
         </.RowDefinitions>
-        TabViewBorder = <Border MinHeight=40 PointerMoved+=`DragRegion_PointerMoved` Background=`Solid(Colors.Transparent)`>
+        TabViewBorder = <Border Height=36 PointerMoved+=`DragRegion_PointerMoved` Background=`Solid(Colors.Transparent)`>
             DragRegion = <UnitedSetsDragRegion Background=`Solid(Colors.Transparent)` StretchH StretchV>
                 <.ColumnDefinitions>
                     <ColumnDefinition Width=`LeftInset` />
                     <ColumnDefinition />
-                    <ColumnDefinition Width=32 />
+                    <ColumnDefinition Width=48 />
                     <ColumnDefinition Width=`RightInset` />
                 </.ColumnDefinitions>
-                TabView = <HorizontalTabs Grid.Column=1 Left CenterV
-                    SelectedItem=`UnitedSetsApp.Current.SelectedTab`
+                TabView = <HorizontalTabs Grid.Column=1 Left
+                    Owner=`Owner`
+                    SelectedItem=`Owner.SelectedTab`
                     SelectedItem=>`SelectedTabBindback`
                     @SelectionChanged+=`TabSelectionChanged?.Invoke()`
                     TabStripHeader=<MainWindowControlButton
-                        CenterV Width=32 Height=32
-                        Margin=`new(5,0,0,0)`
+                        CenterV Width=30 Height=30
+                        Margin=`new(4,0,4,0)`
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
-                        MainWindow=`UnitedSetsApp.Current.MainWindow`
+                        MainWindow=`Owner`
                     />
                     TabStripFooter=<AddTabSplitButton
+                        Owner=`Owner`
                         Canvas.ZIndex=8
-                        Margin=`new(0,0,20,0)`
-                        Left
+                        Margin=`new(4,0,0,0)`
+                        Left CenterV
                         TitleBarInteractable
                     />
                 />
@@ -41,7 +43,7 @@ namespace UnitedSets.UI.Controls.MainArea;
         </Border>
         MainAreaBorder = <Border Grid.Row=1>
             <TabVisualizer
-                Tab=`UnitedSetsApp.Current.SelectedTab`
+                Tab=`Owner.SelectedTab`
                 HorizontalContentAlignment=Stretch
                 VerticalContentAlignment=Stretch
             />
@@ -50,9 +52,15 @@ namespace UnitedSets.UI.Controls.MainArea;
     """)]
 partial class HorizontalTabsPanel : Grid, IMainAreaPanel
 {
-    static object SelectedTabBindback
+    readonly MainWindow Owner;
+    public HorizontalTabsPanel(MainWindow owner)
     {
-        set => UnitedSetsApp.Current.SelectedTab = (TabBase)value;
+        Owner = owner;
+        Init();
+    }
+    object? SelectedTabBindback
+    {
+        set => Owner.SelectedTab = value as TabBase;
     }
     public event Action? TabSelectionChanged;
     DateTime LatestUpdate;
@@ -74,6 +82,8 @@ partial class HorizontalTabsPanel : Grid, IMainAreaPanel
         var size = MainAreaBorder.ActualSize;
         return new System.Drawing.Rectangle((int)Pt._x, (int)Pt._y, (int)size.X, (int)size.Y);
     }
+    public System.Drawing.Rectangle GetTabStripRectangle(UIElement reference)
+        => IMainAreaPanel.GetRectangle(TabViewBorder, reference);
     public void ShowClosingFlyout(FlyoutBase flyoutBase)
     => flyoutBase.ShowAt(MainAreaBorder);
 }
